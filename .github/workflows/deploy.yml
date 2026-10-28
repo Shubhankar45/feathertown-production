@@ -1,0 +1,143 @@
+name: CI/CD Pipeline - Test & Deploy to Server
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  # ============================================================================
+  # 1. CI: Frontend Build & Validation
+  # ============================================================================
+  build-frontend:
+    name: Test Frontend Build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: "npm"
+          cache-dependency-path: featherstown-main/frontend/package-lock.json
+
+      - name: Install Dependencies
+        working-directory: featherstown-main/frontend
+        run: npm ci || npm install
+
+      - name: Build Frontend Bundle
+        working-directory: featherstown-main/frontend
+        run: npm run build
+
+  # ============================================================================
+  # 2. CI: Backend Validation
+  # ============================================================================
+  validate-backend:
+    name: Test Backend Syntax
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: "pip"
+          cache-dependency-path: featherstown-main/backend/requirements.txt
+
+      - name: Install Python Dependencies
+        working-directory: featherstown-main/backend
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Check Python Syntax
+        working-directory: featherstown-main/backend
+        run: |
+          python -m py_compile main.py
+          python -m py_compile app/database.py
+          python -m py_compile app/config.py
+
+  # ============================================================================
+  # 3. CD: Deploy to Server via SSH
+  # ============================================================================
+  deploy:
+    name: Deploy to Production Server
+    needs: [build-frontend, validate-backend]
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Deploy on Remote Server via SSH
+        uses: appleboy/ssh-action@v1.2.0
+        with:
+          host: ${{ secrets.SERVER_HOST }}
+          username: ${{ secrets.SERVER_USER }}
+          key: ${{ secrets.SERVER_SSH_KEY }}
+          port: ${{ secrets.SERVER_PORT || 22 }}
+          script_stop: true
+          envs: PROD_ENV
+        env:
+          PROD_ENV: ${{ secrets.PRODUCTION_ENV }}
+        with:
+          host: ${{ secrets.SERVER_HOST }}
+          username: ${{ secrets.SERVER_USER }}
+          key: ${{ secrets.SERVER_SSH_KEY }}
+          port: ${{ secrets.SERVER_PORT || 22 }}
+          script_stop: true
+          script: |
+            echo "🚀 Starting automated deployment on production server..."
+            
+            # 1. Target directory on server
+            APP_DIR="${{ secrets.SERVER_TARGET_DIR || '~/feathertown-production' }}"
+            eval APP_DIR=$APP_DIR
+            
+            # 2. Install Docker & Git if not present
+            if ! command -v docker &> /dev/null; then
+              echo "⚙️ Docker not found. Installing Docker and dependencies..."
+              sudo apt-get update -y
+              sudo apt-get install -y docker.io docker-compose-v2 git
+              sudo usermod -aG docker $USER || true
+            fi
+            
+            # 3. Clone repository if not already cloned
+            if [ ! -d "$APP_DIR" ]; then
+              echo "📦 Cloning repository into $APP_DIR..."
+              git clone https://github.com/Shubhankar45/feathertown-production.git "$APP_DIR"
+            fi
+            
+            cd "$APP_DIR"
+            echo "📁 In directory: $(pwd)"
+            
+            # 4. Pull latest commits cleanly
+            echo "📥 Fetching and syncing to latest main..."
+            git fetch origin main
+            git reset --hard origin/main
+            
+            # 5. Move into project directory
+            if [ -d "featherstown-main" ]; then
+              cd featherstown-main
+            fi
+            
+            # 6. Setup .env file
+            if [ ! -f ".env" ] && [ -f ".env.docker.example" ]; then
+              echo "📝 Creating initial .env from template..."
+              cp .env.docker.example .env
+            fi
+            
+            # 7. Build and run containers
+            echo "🐳 Starting Docker containers..."
+            sudo docker compose down --remove-orphans 2>/dev/null || sudo docker-compose down --remove-orphans 2>/dev/null || true
+            sudo docker compose up -d --build || sudo docker-compose up -d --build
+            
+            echo "🧹 Pruning old unused images..."
+            sudo docker image prune -f
+            
+            echo "✅ Running containers:"
+            sudo docker ps --filter "name=feathertown"
+            
+            echo "🎉 Deployment finished successfully!"
