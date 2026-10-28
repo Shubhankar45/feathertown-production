@@ -181,13 +181,13 @@ const quizEditorialStyles = `
 }
 
 .ed-btn-next {
-  background: linear-gradient(135deg, #10B981, #059669);
+  background: linear-gradient(135deg, #F97316, #EA580C);
   color: #FFFFFF;
   border: none;
-  padding: 14px 30px;
+  padding: 12px 26px;
   border-radius: 999px;
   font-family: 'Outfit', sans-serif;
-  font-size: 13.5px;
+  font-size: 13px;
   font-weight: 700;
   letter-spacing: 0.04em;
   cursor: pointer;
@@ -196,11 +196,11 @@ const quizEditorialStyles = `
   align-items: center;
   justify-content: center;
   gap: 8px;
-  box-shadow: 0 4px 14px rgba(5, 150, 105, 0.25);
+  box-shadow: 0 4px 14px rgba(249, 115, 22, 0.35);
 }
 .ed-btn-next:hover:not(:disabled) {
   transform: translateY(-2px);
-  box-shadow: 0 8px 24px rgba(5, 150, 105, 0.35);
+  box-shadow: 0 8px 24px rgba(249, 115, 22, 0.45);
 }
 .ed-btn-next:disabled {
   background: #F1F5F9;
@@ -314,15 +314,16 @@ export default function BirdQuiz({ parrots = [] }) {
             <h2
               style={{
                 fontFamily: "Outfit, system-ui, sans-serif",
-                fontSize: "clamp(30px, 4.5vw, 48px)",
+                fontSize: "clamp(26px, 3.8vw, 42px)",
                 fontWeight: 800,
                 color: "#0F172A",
                 lineHeight: 1.15,
                 margin: 0,
               }}
             >
-              Your Ideal Feathered{" "}
-              <span style={{ color: "#059669" }}>Companion</span>
+              Your Ideal{" "}
+              <span style={{ color: "#16A34A" }}>Feathered</span>{" "}
+              <span style={{ color: "#EA580C" }}>Companion</span>
             </h2>
           </div>
 
@@ -330,7 +331,7 @@ export default function BirdQuiz({ parrots = [] }) {
           <div
             style={{
               background: "#FFFFFF",
-              border: "1px solid #E2E8F0",
+              border: "1px solid #FED7AA",
               borderRadius: "24px",
               overflow: "hidden",
               boxShadow: "0 10px 32px rgba(15, 23, 42, 0.08)",
@@ -343,14 +344,14 @@ export default function BirdQuiz({ parrots = [] }) {
             {/* Left: Gallery Cutout Photo */}
             <div
               style={{
-                background: "linear-gradient(145deg, #F8FAFC 0%, #F1F5F9 100%)",
-                padding: "40px 24px",
+                background: "linear-gradient(145deg, #F8FAFC 0%, #FFF7ED 100%)",
+                padding: "36px 20px",
                 display: "flex",
                 flexDirection: "column",
                 alignItems: "center",
                 justifyContent: "center",
                 position: "relative",
-                minHeight: 340,
+                minHeight: 320,
               }}
             >
               <div
@@ -358,12 +359,12 @@ export default function BirdQuiz({ parrots = [] }) {
                   position: "absolute",
                   top: 16,
                   left: 16,
-                  background: "#ECFDF5",
-                  color: "#059669",
-                  border: "1px solid #A7F3D0",
+                  background: "#FFF7ED",
+                  color: "#EA580C",
+                  border: "1px solid #FED7AA",
                   padding: "4px 12px",
                   borderRadius: 999,
-                  fontSize: 11,
+                  fontSize: 10.5,
                   fontWeight: 700,
                   letterSpacing: "0.1em",
                   textTransform: "uppercase",

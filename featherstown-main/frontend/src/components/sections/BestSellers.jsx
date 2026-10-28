@@ -268,28 +268,30 @@ export default function BestSellers() {
                     onClick={() => handleAddToCart(prod)}
                     style={{
                       width: "100%",
-                      background: "#059669",
+                      background: "linear-gradient(135deg, #16A34A 0%, #15803D 100%)",
                       color: "#FFFFFF",
                       border: "none",
-                      padding: "10px 12px",
+                      padding: "9px 12px",
                       borderRadius: 999,
-                      fontSize: "clamp(12px, 1.8vw, 13px)",
-                      fontWeight: 800,
+                      fontSize: "clamp(11.5px, 1.7vw, 12.5px)",
+                      fontWeight: 700,
                       cursor: "pointer",
                       display: "flex",
                       alignItems: "center",
                       justifyContent: "center",
-                      gap: 6,
-                      boxShadow: "0 3px 12px rgba(5, 150, 105, 0.25)",
-                      transition: "transform 0.18s, background 0.18s",
+                      gap: 5,
+                      boxShadow: "0 3px 12px rgba(22, 163, 74, 0.25)",
+                      transition: "transform 0.18s, box-shadow 0.18s, background 0.18s",
                     }}
                     onMouseEnter={(e) => {
                       e.currentTarget.style.transform = "translateY(-1px)";
-                      e.currentTarget.style.background = "#047857";
+                      e.currentTarget.style.background = "linear-gradient(135deg, #F97316 0%, #EA580C 100%)";
+                      e.currentTarget.style.boxShadow = "0 6px 16px rgba(234, 88, 12, 0.35)";
                     }}
                     onMouseLeave={(e) => {
                       e.currentTarget.style.transform = "none";
-                      e.currentTarget.style.background = "#059669";
+                      e.currentTarget.style.background = "linear-gradient(135deg, #16A34A 0%, #15803D 100%)";
+                      e.currentTarget.style.boxShadow = "0 3px 12px rgba(22, 163, 74, 0.25)";
                     }}
                   >
                     <span>🛒</span>

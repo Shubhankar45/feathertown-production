@@ -242,7 +242,7 @@ export default function ModernHero() {
         }
       `}</style>
 
-      {/* ── Ambient Radial Glows (Exact Mint/Emerald theme) ── */}
+      {/* ── Ambient Radial Glows (Green & Orange Theme) ── */}
       <div style={{ position: "absolute", inset: 0, pointerEvents: "none", zIndex: 0, overflow: "hidden" }}>
         {/* Emerald Aura Center-Right */}
         <div
@@ -253,12 +253,12 @@ export default function ModernHero() {
             height: "clamp(400px, 50vw, 750px)",
             top: "-10%",
             right: "5%",
-            background: "radial-gradient(circle, rgba(16, 185, 129, 0.22) 0%, transparent 68%)",
+            background: "radial-gradient(circle, rgba(22, 163, 74, 0.18) 0%, transparent 68%)",
             borderRadius: "50%",
             filter: "blur(60px)",
           }}
         />
-        {/* Subtle Ambient Glow Bottom-Left */}
+        {/* Warm Sunset Orange Aura Top-Left */}
         <div
           style={{
             position: "absolute",
@@ -266,7 +266,7 @@ export default function ModernHero() {
             height: "clamp(300px, 35vw, 500px)",
             bottom: "0%",
             left: "-5%",
-            background: "radial-gradient(circle, rgba(16, 185, 129, 0.12) 0%, transparent 70%)",
+            background: "radial-gradient(circle, rgba(249, 115, 22, 0.14) 0%, transparent 70%)",
             borderRadius: "50%",
             filter: "blur(50px)",
           }}
@@ -282,7 +282,7 @@ export default function ModernHero() {
           zIndex: 2,
         }}
       >
-        {/* ── 2-Column Hero Showcase (Matches Reference Layout) ── */}
+        {/* ── 2-Column Hero Showcase ── */}
         <div
           style={{
             display: "grid",
@@ -300,47 +300,47 @@ export default function ModernHero() {
               style={{
                 display: "inline-flex",
                 alignItems: "center",
-                gap: 8,
-                background: "#ECFDF5",
-                border: "1px solid #A7F3D0",
-                padding: "6px 16px",
+                gap: 7,
+                background: "#FFF7ED",
+                border: "1px solid #FED7AA",
+                padding: "5px 14px",
                 borderRadius: 999,
-                fontSize: 12,
+                fontSize: 11,
                 fontWeight: 700,
-                color: "#059669",
-                letterSpacing: 1.2,
+                color: "#EA580C",
+                letterSpacing: 1.1,
                 textTransform: "uppercase",
                 width: "fit-content",
-                marginBottom: 20,
+                marginBottom: 16,
               }}
             >
               <span>🦜</span>
               <span>Ethical Aviary &amp; Bird Marketplace</span>
             </div>
 
-            {/* Giant Headline: "FeatherTown Helps you to know about Birds" */}
+            {/* Headline */}
             <h1
               style={{
-                fontSize: "clamp(36px, 5.2vw, 66px)",
+                fontSize: "clamp(30px, 4.4vw, 54px)",
                 fontWeight: 800,
-                lineHeight: 1.08,
+                lineHeight: 1.1,
                 letterSpacing: "-0.025em",
                 color: "#0F172A",
-                margin: "0 0 24px 0",
+                margin: "0 0 20px 0",
               }}
             >
-              <span style={{ color: "#059669" }}>FeatherTown</span> Helps you <br />
+              <span style={{ color: "#16A34A" }}>Feather</span><span style={{ color: "#EA580C" }}>Town</span> Helps you <br />
               to know &amp; adopt <br />
-              <span style={{ color: "#059669" }}>Birds</span>
+              <span style={{ color: "#16A34A" }}>Birds</span>
             </h1>
 
-            {/* Green Angled Card */}
+            {/* Green Card with Orange Button */}
             <div
               style={{
-                background: "linear-gradient(135deg, #10B981 0%, #059669 100%)",
-                borderRadius: 24,
-                padding: "clamp(20px, 3vw, 28px)",
-                boxShadow: "0 16px 36px rgba(16, 185, 129, 0.22)",
+                background: "linear-gradient(135deg, #15803D 0%, #16A34A 100%)",
+                borderRadius: 22,
+                padding: "clamp(18px, 2.8vw, 24px)",
+                boxShadow: "0 14px 32px rgba(22, 163, 74, 0.22)",
                 maxWidth: 460,
                 position: "relative",
                 overflow: "hidden",
@@ -362,44 +362,44 @@ export default function ModernHero() {
 
               <p
                 style={{
-                  fontSize: 14.5,
-                  lineHeight: 1.6,
+                  fontSize: 13.5,
+                  lineHeight: 1.55,
                   color: "#FFFFFF",
-                  margin: "0 0 18px 0",
+                  margin: "0 0 16px 0",
                   fontWeight: 500,
                 }}
               >
                 Get to know all kinds of healthy hand-tamed companion birds with FeatherTown and be part of our community of bird lovers, verified breeders, and dedicated pet parents.
               </p>
 
-              <div style={{ display: "flex", alignItems: "center", gap: 12, flexWrap: "wrap" }}>
+              <div style={{ display: "flex", alignItems: "center", gap: 10, flexWrap: "wrap" }}>
                 <Link
                   to="/birds"
                   style={{
-                    background: "#0F172A",
+                    background: "linear-gradient(135deg, #F97316 0%, #EA580C 100%)",
                     color: "#FFFFFF",
-                    padding: "11px 24px",
+                    padding: "10px 22px",
                     borderRadius: 999,
-                    fontSize: 13.5,
+                    fontSize: 13,
                     fontWeight: 700,
                     textDecoration: "none",
                     display: "inline-flex",
                     alignItems: "center",
-                    gap: 8,
-                    boxShadow: "0 4px 14px rgba(15, 23, 42, 0.15)",
-                    transition: "transform 0.2s, background 0.2s",
+                    gap: 7,
+                    boxShadow: "0 4px 14px rgba(234, 88, 12, 0.4)",
+                    transition: "transform 0.2s, box-shadow 0.2s",
                   }}
                   onMouseEnter={(e) => {
                     e.currentTarget.style.transform = "translateY(-2px)";
-                    e.currentTarget.style.background = "#1E293B";
+                    e.currentTarget.style.boxShadow = "0 8px 20px rgba(234, 88, 12, 0.55)";
                   }}
                   onMouseLeave={(e) => {
                     e.currentTarget.style.transform = "translateY(0)";
-                    e.currentTarget.style.background = "#0F172A";
+                    e.currentTarget.style.boxShadow = "0 4px 14px rgba(234, 88, 12, 0.4)";
                   }}
                 >
                   <span>Explore Birds</span>
-                  <span style={{ color: "#34D399", fontSize: 16 }}>→</span>
+                  <span style={{ color: "#FEF3C7", fontSize: 15 }}>→</span>
                 </Link>
 
                 <a
@@ -413,9 +413,9 @@ export default function ModernHero() {
                     backdropFilter: "blur(8px)",
                     border: "1px solid rgba(255, 255, 255, 0.3)",
                     color: "#FFFFFF",
-                    padding: "10px 20px",
+                    padding: "9px 18px",
                     borderRadius: 999,
-                    fontSize: 13.5,
+                    fontSize: 12.5,
                     fontWeight: 700,
                     textDecoration: "none",
                     display: "inline-flex",
@@ -489,24 +489,25 @@ export default function ModernHero() {
               >
                 <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 6 }}>
                   <div>
-                    <h3 style={{ fontSize: 17, fontWeight: 800, color: "#0F172A", margin: "0 0 2px 0" }}>
+                    <h3 style={{ fontSize: 16, fontWeight: 800, color: "#0F172A", margin: "0 0 2px 0" }}>
                       {activeBird.name}
                     </h3>
-                    <span style={{ fontSize: 11, color: "#059669", fontWeight: 700, fontStyle: "italic" }}>
+                    <span style={{ fontSize: 10.5, color: "#15803D", fontWeight: 700, fontStyle: "italic" }}>
                       {activeBird.species}
                     </span>
                   </div>
                   <div style={{ textAlign: "right" }}>
-                    <div style={{ fontSize: 16, fontWeight: 900, color: "#059669" }}>
+                    <div style={{ fontSize: 15, fontWeight: 900, color: "#16A34A" }}>
                       {activeBird.price}
                     </div>
                     <span
                       style={{
-                        fontSize: 10,
+                        fontSize: 9.5,
                         fontWeight: 800,
-                        color: "#065F46",
-                        background: "#D1FAE5",
-                        padding: "2px 8px",
+                        color: "#C2410C",
+                        background: "#FFEDD5",
+                        border: "1px solid #FED7AA",
+                        padding: "2px 7px",
                         borderRadius: 999,
                       }}
                     >
@@ -517,7 +518,7 @@ export default function ModernHero() {
 
                 <p
                   style={{
-                    fontSize: 12.5,
+                    fontSize: 12,
                     color: "#475569",
                     lineHeight: 1.5,
                     margin: "0 0 12px 0",
@@ -580,7 +581,7 @@ export default function ModernHero() {
                   style={{
                     height: "100%",
                     width: `${timerProgress}%`,
-                    background: "#10B981",
+                    background: "linear-gradient(90deg, #16A34A, #F97316)",
                     transition: "width 0.08s linear",
                   }}
                 />
@@ -605,7 +606,7 @@ export default function ModernHero() {
                       }}
                       style={{
                         background: isSelected ? "#ECFDF5" : "#F8FAFC",
-                        border: isSelected ? "1.5px solid #10B981" : "1px solid #E2E8F0",
+                        border: isSelected ? "1.5px solid #16A34A" : "1px solid #E2E8F0",
                         borderRadius: 14,
                         padding: "6px 2px",
                         cursor: "pointer",
@@ -624,7 +625,7 @@ export default function ModernHero() {
                           borderRadius: "50%",
                           overflow: "hidden",
                           background: "#F1F5F9",
-                          border: isSelected ? "1.5px solid #10B981" : "1px solid #CBD5E1",
+                          border: isSelected ? "1.5px solid #16A34A" : "1px solid #CBD5E1",
                         }}
                       >
                         <img

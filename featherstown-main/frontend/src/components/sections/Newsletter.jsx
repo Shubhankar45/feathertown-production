@@ -70,37 +70,37 @@ export default function Newsletter() {
       <div
         className="rv-scale"
         style={{
-          background: "linear-gradient(135deg, #F0FDF4 0%, #ECFDF5 50%, #F8FAFC 100%)",
-          borderRadius: 28,
-          padding: "clamp(26px, 4vw, 38px) clamp(20px, 4vw, 38px)",
+          background: "linear-gradient(135deg, #F0FDF4 0%, #FFF7ED 50%, #FFFFFF 100%)",
+          borderRadius: 24,
+          padding: "clamp(24px, 3.5vw, 34px) clamp(18px, 3.5vw, 34px)",
           color: "#0F172A",
           display: "flex",
           alignItems: "center",
           justifyContent: "space-between",
           flexWrap: "wrap",
-          gap: "clamp(18px, 3vw, 28px)",
+          gap: "clamp(16px, 2.5vw, 24px)",
           boxShadow: "0 8px 32px rgba(15, 23, 42, 0.06)",
-          border: "1px solid #A7F3D0",
+          border: "1px solid #FED7AA",
           position: "relative",
           overflow: "hidden",
         }}
       >
         {/* Left Side: Mail icon + Text */}
-        <div style={{ display: "flex", alignItems: "center", gap: 18, maxWidth: 520, zIndex: 2 }}>
+        <div style={{ display: "flex", alignItems: "center", gap: 16, maxWidth: 520, zIndex: 2 }}>
           <div
             className="ft-animate-sway"
             style={{
-              width: 56,
-              height: 56,
+              width: 50,
+              height: 50,
               borderRadius: "50%",
               background: "#FFFFFF",
-              border: "1px solid #A7F3D0",
+              border: "1px solid #FED7AA",
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
-              fontSize: 26,
+              fontSize: 22,
               flexShrink: 0,
-              boxShadow: "0 2px 8px rgba(5, 150, 105, 0.1)",
+              boxShadow: "0 2px 8px rgba(249, 115, 22, 0.12)",
             }}
           >
             ✉️
@@ -108,16 +108,16 @@ export default function Newsletter() {
           <div>
             <h3
               style={{
-                fontSize: "clamp(22px, 2.6vw, 28px)",
+                fontSize: "clamp(20px, 2.4vw, 25px)",
                 fontWeight: 800,
                 lineHeight: 1.2,
                 marginBottom: 4,
                 color: "#0F172A",
               }}
             >
-              Join the <span style={{ color: "#059669" }}>FeatherTown</span> Family
+              Join the <span style={{ color: "#16A34A" }}>Feather</span><span style={{ color: "#EA580C" }}>Town</span> Family
             </h3>
-            <p style={{ fontSize: 14, color: "#475569", margin: 0 }}>
+            <p style={{ fontSize: 13.5, color: "#475569", margin: 0 }}>
               Get expert bird care tips, exclusive discounts &amp; spring hatch alerts!
             </p>
           </div>
@@ -194,16 +194,16 @@ export default function Newsletter() {
                 disabled={loading}
                 className="ft-btn-hover"
                 style={{
-                  background: "#059669",
+                  background: "linear-gradient(135deg, #F97316 0%, #EA580C 100%)",
                   color: "#FFFFFF",
                   border: "none",
                   borderRadius: 999,
-                  padding: "12px 26px",
-                  fontSize: 14,
-                  fontWeight: 800,
+                  padding: "11px 22px",
+                  fontSize: 13,
+                  fontWeight: 700,
                   cursor: "pointer",
                   whiteSpace: "nowrap",
-                  boxShadow: "0 4px 14px rgba(5, 150, 105, 0.25)",
+                  boxShadow: "0 4px 14px rgba(249, 115, 22, 0.35)",
                   flex: "0 0 auto",
                 }}
                 onMouseEnter={(e) => (e.currentTarget.style.background = "#047857")}

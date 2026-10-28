@@ -24,8 +24,8 @@ export default function BreedCard({ parrot }) {
         transition: "transform 0.28s cubic-bezier(.34,1.56,.64,1), box-shadow 0.28s, border-color 0.2s",
       }}
       onMouseEnter={(e) => {
-        e.currentTarget.style.borderColor = "#059669";
-        e.currentTarget.style.boxShadow = "0 10px 30px rgba(5, 150, 105, 0.12)";
+        e.currentTarget.style.borderColor = "#EA580C";
+        e.currentTarget.style.boxShadow = "0 10px 30px rgba(234, 88, 12, 0.1)";
       }}
       onMouseLeave={(e) => {
         e.currentTarget.style.borderColor = "#E2E8F0";
@@ -201,15 +201,15 @@ export default function BreedCard({ parrot }) {
               border: "1.5px solid #CBD5E1",
               color: "#0F172A",
               fontWeight: 700,
-              fontSize: 13,
+              fontSize: 12.5,
               textDecoration: "none",
               background: "#FFFFFF",
               transition: "all 0.2s ease",
             }}
             onMouseEnter={(e) => {
-              e.currentTarget.style.background = "#ECFDF5";
-              e.currentTarget.style.borderColor = "#059669";
-              e.currentTarget.style.color = "#059669";
+              e.currentTarget.style.background = "#FFF7ED";
+              e.currentTarget.style.borderColor = "#EA580C";
+              e.currentTarget.style.color = "#EA580C";
             }}
             onMouseLeave={(e) => {
               e.currentTarget.style.background = "#FFFFFF";
@@ -226,18 +226,18 @@ export default function BreedCard({ parrot }) {
             rel="noreferrer"
             style={{
               textAlign: "center",
-              padding: "10px 14px",
+              padding: "9px 12px",
               borderRadius: 12,
-              background: "linear-gradient(135deg, #10B981, #059669)",
+              background: "linear-gradient(135deg, #16A34A, #15803D)",
               color: "#FFFFFF",
               fontWeight: 700,
-              fontSize: 13,
+              fontSize: 12.5,
               textDecoration: "none",
-              boxShadow: "0 4px 12px rgba(5, 150, 105, 0.25)",
+              boxShadow: "0 4px 12px rgba(22, 163, 74, 0.25)",
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
-              gap: 6,
+              gap: 5,
               transition: "transform 0.2s ease",
             }}
             onMouseEnter={(e) => (e.currentTarget.style.transform = "translateY(-2px)")}

@@ -58,16 +58,16 @@ export default function BirdsShowcase({ parrots, standalone = false }) {
     <>
       <section id="birds" style={{ position: "relative" }}>
         {!standalone && (
-          <div style={{ textAlign: "center", marginBottom: 36 }}>
+          <div style={{ textAlign: "center", marginBottom: 32 }}>
             <span
               style={{
-                fontSize: 11,
+                fontSize: 10.5,
                 fontWeight: 800,
                 letterSpacing: 2,
-                color: "#059669",
+                color: "#EA580C",
                 textTransform: "uppercase",
-                background: "#ECFDF5",
-                border: "1px solid #A7F3D0",
+                background: "#FFF7ED",
+                border: "1px solid #FED7AA",
                 padding: "4px 14px",
                 borderRadius: 999,
                 display: "inline-block",
@@ -78,7 +78,7 @@ export default function BirdsShowcase({ parrots, standalone = false }) {
             </span>
             <h2
               style={{
-                fontSize: "clamp(26px, 4vw, 38px)",
+                fontSize: "clamp(24px, 3.5vw, 34px)",
                 fontWeight: 800,
                 color: "#0F172A",
                 lineHeight: 1.2,
@@ -86,7 +86,7 @@ export default function BirdsShowcase({ parrots, standalone = false }) {
             >
               Popular Companion Parrots
             </h2>
-            <p style={{ color: "#64748B", fontSize: 14, marginTop: 6 }}>
+            <p style={{ color: "#64748B", fontSize: 13.5, marginTop: 6 }}>
               Select up to 3 birds to compare traits or chat with our aviary specialists.
             </p>
           </div>

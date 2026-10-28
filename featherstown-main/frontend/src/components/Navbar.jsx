@@ -116,7 +116,7 @@ export default function Navbar() {
             <div className="ft-announcement-desktop">
               <span>{settings?.announcementText || `🚚 Free shipping on orders over ₹${settings?.freeShippingThreshold || 999}`}</span>
               <span style={{ opacity: 0.4 }}>•</span>
-              <Link to="/#quiz" style={{ color: "#065F46", fontWeight: 700, textDecoration: "none", display: "inline-flex", alignItems: "center", gap: 5 }}>
+              <Link to="/#quiz" style={{ color: "#FEF3C7", fontWeight: 800, textDecoration: "none", display: "inline-flex", alignItems: "center", gap: 5 }}>
                 <span>🎯</span>
                 <span style={{ textDecoration: "underline", textUnderlineOffset: 3 }}>Find Your Bird (60s Quiz)</span>
               </Link>
@@ -126,7 +126,7 @@ export default function Navbar() {
             <div className="ft-announcement-mobile">
               <span>🚚 Free Shipping ₹{settings?.freeShippingThreshold || 999}+</span>
               <span style={{ opacity: 0.4 }}>•</span>
-              <Link to="/#quiz" style={{ color: "#065F46", fontWeight: 700, textDecoration: "none" }}>
+              <Link to="/#quiz" style={{ color: "#FEF3C7", fontWeight: 800, textDecoration: "none" }}>
                 🎯 Bird Quiz
               </Link>
             </div>
@@ -139,7 +139,7 @@ export default function Navbar() {
             width: "100%",
             maxWidth: "100%",
             margin: "0 auto",
-            padding: "10px clamp(12px, 3.5vw, 64px)",
+            padding: "8px clamp(12px, 3.5vw, 64px)",
             display: "flex",
             alignItems: "center",
             justifyContent: "space-between",
@@ -179,7 +179,7 @@ export default function Navbar() {
                 src={logoImg}
                 alt="FeatherTown Logo"
                 style={{
-                  height: "clamp(34px, 4.5vw, 44px)",
+                  height: "clamp(32px, 4.2vw, 42px)",
                   width: "auto",
                   objectFit: "contain",
                   flexShrink: 0,
@@ -189,15 +189,15 @@ export default function Navbar() {
                 <span
                   style={{
                     fontFamily: "Outfit, system-ui, sans-serif",
-                    fontSize: "clamp(20px, 3.2vw, 24px)",
+                    fontSize: "clamp(19px, 3vw, 23px)",
                     fontWeight: 800,
                     lineHeight: 1,
                     letterSpacing: "-0.01em",
                     whiteSpace: "nowrap",
                   }}
                 >
-                  <span style={{ color: "#059669" }}>Feather</span>
-                  <span style={{ color: "#0F172A" }}>Town</span>
+                  <span style={{ color: "#16A34A" }}>Feather</span>
+                  <span style={{ color: "#EA580C" }}>Town</span>
                 </span>
               </div>
             </Link>
@@ -218,25 +218,25 @@ export default function Navbar() {
                 background: "#F8FAFC",
                 border: "1px solid #CBD5E1",
                 borderRadius: 999,
-                padding: "10px 48px 10px 20px",
-                fontSize: 14,
+                padding: "9px 46px 9px 18px",
+                fontSize: 13.5,
                 color: "#0F172A",
                 outline: "none",
                 transition: "border-color 0.2s, background 0.2s",
               }}
-              onFocus={(e) => (e.target.style.borderColor = "#10B981")}
+              onFocus={(e) => (e.target.style.borderColor = "#EA580C")}
               onBlur={(e) => (e.target.style.borderColor = "#CBD5E1")}
             />
             <button
               type="submit"
               style={{
                 position: "absolute",
-                right: 4,
-                top: 4,
-                bottom: 4,
-                width: 36,
-                height: 36,
-                background: "linear-gradient(135deg, #10B981, #059669)",
+                right: 3,
+                top: 3,
+                bottom: 3,
+                width: 34,
+                height: 34,
+                background: "linear-gradient(135deg, #16A34A, #EA580C)",
                 color: "#FFFFFF",
                 border: "none",
                 borderRadius: "50%",
@@ -245,7 +245,7 @@ export default function Navbar() {
                 justifyContent: "center",
                 cursor: "pointer",
                 transition: "transform 0.2s, background 0.2s",
-                boxShadow: "0 2px 6px rgba(16, 185, 129, 0.3)",
+                boxShadow: "0 2px 6px rgba(234, 88, 12, 0.3)",
               }}
               aria-label="Search"
             >
@@ -518,37 +518,37 @@ export default function Navbar() {
                   key={link.path}
                   to={link.path}
                   style={{
-                    padding: "10px 0",
-                    fontSize: 13.5,
+                    padding: "9px 0",
+                    fontSize: 13,
                     fontWeight: isActive ? 700 : link.highlight ? 700 : 500,
-                    color: isActive ? "#059669" : link.highlight ? "#059669" : "#475569",
+                    color: isActive ? "#EA580C" : link.highlight ? "#16A34A" : "#475569",
                     textDecoration: "none",
                     whiteSpace: "nowrap",
-                    borderBottom: isActive ? "2px solid #059669" : "2px solid transparent",
+                    borderBottom: isActive ? "2px solid #EA580C" : "2px solid transparent",
                     transition: "color 0.2s, border-color 0.2s",
                     display: "inline-flex",
                     alignItems: "center",
                     gap: 6,
                   }}
                   onMouseEnter={(e) => {
-                    if (!isActive) e.target.style.color = "#059669";
+                    if (!isActive) e.target.style.color = "#EA580C";
                   }}
                   onMouseLeave={(e) => {
-                    if (!isActive) e.target.style.color = link.highlight ? "#059669" : "#475569";
+                    if (!isActive) e.target.style.color = link.highlight ? "#16A34A" : "#475569";
                   }}
                 >
                   {link.label}
                   {link.badge && (
                     <span
                       style={{
-                        fontSize: 9.5,
+                        fontSize: 9,
                         fontWeight: 800,
-                        background: "linear-gradient(135deg, #10B981, #059669)",
+                        background: "linear-gradient(135deg, #F97316, #EA580C)",
                         color: "#FFFFFF",
                         padding: "2px 7px",
                         borderRadius: 999,
                         letterSpacing: "0.02em",
-                        boxShadow: "0 2px 6px rgba(16, 185, 129, 0.25)",
+                        boxShadow: "0 2px 6px rgba(234, 88, 12, 0.3)",
                       }}
                     >
                       {link.badge}

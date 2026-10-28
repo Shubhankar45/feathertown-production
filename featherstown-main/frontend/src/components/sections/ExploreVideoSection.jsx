@@ -38,50 +38,50 @@ export default function ExploreVideoSection() {
         <div style={{ display: "flex", flexDirection: "column" }}>
           <h2
             style={{
-              fontSize: "clamp(32px, 4.4vw, 52px)",
+              fontSize: "clamp(28px, 3.8vw, 44px)",
               fontWeight: 800,
               lineHeight: 1.12,
               letterSpacing: "-0.02em",
               color: "#0F172A",
-              margin: "0 0 16px 0",
+              margin: "0 0 14px 0",
             }}
           >
             Let's explore <br />
             the existing <br />
-            <span style={{ color: "#059669" }}>Birds</span>
+            <span style={{ color: "#16A34A" }}>Birds</span>
           </h2>
 
           <p
             style={{
-              fontSize: 15,
+              fontSize: 14,
               color: "#475569",
-              lineHeight: 1.65,
-              margin: "0 0 28px 0",
+              lineHeight: 1.6,
+              margin: "0 0 24px 0",
               maxWidth: 460,
             }}
           >
             Take an inside look at how our companion birds are hand-raised in ethical natural free-flight environments with daily social handling and organic nutrition.
           </p>
 
-          <div style={{ display: "flex", gap: 14, flexWrap: "wrap" }}>
+          <div style={{ display: "flex", gap: 12, flexWrap: "wrap" }}>
             <Link
               to="/birds"
               style={{
-                background: "#059669",
+                background: "linear-gradient(135deg, #16A34A 0%, #15803D 100%)",
                 color: "#FFFFFF",
-                padding: "12px 26px",
+                padding: "11px 24px",
                 borderRadius: 999,
-                fontWeight: 800,
-                fontSize: 13.5,
+                fontWeight: 700,
+                fontSize: 13,
                 textDecoration: "none",
                 display: "inline-flex",
                 alignItems: "center",
-                gap: 8,
-                boxShadow: "0 4px 16px rgba(5, 150, 105, 0.25)",
+                gap: 7,
+                boxShadow: "0 4px 14px rgba(22, 163, 74, 0.25)",
               }}
             >
               <span>Browse All Species</span>
-              <span>→</span>
+              <span style={{ color: "#FEF3C7" }}>→</span>
             </Link>
 
             <Link
@@ -90,9 +90,10 @@ export default function ExploreVideoSection() {
                 background: "#FFFFFF",
                 color: "#0F172A",
                 border: "1px solid #CBD5E1",
-                padding: "12px 22px",
+                padding: "11px 20px",
                 borderRadius: 999,
                 fontWeight: 700,
+                fontSize: 13,
                 fontSize: 13.5,
                 textDecoration: "none",
               }}

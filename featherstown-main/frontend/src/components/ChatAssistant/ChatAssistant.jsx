@@ -84,23 +84,23 @@ const css = `
 }
 .chat-input::placeholder{color:var(--ghost);}
 .chat-send-btn{
-  width:34px;height:34px;border-radius:50%;
-  background:linear-gradient(135deg,var(--leaf),var(--leaf2));
+  width:32px;height:32px;border-radius:50%;
+  background:linear-gradient(135deg,var(--leaf),var(--orange));
   border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;
-  flex-shrink:0;color:#fff;font-size:14px;
-  box-shadow:0 3px 10px rgba(22,163,74,.35);
+  flex-shrink:0;color:#fff;font-size:13px;
+  box-shadow:0 3px 10px rgba(249,115,22,.35);
   transition:transform .25s cubic-bezier(.34,1.56,.64,1),box-shadow .2s;
 }
-.chat-send-btn:hover{transform:scale(1.12);box-shadow:0 6px 18px rgba(22,163,74,.45);}
+.chat-send-btn:hover{transform:scale(1.12);box-shadow:0 6px 18px rgba(249,115,22,.45);}
 .chat-send-btn:disabled{opacity:.4;cursor:not-allowed;transform:none!important;}
 .chat-chip{
-  padding:6px 13px;border-radius:999px;font-size:11.5px;font-weight:600;
-  border:1.5px solid rgba(34,197,94,.16);background:rgba(34,197,94,.05);
-  color:var(--leaf);cursor:pointer;font-family:var(--font-b);white-space:nowrap;
+  padding:5px 12px;border-radius:999px;font-size:11px;font-weight:600;
+  border:1.5px solid rgba(249,115,22,.2);background:rgba(249,115,22,.05);
+  color:var(--orange2);cursor:pointer;font-family:var(--font-b);white-space:nowrap;
   transition:border-color .18s,background .18s,transform .22s cubic-bezier(.34,1.56,.64,1);
   flex-shrink:0;
 }
-.chat-chip:hover{border-color:var(--leaf2);background:rgba(34,197,94,.1);transform:translateY(-2px);}
+.chat-chip:hover{border-color:var(--orange);background:rgba(249,115,22,.12);transform:translateY(-2px);}
 `;
 
 let msgId = 0;
@@ -166,14 +166,14 @@ export default function ChatAssistant({ parrots = [] }) {
         aria-label="Open bird advisor chat"
         style={{
           position: "fixed", bottom: "clamp(60px, 8vh, 68px)", right: "clamp(12px, 3vw, 28px)", zIndex: 490,
-          width: 52, height: 52, borderRadius: "50%",
+          width: 50, height: 50, borderRadius: "50%",
           background: open
             ? "linear-gradient(135deg,#e74c3c,#c0392b)"
-            : "linear-gradient(135deg,var(--leaf),var(--leaf2))",
+            : "linear-gradient(135deg,var(--leaf),var(--orange))",
           border: "none", cursor: "pointer",
           display: "flex", alignItems: "center", justifyContent: "center",
-          fontSize: open ? 20 : 24,
-          boxShadow: "0 6px 22px rgba(22,163,74,.38)",
+          fontSize: open ? 19 : 23,
+          boxShadow: "0 6px 22px rgba(249,115,22,.38)",
           animation: open ? "none" : "chatPulse 2.8s ease-out infinite",
           transition: "background .3s, transform .3s cubic-bezier(.34,1.56,.64,1)",
         }}
@@ -185,7 +185,7 @@ export default function ChatAssistant({ parrots = [] }) {
           <span className="ft-animate-badge-pulse" style={{
             position: "absolute", top: -3, right: -3,
             width: 18, height: 18, borderRadius: "50%",
-            background: "#ef4444", color: "#fff",
+            background: "#EA580C", color: "#fff",
             fontSize: 9, fontWeight: 800,
             display: "flex", alignItems: "center", justifyContent: "center",
             border: "2px solid var(--j0)",
@@ -199,7 +199,7 @@ export default function ChatAssistant({ parrots = [] }) {
           position: "fixed", bottom: "clamp(115px, 15vh, 130px)", right: "clamp(12px, 3vw, 28px)", zIndex: 490,
           width: "min(380px, calc(100vw - 24px))",
           background: "#FFFFFF",
-          border: "1px solid #E2E8F0",
+          border: "1px solid #FED7AA",
           borderRadius: 20,
           boxShadow: "0 24px 60px rgba(15, 23, 42, 0.16), 0 4px 16px rgba(15, 23, 42, 0.06)",
           display: "flex", flexDirection: "column",
@@ -210,8 +210,8 @@ export default function ChatAssistant({ parrots = [] }) {
 
           {/* Header */}
           <div style={{
-            background: "linear-gradient(135deg,var(--leaf),var(--leaf2))",
-            padding: "14px 16px",
+            background: "linear-gradient(135deg,var(--leaf),var(--orange))",
+            padding: "13px 15px",
             display: "flex", alignItems: "center", gap: 10,
             flexShrink: 0,
           }}>

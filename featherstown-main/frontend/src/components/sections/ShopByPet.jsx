@@ -38,7 +38,7 @@ export default function ShopByPet() {
       >
         <h2
           style={{
-            fontSize: "clamp(28px, 4vw, 46px)",
+            fontSize: "clamp(25px, 3.4vw, 38px)",
             fontWeight: 800,
             color: "#0F172A",
             lineHeight: 1.15,
@@ -46,9 +46,9 @@ export default function ShopByPet() {
             margin: "0 0 8px 0",
           }}
         >
-          <span style={{ color: "#059669" }}>Bird</span>pedia Information
+          <span style={{ color: "#16A34A" }}>Bird</span><span style={{ color: "#EA580C" }}>pedia</span> Information
         </h2>
-        <p style={{ fontSize: 14.5, color: "#64748B", margin: 0 }}>
+        <p style={{ fontSize: 13.5, color: "#64748B", margin: 0 }}>
           Find detailed information, talking abilities, and care needs for every companion bird species.
         </p>
       </div>

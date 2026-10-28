@@ -113,12 +113,12 @@ export default function AboutBirdSection() {
           {/* Eyebrow */}
           <span
             style={{
-              fontSize: 12,
+              fontSize: 11,
               fontWeight: 800,
               letterSpacing: 2,
-              color: "#059669",
+              color: "#EA580C",
               textTransform: "uppercase",
-              marginBottom: 14,
+              marginBottom: 12,
               display: "inline-block",
             }}
           >
@@ -128,25 +128,25 @@ export default function AboutBirdSection() {
           {/* Headline */}
           <h2
             style={{
-              fontSize: "clamp(32px, 4.4vw, 54px)",
+              fontSize: "clamp(28px, 3.8vw, 46px)",
               fontWeight: 800,
               lineHeight: 1.1,
               letterSpacing: "-0.02em",
               color: "#0F172A",
-              margin: "0 0 18px 0",
+              margin: "0 0 16px 0",
             }}
           >
             Know more <br />
-            types of <span style={{ color: "#059669" }}>Birds</span> <br />
+            types of <span style={{ color: "#16A34A" }}>Birds</span> <br />
             here
           </h2>
 
           <p
             style={{
-              fontSize: 15,
+              fontSize: 14,
               color: "#475569",
-              lineHeight: 1.65,
-              margin: "0 0 28px 0",
+              lineHeight: 1.6,
+              margin: "0 0 24px 0",
               maxWidth: 480,
             }}
           >
@@ -154,34 +154,34 @@ export default function AboutBirdSection() {
           </p>
 
           {/* Learn More Pill Button */}
-          <div style={{ display: "flex", alignItems: "center", gap: 14, flexWrap: "wrap" }}>
+          <div style={{ display: "flex", alignItems: "center", gap: 12, flexWrap: "wrap" }}>
             <Link
               to="/about"
               style={{
-                background: "#059669",
+                background: "linear-gradient(135deg, #16A34A 0%, #15803D 100%)",
                 color: "#FFFFFF",
-                padding: "13px 28px",
+                padding: "11px 26px",
                 borderRadius: 999,
-                fontWeight: 800,
-                fontSize: 14,
+                fontWeight: 700,
+                fontSize: 13,
                 textDecoration: "none",
                 display: "inline-flex",
                 alignItems: "center",
                 gap: 8,
-                boxShadow: "0 6px 20px rgba(5, 150, 105, 0.28)",
-                transition: "transform 0.2s, background 0.2s",
+                boxShadow: "0 4px 16px rgba(22, 163, 74, 0.28)",
+                transition: "transform 0.2s, box-shadow 0.2s",
               }}
               onMouseEnter={(e) => {
                 e.currentTarget.style.transform = "translateY(-2px)";
-                e.currentTarget.style.background = "#047857";
+                e.currentTarget.style.boxShadow = "0 8px 24px rgba(249, 115, 22, 0.35)";
               }}
               onMouseLeave={(e) => {
                 e.currentTarget.style.transform = "translateY(0)";
-                e.currentTarget.style.background = "#059669";
+                e.currentTarget.style.boxShadow = "0 4px 16px rgba(22, 163, 74, 0.28)";
               }}
             >
               <span>Learn More</span>
-              <span style={{ fontSize: 16 }}>→</span>
+              <span style={{ fontSize: 15, color: "#FEF3C7" }}>→</span>
             </Link>
 
             <Link

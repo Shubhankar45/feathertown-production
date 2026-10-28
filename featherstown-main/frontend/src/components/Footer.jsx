@@ -71,23 +71,23 @@ export default function Footer() {
               <div>
                 <span
                   style={{
-                    fontFamily: "Cormorant Garamond, serif",
-                    fontSize: 24,
-                    fontWeight: 700,
-                    color: "#0F172A",
+                    fontFamily: "Outfit, system-ui, sans-serif",
+                    fontSize: 22,
+                    fontWeight: 800,
+                    color: "#16A34A",
                     display: "block",
                     lineHeight: 1,
                   }}
                 >
-                  Feather<span style={{ color: "#D97706" }}>Town</span>
+                  Feather<span style={{ color: "#EA580C" }}>Town</span>
                 </span>
                 <span
                   style={{
-                    fontSize: 10.5,
+                    fontSize: 9.5,
                     fontWeight: 700,
                     letterSpacing: 1.2,
                     textTransform: "uppercase",
-                    color: "#059669",
+                    color: "#15803D",
                   }}
                 >
                   Small Pets, Big Love
@@ -97,8 +97,8 @@ export default function Footer() {
 
             <p
               style={{
-                fontSize: 13.5,
-                lineHeight: 1.7,
+                fontSize: 13,
+                lineHeight: 1.65,
                 color: "#475569",
                 marginBottom: 20,
                 maxWidth: 280,
