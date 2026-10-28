@@ -1,0 +1,35 @@
+# Git & Editor
+.git
+.gitignore
+.vscode
+.idea
+
+# Documentation & Markdown
+*.md
+!README.md
+
+# Node
+**/node_modules/
+**/dist/
+**/npm-debug.log*
+
+# Python
+**/__pycache__/
+**/*.py[cod]
+**/.venv/
+**/venv/
+**/.pytest_cache/
+
+# Local environment & secrets
+**/.env
+**/.env.local
+**/.env.*.local
+!**/.env.example
+
+# Test & Scratch scripts
+scratch/
+**/scratch/
+
+# OS files
+.DS_Store
+Thumbs.db
