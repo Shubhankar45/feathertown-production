@@ -18,7 +18,11 @@ db_name = parsed.path.lstrip("/").split("?")[0] if parsed.path else ""
 if not db_name:
     db_name = "feathertown"
 
-client = motor.motor_asyncio.AsyncIOMotorClient(MONGO_URI)
+client = motor.motor_asyncio.AsyncIOMotorClient(
+    MONGO_URI,
+    serverSelectionTimeoutMS=5000,
+    connectTimeoutMS=5000,
+)
 db = client[db_name]
 
 # Collection references

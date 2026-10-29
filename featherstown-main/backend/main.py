@@ -74,18 +74,6 @@ app = FastAPI(
 # ───────── SECURITY HEADERS & RATE LIMITING MIDDLEWARE ─────────
 @app.middleware("http")
 async def security_and_https_middleware(request: Request, call_next):
-    # Only force HTTPS if accessing via production domain name (not raw IP) and proto is http
-    host = request.headers.get("host", "").split(":")[0]
-    is_domain = not any(c.isdigit() for c in host.split(".")[-1:]) and host not in ("localhost", "127.0.0.1")
-    
-    # If on production custom domain and forwarded proto is http, redirect to https
-    proto = request.headers.get("x-forwarded-proto", "")
-    if IS_PROD and is_domain and proto and proto.lower() == "http":
-        return Response(
-            status_code=status.HTTP_301_MOVED_PERMANENTLY,
-            headers={"Location": f"https://{request.headers.get('host')}{request.url.path}"},
-        )
-
     # General API rate limiting for /api routes
     path = request.url.path
     if path.startswith("/api") and path not in ("/api/health", "/api/config", "/api/log-error"):
@@ -100,7 +88,8 @@ async def security_and_https_middleware(request: Request, call_next):
     response.headers["X-Content-Type-Options"] = "nosniff"
     response.headers["X-Frame-Options"] = "SAMEORIGIN"
     response.headers["Cross-Origin-Resource-Policy"] = "cross-origin"
-    # Only set HSTS when connection is actually HTTPS to avoid locking out HTTP during setup
+
+    proto = request.headers.get("x-forwarded-proto", "")
     if IS_PROD and proto.lower() == "https":
         response.headers["Strict-Transport-Security"] = "max-age=31536000; includeSubDomains; preload"
 
