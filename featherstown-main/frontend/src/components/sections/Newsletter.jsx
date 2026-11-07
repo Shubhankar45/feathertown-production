@@ -1,12 +1,10 @@
-/* ═══════════════════════════════════════════════════════════════
-   Feathers Town — Newsletter (Dark Minimal)
-   /components/sections/Newsletter.jsx
-═══════════════════════════════════════════════════════════════ */
 import { useState, useCallback, useRef } from "react";
 import { toast } from "../ui/Toast";
 import { isValidEmail, checkBotSubmission } from "../../utils/validation";
 import { trackEvent } from "../../utils/analytics";
 import sunImg from "../../assets/Sun-conure.jfif";
+import Magnet from "../react-bits/Magnet";
+import ShinyText from "../react-bits/ShinyText";
 
 export default function Newsletter() {
   const [email, setEmail] = useState("");
@@ -58,7 +56,7 @@ export default function Newsletter() {
   return (
     <section
       style={{
-        padding: "clamp(48px, 6vw, 72px) clamp(16px, 4vw, 64px) clamp(56px, 7vw, 84px)",
+        padding: "clamp(56px, 7vw, 84px) clamp(16px, 4vw, 64px) clamp(64px, 8vw, 96px)",
         width: "100%",
         maxWidth: "100%",
         margin: "0 auto",
@@ -68,76 +66,84 @@ export default function Newsletter() {
       }}
     >
       <div
-        className="rv-scale"
+        className="t-hover-lift"
         style={{
           background: "linear-gradient(135deg, #F0FDF4 0%, #FFF7ED 50%, #FFFFFF 100%)",
-          borderRadius: 24,
-          padding: "clamp(24px, 3.5vw, 34px) clamp(18px, 3.5vw, 34px)",
+          borderRadius: 28,
+          padding: "clamp(28px, 4vw, 42px) clamp(20px, 4vw, 42px)",
           color: "#0F172A",
           display: "flex",
           alignItems: "center",
           justifyContent: "space-between",
           flexWrap: "wrap",
-          gap: "clamp(16px, 2.5vw, 24px)",
-          boxShadow: "0 8px 32px rgba(15, 23, 42, 0.06)",
+          gap: "clamp(20px, 3vw, 32px)",
+          boxShadow: "0 12px 36px rgba(15, 23, 42, 0.06)",
           border: "1px solid #FED7AA",
           position: "relative",
           overflow: "hidden",
         }}
       >
         {/* Left Side: Mail icon + Text */}
-        <div style={{ display: "flex", alignItems: "center", gap: 16, maxWidth: 520, zIndex: 2 }}>
+        <div style={{ display: "flex", alignItems: "center", gap: 18, maxWidth: 540, zIndex: 2 }}>
           <div
             className="ft-animate-sway"
             style={{
-              width: 50,
-              height: 50,
+              width: 54,
+              height: 54,
               borderRadius: "50%",
               background: "#FFFFFF",
-              border: "1px solid #FED7AA",
+              border: "1.5px solid #FED7AA",
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
-              fontSize: 22,
+              fontSize: 24,
               flexShrink: 0,
-              boxShadow: "0 2px 8px rgba(249, 115, 22, 0.12)",
+              boxShadow: "0 4px 14px rgba(249, 115, 22, 0.15)",
             }}
           >
             ✉️
           </div>
           <div>
+            <div style={{ marginBottom: 4 }}>
+              <ShinyText
+                text="VIP HATCH ALERTS & COMMUNITY"
+                speed={4}
+                style={{ fontSize: 11, fontWeight: 800, letterSpacing: 1.2 }}
+              />
+            </div>
             <h3
               style={{
-                fontSize: "clamp(20px, 2.4vw, 25px)",
-                fontWeight: 800,
-                lineHeight: 1.2,
-                marginBottom: 4,
+                fontSize: "clamp(22px, 2.6vw, 28px)",
+                fontWeight: 900,
+                lineHeight: 1.15,
+                marginBottom: 6,
                 color: "#0F172A",
               }}
             >
-              Join the <span style={{ color: "#16A34A" }}>Feather</span><span style={{ color: "#EA580C" }}>Town</span> Family
+              Join the <span className="text-emerald-600">Feather</span><span className="text-orange-500">Town</span> Family
             </h3>
-            <p style={{ fontSize: 13.5, color: "#475569", margin: 0 }}>
-              Get expert bird care tips, exclusive discounts &amp; spring hatch alerts!
+            <p style={{ fontSize: 14, color: "#475569", margin: 0, lineHeight: 1.5 }}>
+              Receive avian nutritional guides, certified veterinarian care tips &amp; priority clutch adoption alerts.
             </p>
           </div>
         </div>
 
         {/* Center / Right: Form & Bird Avatar */}
-        <div style={{ display: "flex", alignItems: "center", gap: 20, flex: 1, justifyContent: "flex-end", minWidth: "min(100%, 280px)", zIndex: 2 }}>
+        <div style={{ display: "flex", alignItems: "center", gap: 20, flex: 1, justifyContent: "flex-end", minWidth: "min(100%, 300px)", zIndex: 2 }}>
           {done ? (
             <div
               style={{
                 background: "#ECFDF5",
                 border: "1px solid #A7F3D0",
-                padding: "12px 24px",
+                padding: "14px 28px",
                 borderRadius: 999,
-                fontWeight: 700,
+                fontWeight: 800,
                 fontSize: 14,
                 color: "#059669",
                 display: "inline-flex",
                 alignItems: "center",
                 gap: 8,
+                boxShadow: "0 2px 8px rgba(5, 150, 105, 0.1)",
               }}
             >
               <span>🎉</span>
@@ -148,9 +154,9 @@ export default function Newsletter() {
               onSubmit={handleSubscribe}
               style={{
                 display: "flex",
-                gap: 8,
+                gap: 10,
                 width: "100%",
-                maxWidth: 440,
+                maxWidth: 460,
                 position: "relative",
                 flexWrap: "wrap",
               }}
@@ -177,40 +183,31 @@ export default function Newsletter() {
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder="Enter your email address"
                 required
-                style={{
-                  flex: "1 1 200px",
-                  background: "#FFFFFF",
-                  border: "1px solid #CBD5E1",
-                  borderRadius: 999,
-                  padding: "12px 22px",
-                  fontSize: 14,
-                  color: "#0F172A",
-                  outline: "none",
-                  boxShadow: "0 1px 3px rgba(0,0,0,0.05)",
-                }}
+                className="w-full sm:flex-1 px-5 py-3 rounded-full bg-white border border-slate-300 text-slate-800 text-sm focus:border-orange-500 focus:ring-2 focus:ring-orange-100 outline-none shadow-sm transition-all"
               />
-              <button
-                type="submit"
-                disabled={loading}
-                className="ft-btn-hover"
-                style={{
-                  background: "linear-gradient(135deg, #F97316 0%, #EA580C 100%)",
-                  color: "#FFFFFF",
-                  border: "none",
-                  borderRadius: 999,
-                  padding: "11px 22px",
-                  fontSize: 13,
-                  fontWeight: 700,
-                  cursor: "pointer",
-                  whiteSpace: "nowrap",
-                  boxShadow: "0 4px 14px rgba(249, 115, 22, 0.35)",
-                  flex: "0 0 auto",
-                }}
-                onMouseEnter={(e) => (e.currentTarget.style.background = "#047857")}
-                onMouseLeave={(e) => (e.currentTarget.style.background = "#059669")}
-              >
-                {loading ? "Subscribing…" : "Subscribe"}
-              </button>
+
+              <Magnet padding={30} magnetStrength={3}>
+                <button
+                  type="submit"
+                  disabled={loading}
+                  className="t-btn-press"
+                  style={{
+                    background: "linear-gradient(135deg, #F97316 0%, #EA580C 100%)",
+                    color: "#FFFFFF",
+                    border: "none",
+                    borderRadius: 999,
+                    padding: "12px 26px",
+                    fontSize: 13,
+                    fontWeight: 800,
+                    cursor: "pointer",
+                    whiteSpace: "nowrap",
+                    boxShadow: "0 4px 16px rgba(249, 115, 22, 0.38)",
+                    flex: "0 0 auto",
+                  }}
+                >
+                  {loading ? "Subscribing…" : "Subscribe →"}
+                </button>
+              </Magnet>
             </form>
           )}
 
@@ -218,13 +215,13 @@ export default function Newsletter() {
           <div
             className="hidden sm:block ft-animate-float"
             style={{
-              width: 58,
-              height: 58,
+              width: 62,
+              height: 62,
               borderRadius: "50%",
               overflow: "hidden",
               border: "3px solid #FFFFFF",
               flexShrink: 0,
-              boxShadow: "0 6px 18px rgba(15, 23, 42, 0.12)",
+              boxShadow: "0 8px 20px rgba(15, 23, 42, 0.12)",
             }}
           >
             <img

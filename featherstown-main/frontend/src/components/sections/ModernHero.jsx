@@ -14,6 +14,10 @@
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { useSettings } from "../../context/SettingsContext";
+import ShinyText from "../react-bits/ShinyText";
+import BlurText from "../react-bits/BlurText";
+import Magnet from "../react-bits/Magnet";
+import SpotlightCard from "../react-bits/SpotlightCard";
 
 import perchedHeroImg from "../../assets/hero-perched.jpg";
 import sunImg from "../../assets/Sun-conure.jfif";
@@ -295,53 +299,56 @@ export default function ModernHero() {
               LEFT COLUMN: Bold Headline & Green Card
              ══════════════════════════════════════════ */}
           <div style={{ display: "flex", flexDirection: "column" }}>
-            {/* Tagline / Subtitle Pill */}
+            {/* Tagline / Subtitle Pill with ShinyText */}
             <div
               style={{
                 display: "inline-flex",
                 alignItems: "center",
-                gap: 7,
-                background: "#FFF7ED",
+                gap: 8,
+                background: "rgba(255, 247, 237, 0.95)",
+                backdropFilter: "blur(8px)",
                 border: "1px solid #FED7AA",
-                padding: "5px 14px",
+                padding: "6px 16px",
                 borderRadius: 999,
                 fontSize: 11,
-                fontWeight: 700,
+                fontWeight: 800,
                 color: "#EA580C",
-                letterSpacing: 1.1,
+                letterSpacing: 1.2,
                 textTransform: "uppercase",
                 width: "fit-content",
                 marginBottom: 16,
+                boxShadow: "0 2px 8px rgba(249, 115, 22, 0.08)",
               }}
             >
               <span>🦜</span>
-              <span>Ethical Aviary &amp; Bird Marketplace</span>
+              <ShinyText text="Ethical Aviary & Certified Marketplace" speed={3.5} />
             </div>
 
-            {/* Headline */}
+            {/* Headline with Clean Typography & Staggered Reveal */}
             <h1
               style={{
-                fontSize: "clamp(30px, 4.4vw, 54px)",
-                fontWeight: 800,
-                lineHeight: 1.1,
-                letterSpacing: "-0.025em",
+                fontSize: "clamp(32px, 4.5vw, 56px)",
+                fontWeight: 900,
+                lineHeight: 1.08,
+                letterSpacing: "-0.03em",
                 color: "#0F172A",
-                margin: "0 0 20px 0",
+                margin: "0 0 22px 0",
               }}
             >
-              <span style={{ color: "#16A34A" }}>Feather</span><span style={{ color: "#EA580C" }}>Town</span> Helps you <br />
+              <span className="text-emerald-600">Feather</span><span className="text-orange-500">Town</span> Helps you <br />
               to know &amp; adopt <br />
-              <span style={{ color: "#16A34A" }}>Birds</span>
+              <span className="bg-gradient-to-r from-emerald-600 to-orange-500 bg-clip-text text-transparent">Healthy Birds</span>
             </h1>
 
             {/* Green Card with Orange Button */}
             <div
+              className="t-hover-lift"
               style={{
                 background: "linear-gradient(135deg, #15803D 0%, #16A34A 100%)",
-                borderRadius: 22,
-                padding: "clamp(18px, 2.8vw, 24px)",
-                boxShadow: "0 14px 32px rgba(22, 163, 74, 0.22)",
-                maxWidth: 460,
+                borderRadius: 24,
+                padding: "clamp(20px, 3vw, 26px)",
+                boxShadow: "0 18px 36px rgba(22, 163, 74, 0.22)",
+                maxWidth: 480,
                 position: "relative",
                 overflow: "hidden",
               }}
@@ -350,12 +357,12 @@ export default function ModernHero() {
               <div
                 style={{
                   position: "absolute",
-                  top: -40,
-                  right: -40,
-                  width: 140,
-                  height: 140,
+                  top: -50,
+                  right: -50,
+                  width: 160,
+                  height: 160,
                   borderRadius: "50%",
-                  background: "rgba(255, 255, 255, 0.12)",
+                  background: "radial-gradient(circle, rgba(255, 255, 255, 0.18) 0%, transparent 70%)",
                   pointerEvents: "none",
                 }}
               />
@@ -363,72 +370,68 @@ export default function ModernHero() {
               <p
                 style={{
                   fontSize: 13.5,
-                  lineHeight: 1.55,
+                  lineHeight: 1.6,
                   color: "#FFFFFF",
-                  margin: "0 0 16px 0",
+                  margin: "0 0 18px 0",
                   fontWeight: 500,
+                  opacity: 0.95,
                 }}
               >
-                Get to know all kinds of healthy hand-tamed companion birds with FeatherTown and be part of our community of bird lovers, verified breeders, and dedicated pet parents.
+                Get to know certified hand-tamed companion birds with FeatherTown. Connect directly with licensed avian breeders, DNA certification, and lifetime nutritional care.
               </p>
 
               <div style={{ display: "flex", alignItems: "center", gap: 10, flexWrap: "wrap" }}>
-                <Link
-                  to="/birds"
-                  style={{
-                    background: "linear-gradient(135deg, #F97316 0%, #EA580C 100%)",
-                    color: "#FFFFFF",
-                    padding: "10px 22px",
-                    borderRadius: 999,
-                    fontSize: 13,
-                    fontWeight: 700,
-                    textDecoration: "none",
-                    display: "inline-flex",
-                    alignItems: "center",
-                    gap: 7,
-                    boxShadow: "0 4px 14px rgba(234, 88, 12, 0.4)",
-                    transition: "transform 0.2s, box-shadow 0.2s",
-                  }}
-                  onMouseEnter={(e) => {
-                    e.currentTarget.style.transform = "translateY(-2px)";
-                    e.currentTarget.style.boxShadow = "0 8px 20px rgba(234, 88, 12, 0.55)";
-                  }}
-                  onMouseLeave={(e) => {
-                    e.currentTarget.style.transform = "translateY(0)";
-                    e.currentTarget.style.boxShadow = "0 4px 14px rgba(234, 88, 12, 0.4)";
-                  }}
-                >
-                  <span>Explore Birds</span>
-                  <span style={{ color: "#FEF3C7", fontSize: 15 }}>→</span>
-                </Link>
+                <Magnet padding={40} magnetStrength={3}>
+                  <Link
+                    to="/birds"
+                    className="t-btn-press"
+                    style={{
+                      background: "linear-gradient(135deg, #F97316 0%, #EA580C 100%)",
+                      color: "#FFFFFF",
+                      padding: "11px 24px",
+                      borderRadius: 999,
+                      fontSize: 13,
+                      fontWeight: 800,
+                      textDecoration: "none",
+                      display: "inline-flex",
+                      alignItems: "center",
+                      gap: 8,
+                      boxShadow: "0 6px 18px rgba(234, 88, 12, 0.45)",
+                      transition: "box-shadow 0.2s, transform 0.2s",
+                    }}
+                  >
+                    <span>Explore Birds</span>
+                    <span style={{ color: "#FEF3C7", fontSize: 15 }}>→</span>
+                  </Link>
+                </Magnet>
 
-                <a
-                  href={`https://wa.me/${waNum}?text=${encodeURIComponent(
-                    `Hi FeatherTown! I'm interested in adopting a ${activeBird.name} (${activeBird.price}). Could you please share live photos and availability?`
-                  )}`}
-                  target="_blank"
-                  rel="noreferrer"
-                  style={{
-                    background: "rgba(255, 255, 255, 0.18)",
-                    backdropFilter: "blur(8px)",
-                    border: "1px solid rgba(255, 255, 255, 0.3)",
-                    color: "#FFFFFF",
-                    padding: "9px 18px",
-                    borderRadius: 999,
-                    fontSize: 12.5,
-                    fontWeight: 700,
-                    textDecoration: "none",
-                    display: "inline-flex",
-                    alignItems: "center",
-                    gap: 6,
-                    transition: "transform 0.2s",
-                  }}
-                  onMouseEnter={(e) => (e.currentTarget.style.transform = "translateY(-2px)")}
-                  onMouseLeave={(e) => (e.currentTarget.style.transform = "translateY(0)")}
-                >
-                  <span>💬</span>
-                  <span>WhatsApp Breeder</span>
-                </a>
+                <Magnet padding={30} magnetStrength={4}>
+                  <a
+                    href={`https://wa.me/${waNum}?text=${encodeURIComponent(
+                      `Hi FeatherTown! I'm interested in adopting a ${activeBird.name} (${activeBird.price}). Could you please share live photos and availability?`
+                    )}`}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="t-btn-press"
+                    style={{
+                      background: "rgba(255, 255, 255, 0.2)",
+                      backdropFilter: "blur(10px)",
+                      border: "1px solid rgba(255, 255, 255, 0.35)",
+                      color: "#FFFFFF",
+                      padding: "10px 20px",
+                      borderRadius: 999,
+                      fontSize: 12.5,
+                      fontWeight: 700,
+                      textDecoration: "none",
+                      display: "inline-flex",
+                      alignItems: "center",
+                      gap: 6,
+                    }}
+                  >
+                    <span>💬</span>
+                    <span>WhatsApp Breeder</span>
+                  </a>
+                </Magnet>
               </div>
             </div>
           </div>
@@ -666,71 +669,64 @@ export default function ModernHero() {
           <div
             style={{
               display: "grid",
-              gridTemplateColumns: "repeat(auto-fit, minmax(clamp(140px, 18vw, 200px), 1fr))",
-              gap: 12,
+              gridTemplateColumns: "repeat(auto-fit, minmax(clamp(150px, 18vw, 210px), 1fr))",
+              gap: 14,
             }}
           >
             {STORE_HUBS.map((hub, idx) => (
               <Link
                 key={idx}
                 to={hub.link}
-                className="ft-card-lift"
-                style={{
-                  textDecoration: "none",
-                  background: "#FFFFFF",
-                  borderRadius: 18,
-                  padding: "14px 16px",
-                  display: "flex",
-                  alignItems: "center",
-                  gap: 12,
-                  border: "1px solid #E2E8F0",
-                  boxShadow: "0 2px 6px rgba(15, 23, 42, 0.04)",
-                  transition: "transform 0.25s, border-color 0.2s, background 0.2s, box-shadow 0.2s",
-                }}
-                onMouseEnter={(e) => {
-                  e.currentTarget.style.borderColor = "#10B981";
-                  e.currentTarget.style.background = "#F8FAFC";
-                  e.currentTarget.style.boxShadow = "0 6px 16px rgba(16, 185, 129, 0.12)";
-                }}
-                onMouseLeave={(e) => {
-                  e.currentTarget.style.borderColor = "#E2E8F0";
-                  e.currentTarget.style.background = "#FFFFFF";
-                  e.currentTarget.style.boxShadow = "0 2px 6px rgba(15, 23, 42, 0.04)";
-                }}
+                style={{ textDecoration: "none" }}
               >
-                <div
+                <SpotlightCard
+                  spotlightColor="rgba(22, 163, 74, 0.15)"
+                  borderColor="#E2E8F0"
+                  className="t-hover-lift"
                   style={{
-                    width: 38,
-                    height: 38,
-                    borderRadius: "50%",
-                    background: "#ECFDF5",
-                    border: "1px solid #A7F3D0",
+                    borderRadius: 20,
+                    padding: "16px 18px",
                     display: "flex",
                     alignItems: "center",
-                    justifyContent: "center",
-                    fontSize: 18,
-                    flexShrink: 0,
+                    gap: 14,
+                    boxShadow: "0 2px 8px rgba(15, 23, 42, 0.04)",
                   }}
                 >
-                  {hub.icon}
-                </div>
-                <div style={{ minWidth: 0 }}>
                   <div
                     style={{
-                      fontSize: 13,
-                      fontWeight: 700,
-                      color: "#0F172A",
-                      whiteSpace: "nowrap",
-                      overflow: "hidden",
-                      textOverflow: "ellipsis",
+                      width: 42,
+                      height: 42,
+                      borderRadius: 14,
+                      background: "linear-gradient(135deg, #ECFDF5 0%, #DCFCE7 100%)",
+                      border: "1px solid #A7F3D0",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      fontSize: 20,
+                      flexShrink: 0,
+                      boxShadow: "0 2px 6px rgba(22, 163, 74, 0.1)",
                     }}
                   >
-                    {hub.title}
+                    {hub.icon}
                   </div>
-                  <div style={{ fontSize: 11, color: "#059669", fontWeight: 600, marginTop: 2 }}>
-                    {hub.count}
+                  <div style={{ minWidth: 0 }}>
+                    <div
+                      style={{
+                        fontSize: 13.5,
+                        fontWeight: 800,
+                        color: "#0F172A",
+                        whiteSpace: "nowrap",
+                        overflow: "hidden",
+                        textOverflow: "ellipsis",
+                      }}
+                    >
+                      {hub.title}
+                    </div>
+                    <div style={{ fontSize: 11.5, color: "#16A34A", fontWeight: 700, marginTop: 2 }}>
+                      {hub.count}
+                    </div>
                   </div>
-                </div>
+                </SpotlightCard>
               </Link>
             ))}
           </div>

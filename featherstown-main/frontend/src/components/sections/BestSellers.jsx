@@ -1,12 +1,9 @@
-/* ═══════════════════════════════════════════════════════════════
-   Feathers Town — Best Sellers (Dark Minimal)
-   /components/sections/BestSellers.jsx
-═══════════════════════════════════════════════════════════════ */
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { useCart } from "../../context/CartContext";
 import { toast } from "../ui/Toast";
 import { trackAddToCart } from "../../utils/analytics";
+import SpotlightCard from "../react-bits/SpotlightCard";
 
 export default function BestSellers() {
   const { addItem } = useCart();
@@ -22,7 +19,7 @@ export default function BestSellers() {
             ...item,
             id: item._id,
             badge: item.badge || (item.isBestSeller ? "Bestseller" : idx === 0 ? "Popular" : idx === 1 ? "Top Rated" : "In Stock"),
-            badgeColor: item.badge?.toLowerCase().includes("top") ? "#E11D48" : idx % 2 === 0 ? "#EA580C" : "#10B981",
+            badgeColor: item.badge?.toLowerCase().includes("top") ? "#EA580C" : idx % 2 === 0 ? "#16A34A" : "#F97316",
             rating: item.rating || 4.9,
             reviewsCount: item.reviewsCount || (250 + idx * 85),
             image: item.images?.[0] || "https://images.unsplash.com/photo-1548767797-d8c844163c4c?w=500&auto=format&fit=crop&q=80",
@@ -43,7 +40,7 @@ export default function BestSellers() {
   return (
     <section
       style={{
-        padding: "clamp(48px, 6vw, 80px) clamp(16px, 4vw, 64px)",
+        padding: "clamp(56px, 7vw, 96px) clamp(16px, 4vw, 64px)",
         width: "100%",
         maxWidth: "100%",
         margin: "0 auto",
@@ -57,47 +54,67 @@ export default function BestSellers() {
           display: "flex",
           justifyContent: "space-between",
           alignItems: "flex-end",
-          marginBottom: 32,
+          marginBottom: 36,
           flexWrap: "wrap",
           gap: 12,
         }}
       >
         <div>
+          <div
+            style={{
+              display: "inline-flex",
+              alignItems: "center",
+              gap: 6,
+              background: "#FFF7ED",
+              border: "1px solid #FED7AA",
+              padding: "4px 12px",
+              borderRadius: 999,
+              fontSize: 11,
+              fontWeight: 800,
+              letterSpacing: 1.2,
+              color: "#EA580C",
+              textTransform: "uppercase",
+              marginBottom: 10,
+            }}
+          >
+            <span>PET PARENT FAVORITES</span>
+          </div>
           <h2
             style={{
-              fontSize: "clamp(26px, 3.5vw, 38px)",
-              fontWeight: 800,
+              fontSize: "clamp(26px, 3.6vw, 40px)",
+              fontWeight: 900,
               color: "#0F172A",
               lineHeight: 1.15,
               margin: "0 0 6px 0",
-              letterSpacing: "-0.01em",
+              letterSpacing: "-0.02em",
             }}
           >
-            <span style={{ color: "#059669" }}>Best</span> Sellers
+            <span className="text-emerald-600">Best</span> Sellers &amp; Essentials
           </h2>
-          <p style={{ fontSize: 14.5, color: "#64748B", margin: 0 }}>
-            Most-loved essentials chosen by 5,000+ satisfied bird parents across India.
+          <p style={{ fontSize: 14, color: "#64748B", margin: 0 }}>
+            Most-loved nutrition, spacious habitats, and enrichment chosen by 5,000+ satisfied bird parents.
           </p>
         </div>
 
         <Link
           to="/accessories"
-          className="ft-btn-hover"
+          className="t-btn-press"
           style={{
             fontSize: 13,
-            fontWeight: 700,
-            color: "#059669",
+            fontWeight: 800,
+            color: "#16A34A",
             textDecoration: "none",
             display: "inline-flex",
             alignItems: "center",
             gap: 6,
-            padding: "8px 18px",
+            padding: "9px 20px",
             borderRadius: 999,
             background: "#ECFDF5",
             border: "1px solid #A7F3D0",
+            boxShadow: "0 2px 6px rgba(22, 163, 74, 0.08)",
           }}
         >
-          View all accessories ›
+          View all essentials ›
         </Link>
       </div>
 
@@ -105,8 +122,8 @@ export default function BestSellers() {
         <div
           style={{
             display: "grid",
-            gridTemplateColumns: "repeat(auto-fill, minmax(clamp(150px, 44vw, 240px), 1fr))",
-            gap: "clamp(12px, 2vw, 20px)",
+            gridTemplateColumns: "repeat(auto-fill, minmax(clamp(160px, 44vw, 250px), 1fr))",
+            gap: "clamp(14px, 2vw, 22px)",
           }}
         >
           {[1, 2, 3, 4, 5, 6].map((i) => (
@@ -114,19 +131,19 @@ export default function BestSellers() {
               key={i}
               style={{
                 background: "#FFFFFF",
-                borderRadius: 22,
+                borderRadius: 24,
                 border: "1px solid #E2E8F0",
                 overflow: "hidden",
-                height: 320,
+                height: 330,
                 display: "flex",
                 flexDirection: "column",
               }}
             >
-              <div className="ft-shimmer" style={{ height: 160, width: "100%", background: "#F1F5F9" }} />
-              <div style={{ padding: 14, flex: 1, display: "flex", flexDirection: "column", gap: 10 }}>
+              <div className="ft-shimmer" style={{ height: 170, width: "100%", background: "#F1F5F9" }} />
+              <div style={{ padding: 16, flex: 1, display: "flex", flexDirection: "column", gap: 10 }}>
                 <div className="ft-shimmer" style={{ height: 16, width: "75%", borderRadius: 6, background: "#F1F5F9" }} />
                 <div className="ft-shimmer" style={{ height: 14, width: "40%", borderRadius: 6, background: "#F1F5F9" }} />
-                <div className="ft-shimmer" style={{ height: 36, width: "100%", borderRadius: 10, marginTop: "auto", background: "#F1F5F9" }} />
+                <div className="ft-shimmer" style={{ height: 38, width: "100%", borderRadius: 12, marginTop: "auto", background: "#F1F5F9" }} />
               </div>
             </div>
           ))}
@@ -135,32 +152,19 @@ export default function BestSellers() {
         <div
           style={{
             display: "grid",
-            gridTemplateColumns: "repeat(auto-fill, minmax(clamp(150px, 44vw, 240px), 1fr))",
-            gap: "clamp(12px, 2vw, 20px)",
+            gridTemplateColumns: "repeat(auto-fill, minmax(clamp(160px, 44vw, 250px), 1fr))",
+            gap: "clamp(14px, 2vw, 22px)",
           }}
         >
           {items.map((prod) => (
-            <div
+            <SpotlightCard
               key={prod.id || prod._id}
-              className="ft-card-lift"
+              spotlightColor="rgba(249, 115, 22, 0.12)"
+              borderColor="#E2E8F0"
+              className="t-hover-lift group flex flex-col h-full"
               style={{
-                background: "#FFFFFF",
-                borderRadius: 22,
-                border: "1px solid #E2E8F0",
-                overflow: "hidden",
-                display: "flex",
-                flexDirection: "column",
-                boxShadow: "0 2px 8px rgba(15, 23, 42, 0.04)",
-                position: "relative",
-                transition: "transform 0.28s cubic-bezier(.34,1.56,.64,1), border-color 0.25s, box-shadow 0.28s",
-              }}
-              onMouseEnter={(e) => {
-                e.currentTarget.style.borderColor = "#059669";
-                e.currentTarget.style.boxShadow = "0 10px 24px rgba(5, 150, 105, 0.12)";
-              }}
-              onMouseLeave={(e) => {
-                e.currentTarget.style.borderColor = "#E2E8F0";
-                e.currentTarget.style.boxShadow = "0 2px 8px rgba(15, 23, 42, 0.04)";
+                borderRadius: 24,
+                boxShadow: "0 4px 18px rgba(15, 23, 42, 0.04)",
               }}
             >
               {/* Badge Overlay */}
@@ -170,15 +174,15 @@ export default function BestSellers() {
                     position: "absolute",
                     top: 12,
                     left: 12,
-                    zIndex: 2,
-                    background: prod.badgeColor || "#059669",
+                    zIndex: 20,
+                    background: prod.badgeColor || "#16A34A",
                     color: "#FFFFFF",
                     fontSize: 10.5,
                     fontWeight: 800,
                     letterSpacing: 0.5,
                     padding: "3px 10px",
                     borderRadius: 999,
-                    boxShadow: "0 2px 6px rgba(0,0,0,0.15)",
+                    boxShadow: "0 2px 6px rgba(0,0,0,0.12)",
                   }}
                 >
                   {prod.badge}
@@ -187,119 +191,89 @@ export default function BestSellers() {
 
               {/* Product Image */}
               <Link
-                to={prod.slug ? `/accessories/${prod.slug}` : "/accessories"}
+                to={`/accessories/${prod.id || prod._id}`}
+                className="t-img-zoom block relative"
                 style={{
-                  display: "block",
-                  aspectRatio: "1/1",
+                  height: 180,
                   background: "#F8FAFC",
                   overflow: "hidden",
-                  position: "relative",
-                  borderBottom: "1px solid #E2E8F0",
+                  textDecoration: "none",
                 }}
               >
                 <img
                   src={prod.image}
                   alt={prod.name}
                   loading="lazy"
-                  decoding="async"
-                  style={{
-                    width: "100%",
-                    height: "100%",
-                    objectFit: "cover",
-                    transition: "transform 0.4s ease",
-                  }}
-                  onMouseEnter={(e) => (e.currentTarget.style.transform = "scale(1.06)")}
-                  onMouseLeave={(e) => (e.currentTarget.style.transform = "scale(1)")}
+                  className="w-full h-full object-cover transition-transform duration-500 ease-out group-hover:scale-108"
                 />
               </Link>
 
-              {/* Details */}
-              <div style={{ padding: "clamp(14px, 2.5vw, 18px)", display: "flex", flexDirection: "column", flex: 1 }}>
-                <span
-                  style={{
-                    fontSize: 11,
-                    fontWeight: 700,
-                    textTransform: "uppercase",
-                    color: "#059669",
-                    letterSpacing: 0.8,
-                    marginBottom: 4,
-                  }}
-                >
-                  {prod.category}
-                </span>
+              {/* Product Info */}
+              <div style={{ padding: "16px 18px", display: "flex", flexDirection: "column", flex: 1, zIndex: 10 }}>
+                {/* Rating */}
+                <div style={{ display: "flex", alignItems: "center", gap: 5, marginBottom: 6 }}>
+                  <span style={{ color: "#F59E0B", fontSize: 13 }}>★</span>
+                  <span style={{ fontSize: 12, fontWeight: 800, color: "#0F172A" }}>{prod.rating}</span>
+                  <span style={{ fontSize: 11, color: "#94A3B8" }}>({prod.reviewsCount})</span>
+                </div>
 
+                {/* Title */}
                 <Link
-                  to={prod.slug ? `/accessories/${prod.slug}` : "/accessories"}
+                  to={`/accessories/${prod.id || prod._id}`}
                   style={{
-                    fontSize: "clamp(13.5px, 2vw, 15px)",
-                    fontWeight: 700,
-                    color: "#0F172A",
                     textDecoration: "none",
+                    color: "#0F172A",
+                    fontSize: 14,
+                    fontWeight: 800,
                     lineHeight: 1.35,
-                    marginBottom: 8,
+                    marginBottom: 10,
                     display: "-webkit-box",
                     WebkitLineClamp: 2,
                     WebkitBoxOrient: "vertical",
                     overflow: "hidden",
                   }}
+                  className="group-hover:text-emerald-700 transition-colors"
                 >
                   {prod.name}
                 </Link>
 
-                {/* Price & Rating */}
-                <div style={{ marginTop: "auto", paddingTop: 8 }}>
-                  <div style={{ display: "flex", alignItems: "baseline", gap: 6, marginBottom: 4, flexWrap: "wrap" }}>
-                    <span style={{ fontSize: "clamp(15px, 2.2vw, 18px)", fontWeight: 900, color: "#059669" }}>
-                      ₹{prod.price}
+                {/* Price */}
+                <div style={{ display: "flex", alignItems: "baseline", gap: 8, marginTop: "auto", marginBottom: 14 }}>
+                  <span style={{ fontSize: 17, fontWeight: 900, color: "#16A34A" }}>
+                    ₹{Number(prod.price).toLocaleString()}
+                  </span>
+                  {prod.originalPrice && (
+                    <span style={{ fontSize: 12, color: "#94A3B8", textDecoration: "line-through" }}>
+                      ₹{Number(prod.originalPrice).toLocaleString()}
                     </span>
-                    {prod.mrp && prod.mrp > prod.price && (
-                      <span style={{ fontSize: 12, color: "#94A3B8", textDecoration: "line-through" }}>
-                        ₹{prod.mrp}
-                      </span>
-                    )}
-                  </div>
-
-                  <div style={{ display: "flex", alignItems: "center", gap: 4, fontSize: 11.5, color: "#F59E0B", marginBottom: 12 }}>
-                    <span>★★★★★</span>
-                    <span style={{ color: "#64748B" }}>({prod.reviewsCount || 120})</span>
-                  </div>
-
-                  <button
-                    onClick={() => handleAddToCart(prod)}
-                    style={{
-                      width: "100%",
-                      background: "linear-gradient(135deg, #16A34A 0%, #15803D 100%)",
-                      color: "#FFFFFF",
-                      border: "none",
-                      padding: "9px 12px",
-                      borderRadius: 999,
-                      fontSize: "clamp(11.5px, 1.7vw, 12.5px)",
-                      fontWeight: 700,
-                      cursor: "pointer",
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "center",
-                      gap: 5,
-                      boxShadow: "0 3px 12px rgba(22, 163, 74, 0.25)",
-                      transition: "transform 0.18s, box-shadow 0.18s, background 0.18s",
-                    }}
-                    onMouseEnter={(e) => {
-                      e.currentTarget.style.transform = "translateY(-1px)";
-                      e.currentTarget.style.background = "linear-gradient(135deg, #F97316 0%, #EA580C 100%)";
-                      e.currentTarget.style.boxShadow = "0 6px 16px rgba(234, 88, 12, 0.35)";
-                    }}
-                    onMouseLeave={(e) => {
-                      e.currentTarget.style.transform = "none";
-                      e.currentTarget.style.background = "linear-gradient(135deg, #16A34A 0%, #15803D 100%)";
-                      e.currentTarget.style.boxShadow = "0 3px 12px rgba(22, 163, 74, 0.25)";
-                    }}
-                  >
-                    <span>🛒</span>
-                    <span>Add to Cart</span>
-                  </button>
+                  )}
                 </div>
+
+                {/* Add to Cart Button */}
+                <button
+                  onClick={() => handleAddToCart(prod)}
+                  className="t-btn-press"
+                  style={{
+                    width: "100%",
+                    padding: "10px",
+                    borderRadius: 14,
+                    border: "none",
+                    background: "linear-gradient(135deg, #16A34A, #15803D)",
+                    color: "#FFFFFF",
+                    fontSize: 12.5,
+                    fontWeight: 800,
+                    cursor: "pointer",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    gap: 6,
+                    boxShadow: "0 4px 12px rgba(22, 163, 74, 0.22)",
+                  }}
+                >
+                  <span>🛍️</span> Add to Cart
+                </button>
               </div>
-            </div>
+            </SpotlightCard>
           ))}
         </div>
       )}

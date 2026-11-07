@@ -1,13 +1,11 @@
-/* ═══════════════════════════════════════════════════════════════
-   Feathers Town — Reviews & Testimonials (Dark Minimal)
-   /components/sections/Reviews.jsx
-═══════════════════════════════════════════════════════════════ */
 import { useState, useEffect, useCallback, useRef } from "react";
 import Avatar from "../ui/Avatar";
 import AvatarPicker from "../ui/AvatarPicker";
 import Stars from "../ui/Stars";
 import { toast } from "../ui/Toast";
 import { sanitizeText } from "../../utils/security";
+import SpotlightCard from "../react-bits/SpotlightCard";
+import Magnet from "../react-bits/Magnet";
 
 export default function Reviews({ standalone = false }) {
   const [reviews, setReviews] = useState([]);
@@ -73,7 +71,7 @@ export default function Reviews({ standalone = false }) {
     } finally {
       setRL(false);
     }
-  }, [reviewName, reviewComment, rating, honeypot]);
+  }, [reviewName, reviewComment, rating, reviewAvatar, honeypot]);
 
   const displayedReviews = standalone ? reviews : reviews.slice(0, 4);
 
@@ -81,7 +79,7 @@ export default function Reviews({ standalone = false }) {
     <section
       id="reviews"
       style={{
-        padding: "clamp(48px, 6vw, 80px) clamp(16px, 4vw, 64px)",
+        padding: "clamp(56px, 7vw, 96px) clamp(16px, 4vw, 64px)",
         width: "100%",
         maxWidth: "100%",
         margin: "0 auto",
@@ -90,21 +88,40 @@ export default function Reviews({ standalone = false }) {
         fontFamily: "Outfit, system-ui, sans-serif",
       }}
     >
-      <div style={{ textAlign: "center", marginBottom: 36 }}>
-        <h2
+      <div style={{ textAlign: "center", marginBottom: 44 }}>
+        <div
           style={{
-            fontSize: "clamp(26px, 3.5vw, 38px)",
+            display: "inline-flex",
+            alignItems: "center",
+            gap: 6,
+            background: "#ECFDF5",
+            border: "1px solid #A7F3D0",
+            padding: "4px 12px",
+            borderRadius: 999,
+            fontSize: 11,
             fontWeight: 800,
-            color: "#0F172A",
-            lineHeight: 1.2,
-            margin: "0 0 6px 0",
-            letterSpacing: "-0.01em",
+            letterSpacing: 1.2,
+            color: "#059669",
+            textTransform: "uppercase",
+            marginBottom: 12,
           }}
         >
-          What <span style={{ color: "#059669" }}>Pet Parents</span> Say
+          <span>VERIFIED STORIES</span>
+        </div>
+        <h2
+          style={{
+            fontSize: "clamp(26px, 3.6vw, 40px)",
+            fontWeight: 900,
+            color: "#0F172A",
+            lineHeight: 1.2,
+            margin: "0 0 8px 0",
+            letterSpacing: "-0.02em",
+          }}
+        >
+          What <span className="text-emerald-600">Pet Parents</span> Say
         </h2>
-        <p style={{ fontSize: 14.5, color: "#64748B", margin: 0 }}>
-          Real feedback from happy companion bird families across India.
+        <p style={{ fontSize: 14, color: "#64748B", margin: 0, maxWidth: 540, marginLeft: "auto", marginRight: "auto" }}>
+          Authentic stories from happy companion bird families who found their feathered souls through FeatherTown.
         </p>
       </div>
 
@@ -114,45 +131,50 @@ export default function Reviews({ standalone = false }) {
           display: "grid",
           gridTemplateColumns: "repeat(auto-fill, minmax(min(100%, 280px), 1fr))",
           gap: "clamp(16px, 2.5vw, 24px)",
-          marginBottom: 44,
+          marginBottom: 52,
         }}
       >
         {displayedReviews.map((r, i) => (
-          <div
+          <SpotlightCard
             key={r._id || i}
-            className="ft-card-lift"
+            spotlightColor="rgba(22, 163, 74, 0.12)"
+            borderColor="#E2E8F0"
+            className="t-hover-lift flex flex-col justify-between p-6"
             style={{
-              background: "#FFFFFF",
-              borderRadius: 22,
-              padding: "clamp(20px, 3vw, 26px)",
-              display: "flex",
-              flexDirection: "column",
-              justifyContent: "space-between",
-              border: "1px solid #E2E8F0",
-              boxShadow: "0 2px 10px rgba(15, 23, 42, 0.04)",
-              transition: "transform 0.28s cubic-bezier(.34,1.56,.64,1), border-color 0.2s, box-shadow 0.28s",
-            }}
-            onMouseEnter={(e) => {
-              e.currentTarget.style.borderColor = "#059669";
-              e.currentTarget.style.boxShadow = "0 10px 25px rgba(5, 150, 105, 0.12)";
-            }}
-            onMouseLeave={(e) => {
-              e.currentTarget.style.borderColor = "#E2E8F0";
-              e.currentTarget.style.boxShadow = "0 2px 10px rgba(15, 23, 42, 0.04)";
+              borderRadius: 24,
+              boxShadow: "0 4px 18px rgba(15, 23, 42, 0.04)",
             }}
           >
             <div>
-              {/* 5 Gold Stars */}
-              <div style={{ color: "#F59E0B", fontSize: 16, marginBottom: 12, letterSpacing: 2 }}>
-                {"★".repeat(r.rating || 5)}
+              {/* Header with 5 Gold Stars & Verified Badge */}
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 14 }}>
+                <div style={{ color: "#F59E0B", fontSize: 15, letterSpacing: 2 }}>
+                  {"★".repeat(r.rating || 5)}
+                </div>
+                <span
+                  style={{
+                    background: "#ECFDF5",
+                    color: "#059669",
+                    border: "1px solid #A7F3D0",
+                    fontSize: 10,
+                    fontWeight: 800,
+                    padding: "2px 8px",
+                    borderRadius: 999,
+                    display: "inline-flex",
+                    alignItems: "center",
+                    gap: 3,
+                  }}
+                >
+                  ✓ Verified Parent
+                </span>
               </div>
 
               {/* Review Quote */}
               <p
                 style={{
-                  fontSize: 14,
+                  fontSize: 13.5,
                   color: "#334155",
-                  lineHeight: 1.6,
+                  lineHeight: 1.65,
                   fontStyle: "italic",
                   marginBottom: 20,
                 }}
@@ -162,7 +184,7 @@ export default function Reviews({ standalone = false }) {
             </div>
 
             {/* Author Strip */}
-            <div style={{ display: "flex", alignItems: "center", gap: 10, borderTop: "1px solid #E2E8F0", paddingTop: 12 }}>
+            <div style={{ display: "flex", alignItems: "center", gap: 10, borderTop: "1px solid #F1F5F9", paddingTop: 14 }}>
               <Avatar name={r.name} avatar={r.avatar} />
               <div>
                 <div style={{ fontSize: 13.5, fontWeight: 800, color: "#0F172A" }}>
@@ -175,19 +197,19 @@ export default function Reviews({ standalone = false }) {
                 )}
               </div>
             </div>
-          </div>
+          </SpotlightCard>
         ))}
       </div>
 
-      {/* Review Submission Form with Spam Protection */}
+      {/* Review Submission Form */}
       <div
         style={{
           background: "#FFFFFF",
           borderRadius: 28,
-          padding: "clamp(24px, 4vw, 40px) clamp(18px, 4vw, 36px)",
-          maxWidth: 720,
+          padding: "clamp(24px, 4vw, 44px) clamp(18px, 4vw, 40px)",
+          maxWidth: 680,
           margin: "0 auto",
-          boxShadow: "0 4px 24px rgba(15, 23, 42, 0.06)",
+          boxShadow: "0 4px 28px rgba(15, 23, 42, 0.06)",
           border: "1px solid #E2E8F0",
         }}
       >
@@ -196,11 +218,11 @@ export default function Reviews({ standalone = false }) {
             fontSize: 20,
             fontWeight: 800,
             color: "#0F172A",
-            marginBottom: 16,
+            marginBottom: 18,
             textAlign: "center",
           }}
         >
-          Leave a Review for <span style={{ color: "#059669" }}>FeatherTown</span>
+          Share your experience with <span className="text-emerald-600">Feather</span><span className="text-orange-500">Town</span>
         </h3>
 
         <form onSubmit={handleReviewSubmit}>
@@ -213,100 +235,61 @@ export default function Reviews({ standalone = false }) {
             aria-hidden="true"
           />
 
-          <div style={{ marginBottom: 12 }}>
+          <div style={{ marginBottom: 14 }}>
             <input
               type="text"
-              placeholder="Your Name"
+              placeholder="Your Full Name"
               value={reviewName}
               onChange={(e) => setRN(e.target.value)}
               required
-              style={{
-                width: "100%",
-                padding: "11px 16px",
-                borderRadius: 12,
-                background: "#F8FAFC",
-                border: "1px solid #CBD5E1",
-                color: "#0F172A",
-                fontSize: 14,
-                outline: "none",
-                transition: "border-color 0.2s, background 0.2s",
-              }}
-              onFocus={(e) => {
-                e.target.style.borderColor = "#059669";
-                e.target.style.background = "#FFFFFF";
-              }}
-              onBlur={(e) => {
-                e.target.style.borderColor = "#CBD5E1";
-                e.target.style.background = "#F8FAFC";
-              }}
+              className="w-full px-4 py-3 rounded-xl bg-slate-50 border border-slate-200 text-slate-800 text-sm focus:border-emerald-600 focus:bg-white outline-none transition-all"
             />
           </div>
 
-          <div style={{ marginBottom: 12 }}>
+          <div style={{ marginBottom: 14 }}>
             <textarea
-              placeholder="Tell others about your companion bird, cage, or accessories..."
+              placeholder="Tell other pet families about your bird adoption, aviary consultation, or premium bird care supplies..."
               value={reviewComment}
               onChange={(e) => setRC(e.target.value)}
               rows={3}
               required
-              style={{
-                width: "100%",
-                padding: "11px 16px",
-                borderRadius: 12,
-                background: "#F8FAFC",
-                border: "1px solid #CBD5E1",
-                color: "#0F172A",
-                fontSize: 14,
-                outline: "none",
-                resize: "vertical",
-                transition: "border-color 0.2s, background 0.2s",
-              }}
-              onFocus={(e) => {
-                e.target.style.borderColor = "#059669";
-                e.target.style.background = "#FFFFFF";
-              }}
-              onBlur={(e) => {
-                e.target.style.borderColor = "#CBD5E1";
-                e.target.style.background = "#F8FAFC";
-              }}
+              className="w-full px-4 py-3 rounded-xl bg-slate-50 border border-slate-200 text-slate-800 text-sm focus:border-emerald-600 focus:bg-white outline-none transition-all resize-none"
             />
           </div>
 
-          <div style={{ marginBottom: 16 }}>
-            <AvatarPicker
-              compact
-              selected={reviewAvatar}
-              onSelect={setReviewAvatar}
-              title="Select Your Bird Avatar"
-            />
+          {/* Star Rating Select */}
+          <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 20, flexWrap: "wrap", gap: 10 }}>
+            <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+              <span style={{ fontSize: 13, fontWeight: 700, color: "#475569" }}>Your Rating:</span>
+              <Stars rating={rating} onRate={(n) => setRating(n)} editable />
+            </div>
+
+            <AvatarPicker selected={reviewAvatar} onSelect={(av) => setReviewAvatar(av)} />
           </div>
 
-          <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 16 }}>
-            <span style={{ fontSize: 13, fontWeight: 700, color: "#475569" }}>Rating:</span>
-            <Stars onSelect={setRating} initial={rating} />
+          {/* Submit Button */}
+          <div style={{ textAlign: "center" }}>
+            <Magnet padding={40} magnetStrength={3}>
+              <button
+                type="submit"
+                disabled={reviewLoading}
+                className="t-btn-press"
+                style={{
+                  background: "linear-gradient(135deg, #16A34A 0%, #15803D 100%)",
+                  color: "#FFFFFF",
+                  padding: "12px 32px",
+                  borderRadius: 999,
+                  fontWeight: 800,
+                  fontSize: 13,
+                  border: "none",
+                  cursor: reviewLoading ? "not-allowed" : "pointer",
+                  boxShadow: "0 4px 16px rgba(22, 163, 74, 0.3)",
+                }}
+              >
+                {reviewLoading ? "Submitting..." : "Post Verified Review ✨"}
+              </button>
+            </Magnet>
           </div>
-
-          <button
-            type="submit"
-            disabled={reviewLoading}
-            style={{
-              width: "100%",
-              background: "#059669",
-              color: "#FFFFFF",
-              border: "none",
-              padding: "12px",
-              borderRadius: 999,
-              fontWeight: 800,
-              fontSize: 14,
-              cursor: "pointer",
-              boxShadow: "0 4px 14px rgba(5, 150, 105, 0.25)",
-              transition: "background 0.2s",
-            }}
-            onMouseEnter={(e) => (e.currentTarget.style.background = "#047857")}
-            onMouseLeave={(e) => (e.currentTarget.style.background = "#059669")}
-          >
-            {reviewLoading ? "Submitting..." : "Submit Review"}
-          </button>
         </form>
       </div>
     </section>

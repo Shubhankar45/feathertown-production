@@ -8,6 +8,7 @@ import { SearchIco, WAIco, XIcon } from "../ui/Icons";
 import CompatibilityBadge from "../CompatibilityBadge";
 import useSavedQuizAnswers from "../../hooks/useSavedQuizAnswers";
 import { useSettings } from "../../context/SettingsContext";
+import SpotlightCard from "../react-bits/SpotlightCard";
 
 export default function BirdsShowcase({ parrots, standalone = false }) {
   const { settings } = useSettings();
@@ -269,28 +270,14 @@ export default function BirdsShowcase({ parrots, standalone = false }) {
             const isAvailable = p.status === "available" || p.status === "Available";
 
             return (
-              <div
+              <SpotlightCard
                 key={p.id}
-                className="ft-card-lift"
+                spotlightColor="rgba(22, 163, 74, 0.14)"
+                borderColor="#E2E8F0"
+                className="t-hover-lift flex flex-col h-full"
                 style={{
-                  background: "#FFFFFF",
-                  borderRadius: 22,
-                  overflow: "hidden",
-                  border: "1px solid #E2E8F0",
-                  boxShadow: "0 2px 10px rgba(15, 23, 42, 0.04)",
-                  display: "flex",
-                  flexDirection: "column",
-                  transition: "transform 0.28s cubic-bezier(.34,1.56,.64,1), border-color 0.2s, box-shadow 0.28s",
-                }}
-                onMouseEnter={(e) => {
-                  e.currentTarget.style.transform = "translateY(-5px)";
-                  e.currentTarget.style.borderColor = "rgba(16, 185, 129, 0.4)";
-                  e.currentTarget.style.boxShadow = "0 12px 28px rgba(15, 23, 42, 0.08)";
-                }}
-                onMouseLeave={(e) => {
-                  e.currentTarget.style.transform = "none";
-                  e.currentTarget.style.borderColor = "#E2E8F0";
-                  e.currentTarget.style.boxShadow = "0 2px 10px rgba(15, 23, 42, 0.04)";
+                  borderRadius: 24,
+                  boxShadow: "0 4px 18px rgba(15, 23, 42, 0.04)",
                 }}
               >
                 {/* Photo container */}
@@ -523,7 +510,7 @@ export default function BirdsShowcase({ parrots, standalone = false }) {
                     </a>
                   </div>
                 </div>
-              </div>
+              </SpotlightCard>
             );
           })}
         </div>

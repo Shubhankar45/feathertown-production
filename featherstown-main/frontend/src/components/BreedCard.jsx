@@ -1,5 +1,6 @@
 import { Link } from "react-router-dom";
 import { useSettings } from "../context/SettingsContext";
+import SpotlightCard from "./react-bits/SpotlightCard";
 
 export default function BreedCard({ parrot }) {
   const { settings } = useSettings();
@@ -11,211 +12,95 @@ export default function BreedCard({ parrot }) {
   const isAvailable = parrot.status === "available" || parrot.status === "Available";
 
   return (
-    <div
-      className="ft-card-lift"
+    <SpotlightCard
+      className="t-hover-lift flex flex-col h-full group"
+      spotlightColor="rgba(22, 163, 74, 0.14)"
+      borderColor="#E2E8F0"
       style={{
-        background: "#FFFFFF",
         borderRadius: 24,
-        overflow: "hidden",
-        border: "1px solid #E2E8F0",
-        boxShadow: "0 2px 10px rgba(15, 23, 42, 0.05)",
-        display: "flex",
-        flexDirection: "column",
-        transition: "transform 0.28s cubic-bezier(.34,1.56,.64,1), box-shadow 0.28s, border-color 0.2s",
-      }}
-      onMouseEnter={(e) => {
-        e.currentTarget.style.borderColor = "#EA580C";
-        e.currentTarget.style.boxShadow = "0 10px 30px rgba(234, 88, 12, 0.1)";
-      }}
-      onMouseLeave={(e) => {
-        e.currentTarget.style.borderColor = "#E2E8F0";
-        e.currentTarget.style.boxShadow = "0 2px 10px rgba(15, 23, 42, 0.05)";
+        boxShadow: "0 4px 20px -2px rgba(15, 23, 42, 0.05), 0 2px 6px -1px rgba(15, 23, 42, 0.02)",
       }}
     >
-      {/* IMAGE CONTAINER */}
-      <div style={{ position: "relative", height: 230, overflow: "hidden", background: "#F8FAFC" }}>
+      {/* IMAGE CONTAINER WITH ZOOM */}
+      <div className="relative h-[230px] overflow-hidden bg-slate-50 t-img-zoom">
         <img
           src={parrot.image}
           alt={parrot.name}
           loading="lazy"
-          style={{
-            width: "100%",
-            height: "100%",
-            objectFit: "cover",
-            display: "block",
-            transition: "transform 0.5s ease",
-          }}
-          onMouseEnter={(e) => (e.currentTarget.style.transform = "scale(1.08)")}
-          onMouseLeave={(e) => (e.currentTarget.style.transform = "scale(1)")}
+          className="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-108"
         />
 
         {/* Soft bottom vignette */}
-        <div
-          style={{
-            position: "absolute",
-            inset: 0,
-            background: "linear-gradient(to top, rgba(15,23,42,0.4) 0%, transparent 60%)",
-            pointerEvents: "none",
-          }}
-        />
+        <div className="absolute inset-0 bg-gradient-to-t from-slate-900/60 via-slate-900/10 to-transparent pointer-events-none" />
 
         {/* Top Badges */}
-        <div style={{ position: "absolute", top: 12, left: 12, right: 12, display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+        <div className="absolute top-3 left-3 right-3 flex justify-between items-center z-20">
           {/* Category Pill */}
-          <span
-            style={{
-              background: "rgba(255, 255, 255, 0.92)",
-              backdropFilter: "blur(8px)",
-              color: "#059669",
-              border: "1px solid #A7F3D0",
-              fontSize: 11,
-              fontWeight: 800,
-              padding: "4px 12px",
-              borderRadius: 999,
-              letterSpacing: 0.5,
-              textTransform: "uppercase",
-              boxShadow: "0 2px 6px rgba(15,23,42,0.06)",
-            }}
-          >
-            {parrot.category}
+          <span className="bg-white/95 backdrop-blur-md text-emerald-700 border border-emerald-200 text-[11px] font-extrabold px-3 py-1 rounded-full uppercase tracking-wider shadow-sm">
+            {parrot.category || "Parrot"}
           </span>
 
           {/* Availability Pill */}
           <span
-            style={{
-              background: isAvailable ? "#ECFDF5" : "#FEF2F2",
-              color: isAvailable ? "#059669" : "#DC2626",
-              border: `1px solid ${isAvailable ? "#A7F3D0" : "#FECACA"}`,
-              fontSize: 11,
-              fontWeight: 700,
-              padding: "3px 10px",
-              borderRadius: 999,
-              display: "inline-flex",
-              alignItems: "center",
-              gap: 4,
-              boxShadow: "0 2px 6px rgba(15,23,42,0.06)",
-            }}
+            className={`text-[11px] font-bold px-2.5 py-1 rounded-full inline-flex items-center gap-1.5 shadow-sm backdrop-blur-md ${
+              isAvailable
+                ? "bg-emerald-50/95 text-emerald-700 border border-emerald-300"
+                : "bg-rose-50/95 text-rose-700 border border-rose-300"
+            }`}
           >
             <span
-              className={isAvailable ? "ft-animate-badge-pulse" : ""}
-              style={{
-                width: 6,
-                height: 6,
-                borderRadius: "50%",
-                background: isAvailable ? "#059669" : "#DC2626",
-                display: "inline-block",
-              }}
+              className={`w-1.5 h-1.5 rounded-full ${
+                isAvailable ? "bg-emerald-600 ft-animate-badge-pulse" : "bg-rose-600"
+              }`}
             />
             {isAvailable ? "Available" : "Waitlist"}
           </span>
         </div>
 
         {/* Price tag on photo */}
-        <div
-          style={{
-            position: "absolute",
-            bottom: 12,
-            right: 12,
-            background: "rgba(255, 255, 255, 0.95)",
-            backdropFilter: "blur(8px)",
-            border: "1px solid #A7F3D0",
-            color: "#059669",
-            fontWeight: 800,
-            fontSize: 14,
-            padding: "5px 14px",
-            borderRadius: 999,
-            boxShadow: "0 2px 8px rgba(15,23,42,0.08)",
-          }}
-        >
+        <div className="absolute bottom-3 right-3 z-20 bg-white/95 backdrop-blur-md border border-emerald-200 text-emerald-700 font-extrabold text-sm px-3.5 py-1 rounded-full shadow-md">
           {parrot.price}
         </div>
       </div>
 
       {/* CARD CONTENT */}
-      <div style={{ padding: "clamp(14px, 3vw, 20px) clamp(12px, 3vw, 20px)", display: "flex", flexDirection: "column", flex: 1 }}>
-        <h3
-          style={{
-            fontFamily: "Outfit, system-ui, sans-serif",
-            fontWeight: 800,
-            fontSize: 19,
-            color: "#0F172A",
-            marginBottom: 6,
-            lineHeight: 1.25,
-          }}
-        >
-          {parrot.name}
-        </h3>
+      <div className="p-5 flex flex-col flex-1 z-20">
+        <div className="flex items-baseline justify-between gap-2 mb-1.5">
+          <h3 className="font-extrabold text-lg text-slate-900 group-hover:text-emerald-700 transition-colors duration-200">
+            {parrot.name}
+          </h3>
+          {parrot.species && (
+            <span className="text-[11px] text-slate-400 italic truncate max-w-[120px]">
+              {parrot.species}
+            </span>
+          )}
+        </div>
 
-        <p
-          style={{
-            fontSize: 13,
-            color: "#475569",
-            lineHeight: 1.6,
-            marginBottom: 16,
-            flex: 1,
-            display: "-webkit-box",
-            WebkitLineClamp: 2,
-            WebkitBoxOrient: "vertical",
-            overflow: "hidden",
-          }}
-        >
+        <p className="text-xs text-slate-600 leading-relaxed mb-4 flex-1 line-clamp-2">
           {parrot.description}
         </p>
 
         {/* Quick Trait Badges */}
-        <div
-          style={{
-            display: "grid",
-            gridTemplateColumns: "repeat(3, 1fr)",
-            gap: 8,
-            background: "#F8FAFC",
-            borderRadius: 14,
-            padding: "10px 12px",
-            marginBottom: 18,
-            border: "1px solid #E2E8F0",
-            textAlign: "center",
-          }}
-        >
+        <div className="grid grid-cols-3 gap-2 bg-slate-50 rounded-xl p-2.5 mb-4 border border-slate-100 text-center">
           <div>
-            <div style={{ fontSize: 10, color: "#64748B", fontWeight: 700, textTransform: "uppercase" }}>Size</div>
-            <div style={{ fontSize: 12, color: "#0F172A", fontWeight: 700, marginTop: 2 }}>{parrot.size || "Medium"}</div>
+            <div className="text-[9.5px] text-slate-400 font-bold uppercase tracking-wider">Size</div>
+            <div className="text-xs text-slate-800 font-bold mt-0.5">{parrot.size || "Medium"}</div>
           </div>
-          <div style={{ borderLeft: "1px solid #E2E8F0", borderRight: "1px solid #E2E8F0" }}>
-            <div style={{ fontSize: 10, color: "#64748B", fontWeight: 700, textTransform: "uppercase" }}>Lifespan</div>
-            <div style={{ fontSize: 12, color: "#0F172A", fontWeight: 700, marginTop: 2 }}>{parrot.lifespan || "20-30y"}</div>
+          <div className="border-x border-slate-200">
+            <div className="text-[9.5px] text-slate-400 font-bold uppercase tracking-wider">Lifespan</div>
+            <div className="text-xs text-slate-800 font-bold mt-0.5">{parrot.lifespan || "20-30y"}</div>
           </div>
           <div>
-            <div style={{ fontSize: 10, color: "#64748B", fontWeight: 700, textTransform: "uppercase" }}>Speech</div>
-            <div style={{ fontSize: 12, color: "#0F172A", fontWeight: 700, marginTop: 2 }}>{parrot.talkingAbility || "Good"}</div>
+            <div className="text-[9.5px] text-slate-400 font-bold uppercase tracking-wider">Speech</div>
+            <div className="text-xs text-slate-800 font-bold mt-0.5 truncate">{parrot.talkingAbility || "Good"}</div>
           </div>
         </div>
 
         {/* Action Buttons */}
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(100%, 100px), 1fr))", gap: 8 }}>
+        <div className="grid grid-cols-2 gap-2 mt-auto">
           <Link
             to={`/breed/${parrot.id}`}
-            style={{
-              textAlign: "center",
-              padding: "10px 14px",
-              borderRadius: 12,
-              border: "1.5px solid #CBD5E1",
-              color: "#0F172A",
-              fontWeight: 700,
-              fontSize: 12.5,
-              textDecoration: "none",
-              background: "#FFFFFF",
-              transition: "all 0.2s ease",
-            }}
-            onMouseEnter={(e) => {
-              e.currentTarget.style.background = "#FFF7ED";
-              e.currentTarget.style.borderColor = "#EA580C";
-              e.currentTarget.style.color = "#EA580C";
-            }}
-            onMouseLeave={(e) => {
-              e.currentTarget.style.background = "#FFFFFF";
-              e.currentTarget.style.borderColor = "#CBD5E1";
-              e.currentTarget.style.color = "#0F172A";
-            }}
+            className="t-btn-press text-center py-2.5 px-3 rounded-xl border border-slate-300 text-slate-800 font-bold text-xs bg-white hover:bg-orange-50 hover:border-orange-500 hover:text-orange-600 transition-all shadow-sm"
           >
             Care Profile →
           </Link>
@@ -224,29 +109,12 @@ export default function BreedCard({ parrot }) {
             href={whatsappLink}
             target="_blank"
             rel="noreferrer"
-            style={{
-              textAlign: "center",
-              padding: "9px 12px",
-              borderRadius: 12,
-              background: "linear-gradient(135deg, #16A34A, #15803D)",
-              color: "#FFFFFF",
-              fontWeight: 700,
-              fontSize: 12.5,
-              textDecoration: "none",
-              boxShadow: "0 4px 12px rgba(22, 163, 74, 0.25)",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              gap: 5,
-              transition: "transform 0.2s ease",
-            }}
-            onMouseEnter={(e) => (e.currentTarget.style.transform = "translateY(-2px)")}
-            onMouseLeave={(e) => (e.currentTarget.style.transform = "none")}
+            className="t-btn-press flex items-center justify-center gap-1.5 py-2 px-3 rounded-xl bg-gradient-to-r from-emerald-600 to-emerald-700 hover:from-emerald-700 hover:to-emerald-800 text-white font-bold text-xs shadow-sm hover:shadow-md transition-all"
           >
             <span>💬</span> Inquire
           </a>
         </div>
       </div>
-    </div>
+    </SpotlightCard>
   );
 }

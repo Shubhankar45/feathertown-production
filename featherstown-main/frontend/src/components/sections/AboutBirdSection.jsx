@@ -1,15 +1,8 @@
-/* ═══════════════════════════════════════════════════════════════
-   Feathers Town — About Us Section with Flying Hummingbird
-   /components/sections/AboutBirdSection.jsx
-
-   Exact match to Reference Section 2:
-   - Deep matte dark background
-   - Flying iridescent emerald hummingbird with wings spread
-   - Minimal bold typography: "Know more types of Birds here"
-   - Mint pill action button: "Learn More →"
-═══════════════════════════════════════════════════════════════ */
 import { Link } from "react-router-dom";
 import hummingbirdImg from "../../assets/hummingbird-flight.jpg";
+import CountUp from "../react-bits/CountUp";
+import Magnet from "../react-bits/Magnet";
+import ShinyText from "../react-bits/ShinyText";
 
 export default function AboutBirdSection() {
   return (
@@ -17,7 +10,7 @@ export default function AboutBirdSection() {
       id="about"
       style={{
         background: "#FFFFFF",
-        padding: "clamp(48px, 6vw, 84px) clamp(16px, 4vw, 64px)",
+        padding: "clamp(56px, 7vw, 96px) clamp(16px, 4vw, 64px)",
         position: "relative",
         overflow: "hidden",
         fontFamily: "Outfit, system-ui, sans-serif",
@@ -31,7 +24,7 @@ export default function AboutBirdSection() {
           left: "5%",
           width: "clamp(300px, 40vw, 600px)",
           height: "clamp(300px, 40vw, 600px)",
-          background: "radial-gradient(circle, rgba(16, 185, 129, 0.08) 0%, transparent 70%)",
+          background: "radial-gradient(circle, rgba(22, 163, 74, 0.08) 0%, transparent 70%)",
           borderRadius: "50%",
           filter: "blur(60px)",
           pointerEvents: "none",
@@ -43,7 +36,7 @@ export default function AboutBirdSection() {
           width: "100%",
           display: "grid",
           gridTemplateColumns: "repeat(auto-fit, minmax(min(100%, 460px), 1fr))",
-          gap: "clamp(32px, 5vw, 64px)",
+          gap: "clamp(36px, 6vw, 72px)",
           alignItems: "center",
           position: "relative",
           zIndex: 2,
@@ -59,6 +52,7 @@ export default function AboutBirdSection() {
           }}
         >
           <div
+            className="t-hover-lift t-img-zoom"
             style={{
               position: "relative",
               width: "100%",
@@ -79,7 +73,6 @@ export default function AboutBirdSection() {
                 maxHeight: 460,
                 objectFit: "cover",
                 display: "block",
-                transition: "transform 0.5s ease",
               }}
             />
 
@@ -89,21 +82,23 @@ export default function AboutBirdSection() {
                 position: "absolute",
                 bottom: 18,
                 left: 18,
-                background: "rgba(255, 255, 255, 0.92)",
+                background: "rgba(255, 255, 255, 0.94)",
                 backdropFilter: "blur(12px)",
-                border: "1px solid #E2E8F0",
-                padding: "8px 16px",
+                border: "1px solid #DCFCE7",
+                padding: "8px 18px",
                 borderRadius: 999,
                 display: "flex",
                 alignItems: "center",
                 gap: 8,
-                boxShadow: "0 4px 12px rgba(15, 23, 42, 0.06)",
+                boxShadow: "0 4px 14px rgba(15, 23, 42, 0.08)",
               }}
             >
               <span style={{ fontSize: 14 }}>🌿</span>
-              <span style={{ fontSize: 12, fontWeight: 700, color: "#059669" }}>
-                100% Ethical Socialization
-              </span>
+              <ShinyText
+                text="100% Ethical Avian Socialization"
+                speed={4}
+                style={{ fontSize: 12, fontWeight: 800 }}
+              />
             </div>
           </div>
         </div>
@@ -111,107 +106,118 @@ export default function AboutBirdSection() {
         {/* Right Column: Text & Learn More CTA */}
         <div style={{ display: "flex", flexDirection: "column" }}>
           {/* Eyebrow */}
-          <span
+          <div
             style={{
+              display: "inline-flex",
+              alignItems: "center",
+              gap: 6,
+              background: "#FFF7ED",
+              border: "1px solid #FED7AA",
+              padding: "4px 12px",
+              borderRadius: 999,
               fontSize: 11,
               fontWeight: 800,
-              letterSpacing: 2,
+              letterSpacing: 1.2,
               color: "#EA580C",
               textTransform: "uppercase",
-              marginBottom: 12,
-              display: "inline-block",
+              marginBottom: 14,
+              width: "fit-content",
             }}
           >
-            ABOUT US
-          </span>
+            <span>ABOUT US</span>
+          </div>
 
           {/* Headline */}
           <h2
             style={{
-              fontSize: "clamp(28px, 3.8vw, 46px)",
-              fontWeight: 800,
-              lineHeight: 1.1,
-              letterSpacing: "-0.02em",
+              fontSize: "clamp(30px, 4vw, 48px)",
+              fontWeight: 900,
+              lineHeight: 1.08,
+              letterSpacing: "-0.025em",
               color: "#0F172A",
               margin: "0 0 16px 0",
             }}
           >
             Know more <br />
-            types of <span style={{ color: "#16A34A" }}>Birds</span> <br />
-            here
+            types of <span className="text-emerald-600">Birds</span> <br />
+            with <span className="text-orange-500">FeatherTown</span>
           </h2>
 
           <p
             style={{
               fontSize: 14,
               color: "#475569",
-              lineHeight: 1.6,
+              lineHeight: 1.65,
               margin: "0 0 24px 0",
-              maxWidth: 480,
+              maxWidth: 500,
             }}
           >
-            Get to know all kinds of healthy hand-tamed companion birds with FeatherTown. We provide complete veterinarian documentation, DNA sex testing, certified organic starter nutrition, and dedicated lifetime WhatsApp mentorship for every pet parent.
+            Get to know all kinds of healthy hand-tamed companion birds with FeatherTown. We provide complete veterinarian documentation, DNA sex testing certificates, organic starter nutrition, and dedicated lifetime WhatsApp mentorship for every pet family.
           </p>
+
+          {/* Trust Stat Counters */}
+          <div
+            style={{
+              display: "grid",
+              gridTemplateColumns: "repeat(3, 1fr)",
+              gap: 12,
+              marginBottom: 28,
+              padding: "16px 0",
+              borderTop: "1px solid #F1F5F9",
+              borderBottom: "1px solid #F1F5F9",
+            }}
+          >
+            <div>
+              <div style={{ fontSize: 22, fontWeight: 900, color: "#16A34A" }}>
+                <CountUp to={1250} duration={2} suffix="+" />
+              </div>
+              <div style={{ fontSize: 11, fontWeight: 700, color: "#64748B", marginTop: 2 }}>
+                Happy Pet Families
+              </div>
+            </div>
+            <div style={{ borderLeft: "1px solid #E2E8F0", paddingLeft: 12 }}>
+              <div style={{ fontSize: 22, fontWeight: 900, color: "#EA580C" }}>
+                <CountUp to={100} duration={1.5} suffix="%" />
+              </div>
+              <div style={{ fontSize: 11, fontWeight: 700, color: "#64748B", marginTop: 2 }}>
+                DNA &amp; Vet Certified
+              </div>
+            </div>
+            <div style={{ borderLeft: "1px solid #E2E8F0", paddingLeft: 12 }}>
+              <div style={{ fontSize: 22, fontWeight: 900, color: "#0F172A" }}>
+                <CountUp to={15} duration={1.5} suffix="+" />
+              </div>
+              <div style={{ fontSize: 11, fontWeight: 700, color: "#64748B", marginTop: 2 }}>
+                Exotic Breeds
+              </div>
+            </div>
+          </div>
 
           {/* Learn More Pill Button */}
           <div style={{ display: "flex", alignItems: "center", gap: 12, flexWrap: "wrap" }}>
-            <Link
-              to="/about"
-              style={{
-                background: "linear-gradient(135deg, #16A34A 0%, #15803D 100%)",
-                color: "#FFFFFF",
-                padding: "11px 26px",
-                borderRadius: 999,
-                fontWeight: 700,
-                fontSize: 13,
-                textDecoration: "none",
-                display: "inline-flex",
-                alignItems: "center",
-                gap: 8,
-                boxShadow: "0 4px 16px rgba(22, 163, 74, 0.28)",
-                transition: "transform 0.2s, box-shadow 0.2s",
-              }}
-              onMouseEnter={(e) => {
-                e.currentTarget.style.transform = "translateY(-2px)";
-                e.currentTarget.style.boxShadow = "0 8px 24px rgba(249, 115, 22, 0.35)";
-              }}
-              onMouseLeave={(e) => {
-                e.currentTarget.style.transform = "translateY(0)";
-                e.currentTarget.style.boxShadow = "0 4px 16px rgba(22, 163, 74, 0.28)";
-              }}
-            >
-              <span>Learn More</span>
-              <span style={{ fontSize: 15, color: "#FEF3C7" }}>→</span>
-            </Link>
-
-            <Link
-              to="/birds"
-              style={{
-                background: "#FFFFFF",
-                color: "#0F172A",
-                border: "1px solid #CBD5E1",
-                padding: "12px 24px",
-                borderRadius: 999,
-                fontWeight: 700,
-                fontSize: 14,
-                textDecoration: "none",
-                display: "inline-flex",
-                alignItems: "center",
-                gap: 6,
-                transition: "border-color 0.2s, color 0.2s",
-              }}
-              onMouseEnter={(e) => {
-                e.currentTarget.style.borderColor = "#059669";
-                e.currentTarget.style.color = "#059669";
-              }}
-              onMouseLeave={(e) => {
-                e.currentTarget.style.borderColor = "#CBD5E1";
-                e.currentTarget.style.color = "#0F172A";
-              }}
-            >
-              <span>View Aviary</span>
-              <span>›</span>
-            </Link>
+            <Magnet padding={40} magnetStrength={3}>
+              <Link
+                to="/about"
+                className="t-btn-press"
+                style={{
+                  background: "linear-gradient(135deg, #16A34A 0%, #15803D 100%)",
+                  color: "#FFFFFF",
+                  padding: "12px 28px",
+                  borderRadius: 999,
+                  fontWeight: 800,
+                  fontSize: 13,
+                  textDecoration: "none",
+                  display: "inline-flex",
+                  alignItems: "center",
+                  gap: 8,
+                  boxShadow: "0 6px 18px rgba(22, 163, 74, 0.35)",
+                  transition: "box-shadow 0.2s, transform 0.2s",
+                }}
+              >
+                <span>Learn More</span>
+                <span style={{ fontSize: 15 }}>→</span>
+              </Link>
+            </Magnet>
           </div>
         </div>
       </div>
