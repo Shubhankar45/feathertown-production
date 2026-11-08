@@ -9,7 +9,6 @@ import { UpIco } from "./ui/Icons";
 import useScrollReveal from "../hooks/useScrollReveal";
 
 export default function PageChrome() {
-  const cursorRef = useRef(null);
   const [showBtt, setShowBtt] = useState(false);
   const [prog, setProg] = useState(0);
 
@@ -29,31 +28,9 @@ export default function PageChrome() {
     return () => window.removeEventListener("scroll", h);
   }, []);
 
-  useEffect(() => {
-    const move = (e) => {
-      if (!cursorRef.current) return;
-      cursorRef.current.classList.add("on");
-      cursorRef.current.style.left = e.clientX + "px";
-      cursorRef.current.style.top = e.clientY + "px";
-    };
-    const over = (e) => {
-      if (cursorRef.current && (e.target.closest("a") || e.target.closest("button"))) cursorRef.current.classList.add("big");
-    };
-    const out = () => { if (cursorRef.current) cursorRef.current.classList.remove("big"); };
-    window.addEventListener("mousemove", move);
-    document.addEventListener("mouseover", over);
-    document.addEventListener("mouseout", out);
-    return () => {
-      window.removeEventListener("mousemove", move);
-      document.removeEventListener("mouseover", over);
-      document.removeEventListener("mouseout", out);
-    };
-  }, []);
-
   return (
     <>
       <ToastContainer />
-      <div id="ftc" ref={cursorRef} />
       <div id="prog" style={{ width: `${prog}%` }} />
       <button
         className={`btt${showBtt ? "" : " hide"}`}
