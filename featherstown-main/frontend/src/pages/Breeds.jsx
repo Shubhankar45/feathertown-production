@@ -199,7 +199,7 @@ export default function Breeds() {
                     fontWeight: 600,
                     cursor: "pointer",
                     border: active ? "1.5px solid #059669" : "1.5px solid #E2E8F0",
-                    background: active ? "linear-gradient(135deg, #10B981, #059669)" : "#F8FAFC",
+                    background: active ? "#16A34A" : "#F8FAFC",
                     color: active ? "#FFFFFF" : "#475569",
                     display: "flex",
                     alignItems: "center",
@@ -277,7 +277,7 @@ export default function Breeds() {
               }}
               className="ft-btn-hover"
               style={{
-                background: "linear-gradient(135deg, #10B981, #059669)",
+                background: "#16A34A",
                 color: "#FFFFFF",
                 border: "none",
                 padding: "10px 24px",

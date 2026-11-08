@@ -105,7 +105,7 @@ export default function FeaturedCollections() {
               style={{
                 borderRadius: 24,
                 height: 230,
-                background: "linear-gradient(135deg, #FFFFFF 0%, #F8FAFC 100%)",
+                background: "#FFFFFF",
                 boxShadow: "0 4px 18px rgba(15, 23, 42, 0.04)",
               }}
             >

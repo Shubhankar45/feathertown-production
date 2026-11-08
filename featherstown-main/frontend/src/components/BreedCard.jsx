@@ -30,9 +30,6 @@ export default function BreedCard({ parrot }) {
           className="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-108"
         />
 
-        {/* Soft bottom vignette */}
-        <div className="absolute inset-0 bg-gradient-to-t from-slate-900/60 via-slate-900/10 to-transparent pointer-events-none" />
-
         {/* Top Badges */}
         <div className="absolute top-3 left-3 right-3 flex justify-between items-center z-20">
           {/* Category Pill */}
@@ -109,7 +106,7 @@ export default function BreedCard({ parrot }) {
             href={whatsappLink}
             target="_blank"
             rel="noreferrer"
-            className="t-btn-press flex items-center justify-center gap-1.5 py-2 px-3 rounded-xl bg-gradient-to-r from-emerald-600 to-emerald-700 hover:from-emerald-700 hover:to-emerald-800 text-white font-bold text-xs shadow-sm hover:shadow-md transition-all"
+            className="t-btn-press flex items-center justify-center gap-1.5 py-2 px-3 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs shadow-sm hover:shadow-md transition-all"
           >
             <span>💬</span> Inquire
           </a>

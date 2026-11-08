@@ -16,20 +16,6 @@ export default function AboutBirdSection() {
         fontFamily: "Outfit, system-ui, sans-serif",
       }}
     >
-      {/* Background Soft Aura */}
-      <div
-        style={{
-          position: "absolute",
-          top: "20%",
-          left: "5%",
-          width: "clamp(300px, 40vw, 600px)",
-          height: "clamp(300px, 40vw, 600px)",
-          background: "radial-gradient(circle, rgba(22, 163, 74, 0.08) 0%, transparent 70%)",
-          borderRadius: "50%",
-          filter: "blur(60px)",
-          pointerEvents: "none",
-        }}
-      />
 
       <div
         style={{
@@ -200,7 +186,7 @@ export default function AboutBirdSection() {
                 to="/about"
                 className="t-btn-press"
                 style={{
-                  background: "linear-gradient(135deg, #16A34A 0%, #15803D 100%)",
+                  background: "#16A34A",
                   color: "#FFFFFF",
                   padding: "12px 28px",
                   borderRadius: 999,

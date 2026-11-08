@@ -198,7 +198,7 @@ export default function Login() {
               className="ft-btn-hover"
               style={{
                 width: "100%",
-                background: "linear-gradient(135deg, #10B981, #059669)",
+                background: "#16A34A",
                 color: "#FFFFFF",
                 border: "none",
                 padding: "13px",

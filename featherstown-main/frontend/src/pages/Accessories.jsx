@@ -125,7 +125,7 @@ export default function Accessories() {
                     fontWeight: active ? 800 : 600,
                     cursor: "pointer",
                     border: active ? "none" : "1.5px solid #E2E8F0",
-                    background: active ? "linear-gradient(135deg, #16A34A, #15803D)" : "#F8FAFC",
+                    background: active ? "#16A34A" : "#F8FAFC",
                     color: active ? "#FFFFFF" : "#64748B",
                     boxShadow: active ? "0 4px 14px rgba(22, 163, 74, 0.28)" : "none",
                   }}
@@ -242,7 +242,7 @@ export default function Accessories() {
               }}
               className="ft-btn-hover"
               style={{
-                background: "linear-gradient(135deg, #10B981, #059669)",
+                background: "#16A34A",
                 color: "#FFFFFF",
                 border: "none",
                 padding: "9px 20px",
@@ -373,7 +373,7 @@ export default function Accessories() {
                       className="t-btn-press"
                       style={{
                         width: "100%",
-                        background: "linear-gradient(135deg, #16A34A, #15803D)",
+                        background: "#16A34A",
                         color: "#FFFFFF",
                         border: "none",
                         padding: "9px 12px",

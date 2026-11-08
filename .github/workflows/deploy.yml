@@ -108,10 +108,10 @@ jobs:
               sudo usermod -aG docker $USER || true
             fi
             
-            # 2.5 Setup 2GB swap space to prevent Out-Of-Memory (OOM) crashes on 1GB instances
-            if ! swapon --show | grep -q "/swapfile"; then
-              echo "🧠 Creating 2GB swap file to prevent OOM memory crashes..."
-              sudo fallocate -l 2G /swapfile 2>/dev/null || sudo dd if=/dev/zero of=/swapfile bs=1M count=2048 2>/dev/null || true
+            # 2.5 Setup 1GB swap space if not already created
+            if [ ! -f /swapfile ] && ! swapon --show | grep -q "/swapfile"; then
+              echo "🧠 Creating 1GB swap file to prevent OOM memory crashes..."
+              sudo fallocate -l 1G /swapfile 2>/dev/null || sudo dd if=/dev/zero of=/swapfile bs=1M count=1024 2>/dev/null || true
               sudo chmod 600 /swapfile 2>/dev/null || true
               sudo mkswap /swapfile 2>/dev/null || true
               sudo swapon /swapfile 2>/dev/null || true
@@ -132,6 +132,7 @@ jobs:
             
             cd "$APP_DIR"
             echo "📁 In directory: $(pwd)"
+            git config --global --add safe.directory "$APP_DIR"
             
             # 4. Pull latest commits cleanly
             echo "📥 Fetching and syncing to latest main..."
@@ -141,6 +142,7 @@ jobs:
             # 5. Move into project directory
             if [ -d "featherstown-main" ]; then
               cd featherstown-main
+              git config --global --add safe.directory "$(pwd)"
             fi
             
             # 6. Setup .env file
@@ -149,7 +151,11 @@ jobs:
               cp .env.docker.example .env
             fi
             
-            # 7. Build and run containers
+            # 7. Clean unused Docker caches to guarantee free disk space before building
+            echo "🧹 Pruning unused Docker images and build cache to ensure free disk space..."
+            sudo docker system prune -af --volumes 2>/dev/null || sudo docker system prune -f || true
+            
+            # 8. Build and run containers
             echo "🐳 Starting Docker containers..."
             sudo docker compose down --remove-orphans 2>/dev/null || sudo docker-compose down --remove-orphans 2>/dev/null || true
             sudo docker compose up -d --build || sudo docker-compose up -d --build

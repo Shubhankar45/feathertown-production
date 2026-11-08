@@ -125,7 +125,7 @@ export default function NotFound() {
               right: 5,
               top: 5,
               bottom: 5,
-              background: "linear-gradient(135deg, #10B981, #059669)",
+              background: "#16A34A",
               color: "#FFFFFF",
               border: "none",
               borderRadius: 999,
@@ -145,7 +145,7 @@ export default function NotFound() {
             to="/"
             className="ft-btn-hover"
             style={{
-              background: "linear-gradient(135deg, #10B981, #059669)",
+              background: "#16A34A",
               color: "#FFFFFF",
               padding: "12px 26px",
               borderRadius: 999,

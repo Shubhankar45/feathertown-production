@@ -352,7 +352,7 @@ export default function BreedDetails() {
         <Link
           to="/breeds"
           style={{
-            background: "linear-gradient(135deg, #10B981, #059669)",
+            background: "#16A34A",
             color: "#FFFFFF",
             padding: "10px 24px",
             borderRadius: 999,
@@ -666,7 +666,7 @@ export default function BreedDetails() {
                 width: "100%",
                 padding: "16px 24px",
                 borderRadius: 999,
-                background: "linear-gradient(135deg, #10B981, #059669)",
+                background: "#16A34A",
                 color: "#FFFFFF",
                 fontSize: 15,
                 fontWeight: 800,
@@ -761,7 +761,7 @@ export default function BreedDetails() {
                     fontWeight: 700,
                     cursor: "pointer",
                     border: active ? "1.5px solid #059669" : "1.5px solid #E2E8F0",
-                    background: active ? "linear-gradient(135deg, #10B981, #059669)" : "#FFFFFF",
+                    background: active ? "#16A34A" : "#FFFFFF",
                     color: active ? "#FFFFFF" : "#64748B",
                     boxShadow: active ? "0 4px 14px rgba(16,185,129,0.25)" : "none",
                   }}

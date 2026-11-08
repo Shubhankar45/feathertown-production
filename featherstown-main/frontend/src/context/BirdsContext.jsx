@@ -1,14 +1,14 @@
 import { createContext, useContext, useState, useEffect, useCallback } from "react";
 
-import sun from "../assets/Sun-conure.jfif";
-import grey from "../assets/african.png";
-import macaw from "../assets/macaw.png";
-import green from "../assets/green.jpg";
-import pineapple from "../assets/pineapple.jpeg";
-import cocketail from "../assets/cocketail.jpg";
-import pine from "../assets/pineapple.png";
+import sun from "../assets/birds/crop-sun-conure.jpg";
+import grey from "../assets/birds/crop-african-grey.jpg";
+import macaw from "../assets/birds/crop-macaw.jpg";
+import green from "../assets/birds/crop-green-cheek.jpg";
+import pineapple from "../assets/birds/crop-pineapple-conure.jpg";
+import cocketail from "../assets/birds/crop-cockatiel.jpg";
+import pine from "../assets/birds/crop-pineapple-conure.jpg";
 
-// Map asset paths from MongoDB seed to bundled assets
+// Map asset paths from MongoDB seed to high-definition studio assets
 const ASSET_MAP = {
   "/assets/Sun-conure.jfif": sun,
   "/assets/african.png": grey,
@@ -17,6 +17,13 @@ const ASSET_MAP = {
   "/assets/pineapple.jpeg": pineapple,
   "/assets/cocketail.jpg": cocketail,
   "/assets/pineapple.png": pine,
+  "Sun-conure.jfif": sun,
+  "african.png": grey,
+  "macaw.png": macaw,
+  "green.jpg": green,
+  "pineapple.jpeg": pineapple,
+  "cocketail.jpg": cocketail,
+  "pineapple.png": pine,
 };
 
 export function resolveBirdImage(img) {

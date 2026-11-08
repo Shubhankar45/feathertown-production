@@ -46,7 +46,7 @@ export default function Cart() {
               to="/accessories"
               className="ft-btn-hover"
               style={{
-                background: "linear-gradient(135deg, #10B981, #059669)",
+                background: "#16A34A",
                 color: "#FFFFFF",
                 padding: "13px 28px",
                 borderRadius: 999,
@@ -86,7 +86,7 @@ export default function Cart() {
                     style={{
                       width: `${progressPercent}%`,
                       height: "100%",
-                      background: "linear-gradient(90deg, #16A34A, #F97316)",
+                      background: "#16A34A",
                       borderRadius: 99,
                       transition: "width 0.3s ease",
                     }}
@@ -263,7 +263,7 @@ export default function Cart() {
                 className="t-btn-press"
                 style={{
                   width: "100%",
-                  background: "linear-gradient(135deg, #16A34A, #15803D)",
+                  background: "#16A34A",
                   color: "#FFFFFF",
                   border: "none",
                   padding: "14px",

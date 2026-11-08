@@ -13,12 +13,14 @@
 // Force HTTPS in client if deployed on a live domain
 export function enforceHttps() {
   if (typeof window === "undefined") return;
-  const isLocal =
-    window.location.hostname === "localhost" ||
-    window.location.hostname === "127.0.0.1" ||
-    window.location.hostname.endsWith(".local");
+  const hostname = window.location.hostname;
+  const isLocalOrIp =
+    hostname === "localhost" ||
+    hostname === "127.0.0.1" ||
+    hostname.endsWith(".local") ||
+    /^\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}$/.test(hostname);
 
-  if (!isLocal && window.location.protocol === "http:") {
+  if (!isLocalOrIp && window.location.protocol === "http:") {
     window.location.href = window.location.href.replace("http:", "https:");
   }
 }

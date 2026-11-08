@@ -68,7 +68,7 @@ export default function Newsletter() {
       <div
         className="t-hover-lift"
         style={{
-          background: "linear-gradient(135deg, #F0FDF4 0%, #FFF7ED 50%, #FFFFFF 100%)",
+          background: "#F8FAFC",
           borderRadius: 28,
           padding: "clamp(28px, 4vw, 42px) clamp(20px, 4vw, 42px)",
           color: "#0F172A",
@@ -192,7 +192,7 @@ export default function Newsletter() {
                   disabled={loading}
                   className="t-btn-press"
                   style={{
-                    background: "linear-gradient(135deg, #F97316 0%, #EA580C 100%)",
+                    background: "#EA580C",
                     color: "#FFFFFF",
                     border: "none",
                     borderRadius: 999,

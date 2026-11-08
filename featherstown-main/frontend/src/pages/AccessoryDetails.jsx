@@ -45,7 +45,7 @@ export default function AccessoryDetails() {
     return (
       <div style={{ minHeight: "60vh", background: "#F8FAFC", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: 12 }}>
         <p style={{ color: "#64748B" }}>We couldn't find that accessory.</p>
-        <Link to="/accessories" style={{ background: "linear-gradient(135deg, #10B981, #059669)", color: "#fff", padding: "10px 22px", borderRadius: 999, textDecoration: "none", fontWeight: 700 }}>
+        <Link to="/accessories" style={{ background: "#16A34A", color: "#fff", padding: "10px 22px", borderRadius: 999, textDecoration: "none", fontWeight: 700 }}>
           Back to shop
         </Link>
       </div>
@@ -252,7 +252,7 @@ export default function AccessoryDetails() {
                 className="t-btn-press"
                 style={{
                   flex: 1,
-                  background: "linear-gradient(135deg, #16A34A, #15803D)",
+                  background: "#16A34A",
                   color: "#FFFFFF",
                   border: "none",
                   padding: "14px 24px",
@@ -271,7 +271,7 @@ export default function AccessoryDetails() {
                 className="t-btn-press"
                 style={{
                   flex: 1,
-                  background: "linear-gradient(135deg, #F97316, #EA580C)",
+                  background: "#EA580C",
                   color: "#FFFFFF",
                   border: "none",
                   padding: "14px 24px",

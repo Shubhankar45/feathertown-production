@@ -191,7 +191,7 @@ export default function BirdsShowcase({ parrots, standalone = false }) {
                     fontWeight: 600,
                     cursor: "pointer",
                     border: active ? "1.5px solid #059669" : "1.5px solid #E2E8F0",
-                    background: active ? "linear-gradient(135deg, #10B981, #059669)" : "#F8FAFC",
+                    background: active ? "#16A34A" : "#F8FAFC",
                     color: active ? "#FFFFFF" : "#475569",
                     display: "flex",
                     alignItems: "center",
@@ -238,7 +238,7 @@ export default function BirdsShowcase({ parrots, standalone = false }) {
             <button
               style={{
                 marginTop: 16,
-                background: "linear-gradient(135deg, #10B981, #059669)",
+                background: "#16A34A",
                 color: "#FFFFFF",
                 border: "none",
                 padding: "8px 20px",
@@ -490,7 +490,7 @@ export default function BirdsShowcase({ parrots, standalone = false }) {
                       target="_blank"
                       rel="noreferrer"
                       style={{
-                        background: "linear-gradient(135deg, #10B981, #059669)",
+                        background: "#16A34A",
                         color: "#FFFFFF",
                         padding: "8px 14px",
                         borderRadius: 10,
@@ -635,7 +635,7 @@ export default function BirdsShowcase({ parrots, standalone = false }) {
             target="_blank"
             rel="noreferrer"
             style={{
-              background: "linear-gradient(135deg, #10B981, #059669)",
+              background: "#16A34A",
               color: "#FFFFFF",
               padding: "7px 16px",
               borderRadius: 999,

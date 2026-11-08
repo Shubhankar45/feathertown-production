@@ -21,7 +21,7 @@ export function logClientError(errorInfo) {
   errorLog.unshift(payload);
   if (errorLog.length > MAX_ERROR_HISTORY) errorLog.pop();
 
-  if (process.env.NODE_ENV !== "production") {
+  if (import.meta.env?.DEV) {
     console.error("[FeatherTown Error Monitor]", payload);
   }
 

@@ -19,13 +19,18 @@ import BlurText from "../react-bits/BlurText";
 import Magnet from "../react-bits/Magnet";
 import SpotlightCard from "../react-bits/SpotlightCard";
 
-import perchedHeroImg from "../../assets/hero-perched.jpg";
-import sunImg from "../../assets/Sun-conure.jfif";
-import greyImg from "../../assets/african.png";
-import cockatielImg from "../../assets/cocketail.jpg";
-import macawImg from "../../assets/macaw.png";
-import pineImg from "../../assets/pineapple.png";
-import greenImg from "../../assets/green.jpg";
+import sunCrop from "../../assets/birds/crop-sun-conure.jpg";
+import sunThumb from "../../assets/birds/thumb-sun-conure.jpg";
+import greyCrop from "../../assets/birds/crop-african-grey.jpg";
+import greyThumb from "../../assets/birds/thumb-african-grey.jpg";
+import cockatielCrop from "../../assets/birds/crop-cockatiel.jpg";
+import cockatielThumb from "../../assets/birds/thumb-cockatiel.jpg";
+import macawCrop from "../../assets/birds/crop-macaw.jpg";
+import macawThumb from "../../assets/birds/thumb-macaw.jpg";
+import greenCrop from "../../assets/birds/crop-green-cheek.jpg";
+import greenThumb from "../../assets/birds/thumb-green-cheek.jpg";
+import pineCrop from "../../assets/birds/crop-pineapple-conure.jpg";
+import pineThumb from "../../assets/birds/thumb-pineapple-conure.jpg";
 
 const BIRDS = [
   {
@@ -37,15 +42,14 @@ const BIRDS = [
     price: "₹15,000",
     originalPrice: "₹18,500",
     discount: "Save 19%",
-    image: perchedHeroImg,
-    thumb: sunImg,
+    image: sunCrop,
+    thumb: sunThumb,
     tagline: "Bursting with sunny personality, acrobatic energy & deep shoulder cuddles.",
-    description: "Parrots comprise about 398 species of birds that are seed-eating, affectionate, highly intelligent companions with vibrant plumage and long tapering tails.",
+    description: "Affectionate, highly intelligent companion birds known for radiant orange-yellow plumage and joyful social nature.",
     talking: "Whistle & Words",
     lifespan: "25–30 Years",
     temperament: "Social & Cuddly",
     size: "Medium (30 cm)",
-    accentColor: "#10B981",
   },
   {
     id: "african-grey",
@@ -56,15 +60,14 @@ const BIRDS = [
     price: "₹45,000",
     originalPrice: "₹52,000",
     discount: "Save 14%",
-    image: greyImg,
-    thumb: greyImg,
+    image: greyCrop,
+    thumb: greyThumb,
     tagline: "World's most intelligent parrot. Masters vocabulary, mimics sounds & bonds for life.",
     description: "Renowned for astonishing cognitive aptitude, vocal mimicry, and deep emotional bonds with their human companions.",
     talking: "Exceptional Talker",
     lifespan: "40–60 Years",
     temperament: "Thoughtful & Loyal",
     size: "Large (33 cm)",
-    accentColor: "#10B981",
   },
   {
     id: "cockatiel",
@@ -75,15 +78,14 @@ const BIRDS = [
     price: "₹3,500",
     originalPrice: "₹4,500",
     discount: "Save 22%",
-    image: cockatielImg,
-    thumb: cockatielImg,
+    image: cockatielCrop,
+    thumb: cockatielThumb,
     tagline: "Gentle, whistle virtuoso for flats and first-time companion bird parents.",
     description: "Affectionate crested parakeets that serenade their families with melodic whistling and love gentle crest scratches.",
     talking: "Whistle Virtuoso",
     lifespan: "15–20 Years",
     temperament: "Gentle & Musical",
     size: "Small (32 cm)",
-    accentColor: "#F59E0B",
   },
   {
     id: "macaw",
@@ -94,15 +96,14 @@ const BIRDS = [
     price: "₹1,20,000",
     originalPrice: "₹1,40,000",
     discount: "Save 15%",
-    image: macawImg,
-    thumb: macawImg,
+    image: macawCrop,
+    thumb: macawThumb,
     tagline: "Breathtaking sovereign with deep affection, regal colors & lifelong loyalty.",
     description: "The grand sovereign of South American canopies, possessing striking turquoise and gold plumage with a gentle giant disposition.",
     talking: "Commands Joy",
     lifespan: "50–65 Years",
     temperament: "Devoted & Regal",
     size: "Extra Large (85 cm)",
-    accentColor: "#0284C7",
   },
   {
     id: "green-cheek",
@@ -113,15 +114,14 @@ const BIRDS = [
     price: "₹10,500",
     originalPrice: "₹13,000",
     discount: "Save 19%",
-    image: greenImg,
-    thumb: greenImg,
+    image: greenCrop,
+    thumb: greenThumb,
     tagline: "Low vocal volume, affectionate personality, and love for shoulder cuddles.",
     description: "Quiet, charming pocket companions that thrive in apartments while showering their owners with boundless curiosity and warmth.",
     talking: "Soft Chirper",
     lifespan: "15–20 Years",
     temperament: "Cuddly & Inquisitive",
     size: "Compact (25 cm)",
-    accentColor: "#10B981",
   },
   {
     id: "pineapple",
@@ -132,15 +132,14 @@ const BIRDS = [
     price: "₹12,000",
     originalPrice: "₹14,500",
     discount: "Save 17%",
-    image: pineImg,
-    thumb: pineImg,
+    image: pineCrop,
+    thumb: pineThumb,
     tagline: "Sweet peach hues, non-stop playful antics, and very quiet vocal presence.",
     description: "Vibrant mutation exhibiting glowing sunburst chest tones and a gentle, whimsical temperament perfect for family life.",
     talking: "Quiet Chirper",
     lifespan: "20–25 Years",
     temperament: "Playful & Curious",
     size: "Compact (26 cm)",
-    accentColor: "#10B981",
   },
 ];
 
@@ -246,37 +245,6 @@ export default function ModernHero() {
         }
       `}</style>
 
-      {/* ── Ambient Radial Glows (Green & Orange Theme) ── */}
-      <div style={{ position: "absolute", inset: 0, pointerEvents: "none", zIndex: 0, overflow: "hidden" }}>
-        {/* Emerald Aura Center-Right */}
-        <div
-          className="hero-glow-blob"
-          style={{
-            position: "absolute",
-            width: "clamp(400px, 50vw, 750px)",
-            height: "clamp(400px, 50vw, 750px)",
-            top: "-10%",
-            right: "5%",
-            background: "radial-gradient(circle, rgba(22, 163, 74, 0.18) 0%, transparent 68%)",
-            borderRadius: "50%",
-            filter: "blur(60px)",
-          }}
-        />
-        {/* Warm Sunset Orange Aura Top-Left */}
-        <div
-          style={{
-            position: "absolute",
-            width: "clamp(300px, 35vw, 500px)",
-            height: "clamp(300px, 35vw, 500px)",
-            bottom: "0%",
-            left: "-5%",
-            background: "radial-gradient(circle, rgba(249, 115, 22, 0.14) 0%, transparent 70%)",
-            borderRadius: "50%",
-            filter: "blur(50px)",
-          }}
-        />
-      </div>
-
       {/* ── Main Container ── */}
       <div
         style={{
@@ -335,38 +303,24 @@ export default function ModernHero() {
                 margin: "0 0 22px 0",
               }}
             >
-              <span className="text-emerald-600">Feather</span><span className="text-orange-500">Town</span> Helps you <br />
+              <span style={{ color: "#16A34A" }}>Feather</span><span style={{ color: "#EA580C" }}>Town</span> Helps you <br />
               to know &amp; adopt <br />
-              <span className="bg-gradient-to-r from-emerald-600 to-orange-500 bg-clip-text text-transparent">Healthy Birds</span>
+              <span style={{ color: "#16A34A" }}>Healthy Companion Birds</span>
             </h1>
 
             {/* Green Card with Orange Button */}
             <div
               className="t-hover-lift"
               style={{
-                background: "linear-gradient(135deg, #15803D 0%, #16A34A 100%)",
+                background: "#15803D",
                 borderRadius: 24,
                 padding: "clamp(20px, 3vw, 26px)",
-                boxShadow: "0 18px 36px rgba(22, 163, 74, 0.22)",
+                boxShadow: "0 18px 36px rgba(21, 128, 61, 0.2)",
                 maxWidth: 480,
                 position: "relative",
                 overflow: "hidden",
               }}
             >
-              {/* Subtle light sheen overlay */}
-              <div
-                style={{
-                  position: "absolute",
-                  top: -50,
-                  right: -50,
-                  width: 160,
-                  height: 160,
-                  borderRadius: "50%",
-                  background: "radial-gradient(circle, rgba(255, 255, 255, 0.18) 0%, transparent 70%)",
-                  pointerEvents: "none",
-                }}
-              />
-
               <p
                 style={{
                   fontSize: 13.5,
@@ -386,7 +340,7 @@ export default function ModernHero() {
                     to="/birds"
                     className="t-btn-press"
                     style={{
-                      background: "linear-gradient(135deg, #F97316 0%, #EA580C 100%)",
+                      background: "#EA580C",
                       color: "#FFFFFF",
                       padding: "11px 24px",
                       borderRadius: 999,
@@ -396,7 +350,7 @@ export default function ModernHero() {
                       display: "inline-flex",
                       alignItems: "center",
                       gap: 8,
-                      boxShadow: "0 6px 18px rgba(234, 88, 12, 0.45)",
+                      boxShadow: "0 4px 14px rgba(234, 88, 12, 0.4)",
                       transition: "box-shadow 0.2s, transform 0.2s",
                     }}
                   >
@@ -414,9 +368,8 @@ export default function ModernHero() {
                     rel="noreferrer"
                     className="t-btn-press"
                     style={{
-                      background: "rgba(255, 255, 255, 0.2)",
-                      backdropFilter: "blur(10px)",
-                      border: "1px solid rgba(255, 255, 255, 0.35)",
+                      background: "rgba(255, 255, 255, 0.15)",
+                      border: "1px solid rgba(255, 255, 255, 0.3)",
                       color: "#FFFFFF",
                       padding: "10px 20px",
                       borderRadius: 999,
@@ -437,7 +390,7 @@ export default function ModernHero() {
           </div>
 
           {/* ══════════════════════════════════════════
-              RIGHT COLUMN: Perched Bird on Branch + Translucent Info Card
+              RIGHT COLUMN: Dedicated Bird Showcase Card
              ══════════════════════════════════════════ */}
           <div
             style={{
@@ -446,124 +399,262 @@ export default function ModernHero() {
               flexDirection: "column",
               alignItems: "center",
               justifyContent: "center",
+              width: "100%",
             }}
           >
-            {/* The Main Hero Perched Bird Image */}
+            {/* The Main Elevated Showcase Card */}
             <div
+              className="t-hover-lift"
               style={{
-                position: "relative",
                 width: "100%",
                 maxWidth: 520,
-                borderRadius: 28,
+                background: "#FFFFFF",
+                borderRadius: 24,
                 overflow: "hidden",
-                boxShadow: "0 20px 48px rgba(15, 23, 42, 0.08)",
                 border: "1px solid #E2E8F0",
+                boxShadow: "0 16px 40px -4px rgba(15, 23, 42, 0.08), 0 4px 12px -2px rgba(15, 23, 42, 0.03)",
               }}
             >
-              <img
-                src={activeBird.image}
-                alt={activeBird.name}
-                className="hero-bird-perched"
-                style={{
-                  width: "100%",
-                  height: "auto",
-                  maxHeight: 520,
-                  objectFit: "cover",
-                  display: "block",
-                  transition: "opacity 0.4s ease",
-                }}
-              />
-
-              {/* Translucent Frosted Glass Species Card */}
+              {/* STAGE: Dedicated Fixed 4:3 Aspect Ratio Image Viewport (Bird is NEVER covered!) */}
               <div
                 style={{
-                  position: "absolute",
-                  bottom: 20,
-                  left: 20,
-                  right: 20,
-                  background: "rgba(255, 255, 255, 0.92)",
-                  backdropFilter: "blur(16px)",
-                  WebkitBackdropFilter: "blur(16px)",
-                  border: "1px solid #E2E8F0",
-                  borderRadius: 20,
-                  padding: "16px 20px",
-                  boxShadow: "0 12px 32px rgba(15, 23, 42, 0.08)",
+                  position: "relative",
+                  width: "100%",
+                  aspectRatio: "4 / 3",
+                  background: "#0F172A",
+                  overflow: "hidden",
                 }}
               >
-                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 6 }}>
+                <img
+                  key={activeBird.id}
+                  src={activeBird.image}
+                  alt={activeBird.name}
+                  style={{
+                    width: "100%",
+                    height: "100%",
+                    objectFit: "cover",
+                    objectPosition: "center",
+                    display: "block",
+                    transition: "opacity 0.3s ease, transform 0.4s ease",
+                  }}
+                />
+
+                {/* Top-Left Status Pill */}
+                <div
+                  style={{
+                    position: "absolute",
+                    top: 14,
+                    left: 14,
+                    background: "#FFFFFF",
+                    color: "#16A34A",
+                    border: "1px solid #BBF7D0",
+                    padding: "4px 12px",
+                    borderRadius: 999,
+                    fontSize: 11,
+                    fontWeight: 800,
+                    letterSpacing: 0.5,
+                    display: "inline-flex",
+                    alignItems: "center",
+                    gap: 6,
+                    boxShadow: "0 2px 8px rgba(0, 0, 0, 0.12)",
+                  }}
+                >
+                  <span style={{ width: 6, height: 6, borderRadius: "50%", background: "#16A34A" }} />
+                  <span>Available at Aviary</span>
+                </div>
+
+                {/* Top-Right Discount Badge */}
+                <div
+                  style={{
+                    position: "absolute",
+                    top: 14,
+                    right: 14,
+                    background: "#EA580C",
+                    color: "#FFFFFF",
+                    padding: "4px 12px",
+                    borderRadius: 999,
+                    fontSize: 11,
+                    fontWeight: 800,
+                    letterSpacing: 0.4,
+                    boxShadow: "0 2px 8px rgba(234, 88, 12, 0.3)",
+                  }}
+                >
+                  {activeBird.discount}
+                </div>
+              </div>
+
+              {/* METADATA: Clean Structured Info Directly Below (100% visible, perfectly aligned) */}
+              <div style={{ padding: "20px 22px 22px" }}>
+                {/* Title & Price Row */}
+                <div
+                  style={{
+                    display: "flex",
+                    justifyContent: "space-between",
+                    alignItems: "flex-start",
+                    gap: 12,
+                    marginBottom: 10,
+                  }}
+                >
                   <div>
-                    <h3 style={{ fontSize: 16, fontWeight: 800, color: "#0F172A", margin: "0 0 2px 0" }}>
-                      {activeBird.name}
-                    </h3>
-                    <span style={{ fontSize: 10.5, color: "#15803D", fontWeight: 700, fontStyle: "italic" }}>
-                      {activeBird.species}
-                    </span>
-                  </div>
-                  <div style={{ textAlign: "right" }}>
-                    <div style={{ fontSize: 15, fontWeight: 900, color: "#16A34A" }}>
-                      {activeBird.price}
-                    </div>
-                    <span
+                    <h3
                       style={{
-                        fontSize: 9.5,
+                        fontSize: 20,
                         fontWeight: 800,
-                        color: "#C2410C",
-                        background: "#FFEDD5",
-                        border: "1px solid #FED7AA",
-                        padding: "2px 7px",
-                        borderRadius: 999,
+                        color: "#0F172A",
+                        letterSpacing: "-0.02em",
+                        margin: "0 0 3px 0",
                       }}
                     >
-                      {activeBird.discount}
-                    </span>
+                      {activeBird.name}
+                    </h3>
+                    <div
+                      style={{
+                        fontSize: 12,
+                        color: "#16A34A",
+                        fontWeight: 600,
+                        fontStyle: "italic",
+                      }}
+                    >
+                      {activeBird.species}
+                    </div>
+                  </div>
+
+                  <div style={{ textAlign: "right" }}>
+                    <div
+                      style={{
+                        fontSize: 22,
+                        fontWeight: 900,
+                        color: "#16A34A",
+                        letterSpacing: "-0.02em",
+                      }}
+                    >
+                      {activeBird.price}
+                    </div>
+                    <div
+                      style={{
+                        fontSize: 12,
+                        color: "#94A3B8",
+                        fontWeight: 600,
+                        textDecoration: "line-through",
+                      }}
+                    >
+                      {activeBird.originalPrice}
+                    </div>
                   </div>
                 </div>
 
+                {/* Description */}
                 <p
                   style={{
-                    fontSize: 12,
+                    fontSize: 13,
                     color: "#475569",
-                    lineHeight: 1.5,
-                    margin: "0 0 12px 0",
+                    lineHeight: 1.55,
+                    margin: "0 0 16px 0",
                   }}
                 >
                   {activeBird.description}
                 </p>
 
-                {/* 3 Quick Spec Badges */}
+                {/* 3 Specifications Grid with Clean Slate Styling */}
                 <div
                   style={{
                     display: "grid",
                     gridTemplateColumns: "repeat(3, 1fr)",
                     gap: 8,
-                    paddingTop: 10,
-                    borderTop: "1px solid #E2E8F0",
+                    background: "#F8FAFC",
+                    border: "1px solid #E2E8F0",
+                    borderRadius: 14,
+                    padding: "10px 14px",
+                    marginBottom: 16,
+                    textAlign: "center",
                   }}
                 >
                   <div>
-                    <div style={{ fontSize: 10, color: "#64748B", textTransform: "uppercase" }}>Mimicry</div>
-                    <div style={{ fontSize: 12, fontWeight: 700, color: "#0F172A" }}>{activeBird.talking}</div>
+                    <div style={{ fontSize: 9.5, color: "#64748B", fontWeight: 700, textTransform: "uppercase", letterSpacing: 0.5 }}>
+                      Mimicry
+                    </div>
+                    <div style={{ fontSize: 12.5, fontWeight: 800, color: "#0F172A", marginTop: 2 }}>
+                      {activeBird.talking}
+                    </div>
+                  </div>
+                  <div style={{ borderLeft: "1px solid #E2E8F0", borderRight: "1px solid #E2E8F0" }}>
+                    <div style={{ fontSize: 9.5, color: "#64748B", fontWeight: 700, textTransform: "uppercase", letterSpacing: 0.5 }}>
+                      Lifespan
+                    </div>
+                    <div style={{ fontSize: 12.5, fontWeight: 800, color: "#0F172A", marginTop: 2 }}>
+                      {activeBird.lifespan}
+                    </div>
                   </div>
                   <div>
-                    <div style={{ fontSize: 10, color: "#64748B", textTransform: "uppercase" }}>Lifespan</div>
-                    <div style={{ fontSize: 12, fontWeight: 700, color: "#0F172A" }}>{activeBird.lifespan}</div>
+                    <div style={{ fontSize: 9.5, color: "#64748B", fontWeight: 700, textTransform: "uppercase", letterSpacing: 0.5 }}>
+                      Nature
+                    </div>
+                    <div style={{ fontSize: 12.5, fontWeight: 800, color: "#0F172A", marginTop: 2 }}>
+                      {activeBird.temperament}
+                    </div>
                   </div>
-                  <div>
-                    <div style={{ fontSize: 10, color: "#64748B", textTransform: "uppercase" }}>Nature</div>
-                    <div style={{ fontSize: 12, fontWeight: 700, color: "#0F172A" }}>{activeBird.temperament}</div>
-                  </div>
+                </div>
+
+                {/* Action Button Row */}
+                <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10 }}>
+                  <Link
+                    to="/birds"
+                    className="t-btn-press"
+                    style={{
+                      background: "#16A34A",
+                      color: "#FFFFFF",
+                      textAlign: "center",
+                      padding: "10px 14px",
+                      borderRadius: 12,
+                      fontSize: 12.5,
+                      fontWeight: 800,
+                      textDecoration: "none",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      gap: 6,
+                    }}
+                  >
+                    <span>Adopt Bird</span>
+                    <span>→</span>
+                  </Link>
+                  <a
+                    href={`https://wa.me/${waNum}?text=${encodeURIComponent(
+                      `Hi FeatherTown! I'm interested in adopting a ${activeBird.name} (${activeBird.price}). Is it available?`
+                    )}`}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="t-btn-press"
+                    style={{
+                      background: "#F8FAFC",
+                      color: "#0F172A",
+                      border: "1px solid #CBD5E1",
+                      textAlign: "center",
+                      padding: "10px 14px",
+                      borderRadius: 12,
+                      fontSize: 12.5,
+                      fontWeight: 700,
+                      textDecoration: "none",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      gap: 6,
+                    }}
+                  >
+                    <span>💬 WhatsApp</span>
+                  </a>
                 </div>
               </div>
             </div>
 
-            {/* Species Selector Carousel Thumbnails (Clean Light SaaS Bar) */}
+            {/* Species Selector Carousel (Clean Light SaaS Bar) */}
             <div
               style={{
-                marginTop: 20,
+                marginTop: 16,
                 width: "100%",
                 maxWidth: 520,
                 background: "#FFFFFF",
-                borderRadius: 20,
+                borderRadius: 18,
                 padding: "10px 12px",
                 border: "1px solid #E2E8F0",
                 boxShadow: "0 4px 16px rgba(15, 23, 42, 0.04)",
@@ -584,7 +675,7 @@ export default function ModernHero() {
                   style={{
                     height: "100%",
                     width: `${timerProgress}%`,
-                    background: "linear-gradient(90deg, #16A34A, #F97316)",
+                    background: "#16A34A",
                     transition: "width 0.08s linear",
                   }}
                 />
@@ -608,27 +699,26 @@ export default function ModernHero() {
                         setTimerProgress(0);
                       }}
                       style={{
-                        background: isSelected ? "#ECFDF5" : "#F8FAFC",
+                        background: isSelected ? "#F0FDF4" : "#FFFFFF",
                         border: isSelected ? "1.5px solid #16A34A" : "1px solid #E2E8F0",
-                        borderRadius: 14,
+                        borderRadius: 12,
                         padding: "6px 2px",
                         cursor: "pointer",
                         display: "flex",
                         flexDirection: "column",
                         alignItems: "center",
-                        gap: 3,
-                        transition: "all 0.2s",
-                        transform: isSelected ? "scale(1.04)" : "none",
+                        gap: 4,
+                        transition: "all 0.18s ease",
                       }}
                     >
                       <div
                         style={{
-                          width: 28,
-                          height: 28,
+                          width: 30,
+                          height: 30,
                           borderRadius: "50%",
                           overflow: "hidden",
-                          background: "#F1F5F9",
-                          border: isSelected ? "1.5px solid #16A34A" : "1px solid #CBD5E1",
+                          background: "#F8FAFC",
+                          border: isSelected ? "1.5px solid #16A34A" : "1px solid #E2E8F0",
                         }}
                       >
                         <img
@@ -640,8 +730,8 @@ export default function ModernHero() {
                       <span
                         style={{
                           fontSize: 9.5,
-                          fontWeight: isSelected ? 800 : 500,
-                          color: isSelected ? "#059669" : "#64748B",
+                          fontWeight: isSelected ? 800 : 600,
+                          color: isSelected ? "#16A34A" : "#64748B",
                           whiteSpace: "nowrap",
                           overflow: "hidden",
                           textOverflow: "ellipsis",
@@ -697,8 +787,8 @@ export default function ModernHero() {
                       width: 42,
                       height: 42,
                       borderRadius: 14,
-                      background: "linear-gradient(135deg, #ECFDF5 0%, #DCFCE7 100%)",
-                      border: "1px solid #A7F3D0",
+                      background: "#ECFDF5",
+                      border: "1px solid #BBF7D0",
                       display: "flex",
                       alignItems: "center",
                       justifyContent: "center",

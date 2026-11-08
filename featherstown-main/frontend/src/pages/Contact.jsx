@@ -146,7 +146,7 @@ export default function Contact() {
                   className="ft-btn-hover"
                   style={{
                     width: "100%",
-                    background: "linear-gradient(135deg, #10B981, #059669)",
+                    background: "#16A34A",
                     color: "#FFFFFF",
                     border: "none",
                     padding: "13px 20px",
@@ -210,7 +210,7 @@ export default function Contact() {
                   }}
                   className="ft-btn-hover"
                   style={{
-                    background: "linear-gradient(135deg, #10B981, #059669)",
+                    background: "#16A34A",
                     color: "#FFFFFF",
                     border: "none",
                     padding: "10px 20px",
@@ -324,7 +324,7 @@ export default function Contact() {
                   className="ft-btn-hover"
                   style={{
                     width: "100%",
-                    background: "linear-gradient(135deg, #10B981, #059669)",
+                    background: "#16A34A",
                     color: "#FFFFFF",
                     border: "none",
                     padding: "13px",

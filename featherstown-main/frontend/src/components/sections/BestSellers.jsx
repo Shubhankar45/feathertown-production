@@ -258,7 +258,7 @@ export default function BestSellers() {
                     padding: "10px",
                     borderRadius: 14,
                     border: "none",
-                    background: "linear-gradient(135deg, #16A34A, #15803D)",
+                    background: "#16A34A",
                     color: "#FFFFFF",
                     fontSize: 12.5,
                     fontWeight: 800,

@@ -82,7 +82,7 @@ export default function ExploreVideoSection() {
                 to="/birds"
                 className="t-btn-press"
                 style={{
-                  background: "linear-gradient(135deg, #16A34A 0%, #15803D 100%)",
+                  background: "#16A34A",
                   color: "#FFFFFF",
                   padding: "12px 26px",
                   borderRadius: 999,

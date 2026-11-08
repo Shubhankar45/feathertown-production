@@ -5,7 +5,7 @@ export default function PageBanner({ eyebrow, title, accent, desc }) {
   return (
     <section
       style={{
-        background: "linear-gradient(180deg, #F0FDF4 0%, #F8FAFC 100%)",
+        background: "#F8FAFC",
         padding: "clamp(40px, 5vw, 56px) clamp(16px, 3.5vw, 48px) clamp(32px, 4vw, 44px)",
         textAlign: "center",
         borderBottom: "1px solid #E2E8F0",
@@ -14,19 +14,6 @@ export default function PageBanner({ eyebrow, title, accent, desc }) {
         overflow: "hidden",
       }}
     >
-      {/* Soft Ambient Radial Aura */}
-      <div
-        style={{
-          position: "absolute",
-          top: "-50%",
-          left: "50%",
-          transform: "translateX(-50%)",
-          width: "clamp(400px, 60vw, 800px)",
-          height: "300px",
-          background: "radial-gradient(ellipse, rgba(22, 163, 74, 0.08) 0%, transparent 70%)",
-          pointerEvents: "none",
-        }}
-      />
 
       <div style={{ maxWidth: 980, margin: "0 auto", position: "relative", zIndex: 2 }}>
         {/* Breadcrumb Navigation */}

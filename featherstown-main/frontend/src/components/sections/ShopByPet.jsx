@@ -170,7 +170,7 @@ export default function ShopByPet() {
           to="/birds"
           className="t-btn-press"
           style={{
-            background: "linear-gradient(135deg, #F97316 0%, #EA580C 100%)",
+            background: "#EA580C",
             color: "#FFFFFF",
             padding: "11px 28px",
             borderRadius: 999,

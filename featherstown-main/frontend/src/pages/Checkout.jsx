@@ -61,7 +61,7 @@ export default function Checkout() {
           to="/accessories"
           className="ft-btn-hover"
           style={{
-            background: "linear-gradient(135deg, #10B981, #059669)",
+            background: "#16A34A",
             color: "#fff",
             padding: "12px 26px",
             borderRadius: 999,
@@ -368,7 +368,7 @@ export default function Checkout() {
                 className="t-btn-press"
                 style={{
                   width: "100%",
-                  background: "linear-gradient(135deg, #16A34A, #15803D)",
+                  background: "#16A34A",
                   color: "#FFFFFF",
                   border: "none",
                   padding: "15px",

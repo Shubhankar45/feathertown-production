@@ -93,7 +93,7 @@ export default function About() {
                 to="/birds"
                 className="ft-btn-hover"
                 style={{
-                  background: "linear-gradient(135deg, #10B981, #059669)",
+                  background: "#16A34A",
                   color: "#FFFFFF",
                   padding: "12px 26px",
                   borderRadius: 999,

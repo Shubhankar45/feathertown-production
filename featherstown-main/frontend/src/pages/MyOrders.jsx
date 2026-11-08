@@ -176,7 +176,7 @@ export default function MyOrders() {
               to="/login"
               state={{ from: location }}
               style={{
-                background: "linear-gradient(135deg, #10B981, #059669)",
+                background: "#16A34A",
                 color: "#FFFFFF",
                 padding: "12px 28px",
                 borderRadius: 999,
@@ -210,7 +210,7 @@ export default function MyOrders() {
             <Link
               to="/accessories"
               style={{
-                background: "linear-gradient(135deg, #10B981, #059669)",
+                background: "#16A34A",
                 color: "#FFFFFF",
                 padding: "10px 22px",
                 borderRadius: 999,
