@@ -17,12 +17,12 @@ services:
       #   MONGO_URI: "mongodb+srv://<user>:<password>@<cluster>.mongodb.net/feathertown?retryWrites=true&w=majority"
       # For Local Offline MongoDB:
       #   MONGO_URI: "mongodb://mongo:27017/feathertown"
-      - MONGO_URI=${MONGO_URI:-mongodb://mongo:27017/feathertown}
+      - MONGO_URI=${MONGO_URI:-mongodb+srv://shubhankarpatel2004_db_user:GlM5LE0eaRSDS3T9@cluster0.ugffxs0.mongodb.net/feathertown?retryWrites=true&w=majority&appName=Cluster0}
       
       # ── Server Config ──
       - PORT=5000
       - NODE_ENV=${NODE_ENV:-production}
-      - JWT_SECRET=${JWT_SECRET:?JWT_SECRET environment variable is required}
+      - JWT_SECRET=${JWT_SECRET:-d01774a72c11cc4a1de6f9c19038358b6bdcd9612ba99e24f405a51a0d56d10c}
       - JWT_EXPIRES_IN=${JWT_EXPIRES_IN:-8h}
       
       # ── Razorpay Online Payments (Optional) ──
@@ -36,9 +36,9 @@ services:
       - MAIL_HOST=${MAIL_HOST:-smtp.hostinger.com}
       - MAIL_PORT=${MAIL_PORT:-465}
       - MAIL_SECURE=${MAIL_SECURE:-true}
-      - MAIL_USER=${MAIL_USER:-}
-      - MAIL_PASS=${MAIL_PASS:-}
-      - MAIL_FROM=${MAIL_FROM:-}
+      - MAIL_USER=${MAIL_USER:-support@feathertown.online}
+      - MAIL_PASS=${MAIL_PASS:-Bineet@2005}
+      - MAIL_FROM=${MAIL_FROM:-support@feathertown.online}
       - MAIL_FROM_NAME=${MAIL_FROM_NAME:-FeatherTown 🦜}
     networks:
       - feathertown-network
