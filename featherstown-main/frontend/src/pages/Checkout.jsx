@@ -365,18 +365,18 @@ export default function Checkout() {
               <button
                 type="submit"
                 disabled={placing}
-                className="ft-btn-hover"
+                className="t-btn-press"
                 style={{
                   width: "100%",
-                  background: "linear-gradient(135deg, #10B981, #059669)",
+                  background: "linear-gradient(135deg, #16A34A, #15803D)",
                   color: "#FFFFFF",
                   border: "none",
                   padding: "15px",
                   borderRadius: 999,
-                  fontWeight: 700,
+                  fontWeight: 800,
                   fontSize: 16,
                   cursor: "pointer",
-                  boxShadow: "0 4px 16px rgba(16, 185, 129, 0.25)",
+                  boxShadow: "0 4px 16px rgba(22, 163, 74, 0.3)",
                 }}
               >
                 {placing ? "Processing Order…" : paymentMethod === "online" ? `Pay ₹${finalTotal.toLocaleString("en-IN")} Securely` : `Confirm Order for ₹${finalTotal.toLocaleString("en-IN")}`}

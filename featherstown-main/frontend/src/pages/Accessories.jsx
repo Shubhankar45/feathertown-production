@@ -6,6 +6,7 @@ import { useCart } from "../context/CartContext";
 import { useSettings } from "../context/SettingsContext";
 import { toast } from "../components/ui/Toast";
 import { trackAddToCart } from "../utils/analytics";
+import SpotlightCard from "../components/react-bits/SpotlightCard";
 
 export default function Accessories() {
   const [searchParams] = useSearchParams();
@@ -116,17 +117,17 @@ export default function Accessories() {
                 <button
                   key={c}
                   onClick={() => setCategory(c)}
-                  className="ft-btn-hover"
+                  className="t-btn-press"
                   style={{
                     padding: "8px 18px",
                     borderRadius: 999,
                     fontSize: 13,
-                    fontWeight: active ? 700 : 600,
+                    fontWeight: active ? 800 : 600,
                     cursor: "pointer",
                     border: active ? "none" : "1.5px solid #E2E8F0",
-                    background: active ? "linear-gradient(135deg, #10B981, #059669)" : "#F8FAFC",
+                    background: active ? "linear-gradient(135deg, #16A34A, #15803D)" : "#F8FAFC",
                     color: active ? "#FFFFFF" : "#64748B",
-                    boxShadow: active ? "0 4px 14px rgba(5, 150, 105, 0.25)" : "none",
+                    boxShadow: active ? "0 4px 14px rgba(22, 163, 74, 0.28)" : "none",
                   }}
                 >
                   {c}
@@ -263,29 +264,14 @@ export default function Accessories() {
             }}
           >
             {filteredItems.map((prod) => (
-              <div
+              <SpotlightCard
                 key={prod.id || prod._id}
-                className="ft-card-lift"
+                spotlightColor="rgba(22, 163, 74, 0.14)"
+                borderColor="#E2E8F0"
+                className="t-hover-lift group flex flex-col h-full"
                 style={{
-                  background: "#FFFFFF",
-                  borderRadius: 22,
-                  border: "1px solid #E2E8F0",
-                  overflow: "hidden",
-                  display: "flex",
-                  flexDirection: "column",
-                  boxShadow: "0 2px 8px rgba(15, 23, 42, 0.04)",
-                  position: "relative",
-                  transition: "transform 0.28s cubic-bezier(.34,1.56,.64,1), box-shadow 0.28s, border-color 0.2s",
-                }}
-                onMouseEnter={(e) => {
-                  e.currentTarget.style.transform = "translateY(-5px)";
-                  e.currentTarget.style.borderColor = "#059669";
-                  e.currentTarget.style.boxShadow = "0 10px 24px rgba(5, 150, 105, 0.12)";
-                }}
-                onMouseLeave={(e) => {
-                  e.currentTarget.style.transform = "none";
-                  e.currentTarget.style.borderColor = "#E2E8F0";
-                  e.currentTarget.style.boxShadow = "0 2px 8px rgba(15, 23, 42, 0.04)";
+                  borderRadius: 24,
+                  boxShadow: "0 4px 18px rgba(15, 23, 42, 0.04)",
                 }}
               >
                 {/* Badge Overlay */}
@@ -295,15 +281,15 @@ export default function Accessories() {
                       position: "absolute",
                       top: 12,
                       left: 12,
-                      zIndex: 2,
-                      background: prod.badgeColor || "#059669",
+                      zIndex: 20,
+                      background: prod.badgeColor || "#16A34A",
                       color: "#FFFFFF",
                       fontSize: 10.5,
                       fontWeight: 800,
                       letterSpacing: 0.5,
                       padding: "4px 10px",
                       borderRadius: 999,
-                      boxShadow: "0 2px 6px rgba(0,0,0,0.15)",
+                      boxShadow: "0 2px 8px rgba(0,0,0,0.14)",
                     }}
                   >
                     {prod.badge}
@@ -313,12 +299,11 @@ export default function Accessories() {
                 {/* Product Image */}
                 <Link
                   to={prod.slug ? `/accessories/${prod.slug}` : `/accessories/${prod._id}`}
+                  className="t-img-zoom block relative"
                   style={{
-                    display: "block",
                     aspectRatio: "1/1",
                     background: "#F8FAFC",
                     overflow: "hidden",
-                    position: "relative",
                     borderBottom: "1px solid #E2E8F0",
                   }}
                 >
@@ -327,25 +312,18 @@ export default function Accessories() {
                     alt={prod.name}
                     loading="lazy"
                     decoding="async"
-                    style={{
-                      width: "100%",
-                      height: "100%",
-                      objectFit: "cover",
-                      transition: "transform 0.4s ease",
-                    }}
-                    onMouseEnter={(e) => (e.currentTarget.style.transform = "scale(1.06)")}
-                    onMouseLeave={(e) => (e.currentTarget.style.transform = "scale(1)")}
+                    className="w-full h-full object-cover transition-transform duration-500 ease-out group-hover:scale-108"
                   />
                 </Link>
 
                 {/* Details */}
-                <div style={{ padding: "clamp(12px, 2.5vw, 16px)", display: "flex", flexDirection: "column", flex: 1 }}>
+                <div style={{ padding: "clamp(14px, 2.5vw, 18px)", display: "flex", flexDirection: "column", flex: 1, zIndex: 10 }}>
                   <span
                     style={{
                       fontSize: 10.5,
-                      fontWeight: 700,
+                      fontWeight: 800,
                       textTransform: "uppercase",
-                      color: "#059669",
+                      color: "#16A34A",
                       letterSpacing: 0.8,
                       marginBottom: 4,
                     }}
@@ -355,9 +333,10 @@ export default function Accessories() {
 
                   <Link
                     to={prod.slug ? `/accessories/${prod.slug}` : `/accessories/${prod._id}`}
+                    className="group-hover:text-emerald-700 transition-colors"
                     style={{
-                      fontSize: "clamp(13px, 2vw, 14.5px)",
-                      fontWeight: 700,
+                      fontSize: "clamp(13.5px, 2vw, 15px)",
+                      fontWeight: 800,
                       color: "#0F172A",
                       textDecoration: "none",
                       lineHeight: 1.35,
@@ -372,9 +351,9 @@ export default function Accessories() {
                   </Link>
 
                   {/* Price & Rating */}
-                  <div style={{ marginTop: "auto", paddingTop: 6 }}>
+                  <div style={{ marginTop: "auto", paddingTop: 8 }}>
                     <div style={{ display: "flex", alignItems: "baseline", gap: 6, marginBottom: 4, flexWrap: "wrap" }}>
-                      <span style={{ fontSize: "clamp(14px, 2.2vw, 16px)", fontWeight: 800, color: "#059669" }}>
+                      <span style={{ fontSize: "clamp(15px, 2.2vw, 17px)", fontWeight: 900, color: "#16A34A" }}>
                         ₹{prod.price?.toLocaleString("en-IN")}
                       </span>
                       {prod.mrp && prod.mrp > prod.price && (
@@ -384,45 +363,37 @@ export default function Accessories() {
                       )}
                     </div>
 
-                    <div style={{ display: "flex", alignItems: "center", gap: 4, fontSize: 11, color: "#F59E0B", marginBottom: 10 }}>
+                    <div style={{ display: "flex", alignItems: "center", gap: 4, fontSize: 11, color: "#F59E0B", marginBottom: 12 }}>
                       <span>★★★★★</span>
-                      <span style={{ color: "#64748B" }}>({prod.reviewsCount || 120})</span>
+                      <span style={{ color: "#64748B", fontWeight: 600 }}>({prod.reviewsCount || 120})</span>
                     </div>
 
                     <button
                       onClick={() => handleAddToCart(prod)}
+                      className="t-btn-press"
                       style={{
                         width: "100%",
-                        background: "#059669",
+                        background: "linear-gradient(135deg, #16A34A, #15803D)",
                         color: "#FFFFFF",
                         border: "none",
-                        padding: "8px 10px",
-                        borderRadius: 12,
+                        padding: "9px 12px",
+                        borderRadius: 14,
                         fontSize: "clamp(12px, 1.8vw, 13px)",
-                        fontWeight: 700,
+                        fontWeight: 800,
                         cursor: "pointer",
                         display: "flex",
                         alignItems: "center",
                         justifyContent: "center",
                         gap: 6,
-                        boxShadow: "0 2px 8px rgba(5, 150, 105, 0.25)",
-                        transition: "transform 0.18s, background 0.18s",
-                      }}
-                      onMouseEnter={(e) => {
-                        e.currentTarget.style.transform = "translateY(-1px)";
-                        e.currentTarget.style.background = "#047857";
-                      }}
-                      onMouseLeave={(e) => {
-                        e.currentTarget.style.transform = "none";
-                        e.currentTarget.style.background = "#059669";
+                        boxShadow: "0 4px 12px rgba(22, 163, 74, 0.25)",
                       }}
                     >
-                      <span>🛒</span>
+                      <span>🛍️</span>
                       <span>Add to Cart</span>
                     </button>
                   </div>
                 </div>
-              </div>
+              </SpotlightCard>
             ))}
           </div>
         )}

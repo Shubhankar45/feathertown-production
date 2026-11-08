@@ -172,7 +172,7 @@ export default function AccessoryDetails() {
 
             {/* Price Box */}
             <div style={{ display: "flex", alignItems: "baseline", gap: 12, marginBottom: 16 }}>
-              <span style={{ fontSize: 28, fontWeight: 800, color: "#059669" }}>
+              <span style={{ fontSize: 30, fontWeight: 900, color: "#16A34A" }}>
                 ₹{item.price?.toLocaleString("en-IN")}
               </span>
               {item.mrp && item.mrp > item.price && (
@@ -181,7 +181,7 @@ export default function AccessoryDetails() {
                 </span>
               )}
               {item.mrp && item.mrp > item.price && (
-                <span style={{ fontSize: 12, fontWeight: 700, color: "#D97706", background: "#FEF3C7", border: "1px solid #FDE68A", padding: "3px 8px", borderRadius: 6 }}>
+                <span style={{ fontSize: 12, fontWeight: 800, color: "#C2410C", background: "#FFEDD5", border: "1px solid #FED7AA", padding: "3px 10px", borderRadius: 999 }}>
                   Save {Math.round(((item.mrp - item.price) / item.mrp) * 100)}%
                 </span>
               )}
@@ -189,8 +189,8 @@ export default function AccessoryDetails() {
 
             {/* Stock Pill */}
             <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 20 }}>
-              <span style={{ width: 8, height: 8, borderRadius: "50%", background: "#059669" }} />
-              <span style={{ fontSize: 13, fontWeight: 700, color: "#059669" }}>
+              <span style={{ width: 8, height: 8, borderRadius: "50%", background: "#16A34A" }} />
+              <span style={{ fontSize: 13, fontWeight: 700, color: "#16A34A" }}>
                 {item.stock > 0 ? `In Stock (Ships in 24 Hours)` : "Out of Stock"}
               </span>
             </div>
@@ -249,40 +249,41 @@ export default function AccessoryDetails() {
             <div style={{ display: "flex", gap: 12, flexWrap: "wrap", marginBottom: 28 }}>
               <button
                 onClick={handleAdd}
-                className="ft-btn-hover"
+                className="t-btn-press"
                 style={{
                   flex: 1,
-                  background: "linear-gradient(135deg, #10B981, #059669)",
+                  background: "linear-gradient(135deg, #16A34A, #15803D)",
                   color: "#FFFFFF",
                   border: "none",
                   padding: "14px 24px",
                   borderRadius: 999,
-                  fontWeight: 700,
-                  fontSize: 14.5,
+                  fontWeight: 800,
+                  fontSize: 14,
                   cursor: "pointer",
-                  boxShadow: "0 4px 14px rgba(5, 150, 105, 0.25)",
+                  boxShadow: "0 4px 16px rgba(22, 163, 74, 0.3)",
+                  minWidth: "min(100%, 160px)",
                 }}
               >
-                🛒 Add to Cart
+                Add to Cart 🛍️
               </button>
-
               <button
                 onClick={handleBuyNow}
-                className="ft-btn-hover"
+                className="t-btn-press"
                 style={{
                   flex: 1,
-                  background: "linear-gradient(135deg, #F59E0B, #D97706)",
+                  background: "linear-gradient(135deg, #F97316, #EA580C)",
                   color: "#FFFFFF",
                   border: "none",
                   padding: "14px 24px",
                   borderRadius: 999,
-                  fontWeight: 700,
-                  fontSize: 14.5,
+                  fontWeight: 800,
+                  fontSize: 14,
                   cursor: "pointer",
-                  boxShadow: "0 4px 14px rgba(245, 158, 11, 0.3)",
+                  boxShadow: "0 4px 16px rgba(249, 115, 22, 0.35)",
+                  minWidth: "min(100%, 160px)",
                 }}
               >
-                ⚡ Buy Now
+                Buy Now ⚡
               </button>
             </div>
 

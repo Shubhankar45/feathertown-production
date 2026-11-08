@@ -79,14 +79,14 @@ export default function Cart() {
                   <span style={{ color: "#0F172A" }}>
                     {freeShippingUnlocked ? "🎉 You've unlocked FREE Shipping!" : `🚚 Add ₹${amountNeeded} more for FREE shipping`}
                   </span>
-                  <span style={{ color: "#059669" }}>{progressPercent}%</span>
+                  <span style={{ color: "#16A34A", fontWeight: 800 }}>{progressPercent}%</span>
                 </div>
                 <div style={{ width: "100%", height: 6, background: "#E2E8F0", borderRadius: 99, overflow: "hidden" }}>
                   <div
                     style={{
                       width: `${progressPercent}%`,
                       height: "100%",
-                      background: "linear-gradient(90deg, #10B981, #059669)",
+                      background: "linear-gradient(90deg, #16A34A, #F97316)",
                       borderRadius: 99,
                       transition: "width 0.3s ease",
                     }}
@@ -248,30 +248,30 @@ export default function Cart() {
                   display: "flex",
                   justifyContent: "space-between",
                   fontSize: 18,
-                  fontWeight: 800,
+                  fontWeight: 900,
                   color: "#0F172A",
                 }}
               >
                 <span>Total Amount</span>
-                <span style={{ color: "#059669" }}>
+                <span style={{ color: "#16A34A" }}>
                   ₹{(subtotal + (freeShippingUnlocked ? 0 : 99)).toLocaleString("en-IN")}
                 </span>
               </div>
 
               <button
                 onClick={() => navigate("/checkout")}
-                className="ft-btn-hover"
+                className="t-btn-press"
                 style={{
                   width: "100%",
-                  background: "linear-gradient(135deg, #10B981, #059669)",
+                  background: "linear-gradient(135deg, #16A34A, #15803D)",
                   color: "#FFFFFF",
                   border: "none",
                   padding: "14px",
                   borderRadius: 999,
-                  fontWeight: 700,
+                  fontWeight: 800,
                   fontSize: 15,
                   cursor: "pointer",
-                  boxShadow: "0 4px 14px rgba(16, 185, 129, 0.25)",
+                  boxShadow: "0 4px 14px rgba(22, 163, 74, 0.3)",
                 }}
               >
                 Proceed to Checkout →
