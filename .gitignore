@@ -33,6 +33,7 @@ __pycache__/
 # ── Node.js ──
 **/node_modules/
 **/dist/
+!featherstown-main/frontend/dist/**
 .vite/
 *.log
 

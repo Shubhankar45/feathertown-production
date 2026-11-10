@@ -1,0 +1,20 @@
+# robots.txt for FeatherTown (https://www.feathertown.online)
+User-agent: *
+Allow: /
+Allow: /birds
+Allow: /accessories
+Allow: /about
+Allow: /compare
+Allow: /reviews
+Allow: /contact
+Allow: /privacy-policy
+Allow: /terms
+
+# Disallow hidden admin console and private endpoints
+Disallow: /ft-console-7k2m/
+Disallow: /api/admin/
+Disallow: /api/auth/
+Disallow: /checkout
+Disallow: /my-orders
+
+Sitemap: https://www.feathertown.online/sitemap.xml
