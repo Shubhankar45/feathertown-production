@@ -52,7 +52,7 @@ export default function NotFound() {
             marginBottom: 16,
           }}
         >
-          🦜
+          
         </div>
 
         <div

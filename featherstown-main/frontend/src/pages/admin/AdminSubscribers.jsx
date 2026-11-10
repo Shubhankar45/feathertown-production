@@ -79,7 +79,7 @@ export default function AdminSubscribers() {
       >
         <div>
           <h1 style={{ fontSize: 26, fontWeight: 800, color: "#0F172A", marginBottom: 6 }}>
-            📬 Email Subscribers ({subscribers.length})
+            Email Subscribers ({subscribers.length})
           </h1>
           <p style={{ color: "#475569", fontSize: 14 }}>
             Newsletter signups who receive welcome emails, breeding updates, and seasonal care discounts.
@@ -103,7 +103,7 @@ export default function AdminSubscribers() {
             boxShadow: "0 1px 3px rgba(0, 0, 0, 0.04)",
           }}
         >
-          <span>📥</span> Export CSV
+          <span style={{ display: "inline-flex", alignItems: "center", gap: 6 }}><Download size={15} /> <span>Export CSV</span></span>
         </button>
       </div>
 
@@ -143,7 +143,7 @@ export default function AdminSubscribers() {
             textAlign: "center",
           }}
         >
-          <div style={{ fontSize: 36, marginBottom: 12 }}>📬</div>
+          <div style={{ display: "flex", justifyContent: "center", marginBottom: 12 }}><Mail size={36} color="#1B3B22" /></div>
           <div style={{ fontSize: 16, fontWeight: 700, color: "#0F172A", marginBottom: 6 }}>
             No subscribers found
           </div>

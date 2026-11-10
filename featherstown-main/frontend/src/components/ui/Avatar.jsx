@@ -33,7 +33,7 @@ export default function Avatar({ name = "", avatar = "", size = 44, border = tru
           // Fallback to initial if image fails
           e.currentTarget.style.display = "none";
           if (e.currentTarget.parentElement) {
-            e.currentTarget.parentElement.innerText = (name?.[0] || "🦜").toUpperCase();
+            e.currentTarget.parentElement.innerText = (name?.[0] || "F").toUpperCase();
             e.currentTarget.parentElement.style.color = "#FFFFFF";
             e.currentTarget.parentElement.style.fontWeight = "800";
             e.currentTarget.parentElement.style.fontSize = `${size * 0.45}px`;

@@ -1,4 +1,5 @@
 import { Link } from "react-router-dom";
+import { Sparkles } from "lucide-react";
 
 export default function PageBanner({ eyebrow, title, accent, desc }) {
   return (
@@ -51,7 +52,7 @@ export default function PageBanner({ eyebrow, title, accent, desc }) {
               borderRadius: 999,
             }}
           >
-            <span>✨</span>
+            <Sparkles size={12} strokeWidth={2.2} />
             <span>{eyebrow}</span>
           </span>
         </div>

@@ -55,7 +55,7 @@ export default function Checkout() {
   if (items.length === 0) {
     return (
       <div className="rv-scale" style={{ background: "#F7F5F0", minHeight: "70vh", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: 16 }}>
-        <div className="ft-animate-float" style={{ fontSize: 56 }}>🛒</div>
+        <div className="ft-animate-float" style={{ display: "flex", justifyContent: "center", marginBottom: 12 }}><ShoppingCart size={56} color="#1B3B22" strokeWidth={1.8} /></div>
         <p style={{ color: "#736B5E", fontSize: 16 }}>Your cart is empty.</p>
         <Link
           to="/accessories"
@@ -326,7 +326,7 @@ export default function Checkout() {
                         Instant verification via Razorpay • 100% Encrypted
                       </div>
                     </div>
-                    <span style={{ fontSize: 20 }}>⚡</span>
+                    <Zap size={20} color="#1B3B22" strokeWidth={2.2} />
                   </label>
                 )}
 
@@ -358,7 +358,7 @@ export default function Checkout() {
                       Pay in cash when your parcel arrives
                     </div>
                   </div>
-                  <span style={{ fontSize: 20 }}>💵</span>
+                  <Banknote size={20} color="#1B3B22" strokeWidth={2.2} />
                 </label>
               </div>
 
@@ -441,7 +441,7 @@ export default function Checkout() {
             </div>
 
             <div style={{ background: "#FAF8F5", border: "1px solid #E2DDD3", borderRadius: 16, padding: "14px", marginTop: 20, fontSize: 12.5, color: "#152B17" }}>
-              🚚 <strong>Fast Courier Delivery:</strong> Dispatches within 24 hours. Tracking link sent via SMS and WhatsApp.
+              <span style={{ display: "inline-flex", alignItems: "center", gap: 6 }}><Truck size={15} strokeWidth={2.2} /> <strong>Fast Courier Delivery:</strong></span> Dispatches within 24 hours. Tracking link sent via SMS and WhatsApp.
             </div>
           </div>
         </div>

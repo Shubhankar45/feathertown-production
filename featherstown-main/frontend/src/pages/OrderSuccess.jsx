@@ -44,7 +44,7 @@ export default function OrderSuccess() {
               boxShadow: "0 4px 16px rgba(27, 59, 34, 0.12)",
             }}
           >
-            🎉
+            
           </div>
 
           <h2 style={{ fontSize: 24, fontWeight: 900, color: "#152B17", marginBottom: 12 }}>
@@ -86,8 +86,8 @@ export default function OrderSuccess() {
               color: "#1B3B22",
             }}
           >
-            <div>🚚 <strong style={{ color: "#152B17" }}>Estimated Delivery:</strong> 3 – 5 Business Days across India.</div>
-            <div style={{ marginTop: 4, color: "#1B3B22" }}>📲 Tracking details will be shared on your registered phone number.</div>
+            <div><span style={{ display: "inline-flex", alignItems: "center", gap: 5 }}><Truck size={14} /> <strong style={{ color: "#152B17" }}>Estimated Delivery:</strong> 3 – 5 Business Days across India.</span></div>
+            <div style={{ marginTop: 4, color: "#1B3B22" }}><span style={{ display: "inline-flex", alignItems: "center", gap: 5 }}><Phone size={14} /> Tracking details</span> will be shared on your registered phone number.</div>
           </div>
 
           <div style={{ display: "flex", gap: 12, justifyContent: "center", flexWrap: "wrap" }}>

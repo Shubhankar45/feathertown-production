@@ -1,4 +1,5 @@
 import { useState, useCallback, useRef } from "react";
+import { Mail, CheckCircle2 } from "lucide-react";
 import { toast } from "../ui/Toast";
 import { isValidEmail, checkBotSubmission } from "../../utils/validation";
 import { trackEvent } from "../../utils/analytics";
@@ -41,7 +42,7 @@ export default function Newsletter() {
         setDone(true);
         setEmail("");
         trackEvent("newsletter_subscribe", { method: "home_banner" });
-        toast.success(data.msg ?? "Welcome to the FeatherTown family! 🌿");
+        toast.success(data.msg ?? "Welcome to the FeatherTown family!");
       } else {
         toast.error(data.msg ?? "Something went wrong. Please try again.");
       }
@@ -95,11 +96,10 @@ export default function Newsletter() {
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
-              fontSize: 24,
               flexShrink: 0,
             }}
           >
-            ✉️
+            <Mail size={22} color="#1B3B22" strokeWidth={2.2} />
           </div>
           <div>
             <div style={{ marginBottom: 4 }}>
@@ -149,7 +149,7 @@ export default function Newsletter() {
                 gap: 8,
               }}
             >
-              <span>🎉</span>
+              <CheckCircle2 size={16} strokeWidth={2.5} color="#1B3B22" />
               <span>{already ? "You're already subscribed!" : "You're subscribed! Welcome."}</span>
             </div>
           ) : (

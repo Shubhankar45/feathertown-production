@@ -2,6 +2,8 @@
    ABOUT — who-we-are cards grid
 ═══════════════════════════════════════════════════ */
 import { Leaf } from "../ui/Icons";
+import { Check } from "lucide-react";
+import DynamicIcon from "../ui/DynamicIcon";
 import { useSettings } from "../../context/SettingsContext";
 
 export default function About({ standalone = false }) {
@@ -28,13 +30,16 @@ export default function About({ standalone = false }) {
           const effectiveLink = link?.href || (title?.toLowerCase().includes("instagram") || title?.toLowerCase().includes("video") ? settings?.instagramUrl : null);
           return (
             <div key={title || idx} className="j-card rv" style={{ padding: "22px 20px", transitionDelay: `${idx * 70}ms` }}>
-              <div style={{ width: 46, height: 46, borderRadius: "var(--r)", background: `${color || "#1B3B22"}16`, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 22, marginBottom: 14, border: `1px solid ${color || "#1B3B22"}26` }}>{icon}</div>
+              <div style={{ width: 46, height: 46, borderRadius: "var(--r)", background: `${color || "#1B3B22"}16`, display: "flex", alignItems: "center", justifyContent: "center", marginBottom: 14, border: `1px solid ${color || "#1B3B22"}26` }}>
+                <DynamicIcon name={icon} size={22} color={color || "#1B3B22"} strokeWidth={2.2} />
+              </div>
               <h3 style={{ fontWeight: 700, fontSize: 11, color: color || "#1B3B22", marginBottom: 12, letterSpacing: 0.6, textTransform: "uppercase" }}>{title}</h3>
               {Array.isArray(items) && items.length > 0 && (
                 <ul style={{ listStyle: "none", display: "flex", flexDirection: "column", gap: 7 }}>
                   {items.map((it) => (
                     <li key={it} style={{ display: "flex", gap: 8, color: "var(--fog)", fontSize: 13, alignItems: "flex-start" }}>
-                      <span style={{ color: "var(--leaf2)", fontWeight: 800, flexShrink: 0, marginTop: 1 }}>✓</span>{it}
+                      <Check size={14} strokeWidth={2.5} color="var(--leaf2)" style={{ flexShrink: 0, marginTop: 2 }} />
+                      <span>{it}</span>
                     </li>
                   ))}
                 </ul>

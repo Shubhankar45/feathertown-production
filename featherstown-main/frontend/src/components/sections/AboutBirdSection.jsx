@@ -1,4 +1,5 @@
 import { Link } from "react-router-dom";
+import { Feather } from "lucide-react";
 import hummingbirdImg from "../../assets/hummingbird-flight.jpg";
 import CountUp from "../react-bits/CountUp";
 import Magnet from "../react-bits/Magnet";
@@ -78,7 +79,7 @@ export default function AboutBirdSection() {
                 boxShadow: "0 4px 14px rgba(21, 43, 23, 0.08)",
               }}
             >
-              <span style={{ fontSize: 14 }}>🌿</span>
+              <Feather size={14} color="#1B3B22" strokeWidth={2.2} />
               <span style={{ fontSize: 12, fontWeight: 800, color: "#1B3B22" }}>
                 100% Ethical Avian Socialization
               </span>

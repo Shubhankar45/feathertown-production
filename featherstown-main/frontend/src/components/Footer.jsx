@@ -1,4 +1,5 @@
 import { Link } from "react-router-dom";
+import { Camera, MessageCircle, Mail, ShieldCheck, Stethoscope, Heart } from "lucide-react";
 import { useSettings } from "../context/SettingsContext";
 
 export default function Footer() {
@@ -132,11 +133,10 @@ export default function Footer() {
                   justifyContent: "center",
                   color: "#1B3B22",
                   textDecoration: "none",
-                  fontSize: 16,
                 }}
                 title="Instagram"
               >
-                📸
+                <Camera size={18} strokeWidth={2} />
               </a>
               <a
                 href={`https://wa.me/${waNum}`}
@@ -154,11 +154,10 @@ export default function Footer() {
                   justifyContent: "center",
                   color: "#1B3B22",
                   textDecoration: "none",
-                  fontSize: 16,
                 }}
                 title="WhatsApp Support"
               >
-                💬
+                <MessageCircle size={18} strokeWidth={2} />
               </a>
               <a
                 href={`mailto:${supportEmail}`}
@@ -174,11 +173,10 @@ export default function Footer() {
                   justifyContent: "center",
                   color: "#1B3B22",
                   textDecoration: "none",
-                  fontSize: 16,
                 }}
                 title="Email Us"
               >
-                ✉️
+                <Mail size={18} strokeWidth={2} />
               </a>
             </div>
           </div>
@@ -300,7 +298,9 @@ export default function Footer() {
             </h4>
             <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
               <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
-                <span style={{ fontSize: 20 }}>🔒</span>
+                <span style={{ display: "flex", alignItems: "center", justifyContent: "center", width: 32, height: 32, borderRadius: "50%", background: "#E7EFE8", color: "#1B3B22" }}>
+                  <ShieldCheck size={18} strokeWidth={2.2} />
+                </span>
                 <div>
                   <div style={{ fontSize: 13.5, fontWeight: 700, color: "#152B17" }}>Secure Payments</div>
                   <div style={{ fontSize: 11.5, color: "#736B5E" }}>256-bit encrypted Razorpay</div>
@@ -308,7 +308,9 @@ export default function Footer() {
               </div>
 
               <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
-                <span style={{ fontSize: 20 }}>🩺</span>
+                <span style={{ display: "flex", alignItems: "center", justifyContent: "center", width: 32, height: 32, borderRadius: "50%", background: "#E7EFE8", color: "#1B3B22" }}>
+                  <Stethoscope size={18} strokeWidth={2.2} />
+                </span>
                 <div>
                   <div style={{ fontSize: 13.5, fontWeight: 700, color: "#152B17" }}>48h Health Guarantee</div>
                   <div style={{ fontSize: 11.5, color: "#736B5E" }}>Vet-certified &amp; parasite-free</div>
@@ -316,7 +318,9 @@ export default function Footer() {
               </div>
 
               <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
-                <span style={{ fontSize: 20 }}>❤️</span>
+                <span style={{ display: "flex", alignItems: "center", justifyContent: "center", width: 32, height: 32, borderRadius: "50%", background: "#E7EFE8", color: "#1B3B22" }}>
+                  <Heart size={18} strokeWidth={2.2} />
+                </span>
                 <div>
                   <div style={{ fontSize: 13.5, fontWeight: 700, color: "#152B17" }}>Happiness Guarantee</div>
                   <div style={{ fontSize: 11.5, color: "#736B5E" }}>Lifetime feeding &amp; care support</div>

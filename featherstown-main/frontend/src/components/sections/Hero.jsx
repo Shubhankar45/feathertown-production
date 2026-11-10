@@ -30,17 +30,17 @@ const CHIPS = [
 // Alternates between two drift directions (leafFallA / leafFallB) so the
 // canopy feels like it's catching a real breeze instead of falling uniformly.
 const LEAVES = [
-  { left: "4%",  delay: 0,    duration: 12, size: 17, emoji: "🍃", drift: "A" },
-  { left: "12%", delay: 3.1,  duration: 15, size: 11, emoji: "🍂", drift: "B" },
-  { left: "20%", delay: 1.6,  duration: 13, size: 14, emoji: "🍃", drift: "A" },
-  { left: "30%", delay: 5.2,  duration: 16, size: 10, emoji: "🌿", drift: "B" },
-  { left: "42%", delay: 2.4,  duration: 11, size: 13, emoji: "🍂", drift: "A" },
-  { left: "55%", delay: 4.4,  duration: 14, size: 15, emoji: "🍃", drift: "B" },
-  { left: "67%", delay: 0.8,  duration: 12, size: 11, emoji: "🌿", drift: "A" },
-  { left: "74%", delay: 6.0,  duration: 17, size: 12, emoji: "🍂", drift: "B" },
-  { left: "82%", delay: 2.0,  duration: 13, size: 16, emoji: "🍃", drift: "A" },
-  { left: "90%", delay: 4.8,  duration: 11, size: 10, emoji: "🍂", drift: "B" },
-  { left: "96%", delay: 1.2,  duration: 15, size: 13, emoji: "🍃", drift: "A" },
+  { left: "4%",  delay: 0,    duration: 12, size: 17, emoji: "", drift: "A" },
+  { left: "12%", delay: 3.1,  duration: 15, size: 11, emoji: "", drift: "B" },
+  { left: "20%", delay: 1.6,  duration: 13, size: 14, emoji: "", drift: "A" },
+  { left: "30%", delay: 5.2,  duration: 16, size: 10, emoji: "", drift: "B" },
+  { left: "42%", delay: 2.4,  duration: 11, size: 13, emoji: "", drift: "A" },
+  { left: "55%", delay: 4.4,  duration: 14, size: 15, emoji: "", drift: "B" },
+  { left: "67%", delay: 0.8,  duration: 12, size: 11, emoji: "", drift: "A" },
+  { left: "74%", delay: 6.0,  duration: 17, size: 12, emoji: "", drift: "B" },
+  { left: "82%", delay: 2.0,  duration: 13, size: 16, emoji: "", drift: "A" },
+  { left: "90%", delay: 4.8,  duration: 11, size: 10, emoji: "", drift: "B" },
+  { left: "96%", delay: 1.2,  duration: 15, size: 13, emoji: "", drift: "A" },
 ];
 
 // Warm firefly glow dots — same amber tone as the rest of the theme.
@@ -702,7 +702,7 @@ export default function Hero() {
             width: 26, height: 26, borderRadius: "50%",
             background: "linear-gradient(135deg, var(--leaf), var(--leaf2))",
             display: "flex", alignItems: "center", justifyContent: "center", fontSize: 13, flexShrink: 0,
-          }}>🌿</span>
+          }}></span>
           <span style={{ fontSize: 11, fontWeight: 700, color: "var(--leaf)", fontFamily: "var(--font-b)" }}>
             100% Natural Diet
           </span>
@@ -713,7 +713,7 @@ export default function Hero() {
             width: 26, height: 26, borderRadius: "50%",
             background: "rgba(245,158,11,.18)", border: "1px solid rgba(245,158,11,.3)",
             display: "flex", alignItems: "center", justifyContent: "center", fontSize: 13, flexShrink: 0,
-          }}>📦</span>
+          }}></span>
           <span style={{ fontSize: 11, fontWeight: 700, color: "var(--leaf)", fontFamily: "var(--font-b)" }}>
             Ships Pan-India
           </span>
@@ -803,7 +803,7 @@ export default function Hero() {
               boxShadow: "0 8px 28px rgba(22,163,74,.3)",
               animation: "leafSway 4s ease-in-out infinite",
             }}>
-              🦜
+              
             </div>
 
             <p style={{
@@ -835,7 +835,7 @@ export default function Hero() {
                 Explore Birds →
               </a>
               <a href={`https://wa.me/${waNum}`} className="btn-ghost" style={{ fontSize:14, padding:"11px 22px" }}>
-                💬 WhatsApp
+                WhatsApp
               </a>
               {/* Mobile-only Subscribe CTA — gold, opens email-capture modal */}
               <button
@@ -931,7 +931,7 @@ export default function Hero() {
                 fontSize: 22,
                 flexShrink: 0,
               }}>
-                🚚
+                
               </div>
               <div>
                 <div style={{ fontSize:13, fontWeight:700, color:"var(--cream)", fontFamily:"var(--font-b)", lineHeight:1.2 }}>Free Doorstep Delivery</div>
@@ -947,7 +947,7 @@ export default function Hero() {
               animation: "fadeIn .7s ease .6s both, floatY2 6s ease-in-out 0s infinite",
             }}>
               <div style={{ position:"relative", display:"flex" }}>
-                {["🧑","👩","👦"].map((e, i) => (
+                ["A","B","C"].map((e, i) => (
                   <div key={i} style={{
                     width: 30,
                     height: 30,
@@ -1022,7 +1022,7 @@ export default function Hero() {
                 ⭐
               </div>
               <div>
-                <div style={{ fontSize:13, fontWeight:700, color:"var(--cream)", fontFamily:"var(--font-b)", lineHeight:1.2 }}>5★ Rated</div>
+                <div style={{ fontSize:13, fontWeight:700, color:"var(--cream)", fontFamily:"var(--font-b)", lineHeight:1.2 }}>5.0 Rated</div>
                 <div style={{ fontSize:11, color:"var(--mist)", fontFamily:"var(--font-b)", marginTop:2 }}>100+ happy customers</div>
               </div>
             </div>
@@ -1057,7 +1057,7 @@ export default function Hero() {
       >
         <div className="hsub-card" onClick={(e) => e.stopPropagation()}>
           <button className="hsub-close" onClick={closeSubscribe} aria-label="Close">
-            ✕
+            X
           </button>
 
           {subDone ? (
@@ -1066,7 +1066,7 @@ export default function Hero() {
                 <CheckIco size={24} />
               </div>
               <h3 className="hsub-title" style={{ marginBottom: 8 }}>{subAlready ? "Already subscribed" : "You're subscribed!"}</h3>
-              <p>{subAlready ? "You're already on the list 🌿 — we'll keep sending care tips and new arrivals." : "Welcome to Feather Town 🌿 — we'll keep you posted on care tips and new arrivals."}</p>
+              <p>{subAlready ? "You're already on the list — we'll keep sending care tips and new arrivals." : "Welcome to Feather Town — we'll keep you posted on care tips and new arrivals."}</p>
             </div>
           ) : (
             <>

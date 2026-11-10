@@ -1,4 +1,5 @@
 import { Link } from "react-router-dom";
+import { ShieldCheck, HeartHandshake, MessageCircle } from "lucide-react";
 import PageBanner from "../components/PageBanner";
 import SEOHead from "../components/SEOHead";
 import { useSettings } from "../context/SettingsContext";
@@ -167,7 +168,7 @@ export default function About() {
             </div>
 
             <div style={pillarCard}>
-              <div style={pillarIcon}>🧬</div>
+              <div style={pillarIcon}><ShieldCheck size={26} color="#1B3B22" strokeWidth={2.2} /></div>
               <div style={pillarTitle}>2. DNA Sex Certification</div>
               <div style={pillarText}>
                 Monomorphic parrots receive lab-verified DNA feather/blood testing so you know your companion's biological gender with 99.9% certainty.
@@ -175,7 +176,7 @@ export default function About() {
             </div>
 
             <div style={pillarCard}>
-              <div style={pillarIcon}>🤝</div>
+              <div style={pillarIcon}><HeartHandshake size={26} color="#1B3B22" strokeWidth={2.2} /></div>
               <div style={pillarTitle}>3. Hand-Fed Socialization</div>
               <div style={pillarText}>
                 We do not sell wild-caught birds. Every hatchling is spoon or syringe raised with warm hand-feeding formula and gentle human touch from day 14 onwards.
@@ -183,7 +184,7 @@ export default function About() {
             </div>
 
             <div style={pillarCard}>
-              <div style={pillarIcon}>💬</div>
+              <div style={pillarIcon}><MessageCircle size={26} color="#1B3B22" strokeWidth={2.2} /></div>
               <div style={pillarTitle}>4. Lifetime Mentor WhatsApp</div>
               <div style={pillarText}>
                 Adopting is just day one. Our avian care line stays open for weaning, cage setup questions, behavioral guidance, and diet adjustments for the bird's entire lifespan.

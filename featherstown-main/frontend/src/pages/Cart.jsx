@@ -1,4 +1,5 @@
 import { Link, useNavigate } from "react-router-dom";
+import { ShoppingBag, X, ShieldCheck, Truck, Sparkles } from "lucide-react";
 import PageBanner from "../components/PageBanner";
 import SEOHead from "../components/SEOHead";
 import { useCart } from "../context/CartContext";
@@ -35,7 +36,7 @@ export default function Cart() {
               boxShadow: "0 2px 10px rgba(27, 59, 34, 0.04)",
             }}
           >
-            <div className="ft-animate-float" style={{ fontSize: 52, marginBottom: 14 }}>🛍️</div>
+            <div className="ft-animate-float" style={{ display: "flex", justifyContent: "center", marginBottom: 14 }}><ShoppingBag size={52} color="#1B3B22" strokeWidth={1.8} /></div>
             <h3 style={{ fontSize: 22, fontWeight: 800, color: "#152B17", marginBottom: 8 }}>
               Your cart is empty
             </h3>
@@ -77,7 +78,7 @@ export default function Cart() {
               >
                 <div style={{ display: "flex", justifyContent: "space-between", fontSize: 13, fontWeight: 700, marginBottom: 8 }}>
                   <span style={{ color: "#152B17" }}>
-                    {freeShippingUnlocked ? "🎉 You've unlocked FREE Shipping!" : `🚚 Add ₹${amountNeeded} more for FREE shipping`}
+                    {freeShippingUnlocked ? "You've unlocked FREE Shipping!" : `Add ₹${amountNeeded} more for FREE shipping`}
                   </span>
                   <span style={{ color: "#1B3B22", fontWeight: 800 }}>{progressPercent}%</span>
                 </div>
@@ -205,8 +206,17 @@ export default function Cart() {
                       onMouseEnter={(e) => (e.currentTarget.style.color = "#D9381E")}
                       onMouseLeave={(e) => (e.currentTarget.style.color = "#736B5E")}
                       title="Remove Item"
+                      style={{
+                        background: "none",
+                        border: "none",
+                        cursor: "pointer",
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        padding: 4,
+                      }}
                     >
-                      ✕
+                      <X size={15} strokeWidth={2.2} />
                     </button>
                   </div>
                 ))}
@@ -287,7 +297,7 @@ export default function Cart() {
               </div>
 
               <div style={{ borderTop: "1px solid #E2DDD3", marginTop: 20, paddingTop: 16, fontSize: 12, color: "#736B5E", textAlign: "center" }}>
-                🔒 256-bit encrypted Razorpay SSL Checkout
+                <span style={{ display: "inline-flex", alignItems: "center", gap: 6 }}><ShieldCheck size={14} strokeWidth={2.2} /> <span>256-bit encrypted Razorpay SSL Checkout</span></span>
               </div>
             </div>
           </div>

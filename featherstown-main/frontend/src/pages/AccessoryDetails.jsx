@@ -260,7 +260,7 @@ export default function AccessoryDetails() {
                   minWidth: "min(100%, 160px)",
                 }}
               >
-                Add to Cart 🛍️
+                Add to Cart
               </button>
               <button
                 onClick={handleBuyNow}
@@ -279,7 +279,7 @@ export default function AccessoryDetails() {
                   minWidth: "min(100%, 160px)",
                 }}
               >
-                Buy Now ⚡
+                Buy Now
               </button>
             </div>
 
@@ -296,19 +296,19 @@ export default function AccessoryDetails() {
               }}
             >
               <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-                <span>🚚</span>
+                <Truck size={16} color="#1B3B22" strokeWidth={2.2} />
                 <span>Free shipping over ₹999</span>
               </div>
               <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-                <span>🔒</span>
+                <ShieldCheck size={16} color="#1B3B22" strokeWidth={2.2} />
                 <span>Secure Razorpay checkout</span>
               </div>
               <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-                <span>🌿</span>
+                <Feather size={16} color="#1B3B22" strokeWidth={2.2} />
                 <span>Non-toxic avian certified</span>
               </div>
               <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-                <span>🔄</span>
+                <RotateCcw size={16} color="#1B3B22" strokeWidth={2.2} />
                 <span>7-Day Easy Return policy</span>
               </div>
             </div>

@@ -1,4 +1,5 @@
 import { useState, useEffect, useCallback, useRef } from "react";
+import { Star, Check } from "lucide-react";
 import Avatar from "../ui/Avatar";
 import AvatarPicker from "../ui/AvatarPicker";
 import Stars from "../ui/Stars";
@@ -34,7 +35,7 @@ export default function Reviews({ standalone = false }) {
     e.preventDefault();
 
     if (honeypot && honeypot.trim().length > 0) {
-      toast.success("Review submitted 🎉");
+      toast.success("Review submitted successfully");
       return;
     }
 
@@ -65,7 +66,7 @@ export default function Reviews({ standalone = false }) {
       setRN("");
       setRC("");
       setRating(5);
-      toast.success("Review submitted 🎉 Thank you for supporting FeatherTown!");
+      toast.success("Review submitted! Thank you for supporting FeatherTown.");
     } catch {
       toast.error("Could not reach the server right now.");
     } finally {
@@ -149,8 +150,10 @@ export default function Reviews({ standalone = false }) {
             <div>
               {/* Header with 5 Gold Stars & Verified Badge */}
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 14 }}>
-                <div style={{ color: "#1B3B22", fontSize: 15, letterSpacing: 2 }}>
-                  {"★".repeat(r.rating || 5)}
+                <div style={{ display: "flex", gap: 3, color: "#1B3B22" }}>
+                  {Array.from({ length: r.rating || 5 }).map((_, idx) => (
+                    <Star key={idx} size={15} fill="#1B3B22" strokeWidth={0} />
+                  ))}
                 </div>
                 <span
                   style={{
@@ -163,10 +166,11 @@ export default function Reviews({ standalone = false }) {
                     borderRadius: 999,
                     display: "inline-flex",
                     alignItems: "center",
-                    gap: 3,
+                    gap: 4,
                   }}
                 >
-                  ✓ Verified Parent
+                  <Check size={11} strokeWidth={2.5} />
+                  <span>Verified Parent</span>
                 </span>
               </div>
 
@@ -306,7 +310,7 @@ export default function Reviews({ standalone = false }) {
                   boxShadow: "0 4px 16px rgba(27, 59, 34, 0.25)",
                 }}
               >
-                {reviewLoading ? "Submitting..." : "Post Verified Review ✨"}
+                {reviewLoading ? "Submitting..." : "Post Verified Review"}
               </button>
             </Magnet>
           </div>

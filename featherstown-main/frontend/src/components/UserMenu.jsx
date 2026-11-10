@@ -1,5 +1,6 @@
 import { useState, useRef, useEffect } from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
+import { User, Package, LogOut, Smile } from "lucide-react";
 import { useUserAuth } from "../context/UserAuthContext";
 import Avatar from "./ui/Avatar";
 import AvatarModal from "./ui/AvatarModal";
@@ -59,7 +60,7 @@ export default function UserMenu() {
     setSavingAvatar(true);
     try {
       await updateAvatar(newAvatar);
-      toast.success("Profile avatar updated! 🦜");
+      toast.success("Profile avatar updated successfully!");
       setShowPicker(false);
     } catch (err) {
       toast.error(err.message || "Failed to update avatar");
@@ -162,7 +163,7 @@ export default function UserMenu() {
                 marginBottom: 6,
               }}
             >
-              <span>🦜</span>
+              <Smile size={15} strokeWidth={2.2} />
               <span>Change Bird Avatar</span>
             </button>
 
@@ -171,7 +172,7 @@ export default function UserMenu() {
               onClick={() => setOpen(false)}
               style={{ ...menuItem, display: "flex", alignItems: "center", gap: 8, color: "#152B17" }}
             >
-              <span>📦</span>
+              <Package size={15} strokeWidth={2.2} />
               <span>My Orders</span>
             </Link>
 
@@ -192,7 +193,7 @@ export default function UserMenu() {
                 gap: 8,
               }}
             >
-              <span>🚪</span>
+              <LogOut size={15} strokeWidth={2.2} />
               <span>Log out</span>
             </button>
           </div>

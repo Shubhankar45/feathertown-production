@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
+import { Star, ShoppingBag } from "lucide-react";
 import { useCart } from "../../context/CartContext";
 import { toast } from "../ui/Toast";
 import { trackAddToCart } from "../../utils/analytics";
@@ -34,7 +35,7 @@ export default function BestSellers() {
   const handleAddToCart = (product) => {
     addItem(product, 1);
     trackAddToCart(product, 1);
-    toast.success(`${product.name} added to your cart! 🛍️`);
+    toast.success(`${product.name} added to your cart!`);
   };
 
   return (
@@ -212,7 +213,7 @@ export default function BestSellers() {
               <div style={{ padding: "16px 18px", display: "flex", flexDirection: "column", flex: 1, zIndex: 10 }}>
                 {/* Rating */}
                 <div style={{ display: "flex", alignItems: "center", gap: 5, marginBottom: 6 }}>
-                  <span style={{ color: "#1B3B22", fontSize: 13 }}>★</span>
+                  <Star size={13} fill="#1B3B22" strokeWidth={0} />
                   <span style={{ fontSize: 12, fontWeight: 800, color: "#152B17" }}>{prod.rating}</span>
                   <span style={{ fontSize: 11, color: "#736B5E" }}>({prod.reviewsCount})</span>
                 </div>
@@ -269,7 +270,8 @@ export default function BestSellers() {
                     boxShadow: "0 3px 10px rgba(217, 56, 30, 0.25)",
                   }}
                 >
-                  <span>🛍️</span> Add to Cart
+                  <ShoppingBag size={14} strokeWidth={2.2} />
+                  <span>Add to Cart</span>
                 </button>
               </div>
             </SpotlightCard>

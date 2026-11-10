@@ -174,14 +174,14 @@ export default function AdminBirds() {
           body: JSON.stringify(payload),
         });
         setBirds((prev) => prev.map((b) => (b._id === editingId ? updated : b)));
-        toast.success("Bird details updated 🎉");
+        toast.success("Bird details updated successfully");
       } else {
         const created = await adminFetch("/api/admin/birds", {
           method: "POST",
           body: JSON.stringify(payload),
         });
         setBirds((prev) => [created, ...prev]);
-        toast.success("New bird listing created 🎉");
+        toast.success("New bird listing created successfully");
       }
       setShowModal(false);
     } catch (err) {
@@ -222,7 +222,7 @@ export default function AdminBirds() {
       >
         <div>
           <h1 style={{ fontSize: 26, fontWeight: 800, color: "#0F172A", marginBottom: 6 }}>
-            🦜 Birds &amp; Companion Breeds
+            Birds &amp; Companion Breeds
           </h1>
           <p style={{ color: "#64748B", fontSize: 14 }}>
             Manage your hand-tamed parrot listings, pricing, care guides, training steps, and live stock availability.
@@ -296,7 +296,7 @@ export default function AdminBirds() {
           {/* Search */}
           <div style={{ position: "relative", flex: "1 1 220px", maxWidth: 360 }}>
             <span style={{ position: "absolute", left: 12, top: "50%", transform: "translateY(-50%)", color: "#94A3B8" }}>
-              🔍
+              
             </span>
             <input
               type="text"
@@ -357,7 +357,7 @@ export default function AdminBirds() {
               fontWeight: 600,
             }}
           >
-            🔲 Grid
+            Grid
           </button>
           <button
             onClick={() => setViewMode("table")}
@@ -372,7 +372,7 @@ export default function AdminBirds() {
               fontWeight: 600,
             }}
           >
-            📄 Table
+            Table
           </button>
         </div>
       </div>
@@ -380,7 +380,7 @@ export default function AdminBirds() {
       {/* Bird Listings Body */}
       {loading ? (
         <div style={{ textAlign: "center", padding: "60px 20px", color: "#94A3B8" }}>
-          <div style={{ fontSize: 32, marginBottom: 12 }}>🦜</div>
+          <div style={{ display: "flex", justifyContent: "center", marginBottom: 12 }}><Feather size={32} color="#1B3B22" /></div>
           <div>Loading bird catalog...</div>
         </div>
       ) : filteredBirds.length === 0 ? (
@@ -393,7 +393,7 @@ export default function AdminBirds() {
             textAlign: "center",
           }}
         >
-          <div style={{ fontSize: 36, marginBottom: 12 }}>🔍</div>
+          <div style={{ fontSize: 36, marginBottom: 12 }}></div>
           <div style={{ fontSize: 16, fontWeight: 700, color: "#0F172A", marginBottom: 6 }}>No birds matched your search</div>
           <div style={{ color: "#64748B", fontSize: 13.5, marginBottom: 16 }}>Try clearing your filters or add a new bird to the catalog.</div>
           <button
@@ -557,7 +557,7 @@ export default function AdminBirds() {
                         cursor: "pointer",
                       }}
                     >
-                      ✏️ Edit Details
+                      Edit Details
                     </button>
                     <button
                       onClick={() => setDeleteId(bird._id)}
@@ -572,7 +572,7 @@ export default function AdminBirds() {
                         cursor: "pointer",
                       }}
                     >
-                      🗑️
+                      
                     </button>
                   </div>
                 </div>
@@ -741,7 +741,7 @@ export default function AdminBirds() {
             >
               <div>
                 <h2 style={{ fontSize: 18, fontWeight: 800, color: "#0F172A" }}>
-                  {editingId ? "✏️ Edit Bird Listing" : "🦜 Add New Bird Listing"}
+                  {editingId ? "Edit Bird Listing" : "Add New Bird Listing"}
                 </h2>
                 <p style={{ fontSize: 12, color: "#64748B" }}>
                   Fill in species details, pricing, care guidelines, and training instructions.
@@ -757,9 +757,7 @@ export default function AdminBirds() {
                   cursor: "pointer",
                   padding: 4,
                 }}
-              >
-                ✕
-              </button>
+              ><X size={16} strokeWidth={2.2} /></button>
             </div>
 
             {/* Modal Form */}
@@ -1105,7 +1103,7 @@ export default function AdminBirds() {
               boxShadow: "0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)",
             }}
           >
-            <div style={{ fontSize: 24, marginBottom: 12 }}>⚠️</div>
+            <div style={{ display: "flex", justifyContent: "center", marginBottom: 12 }}><AlertTriangle size={28} color="#D9381E" /></div>
             <h3 style={{ fontSize: 18, fontWeight: 700, color: "#0F172A", marginBottom: 8 }}>
               Delete Bird Listing?
             </h3>

@@ -10,6 +10,7 @@
    - Zero side-margin blank space, responsive 2-column split
 ═══════════════════════════════════════════════════════════════ */
 import { useState, useCallback, useMemo, useEffect } from "react";
+import { CheckCircle2, Home, Volume2, Award, MessageCircle, Compass } from "lucide-react";
 import { Link } from "react-router-dom";
 import { rankParrots } from "../../utils/recommendation";
 import { useSettings } from "../../context/SettingsContext";
@@ -47,9 +48,9 @@ const STEPS = [
     subtitle: "Essential consideration for apartments, flats, and tranquil spaces.",
     type: "grid",
     options: [
-      { label: "Whisper quiet 🤫", desc: "Soft morning melodies, delicate chirps, apartment safe", value: "Low" },
-      { label: "Gentle chatter 🗣️", desc: "Cheerful whistling, playful tunes, moderate vocalizing", value: "Medium" },
-      { label: "Vocal & lively 🎺", desc: "Energetic loud calls, mimicry, commanding joyful presence", value: "High" },
+      { label: "Whisper quiet", desc: "Soft morning melodies, delicate chirps, apartment safe", value: "Low" },
+      { label: "Gentle chatter", desc: "Cheerful whistling, playful tunes, moderate vocalizing", value: "Medium" },
+      { label: "Vocal & lively", desc: "Energetic loud calls, mimicry, commanding joyful presence", value: "High" },
     ],
   },
   {
@@ -59,9 +60,9 @@ const STEPS = [
     subtitle: "Ensures we pair an easy-going temperament suited to your handling.",
     type: "grid",
     options: [
-      { label: "Beginner 🌱", desc: "First-time bird parent seeking a gentle, patient bird", value: "Beginner" },
-      { label: "Intermediate 🐦", desc: "Prior avian experience, confident with training & care", value: "Intermediate" },
-      { label: "Seasoned Keeper 🦅", desc: "Experienced keeper ready for complex social needs", value: "Expert" },
+      { label: "Beginner", desc: "First-time bird parent seeking a gentle, patient bird", value: "Beginner" },
+      { label: "Intermediate", desc: "Prior avian experience, confident with training & care", value: "Intermediate" },
+      { label: "Seasoned Keeper", desc: "Experienced keeper ready for complex social needs", value: "Expert" },
     ],
   },
   {
@@ -71,9 +72,9 @@ const STEPS = [
     subtitle: "Select the primary bond you wish to cultivate with your bird.",
     type: "grid",
     options: [
-      { label: "Vocal Artistry & Mimicry 🗨️", desc: "Loves vocabulary, spoken phrases & whistle melodies", value: "Talking" },
-      { label: "Affectionate Companion 🤗", desc: "Shoulder perching, head scritches & calm companionship", value: "Friendly" },
-      { label: "Spectacular Showpiece 💎", desc: "Breathtaking plumage, acrobatic energy & joyful charm", value: "Decorative" },
+      { label: "Vocal Artistry & Mimicry", desc: "Loves vocabulary, spoken phrases & whistle melodies", value: "Talking" },
+      { label: "Affectionate Companion", desc: "Shoulder perching, head scritches & calm companionship", value: "Friendly" },
+      { label: "Spectacular Showpiece", desc: "Breathtaking plumage, acrobatic energy & joyful charm", value: "Decorative" },
     ],
   },
   {
@@ -83,8 +84,8 @@ const STEPS = [
     subtitle: "Larger species require ample wingspan flight space and room.",
     type: "grid",
     options: [
-      { label: "Apartment / Urban Flat 🏢", desc: "Indoor cage footprint with neighbor-conscious noise", value: "Apartment" },
-      { label: "Spacious House & Aviary 🏡", desc: "Room for large flight aviaries and active playtime", value: "House" },
+      { label: "Apartment / Urban Flat", desc: "Indoor cage footprint with neighbor-conscious noise", value: "Apartment" },
+      { label: "Spacious House & Aviary", desc: "Room for large flight aviaries and active playtime", value: "House" },
     ],
   },
   {
@@ -95,7 +96,7 @@ const STEPS = [
     type: "grid",
     options: [
       { label: "Moderate (30–60 mins/day) ⏱️", desc: "Independent companion content with enrichment toys", value: "Low" },
-      { label: "Devoted (2+ hours/day) 🏠", desc: "Hands-on bonding, free-flight training & cuddling", value: "High" },
+      { label: "Devoted (2+ hours/day)", desc: "Hands-on bonding, free-flight training & cuddling", value: "High" },
     ],
   },
 ];
@@ -309,7 +310,7 @@ export default function BirdQuiz({ parrots = [] }) {
                 marginBottom: 8,
               }}
             >
-              🎉 Perfect Compatibility Match Found
+              Perfect Compatibility Match Found
             </div>
             <h2
               style={{
@@ -420,13 +421,13 @@ export default function BirdQuiz({ parrots = [] }) {
                 {/* Compatibility Chips */}
                 <div style={{ display: "flex", flexWrap: "wrap", gap: 6, marginBottom: 18 }}>
                   <div style={{ background: "#FAF8F5", border: "1px solid #E2DDD3", borderRadius: 8, padding: "4px 10px", fontSize: 11.5, fontWeight: 600, color: "#152B17" }}>
-                    🏠 {answers.space || "Apartment Friendly"}
+                    <span style={{ display: "inline-flex", alignItems: "center", gap: 5 }}><Home size={13} /> <span>{answers.space || "Apartment Friendly"}</span></span>
                   </div>
                   <div style={{ background: "#FAF8F5", border: "1px solid #E2DDD3", borderRadius: 8, padding: "4px 10px", fontSize: 11.5, fontWeight: 600, color: "#152B17" }}>
-                    🔊 {answers.noise || "Low"} Noise
+                    <span style={{ display: "inline-flex", alignItems: "center", gap: 5 }}><Volume2 size={13} /> <span>{answers.noise || "Low"} Noise</span></span>
                   </div>
                   <div style={{ background: "#FAF8F5", border: "1px solid #E2DDD3", borderRadius: 8, padding: "4px 10px", fontSize: 11.5, fontWeight: 600, color: "#152B17" }}>
-                    🎓 {answers.experience || "Beginner Friendly"}
+                    <span style={{ display: "inline-flex", alignItems: "center", gap: 5 }}><Award size={13} /> <span>{answers.experience || "Beginner Friendly"}</span></span>
                   </div>
                 </div>
 
@@ -457,7 +458,7 @@ export default function BirdQuiz({ parrots = [] }) {
                   className="ed-btn-back"
                   style={{ textDecoration: "none", display: "inline-flex", alignItems: "center", gap: 6 }}
                 >
-                  <span>Inquire on WhatsApp 💬</span>
+                  <span style={{ display: "inline-flex", alignItems: "center", gap: 6 }}><MessageCircle size={15} /> <span>Inquire on WhatsApp</span></span>
                 </a>
               </div>
             </div>
@@ -489,7 +490,7 @@ export default function BirdQuiz({ parrots = [] }) {
                   marginBottom: 10,
                 }}
               >
-                🎯 60-Second Match &bull; Question {currentStep.num} of 06
+                <span style={{ display: "inline-flex", alignItems: "center", gap: 5, verticalAlign: "middle", marginRight: 4 }}><Compass size={13} /></span> 60-Second Match &bull; Question {currentStep.num} of 06
               </div>
 
               <h2

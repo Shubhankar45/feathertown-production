@@ -1,4 +1,5 @@
 import { Link } from "react-router-dom";
+import { Phone, MessageCircle, ShoppingCart } from "lucide-react";
 import { useCart } from "../context/CartContext";
 import { useSettings } from "../context/SettingsContext";
 import { trackWhatsAppClick } from "../utils/analytics";
@@ -68,8 +69,8 @@ export default function StickyMobileCTA() {
           height: 44,
         }}
       >
-        <span style={{ fontSize: 16 }}>📞</span>
-        <span style={{ fontSize: 9.5, fontWeight: 700, marginTop: 1 }}>Call</span>
+        <Phone size={16} strokeWidth={2.2} />
+        <span style={{ fontSize: 9.5, fontWeight: 700, marginTop: 2 }}>Call</span>
       </a>
 
       {/* 2. Direct WhatsApp Primary CTA (Tomato Red Accent) */}
@@ -95,7 +96,7 @@ export default function StickyMobileCTA() {
           boxShadow: "0 3px 12px rgba(217, 56, 30, 0.35)",
         }}
       >
-        <span style={{ fontSize: 16 }}>💬</span>
+        <MessageCircle size={16} strokeWidth={2.2} />
         <span>Chat &amp; Adopt Birds</span>
       </button>
 
@@ -119,8 +120,8 @@ export default function StickyMobileCTA() {
           padding: "6px 10px",
         }}
       >
-        <span style={{ fontSize: 16 }}>🛒</span>
-        <span style={{ fontSize: 9.5, fontWeight: 700, marginTop: 1 }}>Cart</span>
+        <ShoppingCart size={16} strokeWidth={2.2} />
+        <span style={{ fontSize: 9.5, fontWeight: 700, marginTop: 2 }}>Cart</span>
 
         {cartCount > 0 && (
           <span

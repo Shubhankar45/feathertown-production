@@ -4,6 +4,7 @@
 ═══════════════════════════════════════════════════ */
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
+import { Search, X, ZoomIn } from "lucide-react";
 import { SearchIco, WAIco, XIcon } from "../ui/Icons";
 import CompatibilityBadge from "../CompatibilityBadge";
 import useSavedQuizAnswers from "../../hooks/useSavedQuizAnswers";
@@ -161,10 +162,13 @@ export default function BirdsShowcase({ parrots, standalone = false }) {
                   border: "none",
                   cursor: "pointer",
                   color: "#736B5E",
-                  fontSize: 14,
+                  padding: 0,
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
                 }}
               >
-                ✕
+                <X size={14} strokeWidth={2.2} />
               </button>
             )}
           </div>
@@ -230,7 +234,9 @@ export default function BirdsShowcase({ parrots, standalone = false }) {
               boxShadow: "0 2px 10px rgba(15, 23, 42, 0.04)",
             }}
           >
-            <div style={{ fontSize: 40, marginBottom: 10 }}>🔍</div>
+            <div style={{ display: "flex", justifyContent: "center", marginBottom: 12 }}>
+              <Search size={36} color="#736B5E" strokeWidth={1.8} />
+            </div>
             <p style={{ fontSize: 16, fontWeight: 700, color: "#0F172A" }}>No birds found for "{query}"</p>
             <p style={{ fontSize: 13, color: "#64748B", marginTop: 4 }}>
               Try searching by family (e.g., Conure, Cockatiel) or clear search filters.
@@ -398,9 +404,13 @@ export default function BirdsShowcase({ parrots, standalone = false }) {
                       backdropFilter: "blur(4px)",
                       border: "1px solid #E2DDD3",
                       pointerEvents: "none",
+                      display: "inline-flex",
+                      alignItems: "center",
+                      gap: 4,
                     }}
                   >
-                    🔍 Zoom
+                    <ZoomIn size={11} strokeWidth={2.2} />
+                    <span>Zoom</span>
                   </div>
                 </div>
 
@@ -543,13 +553,12 @@ export default function BirdsShowcase({ parrots, standalone = false }) {
               height: 44,
               borderRadius: "50%",
               cursor: "pointer",
-              fontSize: 20,
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
             }}
           >
-            ✕
+            <X size={20} strokeWidth={2.2} />
           </button>
           <img
             src={lightbox.img}
@@ -619,11 +628,12 @@ export default function BirdsShowcase({ parrots, standalone = false }) {
                   cursor: "pointer",
                   color: "#1B3B22",
                   display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
                   padding: 0,
-                  fontSize: 12,
                 }}
               >
-                ✕
+                <X size={12} strokeWidth={2.2} />
               </button>
             </div>
           ))}

@@ -140,7 +140,7 @@ export default function AdminDashboard() {
               boxShadow: "0 2px 8px rgba(16, 185, 129, 0.25)",
             }}
           >
-            <span>🦜</span> Manage Birds
+            <span style={{ display: "inline-flex", alignItems: "center", gap: 6 }}><Feather size={16} /> <span>Manage Birds</span></span>
           </Link>
           <Link
             to={`${ADMIN_BASE}/accessories`}
@@ -160,7 +160,7 @@ export default function AdminDashboard() {
               boxShadow: "0 1px 2px rgba(0,0,0,0.04)",
             }}
           >
-            <span>🛍️</span> Accessories
+            <span style={{ display: "inline-flex", alignItems: "center", gap: 6 }}><ShoppingBag size={16} /> <span>Accessories</span></span>
           </Link>
           <Link
             to={`${ADMIN_BASE}/settings`}
@@ -180,7 +180,7 @@ export default function AdminDashboard() {
               boxShadow: "0 1px 2px rgba(0,0,0,0.04)",
             }}
           >
-            <span>⚙️</span> Settings
+            <span style={{ display: "inline-flex", alignItems: "center", gap: 6 }}><Settings size={16} /> <span>Settings</span></span>
           </Link>
         </div>
       </div>
@@ -213,7 +213,7 @@ export default function AdminDashboard() {
       >
         <Link to={`${ADMIN_BASE}/birds`} className="ft-card-lift" style={kpiCardStyle}>
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 12 }}>
-            <span style={{ fontSize: 24 }}>🦜</span>
+            <Feather size={24} color="#1B3B22" />
             <span style={pillStyle("#22C55E")}>{stats ? `${stats.availableBirds} Available` : "..."}</span>
           </div>
           <div style={{ fontSize: 12.5, color: "#64748B", fontWeight: 600 }}>Birds &amp; Breeds</div>
@@ -224,7 +224,7 @@ export default function AdminDashboard() {
 
         <Link to={`${ADMIN_BASE}/accessories`} className="ft-card-lift" style={kpiCardStyle}>
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 12 }}>
-            <span style={{ fontSize: 24 }}>🛍️</span>
+            <ShoppingBag size={24} color="#1B3B22" />
             {stats && stats.lowStockAccessories > 0 && (
               <span style={pillStyle("#F59E0B")}>{stats.lowStockAccessories} Low Stock</span>
             )}
@@ -237,7 +237,7 @@ export default function AdminDashboard() {
 
         <Link to={`${ADMIN_BASE}/orders`} className="ft-card-lift" style={kpiCardStyle}>
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 12 }}>
-            <span style={{ fontSize: 24 }}>📦</span>
+            <Package size={24} color="#1B3B22" />
             <span style={pillStyle(stats?.pendingOrders > 0 ? "#F59E0B" : "#22C55E")}>
               {stats ? `${stats.pendingOrders} To Action` : "..."}
             </span>
@@ -250,7 +250,7 @@ export default function AdminDashboard() {
 
         <Link to={`${ADMIN_BASE}/orders`} className="ft-card-lift" style={kpiCardStyle}>
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 12 }}>
-            <span style={{ fontSize: 24 }}>💰</span>
+            <TrendingUp size={24} color="#1B3B22" />
             <span style={pillStyle("#38BDF8")}>Paid + COD</span>
           </div>
           <div style={{ fontSize: 12.5, color: "#64748B", fontWeight: 600 }}>Gross Shop Revenue</div>
@@ -272,7 +272,7 @@ export default function AdminDashboard() {
 
         <Link to={`${ADMIN_BASE}/subscribers`} className="ft-card-lift" style={kpiCardStyle}>
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 12 }}>
-            <span style={{ fontSize: 24 }}>📬</span>
+            <Mail size={24} color="#1B3B22" />
             <span style={pillStyle("#A855F7")}>Audience</span>
           </div>
           <div style={{ fontSize: 12.5, color: "#64748B", fontWeight: 600 }}>Email Subscribers</div>
@@ -288,7 +288,7 @@ export default function AdminDashboard() {
         <div style={sectionCardStyle}>
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 16 }}>
             <div>
-              <h2 style={{ fontSize: 17, fontWeight: 700, color: "#0F172A" }}>🦜 Quick Bird Availability</h2>
+              <h2 style={{ fontSize: 17, fontWeight: 700, color: "#0F172A" }}>Quick Bird Availability</h2>
               <p style={{ fontSize: 12, color: "#64748B" }}>Change breed availability directly in 1 click.</p>
             </div>
             <Link to={`${ADMIN_BASE}/birds`} style={{ fontSize: 12.5, color: "#059669", textDecoration: "none", fontWeight: 600 }}>
@@ -358,7 +358,7 @@ export default function AdminDashboard() {
         <div style={sectionCardStyle}>
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 16 }}>
             <div>
-              <h2 style={{ fontSize: 17, fontWeight: 700, color: "#0F172A" }}>📦 Recent Customer Orders</h2>
+              <h2 style={{ fontSize: 17, fontWeight: 700, color: "#0F172A" }}>Recent Customer Orders</h2>
               <p style={{ fontSize: 12, color: "#64748B" }}>Latest orders placed on storefront.</p>
             </div>
             <Link to={`${ADMIN_BASE}/orders`} style={{ fontSize: 12.5, color: "#059669", textDecoration: "none", fontWeight: 600 }}>

@@ -11,6 +11,18 @@
 ═══════════════════════════════════════════════════════════════ */
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
+import {
+  ArrowRight,
+  MessageCircle,
+  ShieldCheck,
+  Truck,
+  Star,
+  Feather,
+  Home,
+  Wheat,
+  Puzzle,
+  Compass,
+} from "lucide-react";
 import { useSettings } from "../../context/SettingsContext";
 
 import sunCrop from "../../assets/birds/crop-sun-conure.jpg";
@@ -126,11 +138,11 @@ const BIRDS = [
 ];
 
 const QUICK_HUBS = [
-  { icon: "🦜", title: "6 Companion Breeds", link: "/birds" },
-  { icon: "🏡", title: "Spacious Habitats", link: "/accessories?category=Cages" },
-  { icon: "🌾", title: "Certified Organic Diets", link: "/accessories?category=Food" },
-  { icon: "🎾", title: "Enrichment Toys", link: "/accessories?category=Toys" },
-  { icon: "🎯", title: "60s Match Quiz", link: "/#quiz" },
+  { Icon: Feather, title: "6 Companion Breeds", link: "/birds" },
+  { Icon: Home, title: "Spacious Habitats", link: "/accessories?category=Cages" },
+  { Icon: Wheat, title: "Certified Organic Diets", link: "/accessories?category=Food" },
+  { Icon: Puzzle, title: "Enrichment Toys", link: "/accessories?category=Toys" },
+  { Icon: Compass, title: "60s Match Quiz", link: "/#quiz" },
 ];
 
 export default function ModernHero() {
@@ -283,7 +295,7 @@ export default function ModernHero() {
                 }}
               >
                 <span>Explore Available Birds</span>
-                <span style={{ fontSize: 16 }}>→</span>
+                <ArrowRight size={16} strokeWidth={2.2} />
               </Link>
 
               {/* Secondary Oat/Forest Specialist Button */}
@@ -309,7 +321,7 @@ export default function ModernHero() {
                   transition: "border-color 0.2s, transform 0.2s",
                 }}
               >
-                <span style={{ fontSize: 15 }}>💬</span>
+                <MessageCircle size={16} strokeWidth={2.2} />
                 <span>Consult Specialist</span>
               </a>
             </div>
@@ -326,19 +338,19 @@ export default function ModernHero() {
               }}
             >
               <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-                <span style={{ fontSize: 18 }}>🛡️</span>
+                <ShieldCheck size={18} strokeWidth={2.2} color="#1B3B22" />
                 <span style={{ fontSize: 13, fontWeight: 700, color: "#1B3B22" }}>
                   DNA &amp; Vet Certified
                 </span>
               </div>
               <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-                <span style={{ fontSize: 18 }}>🚚</span>
+                <Truck size={18} strokeWidth={2.2} color="#1B3B22" />
                 <span style={{ fontSize: 13, fontWeight: 700, color: "#1B3B22" }}>
                   Climate-Safe Transit
                 </span>
               </div>
               <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-                <span style={{ fontSize: 18 }}>⭐</span>
+                <Star size={18} strokeWidth={2.2} color="#1B3B22" />
                 <span style={{ fontSize: 13, fontWeight: 700, color: "#1B3B22" }}>
                   4.9/5 Lifetime Care
                 </span>
@@ -581,7 +593,7 @@ export default function ModernHero() {
                     }}
                   >
                     <span>Adopt on WhatsApp</span>
-                    <span>💬</span>
+                    <MessageCircle size={15} strokeWidth={2.2} />
                   </a>
 
                   <Link
@@ -746,7 +758,7 @@ export default function ModernHero() {
                 transition: "all 0.2s ease",
               }}
             >
-              <span style={{ fontSize: 13 }}>{hub.icon}</span>
+              <hub.Icon size={14} strokeWidth={2.2} color="#1B3B22" />
               <span>{hub.title}</span>
             </Link>
           ))}

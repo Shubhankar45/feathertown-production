@@ -105,14 +105,14 @@ export default function AdminReviews() {
           body: JSON.stringify(payload),
         });
         setReviews((prev) => prev.map((r) => (r._id === editingId ? updated : r)));
-        toast.success("Review updated successfully 🎉");
+        toast.success("Review updated successfully");
       } else {
         const created = await adminFetch("/api/admin/reviews", {
           method: "POST",
           body: JSON.stringify(payload),
         });
         setReviews((prev) => [created, ...prev]);
-        toast.success("New review added 🎉");
+        toast.success("New review added");
       }
       setShowModal(false);
       setForm(EMPTY_FORM);
@@ -205,7 +205,7 @@ export default function AdminReviews() {
                 <div>
                   <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 12 }}>
                     <div style={{ color: "#F59E0B", fontSize: 16 }}>
-                      {"★".repeat(r.rating || 5)}{"☆".repeat(5 - (r.rating || 5))}
+                      {r.rating || 5} / 5 Stars
                     </div>
                     <div style={{ display: "flex", gap: 6, alignItems: "center" }}>
                       {r.isVerified && (
@@ -220,7 +220,7 @@ export default function AdminReviews() {
                             fontWeight: 700,
                           }}
                         >
-                          ✓ Verified
+                          Verified
                         </span>
                       )}
                       <span
@@ -346,9 +346,7 @@ export default function AdminReviews() {
               <button
                 onClick={() => setShowModal(false)}
                 style={{ background: "none", border: "none", color: "#64748B", fontSize: 22, cursor: "pointer" }}
-              >
-                ✕
-              </button>
+              ><X size={16} strokeWidth={2.2} /></button>
             </div>
 
             <form onSubmit={handleSubmit}>
@@ -384,11 +382,11 @@ export default function AdminReviews() {
                     onChange={(e) => setForm({ ...form, rating: Number(e.target.value) })}
                     style={inputStyle}
                   >
-                    <option value={5}>5 Stars ★★★★★</option>
-                    <option value={4}>4 Stars ★★★★☆</option>
-                    <option value={3}>3 Stars ★★★☆☆</option>
-                    <option value={2}>2 Stars ★★☆☆☆</option>
-                    <option value={1}>1 Star ★☆☆☆☆</option>
+                    <option value={5}>5 Stars</option>
+                    <option value={4}>4 Stars</option>
+                    <option value={3}>3 Stars</option>
+                    <option value={2}>2 Stars</option>
+                    <option value={1}>1 Star</option>
                   </select>
                 </div>
                 <div>

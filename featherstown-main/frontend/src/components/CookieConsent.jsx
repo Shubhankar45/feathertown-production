@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
+import { ShieldCheck, X } from "lucide-react";
 import { safeStorage } from "../utils/security";
 
 const CONSENT_KEY = "ft_cookie_consent_v1";
@@ -91,11 +92,10 @@ export default function CookieConsent() {
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",
-                fontSize: 20,
                 flexShrink: 0,
               }}
             >
-              🍪
+              <ShieldCheck size={20} strokeWidth={2.2} />
             </div>
             <div style={{ flex: 1 }}>
               <h3
@@ -233,7 +233,6 @@ export default function CookieConsent() {
                   width: 32,
                   height: 32,
                   cursor: "pointer",
-                  fontSize: 16,
                   color: "#736B5E",
                   display: "flex",
                   alignItems: "center",
@@ -241,7 +240,7 @@ export default function CookieConsent() {
                 }}
                 aria-label="Close"
               >
-                ✕
+                <X size={16} strokeWidth={2.2} />
               </button>
             </div>
 

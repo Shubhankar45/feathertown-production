@@ -135,14 +135,14 @@ export default function AdminAccessories() {
           body: JSON.stringify(payload),
         });
         setItems((prev) => prev.map((i) => (i._id === editingId ? updated : i)));
-        toast.success("Product updated 🎉");
+        toast.success("Product updated successfully");
       } else {
         const created = await adminFetch("/api/admin/accessories", {
           method: "POST",
           body: JSON.stringify(payload),
         });
         setItems((prev) => [created, ...prev]);
-        toast.success("New accessory added 🎉");
+        toast.success("New accessory added successfully");
       }
       setShowModal(false);
     } catch (err) {
@@ -186,7 +186,7 @@ export default function AdminAccessories() {
       >
         <div>
           <h1 style={{ fontSize: 26, fontWeight: 800, color: "#0F172A", marginBottom: 6 }}>
-            🛍️ Accessories &amp; Shop Inventory
+            Accessories &amp; Shop Inventory
           </h1>
           <p style={{ color: "#475569", fontSize: 14 }}>
             Manage cages, wholesome bird feed, enrichment toys, grooming items, and stock quantities.
@@ -256,7 +256,7 @@ export default function AdminAccessories() {
         <div style={{ display: "flex", gap: 12, flexWrap: "wrap", flex: 1, minWidth: 260 }}>
           <div style={{ position: "relative", flex: "1 1 220px", maxWidth: 360 }}>
             <span style={{ position: "absolute", left: 12, top: "50%", transform: "translateY(-50%)", color: "#94A3B8" }}>
-              🔍
+              
             </span>
             <input
               type="text"
@@ -312,7 +312,7 @@ export default function AdminAccessories() {
               fontWeight: 600,
             }}
           >
-            🔲 Grid
+            Grid
           </button>
           <button
             onClick={() => setViewMode("table")}
@@ -327,7 +327,7 @@ export default function AdminAccessories() {
               fontWeight: 600,
             }}
           >
-            📄 Table
+            Table
           </button>
         </div>
       </div>
@@ -347,7 +347,7 @@ export default function AdminAccessories() {
             textAlign: "center",
           }}
         >
-          <div style={{ fontSize: 36, marginBottom: 12 }}>🛍️</div>
+          <div style={{ display: "flex", justifyContent: "center", marginBottom: 12 }}><ShoppingBag size={36} color="#1B3B22" /></div>
           <div style={{ fontSize: 16, fontWeight: 700, color: "#0F172A", marginBottom: 6 }}>
             No products found
           </div>
@@ -382,7 +382,7 @@ export default function AdminAccessories() {
                     />
                   ) : (
                     <div style={{ height: "100%", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 40, color: "#94A3B8" }}>
-                      🛍️
+                      
                     </div>
                   )}
                   <span
@@ -482,7 +482,7 @@ export default function AdminAccessories() {
                         cursor: "pointer",
                       }}
                     >
-                      🗑️
+                      
                     </button>
                   </div>
                 </div>
@@ -525,7 +525,7 @@ export default function AdminAccessories() {
                         />
                       ) : (
                         <div style={{ width: 40, height: 40, borderRadius: 8, background: "#F1F5F9", display: "flex", alignItems: "center", justifyContent: "center" }}>
-                          🛍️
+                          
                         </div>
                       )}
                       <span style={{ fontWeight: 700, color: "#0F172A" }}>{item.name}</span>
@@ -646,14 +646,12 @@ export default function AdminAccessories() {
               }}
             >
               <h2 style={{ fontSize: 18, fontWeight: 800, color: "#0F172A" }}>
-                {editingId ? "✏️ Edit Product" : "🛍️ Add New Accessory"}
+                {editingId ? "Edit Product" : " Add New Accessory"}
               </h2>
               <button
                 onClick={() => setShowModal(false)}
                 style={{ background: "none", border: "none", color: "#64748B", fontSize: 22, cursor: "pointer" }}
-              >
-                ✕
-              </button>
+              ><X size={16} strokeWidth={2.2} /></button>
             </div>
 
             <form onSubmit={handleSubmit} style={{ padding: "24px" }}>

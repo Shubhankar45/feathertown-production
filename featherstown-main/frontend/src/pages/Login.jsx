@@ -52,10 +52,10 @@ export default function Login() {
     try {
       if (mode === "login") {
         await loginWithPassword(form.email.trim(), form.password);
-        toast.success("Welcome back! 🦜");
+        toast.success("Welcome back to FeatherTown!");
       } else {
         await register(form.name.trim(), form.email.trim(), form.password, selectedAvatar);
-        toast.success("Account created! Welcome to FeatherTown 🌿");
+        toast.success("Account created! Welcome to FeatherTown.");
       }
       navigate(from, { replace: true });
     } catch (err) {

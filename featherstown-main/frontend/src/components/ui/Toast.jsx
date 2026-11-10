@@ -2,6 +2,7 @@
    Global Toast Engine — singleton emitter + container
 ═══════════════════════════════════════════════════ */
 import { useState, useEffect } from "react";
+import { Check, X, AlertTriangle, Info } from "lucide-react";
 
 let _tid = 0;
 let _push = null;
@@ -20,10 +21,10 @@ export const toast = {
 };
 
 const T_CFG = {
-  success: { icon: "✓", pill: "#1B3B22", bg: "#E7EFE8", border: "#B8D4BA", txt: "#152B17" },
-  error:   { icon: "✕", pill: "#D9381E", bg: "#FDECE8", border: "#F4B8AC", txt: "#9E200C" },
-  warn:    { icon: "!", pill: "#D9381E", bg: "#FAF8F5", border: "#E2DDD3", txt: "#152B17" },
-  info:    { icon: "i", pill: "#1B3B22", bg: "#FAF8F5", border: "#E2DDD3", txt: "#152B17" },
+  success: { Icon: Check, pill: "#1B3B22", bg: "#E7EFE8", border: "#B8D4BA", txt: "#152B17" },
+  error:   { Icon: X, pill: "#D9381E", bg: "#FDECE8", border: "#F4B8AC", txt: "#9E200C" },
+  warn:    { Icon: AlertTriangle, pill: "#D9381E", bg: "#FAF8F5", border: "#E2DDD3", txt: "#152B17" },
+  info:    { Icon: Info, pill: "#1B3B22", bg: "#FAF8F5", border: "#E2DDD3", txt: "#152B17" },
 };
 
 export default function ToastContainer() {
@@ -52,9 +53,11 @@ export default function ToastContainer() {
               width: 28, height: 28, borderRadius: "50%",
               background: c.pill, color: "#fff",
               display: "flex", alignItems: "center", justifyContent: "center",
-              fontSize: 13, fontWeight: 800, flexShrink: 0,
+              flexShrink: 0,
               boxShadow: `0 4px 10px ${c.pill}55`,
-            }}>{c.icon}</span>
+            }}>
+              <c.Icon size={14} strokeWidth={2.5} color="#FFFFFF" />
+            </span>
             <span style={{ fontSize: 13.5, fontWeight: 500, color: c.txt, lineHeight: 1.55, paddingTop: 4 }}>
               {t.msg}
             </span>

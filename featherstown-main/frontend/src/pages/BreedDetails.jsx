@@ -1,4 +1,6 @@
 import { useParams, Link } from "react-router-dom";
+import { Stethoscope, Scroll, Truck, Phone, MessageCircle, FileText, CheckCircle2, MapPin, Wheat, Brain, Volume2, Smile, Sparkles, Feather, HelpCircle } from "lucide-react";
+import DynamicIcon from "../components/ui/DynamicIcon";
 import { useMemo, useState, useEffect } from "react";
 import { useBirds } from "../context/BirdsContext";
 import { useSettings } from "../context/SettingsContext";
@@ -52,7 +54,7 @@ function StatRing({ value, label, icon, color = T.leaf }) {
         </text>
       </svg>
       <div style={{ textAlign: "center" }}>
-        <div style={{ fontSize: 16, marginBottom: 2 }}>{icon}</div>
+        <div style={{ marginBottom: 4, display: "flex", justifyContent: "center", color: "#1B3B22" }}><DynamicIcon name={icon} size={18} strokeWidth={2.2} /></div>
         <div style={{ fontSize: 11, fontWeight: 700, color: "#64748B", letterSpacing: 0.8, textTransform: "uppercase" }}>
           {label}
         </div>
@@ -65,7 +67,7 @@ function StatRing({ value, label, icon, color = T.leaf }) {
    CARE ITEM
 ══════════════════════════════════════════════════════════ */
 function CareRow({ text, idx }) {
-  const rawIcon = text.match(/^(\u2705|\u26a0\ufe0f|\ud83e\uddf4|\ud83c\udf3f|\ud83c\udfe0|\ud83e\udde0)/)?.[0] ?? "🌿";
+  const rawIcon = "check";
   const clean = text.replace(/^(\u2705|\u26a0\ufe0f|\ud83e\uddf4|\ud83c\udf3f|\ud83c\udfe0|\ud83e\udde0)\s*/, "");
   return (
     <div
@@ -95,7 +97,7 @@ function CareRow({ text, idx }) {
           boxShadow: "0 1px 4px rgba(15, 23, 42, 0.05)",
         }}
       >
-        {rawIcon}
+        <CheckCircle2 size={16} strokeWidth={2.2} color="#1B3B22" />
       </div>
       <span style={{ fontSize: 14, color: "#334155", lineHeight: 1.6, paddingTop: 4 }}>
         {clean}
@@ -346,7 +348,7 @@ export default function BreedDetails() {
           fontFamily: "Outfit, system-ui, sans-serif",
         }}
       >
-        <div style={{ fontSize: 48 }}>🦜</div>
+        <div style={{ display: "flex", justifyContent: "center", marginBottom: 12 }}><HelpCircle size={48} color="#1B3B22" /></div>
         <h2 style={{ fontSize: 24, fontWeight: 800, color: T.forest }}>Breed Not Found</h2>
         <p style={{ color: T.muted }}>We couldn't find the bird species you're looking for.</p>
         <Link
@@ -379,10 +381,10 @@ export default function BreedDetails() {
   ];
 
   const stats = [
-    { label: "Intelligence", icon: "🧠", value: parrot.intelligence ?? 75, color: T.forest },
-    { label: "Low Noise", icon: "🔊", value: parrot.noiseLevelScore ?? 65, color: T.accent },
-    { label: "Friendliness", icon: "🤝", value: parrot.friendliness ?? 85, color: T.forest },
-    { label: "Care Ease", icon: "🧹", value: parrot.maintenanceScore ?? 60, color: T.accent },
+    { label: "Intelligence", icon: "brain", value: parrot.intelligence ?? 75, color: T.forest },
+    { label: "Low Noise", icon: "volume", value: parrot.noiseLevelScore ?? 65, color: T.accent },
+    { label: "Friendliness", icon: "smile", value: parrot.friendliness ?? 85, color: T.forest },
+    { label: "Care Ease", icon: "sparkle", value: parrot.maintenanceScore ?? 60, color: T.accent },
   ];
 
   async function handleDownloadPDF() {
@@ -510,19 +512,19 @@ export default function BreedDetails() {
               }}
             >
               <div style={{ display: "flex", alignItems: "center", gap: 8, fontSize: 12.5, color: "#1B3B22" }}>
-                <span>🩺</span>
+                <Stethoscope size={15} strokeWidth={2.2} />
                 <strong>Avian Vet Inspected</strong>
               </div>
               <div style={{ display: "flex", alignItems: "center", gap: 8, fontSize: 12.5, color: "#1B3B22" }}>
-                <span>📜</span>
+                <Scroll size={15} strokeWidth={2.2} />
                 <strong>Legal Non-Native Bird</strong>
               </div>
               <div style={{ display: "flex", alignItems: "center", gap: 8, fontSize: 12.5, color: "#1B3B22" }}>
-                <span>🚚</span>
+                <Truck size={15} strokeWidth={2.2} />
                 <strong>Doorstep Live Bird Escort</strong>
               </div>
               <div style={{ display: "flex", alignItems: "center", gap: 8, fontSize: 12.5, color: "#1B3B22" }}>
-                <span>📞</span>
+                <Phone size={15} strokeWidth={2.2} />
                 <strong>Lifetime Diet Guidance</strong>
               </div>
             </div>
@@ -648,7 +650,7 @@ export default function BreedDetails() {
                 </div>
                 <CompatibilityBadge parrot={parrot} answers={savedAnswers} />
                 <p style={{ fontSize: 12.5, color: "#1B3B22", fontWeight: 600, marginTop: 6 }}>
-                  {score >= 80 ? "Perfect Match for your home! 🏆" : score >= 60 ? "Great choice with routine bonding 👍" : "Requires experienced avian handling ⚠️"}
+                  {score >= 80 ? "Perfect Match for your home!" : score >= 60 ? "Great choice with routine bonding" : "Requires experienced avian handling"}
                 </p>
               </div>
             )}
@@ -684,7 +686,7 @@ export default function BreedDetails() {
                 e.currentTarget.style.background = "#1B3B22";
               }}
             >
-              <span style={{ fontSize: 20 }}>💬</span>
+              <MessageCircle size={18} strokeWidth={2.2} />
               Inquire via WhatsApp ({phoneDisplay})
             </a>
 
@@ -717,7 +719,7 @@ export default function BreedDetails() {
                 e.currentTarget.style.borderColor = "#E2DDD3";
               }}
             >
-              <span>📄</span>
+              <FileText size={15} strokeWidth={2.2} />
               {exporting ? "Generating PDF Care Guide..." : "Download Official Care Guide (PDF)"}
             </button>
           </div>
@@ -750,9 +752,9 @@ export default function BreedDetails() {
           {/* Tab Navigation */}
           <div style={{ display: "flex", gap: 8, marginBottom: 20, flexWrap: "wrap" }}>
             {[
-              { id: "overview", label: "🌿 Overview & Diet" },
-              { id: "training", label: "🎓 Training Steps" },
-              { id: "care", label: "🍃 Daily Care Checklist" },
+              { id: "overview", label: "Overview & Diet" },
+              { id: "training", label: "Training Steps" },
+              { id: "care", label: "Daily Care Checklist" },
             ].map((t) => {
               const active = tab === t.id;
               return (
@@ -801,10 +803,10 @@ export default function BreedDetails() {
                   }}
                 >
                   {[
-                    { icon: "📍", label: "Origin", value: parrot.origin || "South America / Australia" },
-                    { icon: "🥗", label: "Diet", value: parrot.diet || "Fortified pellets, fresh organic fruits & nuts" },
-                    { icon: "🧠", label: "Behavior", value: parrot.behavior || "Curious, affectionate, bonds strongly" },
-                    { icon: "🔊", label: "Noise Level", value: parrot.noiseLevel || "Moderate vocal calls at dawn/dusk" },
+                    { Icon: MapPin, label: "Origin", value: parrot.origin || "South America / Australia" },
+                    { Icon: Wheat, label: "Diet", value: parrot.diet || "Fortified pellets, fresh organic fruits & nuts" },
+                    { Icon: Brain, label: "Behavior", value: parrot.behavior || "Curious, affectionate, bonds strongly" },
+                    { Icon: Volume2, label: "Noise Level", value: parrot.noiseLevel || "Moderate vocal calls at dawn/dusk" },
                   ].map((item, idx) => (
                     <div
                       key={idx}
@@ -815,7 +817,7 @@ export default function BreedDetails() {
                         border: "1px solid #E2DDD3",
                       }}
                     >
-                      <div style={{ fontSize: 22, marginBottom: 6 }}>{item.icon}</div>
+                      <div style={{ marginBottom: 6, color: "#1B3B22" }}><item.Icon size={20} strokeWidth={2.2} /></div>
                       <div style={{ fontSize: 11, fontWeight: 800, color: T.muted, textTransform: "uppercase" }}>
                         {item.label}
                       </div>
@@ -836,7 +838,7 @@ export default function BreedDetails() {
                 <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))", gap: 24 }}>
                   <div>
                     <h4 style={{ fontSize: 15, fontWeight: 800, color: "#1B3B22", marginBottom: 12 }}>
-                      🌱 Foundation Training
+                      Foundation Training
                     </h4>
                     {(parrot.training?.basic ?? [
                       "Allow 3-4 days in a quiet room to acclimate to new home environment.",
@@ -850,7 +852,7 @@ export default function BreedDetails() {
 
                   <div>
                     <h4 style={{ fontSize: 15, fontWeight: 800, color: "#D9381E", marginBottom: 12 }}>
-                      🚀 Advanced Tricks & Speech
+                      Advanced Tricks & Speech
                     </h4>
                     {(parrot.training?.advanced ?? [
                       "Introduce repeat words in an upbeat, clear tone during morning meals.",

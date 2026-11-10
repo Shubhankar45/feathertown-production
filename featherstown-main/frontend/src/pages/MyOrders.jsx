@@ -30,7 +30,7 @@ export default function MyOrders() {
     setUpdatingAvatar(true);
     try {
       await updateAvatar(newAvatar);
-      toast.success("Profile avatar updated! 🦜");
+      toast.success("Profile avatar updated successfully!");
       setShowPicker(false);
     } catch (err) {
       toast.error(err.message || "Failed to update avatar");
@@ -102,7 +102,7 @@ export default function MyOrders() {
                   }}
                   title="Change Bird Avatar"
                 >
-                  ✏️
+                  <Edit3 size={13} strokeWidth={2.2} />
                 </button>
               </div>
               <div>
@@ -121,7 +121,7 @@ export default function MyOrders() {
                       borderRadius: 999,
                     }}
                   >
-                    FeatherTown Member 🦜
+                    FeatherTown Member
                   </span>
                 </div>
                 <div style={{ fontSize: 13, color: "#736B5E", marginTop: 2 }}>{user.email}</div>
@@ -150,7 +150,7 @@ export default function MyOrders() {
                 transition: "all 0.15s ease",
               }}
             >
-              <span>🦜</span>
+              <User size={15} strokeWidth={2.2} />
               <span>Change Bird Avatar</span>
             </button>
           </div>
@@ -202,7 +202,7 @@ export default function MyOrders() {
               boxShadow: "0 2px 10px rgba(27, 59, 34, 0.04)",
             }}
           >
-            <div style={{ fontSize: 44, marginBottom: 12 }}>📦</div>
+            <div style={{ display: "flex", justifyContent: "center", marginBottom: 12 }}><Package size={44} color="#1B3B22" strokeWidth={1.8} /></div>
             <h3 style={{ fontSize: 18, fontWeight: 700, color: "#152B17", marginBottom: 6 }}>No orders found</h3>
             <p style={{ color: "#736B5E", fontSize: 14, marginBottom: 20 }}>
               Your future accessory, cage, and treat hauls will appear here.

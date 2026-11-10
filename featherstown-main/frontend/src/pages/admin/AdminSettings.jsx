@@ -3,15 +3,15 @@ import { adminFetch } from "../../utils/adminApi";
 import { toast } from "../../components/ui/Toast";
 
 const TABS = [
-  { id: "contact", label: "📞 Store & Contact" },
-  { id: "announcement", label: "📢 Announcement" },
-  { id: "hero", label: "🌟 Hero & CTAs" },
-  { id: "promos", label: "🏷️ Promo Banners" },
-  { id: "species", label: "🦜 Species Cards" },
-  { id: "collections", label: "🏠 Collections" },
-  { id: "essentials", label: "💧 Essentials" },
-  { id: "guides", label: "📖 Care Guides" },
-  { id: "faqs", label: "❓ FAQs" },
+  { id: "contact", label: "Store & Contact" },
+  { id: "announcement", label: "Announcement" },
+  { id: "hero", label: "Hero & CTAs" },
+  { id: "promos", label: "Promo Banners" },
+  { id: "species", label: "Species Cards" },
+  { id: "collections", label: "Collections" },
+  { id: "essentials", label: "Essentials" },
+  { id: "guides", label: "Care Guides" },
+  { id: "faqs", label: "FAQs" },
   { id: "about", label: "ℹ️ About Page" },
 ];
 
@@ -78,7 +78,7 @@ export default function AdminSettings() {
         body: JSON.stringify(payload),
       });
       setSettings(updated);
-      toast.success("Store configuration & CMS updated successfully 🎉");
+      toast.success("Store configuration & CMS updated successfully");
     } catch (err) {
       toast.error(err.message || "Failed to save settings");
     } finally {
@@ -100,7 +100,7 @@ export default function AdminSettings() {
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", flexWrap: "wrap", gap: 16, marginBottom: 24 }}>
         <div>
           <h1 style={{ fontSize: 26, fontWeight: 800, color: "#0F172A", marginBottom: 6 }}>
-            ⚙️ Store Configuration &amp; CMS
+            Store Configuration &amp; CMS
           </h1>
           <p style={{ color: "#475569", fontSize: 14 }}>
             Control live storefront content, contact information, banners, species cards, collections, FAQs, and about page.
@@ -126,7 +126,7 @@ export default function AdminSettings() {
             opacity: saving ? 0.7 : 1,
           }}
         >
-          <span>💾</span>
+          <Save size={16} strokeWidth={2.2} />
           <span>{saving ? "Saving..." : "Save All Changes"}</span>
         </button>
       </div>
@@ -176,7 +176,7 @@ export default function AdminSettings() {
           <div>
             <div style={cardSectionStyle}>
               <h2 style={{ fontSize: 17, fontWeight: 700, color: "#FFFFFF", marginBottom: 4 }}>
-                📞 Contact &amp; Support Channels
+                Contact &amp; Support Channels
               </h2>
               <p style={{ fontSize: 12.5, color: "#94A3B8", marginBottom: 20 }}>
                 Used in headers, footers, checkout support buttons, and contact pages.
@@ -275,7 +275,7 @@ export default function AdminSettings() {
 
             <div style={cardSectionStyle}>
               <h2 style={{ fontSize: 17, fontWeight: 700, color: "#FFFFFF", marginBottom: 4 }}>
-                🚚 Delivery &amp; Cart Rules
+                Delivery &amp; Cart Rules
               </h2>
               <p style={{ fontSize: 12.5, color: "#94A3B8", marginBottom: 20 }}>
                 Configure shipping charges and free delivery threshold for Indian pin codes.
@@ -310,7 +310,7 @@ export default function AdminSettings() {
           <div style={cardSectionStyle}>
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 16 }}>
               <div>
-                <h2 style={{ fontSize: 17, fontWeight: 700, color: "#FFFFFF" }}>📢 Top Announcement Bar</h2>
+                <h2 style={{ fontSize: 17, fontWeight: 700, color: "#FFFFFF" }}>Top Announcement Bar</h2>
                 <p style={{ fontSize: 12.5, color: "#94A3B8", marginTop: 2 }}>
                   Displays at the absolute top of every page in the storefront.
                 </p>
@@ -333,7 +333,7 @@ export default function AdminSettings() {
                 value={settings.announcementText || ""}
                 onChange={(e) => handleChange("announcementText", e.target.value)}
                 style={{ ...inputStyle, resize: "vertical" }}
-                placeholder="e.g. 🦜 Certified healthy companion birds & organic supplies across India. WhatsApp support 7 days a week."
+                placeholder="e.g.  Certified healthy companion birds & organic supplies across India. WhatsApp support 7 days a week."
               />
             </div>
 
@@ -379,7 +379,7 @@ export default function AdminSettings() {
         {activeTab === "hero" && (
           <div style={cardSectionStyle}>
             <h2 style={{ fontSize: 17, fontWeight: 700, color: "#FFFFFF", marginBottom: 4 }}>
-              🌟 Hero Section Headline &amp; Buttons
+               Hero Section Headline &amp; Buttons
             </h2>
             <p style={{ fontSize: 12.5, color: "#94A3B8", marginBottom: 20 }}>
               The first visual headline and actions visitors see on the homepage.
@@ -487,7 +487,7 @@ export default function AdminSettings() {
           <div style={cardSectionStyle}>
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 16 }}>
               <div>
-                <h2 style={{ fontSize: 17, fontWeight: 700, color: "#FFFFFF" }}>🏷️ Promotional Split Banners</h2>
+                <h2 style={{ fontSize: 17, fontWeight: 700, color: "#FFFFFF" }}> Promotional Split Banners</h2>
                 <p style={{ fontSize: 12.5, color: "#94A3B8", marginTop: 2 }}>
                   Two side-by-side promotional highlight banners on the storefront.
                 </p>
@@ -587,7 +587,7 @@ export default function AdminSettings() {
           <div style={cardSectionStyle}>
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 16 }}>
               <div>
-                <h2 style={{ fontSize: 17, fontWeight: 700, color: "#FFFFFF" }}>🦜 Shop by Pet / Species Cards</h2>
+                <h2 style={{ fontSize: 17, fontWeight: 700, color: "#FFFFFF" }}> Shop by Pet / Species Cards</h2>
                 <p style={{ fontSize: 12.5, color: "#94A3B8", marginTop: 2 }}>
                   The circular species quick-navigation strip shown on the homepage.
                 </p>
@@ -649,9 +649,7 @@ export default function AdminSettings() {
                       cursor: "pointer",
                       fontSize: 12,
                     }}
-                  >
-                    ✕
-                  </button>
+                  ><X size={16} strokeWidth={2.2} /></button>
 
                   <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10, marginBottom: 10 }}>
                     <div>
@@ -730,7 +728,7 @@ export default function AdminSettings() {
           <div style={cardSectionStyle}>
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 16 }}>
               <div>
-                <h2 style={{ fontSize: 17, fontWeight: 700, color: "#FFFFFF" }}>🏠 Featured Collection Cards</h2>
+                <h2 style={{ fontSize: 17, fontWeight: 700, color: "#FFFFFF" }}> Featured Collection Cards</h2>
                 <p style={{ fontSize: 12.5, color: "#94A3B8", marginTop: 2 }}>
                   The large 4 visual cards showcasing Cages, Nutrition, Toys, and Hygiene.
                 </p>
@@ -743,8 +741,8 @@ export default function AdminSettings() {
                     id: `col-${Date.now()}`,
                     title: "New Collection",
                     subtitle: "Handpicked supplies",
-                    icon: "🏠",
-                    emoji: "🏰",
+                    icon: "",
+                    emoji: "",
                     link: "/accessories",
                     bgGradient: "linear-gradient(135deg, #1E3A8A 0%, #0369A1 100%)",
                     accent: "#38BDF8",
@@ -793,9 +791,7 @@ export default function AdminSettings() {
                       cursor: "pointer",
                       fontSize: 12,
                     }}
-                  >
-                    ✕
-                  </button>
+                  ><X size={16} strokeWidth={2.2} /></button>
 
                   <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10, marginBottom: 10 }}>
                     <div>
@@ -828,7 +824,7 @@ export default function AdminSettings() {
                         value={col.icon || ""}
                         onChange={(e) => handleArrayItemChange("featuredCollections", idx, "icon", e.target.value)}
                         style={inputStyle}
-                        placeholder="🏠"
+                        placeholder=""
                       />
                     </div>
                     <div>
@@ -864,7 +860,7 @@ export default function AdminSettings() {
           <div style={cardSectionStyle}>
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 16 }}>
               <div>
-                <h2 style={{ fontSize: 17, fontWeight: 700, color: "#FFFFFF" }}>💧 Habitat Essentials Icons</h2>
+                <h2 style={{ fontSize: 17, fontWeight: 700, color: "#FFFFFF" }}> Habitat Essentials Icons</h2>
                 <p style={{ fontSize: 12.5, color: "#94A3B8", marginTop: 2 }}>
                   Quick links to daily bird necessities (drinkers, perches, seeds, swings, bowls, hygiene).
                 </p>
@@ -875,7 +871,7 @@ export default function AdminSettings() {
                 onClick={() =>
                   handleAddArrayItem("habitatEssentials", {
                     id: `ess-${Date.now()}`,
-                    icon: "🌾",
+                    icon: "",
                     label: "New Essential",
                     link: "/accessories",
                   })
@@ -943,9 +939,7 @@ export default function AdminSettings() {
                       borderRadius: "50%",
                       cursor: "pointer",
                     }}
-                  >
-                    ✕
-                  </button>
+                  ><X size={16} strokeWidth={2.2} /></button>
                 </div>
               ))}
             </div>
@@ -957,7 +951,7 @@ export default function AdminSettings() {
           <div style={cardSectionStyle}>
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 16 }}>
               <div>
-                <h2 style={{ fontSize: 17, fontWeight: 700, color: "#FFFFFF" }}>📖 Avian Care Guides</h2>
+                <h2 style={{ fontSize: 17, fontWeight: 700, color: "#FFFFFF" }}> Avian Care Guides</h2>
                 <p style={{ fontSize: 12.5, color: "#94A3B8", marginTop: 2 }}>
                   Educational resource cards displayed on the storefront.
                 </p>
@@ -1019,9 +1013,7 @@ export default function AdminSettings() {
                       cursor: "pointer",
                       fontSize: 12,
                     }}
-                  >
-                    ✕
-                  </button>
+                  ><X size={16} strokeWidth={2.2} /></button>
 
                   <div style={{ marginBottom: 10 }}>
                     <label style={labelStyle}>Guide Title</label>
@@ -1078,7 +1070,7 @@ export default function AdminSettings() {
           <div style={cardSectionStyle}>
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 16 }}>
               <div>
-                <h2 style={{ fontSize: 17, fontWeight: 700, color: "#FFFFFF" }}>❓ Frequently Asked Questions</h2>
+                <h2 style={{ fontSize: 17, fontWeight: 700, color: "#FFFFFF" }}> Frequently Asked Questions</h2>
                 <p style={{ fontSize: 12.5, color: "#94A3B8", marginTop: 2 }}>
                   Manage the Q&amp;A accordion items displayed on the homepage.
                 </p>
@@ -1136,9 +1128,7 @@ export default function AdminSettings() {
                       cursor: "pointer",
                       fontSize: 12,
                     }}
-                  >
-                    ✕
-                  </button>
+                  ><X size={16} strokeWidth={2.2} /></button>
 
                   <div style={{ marginBottom: 10, paddingRight: 32 }}>
                     <label style={labelStyle}>Question #{idx + 1}</label>
@@ -1227,7 +1217,7 @@ export default function AdminSettings() {
             <div style={cardSectionStyle}>
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 16 }}>
                 <div>
-                  <h2 style={{ fontSize: 17, fontWeight: 700, color: "#FFFFFF" }}>📋 About Section Feature Cards</h2>
+                  <h2 style={{ fontSize: 17, fontWeight: 700, color: "#FFFFFF" }}> About Section Feature Cards</h2>
                   <p style={{ fontSize: 12.5, color: "#94A3B8", marginTop: 2 }}>
                     The 4 informative cards on the homepage About section (Services, Why Choose Us, Certified Aviary, Contact).
                   </p>
@@ -1317,7 +1307,7 @@ export default function AdminSettings() {
               opacity: saving ? 0.7 : 1,
             }}
           >
-            <span>💾</span>
+            <Save size={16} strokeWidth={2.2} />
             <span>{saving ? "Saving All Settings..." : "Save All Settings & CMS"}</span>
           </button>
         </div>

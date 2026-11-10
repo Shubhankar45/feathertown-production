@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { LayoutDashboard, Feather, ShoppingBag, Tag, Package, Mail, Settings, LogOut, Menu, X } from "lucide-react";
 import { NavLink, Outlet, useNavigate, useLocation } from "react-router-dom";
 import { useAdminAuth } from "../../context/AdminAuthContext";
 import { ADMIN_BASE } from "../../config/adminConfig";
@@ -6,14 +7,14 @@ import ToastContainer from "../ui/Toast";
 import logoImg from "../../assets/logo-optimized.png";
 
 const NAV = [
-  { to: `${ADMIN_BASE}`, label: "Overview", icon: "📊", end: true },
-  { to: `${ADMIN_BASE}/birds`, label: "Birds & Breeds", icon: "🦜" },
-  { to: `${ADMIN_BASE}/accessories`, label: "Accessories", icon: "🛍️" },
-  { to: `${ADMIN_BASE}/categories`, label: "Categories", icon: "🏷️" },
-  { to: `${ADMIN_BASE}/orders`, label: "Orders", icon: "📦" },
+  { to: `${ADMIN_BASE}`, label: "Overview", Icon: LayoutDashboard, end: true },
+  { to: `${ADMIN_BASE}/birds`, label: "Birds & Breeds", Icon: Feather },
+  { to: `${ADMIN_BASE}/accessories`, label: "Accessories", Icon: ShoppingBag },
+  { to: `${ADMIN_BASE}/categories`, label: "Categories", Icon: Tag },
+  { to: `${ADMIN_BASE}/orders`, label: "Orders", Icon: Package },
   { to: `${ADMIN_BASE}/reviews`, label: "Reviews", icon: "⭐" },
-  { to: `${ADMIN_BASE}/subscribers`, label: "Subscribers", icon: "📬" },
-  { to: `${ADMIN_BASE}/settings`, label: "Store Settings", icon: "⚙️" },
+  { to: `${ADMIN_BASE}/subscribers`, label: "Subscribers", Icon: Mail },
+  { to: `${ADMIN_BASE}/settings`, label: "Store Settings", Icon: Settings },
 ];
 
 export default function AdminLayout() {
@@ -121,7 +122,7 @@ export default function AdminLayout() {
               justifyContent: "center",
             }}
           >
-            ✕
+            <X size={16} strokeWidth={2.2} />
           </button>
         </div>
 
@@ -249,7 +250,7 @@ export default function AdminLayout() {
               transition: "background 0.2s",
             }}
           >
-            <span>🚪</span>
+            <LogOut size={16} strokeWidth={2.2} />
             <span>Sign Out</span>
           </button>
         </div>
@@ -276,7 +277,7 @@ export default function AdminLayout() {
                 justifyContent: "center",
               }}
             >
-              ☰
+              <Menu size={20} strokeWidth={2.2} />
             </button>
 
             <div>

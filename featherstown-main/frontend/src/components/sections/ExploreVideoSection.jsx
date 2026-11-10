@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
+import { Feather } from "lucide-react";
 import natureImg from "../../assets/nature-aviary.jpg";
 import Magnet from "../react-bits/Magnet";
 
@@ -226,9 +227,13 @@ export default function ExploreVideoSection() {
               borderRadius: 999,
               border: "1px solid #B8D4BA",
               boxShadow: "0 2px 10px rgba(21, 43, 23, 0.08)",
+              display: "inline-flex",
+              alignItems: "center",
+              gap: 6,
             }}
           >
-            🌿 Virtual Aviary Habitat Tour &bull; 4K Ultra HD
+            <Feather size={13} color="#1B3B22" strokeWidth={2.2} />
+            <span>Virtual Aviary Habitat Tour &bull; 4K Ultra HD</span>
           </div>
         </div>
       </div>

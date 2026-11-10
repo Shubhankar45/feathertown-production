@@ -1,5 +1,18 @@
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useState, useEffect, useRef } from "react";
+import {
+  Search,
+  ShoppingCart,
+  MessageCircle,
+  Compass,
+  ArrowRight,
+  Menu,
+  X,
+  Truck,
+  ShieldCheck,
+  Scale,
+  User,
+} from "lucide-react";
 import { useCart } from "../context/CartContext";
 import { useUserAuth } from "../context/UserAuthContext";
 import { useSettings } from "../context/SettingsContext";
@@ -7,35 +20,10 @@ import UserMenu from "./UserMenu";
 import Avatar from "./ui/Avatar";
 import { trackWhatsAppClick } from "../utils/analytics";
 
-const SearchIco = ({ size = 18 }) => (
-  <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
-    <circle cx="11" cy="11" r="8" />
-    <line x1="21" y1="21" x2="16.65" y2="16.65" />
-  </svg>
-);
-
-const CartIco = ({ size = 20 }) => (
-  <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-    <circle cx="9" cy="21" r="1" />
-    <circle cx="20" cy="21" r="1" />
-    <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6" />
-  </svg>
-);
-
-const CompareIco = ({ size = 20 }) => (
-  <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-    <path d="M16 3h5v5" />
-    <path d="M4 20L21 3" />
-    <path d="M21 16v5h-5" />
-    <path d="M15 15l6 6" />
-    <path d="M4 4l5 5" />
-  </svg>
-);
-
 const NAV_LINKS = [
   { label: "Home", path: "/" },
   { label: "Parrots", path: "/birds" },
-  { label: "Find Your Bird", path: "/#quiz", badge: "Quiz 🎯", highlight: true },
+  { label: "Find Your Bird", path: "/#quiz", badge: "Quiz", highlight: true },
   { label: "Accessories & Cages", path: "/accessories" },
   { label: "Compare Breeds", path: "/compare" },
   { label: "Care Guides", path: "/#care-guides" },
@@ -113,20 +101,30 @@ export default function Navbar() {
         {settings?.announcementActive !== false && (
           <div className="ft-announcement-bar">
             <div className="ft-announcement-desktop">
-              <span>{settings?.announcementText || `🚚 Free shipping on orders over ₹${settings?.freeShippingThreshold || 999}`}</span>
+              <span style={{ display: "inline-flex", alignItems: "center", gap: 6 }}>
+                <Truck size={13} strokeWidth={2.2} />
+                <span>{settings?.announcementText ? settings.announcementText.replace(/[\u{1F300}-\u{1F9FF}]/gu, "").trim() : `Free shipping on orders over ₹${settings?.freeShippingThreshold || 999}`}</span>
+              </span>
               <span style={{ opacity: 0.4 }}>•</span>
               <Link to="/#quiz" style={{ color: "#FAF8F5", fontWeight: 800, textDecoration: "none", display: "inline-flex", alignItems: "center", gap: 5 }}>
-                <span>🎯</span>
+                <Compass size={13} strokeWidth={2.2} />
                 <span style={{ textDecoration: "underline", textUnderlineOffset: 3 }}>Find Your Bird (60s Quiz)</span>
               </Link>
               <span style={{ opacity: 0.4 }}>•</span>
-              <span>🦜 100% Healthy &amp; Happy Companion Birds!</span>
+              <span style={{ display: "inline-flex", alignItems: "center", gap: 6 }}>
+                <ShieldCheck size={13} strokeWidth={2.2} />
+                <span>100% Healthy &amp; Happy Companion Birds!</span>
+              </span>
             </div>
             <div className="ft-announcement-mobile">
-              <span>🚚 Free Shipping ₹{settings?.freeShippingThreshold || 999}+</span>
+              <span style={{ display: "inline-flex", alignItems: "center", gap: 5 }}>
+                <Truck size={12} strokeWidth={2.2} />
+                <span>Free Shipping ₹{settings?.freeShippingThreshold || 999}+</span>
+              </span>
               <span style={{ opacity: 0.4 }}>•</span>
-              <Link to="/#quiz" style={{ color: "#FAF8F5", fontWeight: 800, textDecoration: "none" }}>
-                🎯 Bird Quiz
+              <Link to="/#quiz" style={{ color: "#FAF8F5", fontWeight: 800, textDecoration: "none", display: "inline-flex", alignItems: "center", gap: 4 }}>
+                <Compass size={12} strokeWidth={2.2} />
+                <span>Bird Quiz</span>
               </Link>
             </div>
           </div>
@@ -254,7 +252,7 @@ export default function Navbar() {
               }}
               aria-label="Search"
             >
-              <SearchIco size={16} />
+              <Search size={16} strokeWidth={2.2} />
             </button>
           </form>
 
@@ -271,9 +269,9 @@ export default function Navbar() {
               aria-label="Toggle Search Bar"
             >
               {mobileSearchOpen ? (
-                <span style={{ fontSize: 16, fontWeight: 700 }}>✕</span>
+                <X size={18} strokeWidth={2.2} />
               ) : (
-                <SearchIco size={18} />
+                <Search size={18} strokeWidth={2.2} />
               )}
             </button>
 
@@ -307,12 +305,12 @@ export default function Navbar() {
                   display: "flex",
                   alignItems: "center",
                   justifyContent: "center",
-                  fontSize: 18,
+                  color: "#1B3B22",
                   marginBottom: 1,
                   boxShadow: "0 1px 3px rgba(27, 59, 34, 0.1)",
                 }}
               >
-                🎯
+                <Compass size={18} strokeWidth={2.2} />
               </div>
               <span className="ft-icon-label" style={{ color: "#1B3B22" }}>Bird Quiz</span>
             </Link>
@@ -346,7 +344,7 @@ export default function Navbar() {
                   marginBottom: 1,
                 }}
               >
-                <CompareIco size={18} />
+                <Scale size={18} strokeWidth={2.2} />
               </div>
               <span className="ft-icon-label" style={{ color: "#1B3B22" }}>Compare</span>
             </Link>
@@ -382,7 +380,7 @@ export default function Navbar() {
                   marginBottom: 1,
                 }}
               >
-                <CartIco size={19} />
+                <ShoppingCart size={19} strokeWidth={2.2} />
                 {cartCount > 0 && (
                   <span
                     className={cartBouncing ? "ft-cart-bounce" : ""}
@@ -430,7 +428,7 @@ export default function Navbar() {
               }}
               className="ft-desktop-wa t-btn-press"
             >
-              <span>💬</span>
+              <MessageCircle size={15} strokeWidth={2.2} />
               <span>WhatsApp</span>
             </button>
           </div>
@@ -478,7 +476,7 @@ export default function Navbar() {
                   cursor: "pointer",
                 }}
               >
-                <SearchIco size={15} />
+                <Search size={15} strokeWidth={2.2} />
               </button>
             </form>
           </div>
@@ -599,11 +597,10 @@ export default function Navbar() {
                       display: "flex",
                       alignItems: "center",
                       justifyContent: "center",
-                      fontSize: 18,
                       flexShrink: 0,
                     }}
                   >
-                    🦜
+                    <User size={18} strokeWidth={2.2} />
                   </div>
                   <div>
                     <div style={{ fontSize: 13.5, fontWeight: 700, color: "#152B17" }}>Hello, Bird Lover!</div>
@@ -709,7 +706,7 @@ export default function Navbar() {
                   justifyContent: "center",
                 }}
               >
-                <SearchIco size={14} />
+                <Search size={14} strokeWidth={2.2} />
               </button>
             </form>
 
@@ -741,11 +738,10 @@ export default function Navbar() {
                     display: "flex",
                     alignItems: "center",
                     justifyContent: "center",
-                    fontSize: 18,
                     flexShrink: 0,
                   }}
                 >
-                  🎯
+                  <Compass size={18} strokeWidth={2.2} />
                 </div>
                 <div>
                   <div style={{ fontSize: 13.5, fontWeight: 700, color: "#152B17" }}>Which Bird Fits You?</div>
@@ -824,7 +820,7 @@ export default function Navbar() {
                 cursor: "pointer",
               }}
             >
-              <span>💬</span>
+              <MessageCircle size={16} strokeWidth={2.2} />
               <span>Chat on WhatsApp ({settings?.phone || "+91 9556747518"})</span>
             </button>
           </div>

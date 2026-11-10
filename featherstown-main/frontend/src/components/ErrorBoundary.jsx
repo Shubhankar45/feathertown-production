@@ -1,4 +1,5 @@
 import React from "react";
+import { AlertTriangle, RotateCcw, Home } from "lucide-react";
 
 export default class ErrorBoundary extends React.Component {
   constructor(props) {
@@ -56,14 +57,14 @@ export default class ErrorBoundary extends React.Component {
                 height: 72,
                 borderRadius: "50%",
                 background: "#E7EFE8",
+                color: "#1B3B22",
                 display: "inline-flex",
                 alignItems: "center",
                 justifyContent: "center",
-                fontSize: 34,
                 marginBottom: 20,
               }}
             >
-              🦜
+              <AlertTriangle size={34} strokeWidth={2} />
             </div>
             <h1
               style={{

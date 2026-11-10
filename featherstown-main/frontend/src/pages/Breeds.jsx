@@ -98,7 +98,7 @@ export default function Breeds() {
                   fontSize: 16,
                 }}
               >
-                🔍
+                
               </span>
               <input
                 type="text"
@@ -136,10 +136,12 @@ export default function Breeds() {
                     border: "none",
                     cursor: "pointer",
                     color: "#736B5E",
-                    fontSize: 14,
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
                   }}
                 >
-                  ✕
+                  <X size={14} strokeWidth={2.2} />
                 </button>
               )}
             </div>
@@ -245,7 +247,7 @@ export default function Breeds() {
                 cursor: "pointer",
               }}
             >
-              Reset Filters ✕
+              Reset Filters
             </button>
           )}
         </div>
@@ -263,7 +265,7 @@ export default function Breeds() {
               boxShadow: "0 2px 10px rgba(27, 59, 34, 0.04)",
             }}
           >
-            <div className="ft-animate-float" style={{ fontSize: 44, marginBottom: 12 }}>🦜</div>
+            <div className="ft-animate-float" style={{ display: "flex", justifyContent: "center", marginBottom: 12 }}><HelpCircle size={44} color="#1B3B22" strokeWidth={1.8} /></div>
             <h3 style={{ fontSize: 18, fontWeight: 700, color: "#152B17", marginBottom: 6 }}>
               No breeds found matching your criteria
             </h3>

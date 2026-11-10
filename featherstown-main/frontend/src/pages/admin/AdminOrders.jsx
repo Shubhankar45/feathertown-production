@@ -37,7 +37,7 @@ export default function AdminOrders() {
       if (selectedOrder && selectedOrder._id === orderId) {
         setSelectedOrder(updated);
       }
-      toast.success(`Order marked as "${newStatus}" 🎉`);
+      toast.success(`Order marked as "${newStatus}"`);
     } catch (err) {
       toast.error(err.message || "Could not update order status");
     }
@@ -102,7 +102,7 @@ export default function AdminOrders() {
       >
         <div>
           <h1 style={{ fontSize: 26, fontWeight: 800, color: "#0F172A", marginBottom: 6 }}>
-            📦 Customer Orders
+            Customer Orders
           </h1>
           <p style={{ color: "#475569", fontSize: 14 }}>
             Review customer orders, dispatch parcels, manage delivery statuses, and export invoices.
@@ -126,7 +126,7 @@ export default function AdminOrders() {
             boxShadow: "0 1px 3px rgba(0, 0, 0, 0.04)",
           }}
         >
-          <span>📥</span> Export Orders CSV
+          <span style={{ display: "inline-flex", alignItems: "center", gap: 6 }}><Download size={15} /> <span>Export Orders CSV</span></span>
         </button>
       </div>
 
@@ -200,7 +200,7 @@ export default function AdminOrders() {
 
         <div style={{ position: "relative", width: 280 }}>
           <span style={{ position: "absolute", left: 12, top: "50%", transform: "translateY(-50%)", color: "#94A3B8" }}>
-            🔍
+            
           </span>
           <input
             type="text"
@@ -236,7 +236,7 @@ export default function AdminOrders() {
             textAlign: "center",
           }}
         >
-          <div style={{ fontSize: 36, marginBottom: 12 }}>📦</div>
+          <div style={{ display: "flex", justifyContent: "center", marginBottom: 12 }}><Package size={36} color="#1B3B22" /></div>
           <div style={{ fontSize: 16, fontWeight: 700, color: "#0F172A", marginBottom: 6 }}>
             No orders found
           </div>
@@ -404,9 +404,7 @@ export default function AdminOrders() {
               <button
                 onClick={() => setSelectedOrder(null)}
                 style={{ background: "none", border: "none", color: "#64748B", fontSize: 22, cursor: "pointer" }}
-              >
-                ✕
-              </button>
+              ><X size={16} strokeWidth={2.2} /></button>
             </div>
 
             {/* Customer & Shipping Details */}

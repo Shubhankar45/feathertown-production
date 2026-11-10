@@ -73,7 +73,7 @@ export default function Accessories() {
   const handleAddToCart = (product) => {
     addItem(product, 1);
     trackAddToCart(product, 1);
-    toast.success(`${product.name} added to cart! 🛍️`);
+    toast.success(`${product.name} added to cart!`);
   };
 
   return (
@@ -225,7 +225,7 @@ export default function Accessories() {
               boxShadow: "0 2px 10px rgba(0,0,0,0.03)",
             }}
           >
-            <div style={{ fontSize: 44, marginBottom: 12 }}>🔍</div>
+            <div style={{ display: "flex", justifyContent: "center", marginBottom: 12 }}><Search size={44} color="#736B5E" strokeWidth={1.8} /></div>
             <h3 style={{ fontSize: 18, fontWeight: 800, color: "#152B17", marginBottom: 6 }}>
               No accessories found
             </h3>
@@ -360,7 +360,7 @@ export default function Accessories() {
                     </div>
 
                     <div style={{ display: "flex", alignItems: "center", gap: 4, fontSize: 11, color: "#1B3B22", marginBottom: 12 }}>
-                      <span>★★★★★</span>
+                      <span style={{ display: "inline-flex", gap: 2, color: "#1B3B22" }}>{[...Array(5)].map((_, i) => <Star key={i} size={12} fill="#1B3B22" strokeWidth={0} />)}</span>
                       <span style={{ color: "#736B5E", fontWeight: 600 }}>({prod.reviewsCount || 120})</span>
                     </div>
 
@@ -384,7 +384,7 @@ export default function Accessories() {
                         boxShadow: "0 3px 10px rgba(217, 56, 30, 0.25)",
                       }}
                     >
-                      <span>🛍️</span>
+                      <ShoppingBag size={14} strokeWidth={2.2} />
                       <span>Add to Cart</span>
                     </button>
                   </div>

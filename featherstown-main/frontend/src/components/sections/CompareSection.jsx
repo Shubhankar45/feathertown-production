@@ -2,6 +2,7 @@
    COMPARE — side-by-side bird comparison tool
 ═══════════════════════════════════════════════════ */
 import { useState, useMemo } from "react";
+import { X, Award, Compass, Check } from "lucide-react";
 import { Leaf, WAIco } from "../ui/Icons";
 import CompatibilityBadge from "../CompatibilityBadge";
 import { calcCompatibility } from "../../utils/recommendation";
@@ -128,7 +129,7 @@ export default function CompareSection({ parrots = [], standalone = false }) {
                   </div>
                 )}
               </div>
-              <button className="cmp-slot-remove" onClick={() => remove(b.id)}>✕</button>
+              <button className="cmp-slot-remove" onClick={() => remove(b.id)} style={{ display: "flex", alignItems: "center", justifyContent: "center" }}><X size={14} strokeWidth={2.2} /></button>
             </div>
           ))}
           {selected.length < 3 && (
@@ -141,7 +142,7 @@ export default function CompareSection({ parrots = [], standalone = false }) {
         </div>
         <div className="rv" style={{ textAlign: "center", marginBottom: 36, display: "flex", alignItems: "center", justifyContent: "center", gap: 10, flexWrap: "wrap" }}>
           <button className="btn-j ft-btn-hover" onClick={openPicker} disabled={selected.length >= 3} style={{ padding: "11px 26px", fontSize: 13.5 }}>+ Add a Bird</button>
-          {selected.length > 0 && <button className="btn-sm ft-btn-hover" onClick={clearAll}>✕ Clear All</button>}
+          {selected.length > 0 && <button className="btn-sm ft-btn-hover" onClick={clearAll} style={{ display: "inline-flex", alignItems: "center", gap: 6 }}><X size={14} strokeWidth={2.2} /> Clear All</button>}
         </div>
         {selected.length === 0 && (
           <div style={{ textAlign: "center", padding: "8px 0 12px", animation: "fadeUp .5s var(--ease-out) .3s both", opacity: 0, animationFillMode: "both" }}>
@@ -250,7 +251,10 @@ export default function CompareSection({ parrots = [], standalone = false }) {
                 ))}
                 {savedAnswers && (
                   <div style={{ marginTop: 24, paddingTop: 20, borderTop: "1px solid rgba(34,197,94,.1)" }}>
-                    <div style={{ fontSize: 10.5, fontWeight: 700, color: "var(--leaf2)", letterSpacing: 1.2, textTransform: "uppercase", marginBottom: 14 }}>🎯 Your Personal Compatibility</div>
+                    <div style={{ fontSize: 10.5, fontWeight: 700, color: "var(--leaf2)", letterSpacing: 1.2, textTransform: "uppercase", marginBottom: 14, display: "flex", alignItems: "center", gap: 6 }}>
+                      <Compass size={14} strokeWidth={2.2} />
+                      <span>Your Personal Compatibility</span>
+                    </div>
                     {selected.map((b) => (
                       <div key={b.id} style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 10 }}>
                         <span style={{ fontSize: 12, fontWeight: 600, color: "var(--fog)", minWidth: 110, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{b.name}</span>
@@ -266,7 +270,10 @@ export default function CompareSection({ parrots = [], standalone = false }) {
                 <div style={{ textAlign: "center", marginBottom: 26 }}>
                   <div style={{ fontSize: 10, fontWeight: 700, letterSpacing: 2.5, textTransform: "uppercase", color: "var(--mist)", marginBottom: 8 }}>Overall Winner</div>
                   <div style={{ fontFamily: "var(--font-d)", fontSize: "clamp(28px,4vw,42px)", fontWeight: 500, color: "var(--cream)", marginBottom: 8 }}>{winner.b.name}</div>
-                  <span className="cmp-winner-badge">🏆 Best Overall · {winner.total}/60</span>
+                  <span className="cmp-winner-badge" style={{ display: "inline-flex", alignItems: "center", gap: 6 }}>
+                    <Award size={14} strokeWidth={2.2} />
+                    <span>Best Overall · {winner.total}/60</span>
+                  </span>
                 </div>
                 <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(200px,1fr))", gap: 12, marginBottom: 22 }}>
                   {totals.map(({ b, total }, i) => (
@@ -312,7 +319,9 @@ export default function CompareSection({ parrots = [], standalone = false }) {
                 <h3 style={{ fontFamily: "var(--font-d)", fontSize: 26, fontWeight: 500, color: "var(--cream)" }}>Pick a Bird to Compare</h3>
                 <p style={{ fontSize: 12, color: "var(--mist)", marginTop: 3 }}>{pickerTemp.length + selected.filter((b) => pickerTemp.includes(b.id)).length} selected · max 3</p>
               </div>
-              <button onClick={() => setPO(false)} style={{ background: "var(--j2)", border: "1px solid var(--j3)", borderRadius: "50%", width: 34, height: 34, display: "flex", alignItems: "center", justifyContent: "center", cursor: "pointer", fontSize: 16, color: "var(--fog)" }}>✕</button>
+              <button onClick={() => setPO(false)} style={{ background: "var(--j2)", border: "1px solid var(--j3)", borderRadius: "50%", width: 34, height: 34, display: "flex", alignItems: "center", justifyContent: "center", cursor: "pointer", color: "var(--fog)" }}>
+                <X size={16} strokeWidth={2.2} />
+              </button>
             </div>
             <div style={{ display: "flex", gap: 6, flexWrap: "wrap", marginBottom: 16 }}>{cats.map((c) => <button key={c} className={`cmp-pill-btn${activeCat === c ? " act" : ""}`} onClick={() => setAC(c)}>{c}</button>)}</div>
             <div className="cmp-picker-grid rv-stagger">
@@ -333,7 +342,7 @@ export default function CompareSection({ parrots = [], standalone = false }) {
                       </div>
                       {savedAnswers && <CompatibilityBadge parrot={cbToParrot(b)} answers={savedAnswers} variant="bar" />}
                     </div>
-                    {isC && <div className="cmp-sel-check">✓</div>}
+                    {isC && <div className="cmp-sel-check"><Check size={14} strokeWidth={2.5} /></div>}
                   </div>
                 );
               })}

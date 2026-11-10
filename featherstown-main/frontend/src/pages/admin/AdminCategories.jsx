@@ -64,7 +64,7 @@ export default function AdminCategories() {
       });
       if (res) {
         setData(res);
-        toast.success(`Category "${name}" added to ${type === "birds" ? "Birds" : "Accessories"} 🎉`);
+        toast.success(`Category "${name}" added to ${type === "birds" ? "Birds" : "Accessories"}`);
         if (type === "birds") setNewBirdCat("");
         else setNewAccCat("");
         refreshSettings();
@@ -107,7 +107,7 @@ export default function AdminCategories() {
       });
       if (res) {
         setData(res);
-        toast.success(`Category renamed to "${editModal.newName.trim()}" successfully 🎉`);
+        toast.success(`Category renamed to "${editModal.newName.trim()}" successfully`);
         setEditModal({ ...editModal, open: false });
         refreshSettings();
       }
@@ -155,7 +155,7 @@ export default function AdminCategories() {
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", flexWrap: "wrap", gap: 16, marginBottom: 24 }}>
         <div>
           <h1 style={{ fontSize: 26, fontWeight: 800, color: "#0F172A", marginBottom: 6 }}>
-            🏷️ Category Management
+            Category Management
           </h1>
           <p style={{ color: "#475569", fontSize: 14 }}>
             Create, rename, and manage categories for both companion birds and pet accessories. Changes apply instantly across storefront filters and product forms.
@@ -167,14 +167,14 @@ export default function AdminCategories() {
       <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))", gap: 16, marginBottom: 24 }}>
         <div style={statCardStyle}>
           <div style={{ fontSize: 12.5, fontWeight: 700, color: "#059669", textTransform: "uppercase", letterSpacing: 0.5, marginBottom: 6 }}>
-            🦜 Bird Categories
+            Bird Categories
           </div>
           <div style={{ fontSize: 26, fontWeight: 800, color: "#0F172A" }}>{data.birdCategories.length}</div>
           <div style={{ fontSize: 12, color: "#64748B", marginTop: 4 }}>{totalBirdsAssigned} total birds listed</div>
         </div>
         <div style={statCardStyle}>
           <div style={{ fontSize: 12.5, fontWeight: 700, color: "#0284C7", textTransform: "uppercase", letterSpacing: 0.5, marginBottom: 6 }}>
-            🛍️ Accessory Categories
+            Accessory Categories
           </div>
           <div style={{ fontSize: 26, fontWeight: 800, color: "#0F172A" }}>{data.accessoryCategories.length}</div>
           <div style={{ fontSize: 12, color: "#64748B", marginTop: 4 }}>{totalAccessoriesAssigned} total accessories listed</div>
@@ -198,7 +198,7 @@ export default function AdminCategories() {
             transition: "all 0.2s",
           }}
         >
-          🦜 Bird Categories &amp; Breeds ({data.birdCategories.length})
+           Bird Categories &amp; Breeds ({data.birdCategories.length})
         </button>
         <button
           onClick={() => setActiveTab("accessories")}
@@ -215,7 +215,7 @@ export default function AdminCategories() {
             transition: "all 0.2s",
           }}
         >
-          🛍️ Accessory Categories ({data.accessoryCategories.length})
+           Accessory Categories ({data.accessoryCategories.length})
         </button>
       </div>
 
@@ -275,16 +275,14 @@ export default function AdminCategories() {
                       style={editBtnStyle}
                       title="Rename Category"
                     >
-                      ✏️ Edit
+                      Edit
                     </button>
                     <button
                       type="button"
                       onClick={() => handleDelete("birds", cat)}
                       style={deleteBtnStyle}
                       title="Delete Category"
-                    >
-                      ✕
-                    </button>
+                    ><X size={16} strokeWidth={2.2} /></button>
                   </div>
                 </div>
               );
@@ -343,16 +341,14 @@ export default function AdminCategories() {
                       style={editBtnStyle}
                       title="Rename Category"
                     >
-                      ✏️ Edit
+                      Edit
                     </button>
                     <button
                       type="button"
                       onClick={() => handleDelete("accessories", cat)}
                       style={deleteBtnStyle}
                       title="Delete Category"
-                    >
-                      ✕
-                    </button>
+                    ><X size={16} strokeWidth={2.2} /></button>
                   </div>
                 </div>
               );
@@ -394,9 +390,7 @@ export default function AdminCategories() {
               <button
                 onClick={() => setEditModal({ ...editModal, open: false })}
                 style={{ background: "none", border: "none", color: "#64748B", fontSize: 20, cursor: "pointer" }}
-              >
-                ✕
-              </button>
+              ><X size={16} strokeWidth={2.2} /></button>
             </div>
 
             <form onSubmit={handleRenameSubmit}>

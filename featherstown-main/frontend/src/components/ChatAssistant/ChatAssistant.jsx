@@ -7,6 +7,7 @@
    10% Tomato Red (#D9381E)
 ═══════════════════════════════════════════════════════════════ */
 import { useState, useRef, useEffect, useCallback } from "react";
+import { MessageCircle, X, Feather, Send, Bot } from "lucide-react";
 import { detectIntent, extractBudget, filterByIntent, buildChatReply } from "../../utils/recommendation";
 import { useSettings } from "../../context/SettingsContext";
 
@@ -14,12 +15,12 @@ const WA = (n, waNum = "919556747518") =>
   `https://wa.me/${(waNum || "919556747518").replace(/\D/g, "")}?text=Hi%2C%20I'm%20interested%20in%20${encodeURIComponent(n)}`;
 
 const SUGGESTIONS = [
-  { label: "🌱 Best beginner bird",   text: "Best beginner bird" },
-  { label: "🤫 Low noise birds",      text: "Low noise birds" },
-  { label: "💰 Best under ₹5000",    text: "Best bird under ₹5000" },
-  { label: "🗨️ Which bird talks more?", text: "Which bird talks more?" },
-  { label: "🏡 Good for apartments", text: "Quiet birds for apartments" },
-  { label: "💎 Most beautiful",       text: "Most beautiful birds" },
+  { label: "Best beginner bird", text: "Best beginner bird" },
+  { label: "Low noise birds", text: "Low noise birds" },
+  { label: "Best under ₹5,000", text: "Best bird under ₹5000" },
+  { label: "Which bird talks more?", text: "Which bird talks more?" },
+  { label: "Good for apartments", text: "Quiet birds for apartments" },
+  { label: "Most beautiful birds", text: "Most beautiful birds" },
 ];
 
 function TypingDots() {
@@ -114,7 +115,7 @@ export default function ChatAssistant({ parrots = [] }) {
       id: ++msgId,
       from: "bot",
       type: "text",
-      text: "👋 Hi! I'm the Feathers Town bird advisor. Ask me anything — or tap a suggestion below!",
+      text: "Hi! I'm the Feathers Town bird advisor. Ask me anything — or tap a suggestion below!",
     },
   ]);
   const [typing, setTyping] = useState(false);
@@ -180,7 +181,7 @@ export default function ChatAssistant({ parrots = [] }) {
         onMouseEnter={e => (e.currentTarget.style.transform = "scale(1.08)")}
         onMouseLeave={e => (e.currentTarget.style.transform = "scale(1)")}
       >
-        {open ? "✕" : "🪶"}
+        {open ? <X size={20} strokeWidth={2.2} /> : <MessageCircle size={22} strokeWidth={2.2} />}
         {unread > 0 && !open && (
           <span style={{
             position: "absolute", top: -3, right: -3,
@@ -221,7 +222,7 @@ export default function ChatAssistant({ parrots = [] }) {
               background: "#FAF8F5",
               display: "flex", alignItems: "center", justifyContent: "center",
               fontSize: 18, flexShrink: 0,
-            }}>🦜</div>
+            }}><Feather size={18} color="#1B3B22" strokeWidth={2.2} /></div>
             <div style={{ flex: 1 }}>
               <div style={{ fontWeight: 800, fontSize: 13.5, color: "#FFFFFF" }}>Bird Advisor</div>
               <div style={{ display: "flex", alignItems: "center", gap: 5 }}>
@@ -234,7 +235,7 @@ export default function ChatAssistant({ parrots = [] }) {
               borderRadius: "50%", width: 28, height: 28,
               display: "flex", alignItems: "center", justifyContent: "center",
               cursor: "pointer", color: "#FFFFFF", fontSize: 14,
-            }}>✕</button>
+            }}><X size={15} strokeWidth={2.2} /></button>
           </div>
 
           {/* Suggestions */}

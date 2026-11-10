@@ -115,7 +115,7 @@ export default function Contact() {
 
               <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
                 <div style={{ display: "flex", gap: 12, alignItems: "flex-start" }}>
-                  <span style={{ fontSize: 20 }}>📍</span>
+                  <MapPin size={20} color="#1B3B22" strokeWidth={2.2} />
                   <div>
                     <div style={{ fontSize: 12, color: "#736B5E", fontWeight: 700, textTransform: "uppercase" }}>Aviary Location</div>
                     <div style={{ fontSize: 14, fontWeight: 600, color: "#152B17", marginTop: 2 }}>
@@ -125,7 +125,7 @@ export default function Contact() {
                 </div>
 
                 <div style={{ display: "flex", gap: 12, alignItems: "flex-start" }}>
-                  <span style={{ fontSize: 20 }}>📞</span>
+                  <Phone size={20} color="#1B3B22" strokeWidth={2.2} />
                   <div>
                     <div style={{ fontSize: 12, color: "#736B5E", fontWeight: 700, textTransform: "uppercase" }}>Phone Support</div>
                     <a
@@ -138,7 +138,7 @@ export default function Contact() {
                 </div>
 
                 <div style={{ display: "flex", gap: 12, alignItems: "flex-start" }}>
-                  <span style={{ fontSize: 20 }}>✉️</span>
+                  <Mail size={20} color="#1B3B22" strokeWidth={2.2} />
                   <div>
                     <div style={{ fontSize: 12, color: "#736B5E", fontWeight: 700, textTransform: "uppercase" }}>Email Inquiries</div>
                     <a
@@ -185,7 +185,7 @@ export default function Contact() {
                   onMouseEnter={(e) => (e.currentTarget.style.background = "#152B17")}
                   onMouseLeave={(e) => (e.currentTarget.style.background = "#1B3B22")}
                 >
-                  <span>💬</span>
+                  <MessageCircle size={16} strokeWidth={2.2} />
                   <span>Instant WhatsApp Chat</span>
                 </button>
               </div>
@@ -221,7 +221,7 @@ export default function Contact() {
                   border: "1px solid #E2DDD3",
                 }}
               >
-                <div style={{ fontSize: 44, marginBottom: 12 }}>📬</div>
+                <div style={{ display: "flex", justifyContent: "center", marginBottom: 12 }}><CheckCircle2 size={44} color="#1B3B22" strokeWidth={2} /></div>
                 <h4 style={{ fontSize: 18, fontWeight: 700, color: "#152B17", marginBottom: 6 }}>
                   Message Received!
                 </h4>

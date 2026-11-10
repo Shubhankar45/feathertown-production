@@ -1,4 +1,5 @@
 import { Link } from "react-router-dom";
+import { MessageCircle } from "lucide-react";
 import { useSettings } from "../context/SettingsContext";
 import SpotlightCard from "./react-bits/SpotlightCard";
 
@@ -109,7 +110,8 @@ export default function BreedCard({ parrot }) {
             rel="noreferrer"
             className="t-btn-press flex items-center justify-center gap-1.5 py-2 px-3 rounded-xl bg-[#1B3B22] hover:bg-[#152B17] text-white font-bold text-xs shadow-sm hover:shadow-md transition-all"
           >
-            <span>💬</span> Inquire
+            <MessageCircle size={13} strokeWidth={2.2} />
+            <span>Inquire</span>
           </a>
         </div>
       </div>

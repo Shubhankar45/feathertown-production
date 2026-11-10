@@ -1,4 +1,5 @@
 import { useState, useMemo } from "react";
+import { Check } from "lucide-react";
 import { BIRD_AVATARS, PARROT_CATEGORIES } from "../../config/birdAvatars";
 
 export default function AvatarPicker({
@@ -190,7 +191,7 @@ export default function AvatarPicker({
                     boxShadow: "0 2px 5px rgba(0,0,0,0.2)",
                   }}
                 >
-                  ✓
+                  <Check size={compact ? 10 : 12} strokeWidth={2.5} />
                 </span>
               )}
             </button>

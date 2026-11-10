@@ -1,4 +1,5 @@
 import { useEffect } from "react";
+import { X } from "lucide-react";
 import AvatarPicker from "./AvatarPicker";
 
 export default function AvatarModal({
@@ -56,7 +57,7 @@ export default function AvatarModal({
         }}
         onClick={(e) => e.stopPropagation()}
       >
-        {/* Header (Choose your avatar & ✕) */}
+        {/* Header */}
         <div
           style={{
             padding: "20px 24px 16px",
@@ -93,7 +94,7 @@ export default function AvatarModal({
             }}
             title="Close"
           >
-            ✕
+            <X size={18} strokeWidth={2.2} />
           </button>
         </div>
 
