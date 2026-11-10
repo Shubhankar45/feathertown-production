@@ -4,7 +4,7 @@ import Reviews from "../components/sections/Reviews";
 
 export default function ReviewsPage() {
   return (
-    <div style={{ background: "#F8FAFC", color: "#0F172A", fontFamily: "Outfit, system-ui, sans-serif", minHeight: "100vh" }}>
+    <div style={{ background: "#F7F5F0", color: "#152B17", fontFamily: "Outfit, system-ui, sans-serif", minHeight: "100vh" }}>
       <SEOHead
         title="Customer Reviews &amp; Testimonials | FeatherTown"
         description="Read verified ratings and heartfelt reviews from 5,000+ bird parents who bought companion parrots and accessories from FeatherTown."

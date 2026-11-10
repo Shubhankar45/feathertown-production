@@ -54,20 +54,20 @@ export default function Checkout() {
 
   if (items.length === 0) {
     return (
-      <div className="rv-scale" style={{ background: "#F8FAFC", minHeight: "70vh", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: 16 }}>
+      <div className="rv-scale" style={{ background: "#F7F5F0", minHeight: "70vh", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: 16 }}>
         <div className="ft-animate-float" style={{ fontSize: 56 }}>🛒</div>
-        <p style={{ color: "#64748B", fontSize: 16 }}>Your cart is empty.</p>
+        <p style={{ color: "#736B5E", fontSize: 16 }}>Your cart is empty.</p>
         <Link
           to="/accessories"
           className="ft-btn-hover"
           style={{
-            background: "#16A34A",
+            background: "#1B3B22",
             color: "#fff",
             padding: "12px 26px",
             borderRadius: 999,
             fontWeight: 700,
             textDecoration: "none",
-            boxShadow: "0 4px 14px rgba(16, 185, 129, 0.25)",
+            boxShadow: "0 4px 14px rgba(27, 59, 34, 0.25)",
           }}
         >
           Browse accessories
@@ -181,7 +181,7 @@ export default function Checkout() {
         description: "Bird care accessories order",
         order_id: data.razorpayOrderId,
         prefill: { name: form.name, email: form.email, contact: form.phone },
-        theme: { color: "#16A34A" },
+        theme: { color: "#1B3B22" },
         handler: async (response) => {
           try {
             const verifyRes = await fetch("/api/orders/verify", {
@@ -305,8 +305,8 @@ export default function Checkout() {
                       gap: 12,
                       padding: "14px 18px",
                       borderRadius: 16,
-                      border: paymentMethod === "online" ? "2px solid #059669" : "1.5px solid #CBD5E1",
-                      background: paymentMethod === "online" ? "#ECFDF5" : "#F8FAFC",
+                      border: paymentMethod === "online" ? "2px solid #1B3B22" : "1.5px solid #E2DDD3",
+                      background: paymentMethod === "online" ? "#E7EFE8" : "#FAF8F5",
                       cursor: "pointer",
                       transition: "all 0.2s cubic-bezier(0.16, 1, 0.3, 1)",
                     }}
@@ -316,13 +316,13 @@ export default function Checkout() {
                       name="payment_choice"
                       checked={paymentMethod === "online"}
                       onChange={() => setPaymentMethod("online")}
-                      style={{ accentColor: "#059669", width: 18, height: 18 }}
+                      style={{ accentColor: "#1B3B22", width: 18, height: 18 }}
                     />
                     <div style={{ flex: 1 }}>
-                      <div style={{ fontSize: 14, fontWeight: 700, color: "#0F172A" }}>
+                      <div style={{ fontSize: 14, fontWeight: 700, color: "#152B17" }}>
                         Online Payment (UPI, Credit/Debit Card, Netbanking)
                       </div>
-                      <div style={{ fontSize: 12, color: "#64748B" }}>
+                      <div style={{ fontSize: 12, color: "#736B5E" }}>
                         Instant verification via Razorpay • 100% Encrypted
                       </div>
                     </div>
@@ -337,8 +337,8 @@ export default function Checkout() {
                     gap: 12,
                     padding: "14px 18px",
                     borderRadius: 16,
-                    border: paymentMethod === "cod" ? "2px solid #059669" : "1.5px solid #CBD5E1",
-                    background: paymentMethod === "cod" ? "#ECFDF5" : "#F8FAFC",
+                    border: paymentMethod === "cod" ? "2px solid #1B3B22" : "1.5px solid #E2DDD3",
+                    background: paymentMethod === "cod" ? "#E7EFE8" : "#FAF8F5",
                     cursor: "pointer",
                     transition: "all 0.2s cubic-bezier(0.16, 1, 0.3, 1)",
                   }}
@@ -348,13 +348,13 @@ export default function Checkout() {
                     name="payment_choice"
                     checked={paymentMethod === "cod"}
                     onChange={() => setPaymentMethod("cod")}
-                    style={{ accentColor: "#059669", width: 18, height: 18 }}
+                    style={{ accentColor: "#1B3B22", width: 18, height: 18 }}
                   />
                   <div style={{ flex: 1 }}>
-                    <div style={{ fontSize: 14, fontWeight: 700, color: "#0F172A" }}>
+                    <div style={{ fontSize: 14, fontWeight: 700, color: "#152B17" }}>
                       Cash on Delivery (COD)
                     </div>
-                    <div style={{ fontSize: 12, color: "#64748B" }}>
+                    <div style={{ fontSize: 12, color: "#736B5E" }}>
                       Pay in cash when your parcel arrives
                     </div>
                   </div>
@@ -368,7 +368,7 @@ export default function Checkout() {
                 className="t-btn-press"
                 style={{
                   width: "100%",
-                  background: "#16A34A",
+                  background: "#D9381E",
                   color: "#FFFFFF",
                   border: "none",
                   padding: "15px",
@@ -376,8 +376,11 @@ export default function Checkout() {
                   fontWeight: 800,
                   fontSize: 16,
                   cursor: "pointer",
-                  boxShadow: "0 4px 16px rgba(22, 163, 74, 0.3)",
+                  boxShadow: "0 4px 16px rgba(217, 56, 30, 0.3)",
+                  transition: "background 0.2s ease",
                 }}
+                onMouseEnter={(e) => (e.currentTarget.style.background = "#B82E17")}
+                onMouseLeave={(e) => (e.currentTarget.style.background = "#D9381E")}
               >
                 {placing ? "Processing Order…" : paymentMethod === "online" ? `Pay ₹${finalTotal.toLocaleString("en-IN")} Securely` : `Confirm Order for ₹${finalTotal.toLocaleString("en-IN")}`}
               </button>
@@ -391,11 +394,11 @@ export default function Checkout() {
               background: "#FFFFFF",
               borderRadius: 28,
               padding: "28px 24px",
-              border: "1px solid #E2E8F0",
-              boxShadow: "0 2px 10px rgba(15, 23, 42, 0.04)",
+              border: "1px solid #E2DDD3",
+              boxShadow: "0 2px 10px rgba(27, 59, 34, 0.04)",
             }}
           >
-            <h3 style={{ fontSize: 18, fontWeight: 800, color: "#0F172A", marginBottom: 16 }}>
+            <h3 style={{ fontSize: 18, fontWeight: 800, color: "#152B17", marginBottom: 16 }}>
               Order Items ({items.length})
             </h3>
 
@@ -405,39 +408,39 @@ export default function Checkout() {
                   <img
                     src={it.image || it.images?.[0] || "https://images.unsplash.com/photo-1548767797-d8c844163c4c?w=120&auto=format&fit=crop&q=80"}
                     alt={it.name}
-                    style={{ width: 44, height: 44, borderRadius: 10, objectFit: "cover", border: "1px solid #E2E8F0" }}
+                    style={{ width: 44, height: 44, borderRadius: 10, objectFit: "cover", border: "1px solid #E2DDD3" }}
                   />
                   <div style={{ flex: 1, minWidth: 0 }}>
-                    <div style={{ fontWeight: 600, color: "#0F172A", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+                    <div style={{ fontWeight: 600, color: "#152B17", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
                       {it.name}
                     </div>
-                    <div style={{ fontSize: 12, color: "#64748B" }}>Qty: {it.quantity}</div>
+                    <div style={{ fontSize: 12, color: "#736B5E" }}>Qty: {it.quantity}</div>
                   </div>
-                  <div style={{ fontWeight: 700, color: "#059669" }}>
+                  <div style={{ fontWeight: 700, color: "#D9381E" }}>
                     ₹{(it.price * it.quantity).toLocaleString("en-IN")}
                   </div>
                 </div>
               ))}
             </div>
 
-            <div style={{ borderTop: "1px solid #F1F5F9", paddingTop: 16, display: "flex", flexDirection: "column", gap: 8, fontSize: 14 }}>
-              <div style={{ display: "flex", justifyContent: "space-between", color: "#64748B" }}>
+            <div style={{ borderTop: "1px solid #E2DDD3", paddingTop: 16, display: "flex", flexDirection: "column", gap: 8, fontSize: 14 }}>
+              <div style={{ display: "flex", justifyContent: "space-between", color: "#736B5E" }}>
                 <span>Subtotal</span>
-                <span style={{ fontWeight: 700, color: "#0F172A" }}>₹{subtotal.toLocaleString("en-IN")}</span>
+                <span style={{ fontWeight: 700, color: "#152B17" }}>₹{subtotal.toLocaleString("en-IN")}</span>
               </div>
-              <div style={{ display: "flex", justifyContent: "space-between", color: "#64748B" }}>
+              <div style={{ display: "flex", justifyContent: "space-between", color: "#736B5E" }}>
                 <span>Shipping</span>
-                <span style={{ fontWeight: 700, color: freeShipping ? "#059669" : "#0F172A" }}>
+                <span style={{ fontWeight: 700, color: freeShipping ? "#1B3B22" : "#152B17" }}>
                   {freeShipping ? "FREE" : "₹99"}
                 </span>
               </div>
-              <div style={{ borderTop: "1px solid #F1F5F9", paddingTop: 12, display: "flex", justifyContent: "space-between", fontSize: 18, fontWeight: 800, color: "#0F172A" }}>
+              <div style={{ borderTop: "1px solid #E2DDD3", paddingTop: 12, display: "flex", justifyContent: "space-between", fontSize: 18, fontWeight: 800, color: "#152B17" }}>
                 <span>Total</span>
-                <span style={{ color: "#059669" }}>₹{finalTotal.toLocaleString("en-IN")}</span>
+                <span style={{ color: "#D9381E" }}>₹{finalTotal.toLocaleString("en-IN")}</span>
               </div>
             </div>
 
-            <div style={{ background: "#ECFDF5", border: "1px solid #A7F3D0", borderRadius: 16, padding: "14px", marginTop: 20, fontSize: 12.5, color: "#065F46" }}>
+            <div style={{ background: "#FAF8F5", border: "1px solid #E2DDD3", borderRadius: 16, padding: "14px", marginTop: 20, fontSize: 12.5, color: "#152B17" }}>
               🚚 <strong>Fast Courier Delivery:</strong> Dispatches within 24 hours. Tracking link sent via SMS and WhatsApp.
             </div>
           </div>
@@ -451,7 +454,7 @@ const labelStyle = {
   display: "block",
   fontSize: 12.5,
   fontWeight: 700,
-  color: "#475569",
+  color: "#152B17",
   marginBottom: 6,
 };
 
@@ -459,9 +462,9 @@ const inputStyle = {
   width: "100%",
   padding: "11px 14px",
   borderRadius: 12,
-  border: "1.5px solid #CBD5E1",
+  border: "1.5px solid #E2DDD3",
   fontSize: 13.5,
-  color: "#0F172A",
+  color: "#152B17",
   outline: "none",
-  background: "#F8FAFC",
+  background: "#FAF8F5",
 };

@@ -54,8 +54,8 @@ export default function AvatarPicker({
                   type="button"
                   onClick={() => setActiveCategory(cat.id)}
                   style={{
-                    background: isActive ? "linear-gradient(135deg, #10B981, #059669)" : "transparent",
-                    color: isActive ? "#FFFFFF" : "#64748B",
+                    background: isActive ? "#1B3B22" : "transparent",
+                    color: isActive ? "#FFFFFF" : "#736B5E",
                     border: "none",
                     padding: "7px 16px",
                     borderRadius: 999,
@@ -130,13 +130,13 @@ export default function AvatarPicker({
                   overflow: "hidden",
                   position: "relative",
                   boxShadow: isSelected
-                    ? "0 0 0 3px #10B981, 0 6px 16px rgba(16, 185, 129, 0.3)"
+                    ? "0 0 0 3px #1B3B22, 0 6px 16px rgba(27, 59, 34, 0.3)"
                     : isHovered
                     ? "0 6px 18px rgba(15, 23, 42, 0.12)"
                     : "0 2px 6px rgba(15, 23, 42, 0.06)",
                   transition: "box-shadow 0.18s ease",
-                  background: "#F1F5F9",
-                  border: "1px solid #E2E8F0",
+                  background: "#FAF8F5",
+                  border: "1px solid #E2DDD3",
                 }}
               >
                 <img
@@ -158,7 +158,7 @@ export default function AvatarPicker({
                     style={{
                       fontSize: 11.5,
                       fontWeight: isSelected ? 800 : 600,
-                      color: isSelected ? "#059669" : "#475569",
+                      color: isSelected ? "#1B3B22" : "#736B5E",
                       whiteSpace: "nowrap",
                       overflow: "hidden",
                       textOverflow: "ellipsis",
@@ -176,7 +176,7 @@ export default function AvatarPicker({
                     position: "absolute",
                     top: compact ? -2 : 2,
                     right: compact ? -2 : 8,
-                    background: "#10B981",
+                    background: "#1B3B22",
                     color: "#FFFFFF",
                     width: compact ? 16 : 20,
                     height: compact ? 16 : 20,

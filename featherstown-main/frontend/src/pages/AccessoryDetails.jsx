@@ -8,24 +8,20 @@ import { trackAddToCart } from "../utils/analytics";
 
 export default function AccessoryDetails() {
   const { idOrSlug } = useParams();
-  const navigate = useNavigate();
-  const { addItem } = useCart();
-
   const [item, setItem] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [qty, setQty] = useState(1);
   const [activeImg, setActiveImg] = useState(0);
+  const [qty, setQty] = useState(1);
+
+  const { addItem } = useCart();
+  const navigate = useNavigate();
 
   useEffect(() => {
     setLoading(true);
     fetch(`/api/accessories/${idOrSlug}`)
       .then((r) => (r.ok ? r.json() : null))
       .then((data) => {
-        if (data && (data._id || data.name)) {
-          setItem(data);
-        } else {
-          setItem(null);
-        }
+        setItem(data);
       })
       .catch(() => {
         setItem(null);
@@ -35,17 +31,17 @@ export default function AccessoryDetails() {
 
   if (loading) {
     return (
-      <div style={{ minHeight: "60vh", background: "#F8FAFC", display: "flex", alignItems: "center", justifyContent: "center" }}>
-        <p style={{ color: "#059669", fontWeight: 700 }}>Loading product details…</p>
+      <div style={{ minHeight: "60vh", background: "#F7F5F0", display: "flex", alignItems: "center", justifyContent: "center" }}>
+        <p style={{ color: "#1B3B22", fontWeight: 700 }}>Loading product details…</p>
       </div>
     );
   }
 
   if (!item) {
     return (
-      <div style={{ minHeight: "60vh", background: "#F8FAFC", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: 12 }}>
-        <p style={{ color: "#64748B" }}>We couldn't find that accessory.</p>
-        <Link to="/accessories" style={{ background: "#16A34A", color: "#fff", padding: "10px 22px", borderRadius: 999, textDecoration: "none", fontWeight: 700 }}>
+      <div style={{ minHeight: "60vh", background: "#F7F5F0", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: 12 }}>
+        <p style={{ color: "#736B5E" }}>We couldn't find that accessory.</p>
+        <Link to="/accessories" style={{ background: "#1B3B22", color: "#fff", padding: "10px 22px", borderRadius: 999, textDecoration: "none", fontWeight: 700 }}>
           Back to shop
         </Link>
       </div>
@@ -67,7 +63,7 @@ export default function AccessoryDetails() {
   const images = item.images && item.images.length > 0 ? item.images : ["https://images.unsplash.com/photo-1548767797-d8c844163c4c?w=700&auto=format&fit=crop&q=80"];
 
   return (
-    <div style={{ background: "#F8FAFC", color: "#0F172A", fontFamily: "Outfit, system-ui, sans-serif", minHeight: "100vh" }}>
+    <div style={{ background: "#F7F5F0", color: "#152B17", fontFamily: "Outfit, system-ui, sans-serif", minHeight: "100vh" }}>
       <SEOHead
         title={`${item.name} | FeatherTown Accessories`}
         description={item.description?.slice(0, 160) || `Buy ${item.name} online at FeatherTown India.`}
@@ -87,8 +83,8 @@ export default function AccessoryDetails() {
             background: "#FFFFFF",
             borderRadius: 28,
             padding: "clamp(20px, 4vw, 36px) clamp(16px, 4vw, 32px)",
-            border: "1px solid #E2E8F0",
-            boxShadow: "0 10px 32px rgba(15, 23, 42, 0.06)",
+            border: "1px solid #E2DDD3",
+            boxShadow: "0 10px 32px rgba(21, 43, 23, 0.05)",
             display: "grid",
             gridTemplateColumns: "repeat(auto-fit, minmax(min(100%, 300px), 1fr))",
             gap: "clamp(24px, 4vw, 40px)",
@@ -102,8 +98,8 @@ export default function AccessoryDetails() {
                 aspectRatio: "1/1",
                 borderRadius: 20,
                 overflow: "hidden",
-                background: "#F8FAFC",
-                border: "1px solid #E2E8F0",
+                background: "#FAF8F5",
+                border: "1px solid #E2DDD3",
                 marginBottom: 14,
               }}
             >
@@ -127,8 +123,8 @@ export default function AccessoryDetails() {
                       overflow: "hidden",
                       padding: 0,
                       cursor: "pointer",
-                      border: activeImg === i ? "2px solid #059669" : "2px solid #E2E8F0",
-                      background: "#F8FAFC",
+                      border: activeImg === i ? "2px solid #1B3B22" : "2px solid #E2DDD3",
+                      background: "#FAF8F5",
                     }}
                   >
                     <img src={img} alt="" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
@@ -145,10 +141,10 @@ export default function AccessoryDetails() {
                 fontSize: 11.5,
                 fontWeight: 800,
                 letterSpacing: 1.2,
-                color: "#059669",
+                color: "#1B3B22",
                 textTransform: "uppercase",
-                background: "#ECFDF5",
-                border: "1px solid #A7F3D0",
+                background: "#E7EFE8",
+                border: "1px solid #B8D4BA",
                 padding: "4px 12px",
                 borderRadius: 99,
                 display: "inline-block",
@@ -160,11 +156,11 @@ export default function AccessoryDetails() {
 
             <h1
               style={{
-                fontSize: "clamp(22px, 3vw, 30px)",
+                fontSize: "clamp(22px, 3.2vw, 32px)",
                 fontWeight: 800,
-                color: "#0F172A",
-                lineHeight: 1.2,
-                marginBottom: 14,
+                color: "#152B17",
+                lineHeight: 1.25,
+                marginBottom: 12,
               }}
             >
               {item.name}
@@ -172,16 +168,16 @@ export default function AccessoryDetails() {
 
             {/* Price Box */}
             <div style={{ display: "flex", alignItems: "baseline", gap: 12, marginBottom: 16 }}>
-              <span style={{ fontSize: 30, fontWeight: 900, color: "#16A34A" }}>
+              <span style={{ fontSize: 30, fontWeight: 900, color: "#1B3B22" }}>
                 ₹{item.price?.toLocaleString("en-IN")}
               </span>
               {item.mrp && item.mrp > item.price && (
-                <span style={{ fontSize: 16, color: "#94A3B8", textDecoration: "line-through" }}>
+                <span style={{ fontSize: 16, color: "#736B5E", textDecoration: "line-through" }}>
                   ₹{item.mrp?.toLocaleString("en-IN")}
                 </span>
               )}
               {item.mrp && item.mrp > item.price && (
-                <span style={{ fontSize: 12, fontWeight: 800, color: "#C2410C", background: "#FFEDD5", border: "1px solid #FED7AA", padding: "3px 10px", borderRadius: 999 }}>
+                <span style={{ fontSize: 12, fontWeight: 800, color: "#D9381E", background: "#FDECE8", border: "1px solid #F4B8AC", padding: "3px 10px", borderRadius: 999 }}>
                   Save {Math.round(((item.mrp - item.price) / item.mrp) * 100)}%
                 </span>
               )}
@@ -189,26 +185,26 @@ export default function AccessoryDetails() {
 
             {/* Stock Pill */}
             <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 20 }}>
-              <span style={{ width: 8, height: 8, borderRadius: "50%", background: "#16A34A" }} />
-              <span style={{ fontSize: 13, fontWeight: 700, color: "#16A34A" }}>
+              <span style={{ width: 8, height: 8, borderRadius: "50%", background: "#1B3B22" }} />
+              <span style={{ fontSize: 13, fontWeight: 700, color: "#1B3B22" }}>
                 {item.stock > 0 ? `In Stock (Ships in 24 Hours)` : "Out of Stock"}
               </span>
             </div>
 
-            <p style={{ fontSize: 14, color: "#475569", lineHeight: 1.75, marginBottom: 24 }}>
+            <p style={{ fontSize: 14, color: "#736B5E", lineHeight: 1.75, marginBottom: 24 }}>
               {item.description}
             </p>
 
             {/* Quantity Selector */}
             <div style={{ display: "flex", alignItems: "center", gap: 14, marginBottom: 24 }}>
-              <span style={{ fontSize: 13.5, fontWeight: 700, color: "#475569" }}>Quantity:</span>
+              <span style={{ fontSize: 13.5, fontWeight: 700, color: "#736B5E" }}>Quantity:</span>
               <div
                 style={{
                   display: "inline-flex",
                   alignItems: "center",
-                  border: "1.5px solid #CBD5E1",
+                  border: "1.5px solid #E2DDD3",
                   borderRadius: 12,
-                  background: "#F8FAFC",
+                  background: "#FAF8F5",
                 }}
               >
                 <button
@@ -221,12 +217,12 @@ export default function AccessoryDetails() {
                     fontSize: 16,
                     fontWeight: 700,
                     cursor: "pointer",
-                    color: "#0F172A",
+                    color: "#152B17",
                   }}
                 >
                   −
                 </button>
-                <span style={{ width: 36, textAlign: "center", fontWeight: 700, fontSize: 14, color: "#0F172A" }}>{qty}</span>
+                <span style={{ width: 36, textAlign: "center", fontWeight: 700, fontSize: 14, color: "#152B17" }}>{qty}</span>
                 <button
                   onClick={() => setQty(qty + 1)}
                   style={{
@@ -237,7 +233,7 @@ export default function AccessoryDetails() {
                     fontSize: 16,
                     fontWeight: 700,
                     cursor: "pointer",
-                    color: "#0F172A",
+                    color: "#152B17",
                   }}
                 >
                   +
@@ -252,7 +248,7 @@ export default function AccessoryDetails() {
                 className="t-btn-press"
                 style={{
                   flex: 1,
-                  background: "#16A34A",
+                  background: "#1B3B22",
                   color: "#FFFFFF",
                   border: "none",
                   padding: "14px 24px",
@@ -260,7 +256,7 @@ export default function AccessoryDetails() {
                   fontWeight: 800,
                   fontSize: 14,
                   cursor: "pointer",
-                  boxShadow: "0 4px 16px rgba(22, 163, 74, 0.3)",
+                  boxShadow: "0 4px 16px rgba(27, 59, 34, 0.25)",
                   minWidth: "min(100%, 160px)",
                 }}
               >
@@ -271,7 +267,7 @@ export default function AccessoryDetails() {
                 className="t-btn-press"
                 style={{
                   flex: 1,
-                  background: "#EA580C",
+                  background: "#D9381E",
                   color: "#FFFFFF",
                   border: "none",
                   padding: "14px 24px",
@@ -279,7 +275,7 @@ export default function AccessoryDetails() {
                   fontWeight: 800,
                   fontSize: 14,
                   cursor: "pointer",
-                  boxShadow: "0 4px 16px rgba(249, 115, 22, 0.35)",
+                  boxShadow: "0 4px 16px rgba(217, 56, 30, 0.3)",
                   minWidth: "min(100%, 160px)",
                 }}
               >
@@ -290,13 +286,13 @@ export default function AccessoryDetails() {
             {/* Trust Assurances */}
             <div
               style={{
-                borderTop: "1px solid #E2E8F0",
+                borderTop: "1px solid #E2DDD3",
                 paddingTop: 20,
                 display: "grid",
                 gridTemplateColumns: "repeat(auto-fit, minmax(130px, 1fr))",
                 gap: 12,
                 fontSize: 12.5,
-                color: "#64748B",
+                color: "#736B5E",
               }}
             >
               <div style={{ display: "flex", alignItems: "center", gap: 8 }}>

@@ -67,10 +67,10 @@ export default function CommunityPhotos() {
   return (
     <section
       style={{
-        background: "#F8FAFC",
+        background: "#FAF8F5",
         padding: "clamp(56px, 7vw, 88px) clamp(16px, 4vw, 64px)",
         position: "relative",
-        borderTop: "1px solid #E2E8F0",
+        borderTop: "1px solid #E2DDD3",
         fontFamily: "Outfit, system-ui, sans-serif",
       }}
     >
@@ -80,14 +80,14 @@ export default function CommunityPhotos() {
             fontSize: "clamp(28px, 4vw, 46px)",
             fontWeight: 800,
             lineHeight: 1.15,
-            color: "#0F172A",
+            color: "#152B17",
             letterSpacing: "-0.02em",
             margin: "0 0 8px 0",
           }}
         >
-          <span style={{ color: "#059669" }}>Top Weekly</span> Community Photos
+          <span style={{ color: "#1B3B22" }}>Top Weekly</span> Community Photos
         </h2>
-        <p style={{ fontSize: 14.5, color: "#64748B", margin: 0 }}>
+        <p style={{ fontSize: 14.5, color: "#736B5E", margin: 0 }}>
           Real happy moments captured by verified FeatherTown bird parents across India.
         </p>
       </div>
@@ -109,8 +109,8 @@ export default function CommunityPhotos() {
               borderRadius: 22,
               overflow: "hidden",
               background: "#FFFFFF",
-              border: "1px solid #E2E8F0",
-              boxShadow: "0 8px 24px rgba(15, 23, 42, 0.08)",
+              border: "1px solid #E2DDD3",
+              boxShadow: "0 8px 24px rgba(21, 43, 23, 0.04)",
               minHeight: 280,
               display: "flex",
               flexDirection: "column",
@@ -135,7 +135,7 @@ export default function CommunityPhotos() {
               style={{
                 position: "absolute",
                 inset: 0,
-                background: "linear-gradient(to top, rgba(15, 23, 42, 0.88) 0%, rgba(15, 23, 42, 0.35) 50%, transparent 100%)",
+                background: "linear-gradient(to top, rgba(21, 43, 23, 0.9) 0%, rgba(21, 43, 23, 0.35) 50%, transparent 100%)",
                 pointerEvents: "none",
               }}
             />
@@ -146,15 +146,15 @@ export default function CommunityPhotos() {
                 position: "absolute",
                 top: 14,
                 right: 14,
-                background: "rgba(255, 255, 255, 0.92)",
+                background: "rgba(255, 255, 255, 0.94)",
                 backdropFilter: "blur(8px)",
-                border: "1px solid #A7F3D0",
-                color: "#059669",
+                border: "1px solid #B8D4BA",
+                color: "#1B3B22",
                 padding: "4px 10px",
                 borderRadius: 999,
                 fontSize: 11,
                 fontWeight: 700,
-                boxShadow: "0 2px 6px rgba(15, 23, 42, 0.08)",
+                boxShadow: "0 2px 6px rgba(0, 0, 0, 0.08)",
               }}
             >
               {p.tag}
@@ -165,7 +165,7 @@ export default function CommunityPhotos() {
               <div style={{ fontSize: 15, fontWeight: 800, color: "#FFFFFF", marginBottom: 3 }}>
                 {p.title}
               </div>
-              <div style={{ fontSize: 12, color: "#CBD5E1" }}>
+              <div style={{ fontSize: 12, color: "#FAF8F5" }}>
                 By {p.author}
               </div>
             </div>
@@ -173,12 +173,13 @@ export default function CommunityPhotos() {
         ))}
       </div>
 
-      {/* Centered Green Pill Button at bottom */}
+      {/* Centered Button at bottom */}
       <div style={{ textAlign: "center", marginTop: 40 }}>
         <Link
           to="/reviews"
+          className="t-btn-press"
           style={{
-            background: "#059669",
+            background: "#1B3B22",
             color: "#FFFFFF",
             padding: "13px 32px",
             borderRadius: 999,
@@ -188,16 +189,8 @@ export default function CommunityPhotos() {
             display: "inline-flex",
             alignItems: "center",
             gap: 8,
-            boxShadow: "0 6px 20px rgba(5, 150, 105, 0.28)",
-            transition: "transform 0.2s, background 0.2s",
-          }}
-          onMouseEnter={(e) => {
-            e.currentTarget.style.transform = "translateY(-2px)";
-            e.currentTarget.style.background = "#047857";
-          }}
-          onMouseLeave={(e) => {
-            e.currentTarget.style.transform = "translateY(0)";
-            e.currentTarget.style.background = "#059669";
+            boxShadow: "0 4px 16px rgba(27, 59, 34, 0.25)",
+            transition: "transform 0.2s",
           }}
         >
           <span>View More Reviews &amp; Stories</span>

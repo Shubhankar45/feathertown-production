@@ -31,17 +31,17 @@ export default function UserMenu() {
       <Link
         to="/login"
         state={{ from: location }}
+        className="t-btn-press"
         style={{
-          fontSize: 13.5,
-          fontWeight: 700,
-          color: "#0F172A",
+          fontSize: 13,
+          fontWeight: 800,
+          color: "#FFFFFF",
           textDecoration: "none",
-          padding: "8px 16px",
+          padding: "8px 18px",
           borderRadius: 999,
-          border: "1.5px solid #CBD5E1",
+          background: "#D9381E",
           whiteSpace: "nowrap",
-          transition: "all 0.15s ease",
-          background: "#F8FAFC",
+          transition: "background 0.15s ease",
         }}
       >
         Sign in
@@ -77,7 +77,7 @@ export default function UserMenu() {
             display: "flex",
             alignItems: "center",
             gap: 8,
-            background: open ? "#ECFDF5" : "none",
+            background: open ? "#E7EFE8" : "none",
             border: "none",
             cursor: "pointer",
             padding: "3px 6px",
@@ -87,7 +87,7 @@ export default function UserMenu() {
           title={user.name}
         >
           <Avatar name={user.name} avatar={user.avatar} size={34} border={false} />
-          <span style={{ fontSize: 12, color: "#64748B" }}>▾</span>
+          <span style={{ fontSize: 12, color: "#1B3B22" }}>▾</span>
         </button>
 
         {open && (
@@ -98,7 +98,7 @@ export default function UserMenu() {
               right: 0,
               background: "#FFFFFF",
               borderRadius: 18,
-              boxShadow: "0 20px 40px -10px rgba(0, 0, 0, 0.12), 0 0 0 1px #E2E8F0",
+              boxShadow: "0 20px 40px -10px rgba(0, 0, 0, 0.12), 0 0 0 1px #E2DDD3",
               minWidth: 230,
               padding: "12px",
               zIndex: 300,
@@ -111,7 +111,7 @@ export default function UserMenu() {
                 alignItems: "center",
                 gap: 12,
                 padding: "4px 6px 12px",
-                borderBottom: "1px solid #F1F5F9",
+                borderBottom: "1px solid #E2DDD3",
                 marginBottom: 8,
               }}
             >
@@ -121,7 +121,7 @@ export default function UserMenu() {
                   style={{
                     fontSize: 13.5,
                     fontWeight: 800,
-                    color: "#0F172A",
+                    color: "#152B17",
                     whiteSpace: "nowrap",
                     overflow: "hidden",
                     textOverflow: "ellipsis",
@@ -132,7 +132,7 @@ export default function UserMenu() {
                 <div
                   style={{
                     fontSize: 11.5,
-                    color: "#64748B",
+                    color: "#736B5E",
                     whiteSpace: "nowrap",
                     overflow: "hidden",
                     textOverflow: "ellipsis",
@@ -152,9 +152,9 @@ export default function UserMenu() {
               style={{
                 ...menuItem,
                 width: "100%",
-                border: "1px solid #A7F3D0",
-                background: "#ECFDF5",
-                color: "#059669",
+                border: "1px solid #B8D4BA",
+                background: "#E7EFE8",
+                color: "#1B3B22",
                 cursor: "pointer",
                 display: "flex",
                 alignItems: "center",
@@ -169,13 +169,13 @@ export default function UserMenu() {
             <Link
               to="/my-orders"
               onClick={() => setOpen(false)}
-              style={{ ...menuItem, display: "flex", alignItems: "center", gap: 8, color: "#334155" }}
+              style={{ ...menuItem, display: "flex", alignItems: "center", gap: 8, color: "#152B17" }}
             >
               <span>📦</span>
               <span>My Orders</span>
             </Link>
 
-            <div style={{ height: 1, background: "#F1F5F9", margin: "6px 0" }} />
+            <div style={{ height: 1, background: "#E2DDD3", margin: "6px 0" }} />
 
             <button
               onClick={handleLogout}
@@ -186,7 +186,7 @@ export default function UserMenu() {
                 border: "none",
                 background: "none",
                 cursor: "pointer",
-                color: "#DC2626",
+                color: "#D9381E",
                 display: "flex",
                 alignItems: "center",
                 gap: 8,
@@ -217,7 +217,7 @@ const menuItem = {
   borderRadius: 10,
   fontSize: 13.5,
   fontWeight: 600,
-  color: "#334155",
+  color: "#152B17",
   textDecoration: "none",
   transition: "background 0.15s ease",
 };

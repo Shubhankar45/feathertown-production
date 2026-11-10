@@ -4,7 +4,6 @@ import { isValidEmail, checkBotSubmission } from "../../utils/validation";
 import { trackEvent } from "../../utils/analytics";
 import sunImg from "../../assets/Sun-conure.jfif";
 import Magnet from "../react-bits/Magnet";
-import ShinyText from "../react-bits/ShinyText";
 
 export default function Newsletter() {
   const [email, setEmail] = useState("");
@@ -60,25 +59,25 @@ export default function Newsletter() {
         width: "100%",
         maxWidth: "100%",
         margin: "0 auto",
-        background: "#FFFFFF",
-        borderTop: "1px solid #E2E8F0",
+        background: "#FAF8F5",
+        borderTop: "1px solid #E2DDD3",
         fontFamily: "Outfit, system-ui, sans-serif",
       }}
     >
       <div
         className="t-hover-lift"
         style={{
-          background: "#F8FAFC",
+          background: "#FFFFFF",
           borderRadius: 28,
           padding: "clamp(28px, 4vw, 42px) clamp(20px, 4vw, 42px)",
-          color: "#0F172A",
+          color: "#152B17",
           display: "flex",
           alignItems: "center",
           justifyContent: "space-between",
           flexWrap: "wrap",
           gap: "clamp(20px, 3vw, 32px)",
-          boxShadow: "0 12px 36px rgba(15, 23, 42, 0.06)",
-          border: "1px solid #FED7AA",
+          boxShadow: "0 12px 36px rgba(21, 43, 23, 0.05)",
+          border: "1px solid #E2DDD3",
           position: "relative",
           overflow: "hidden",
         }}
@@ -91,25 +90,30 @@ export default function Newsletter() {
               width: 54,
               height: 54,
               borderRadius: "50%",
-              background: "#FFFFFF",
-              border: "1.5px solid #FED7AA",
+              background: "#E7EFE8",
+              border: "1.5px solid #B8D4BA",
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
               fontSize: 24,
               flexShrink: 0,
-              boxShadow: "0 4px 14px rgba(249, 115, 22, 0.15)",
             }}
           >
             ✉️
           </div>
           <div>
             <div style={{ marginBottom: 4 }}>
-              <ShinyText
-                text="VIP HATCH ALERTS & COMMUNITY"
-                speed={4}
-                style={{ fontSize: 11, fontWeight: 800, letterSpacing: 1.2 }}
-              />
+              <span
+                style={{
+                  fontSize: 11,
+                  fontWeight: 800,
+                  letterSpacing: 1.2,
+                  textTransform: "uppercase",
+                  color: "#1B3B22",
+                }}
+              >
+                VIP HATCH ALERTS &amp; COMMUNITY
+              </span>
             </div>
             <h3
               style={{
@@ -117,12 +121,12 @@ export default function Newsletter() {
                 fontWeight: 900,
                 lineHeight: 1.15,
                 marginBottom: 6,
-                color: "#0F172A",
+                color: "#152B17",
               }}
             >
-              Join the <span className="text-emerald-600">Feather</span><span className="text-orange-500">Town</span> Family
+              Join the <span style={{ color: "#1B3B22" }}>Feather</span><span style={{ color: "#D9381E" }}>Town</span> Family
             </h3>
-            <p style={{ fontSize: 14, color: "#475569", margin: 0, lineHeight: 1.5 }}>
+            <p style={{ fontSize: 14, color: "#736B5E", margin: 0, lineHeight: 1.5 }}>
               Receive avian nutritional guides, certified veterinarian care tips &amp; priority clutch adoption alerts.
             </p>
           </div>
@@ -133,17 +137,16 @@ export default function Newsletter() {
           {done ? (
             <div
               style={{
-                background: "#ECFDF5",
-                border: "1px solid #A7F3D0",
+                background: "#E7EFE8",
+                border: "1px solid #B8D4BA",
                 padding: "14px 28px",
                 borderRadius: 999,
                 fontWeight: 800,
                 fontSize: 14,
-                color: "#059669",
+                color: "#1B3B22",
                 display: "inline-flex",
                 alignItems: "center",
                 gap: 8,
-                boxShadow: "0 2px 8px rgba(5, 150, 105, 0.1)",
               }}
             >
               <span>🎉</span>
@@ -183,7 +186,16 @@ export default function Newsletter() {
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder="Enter your email address"
                 required
-                className="w-full sm:flex-1 px-5 py-3 rounded-full bg-white border border-slate-300 text-slate-800 text-sm focus:border-orange-500 focus:ring-2 focus:ring-orange-100 outline-none shadow-sm transition-all"
+                style={{
+                  flex: "1 1 200px",
+                  padding: "12px 20px",
+                  borderRadius: 999,
+                  background: "#FAF8F5",
+                  border: "1.5px solid #E2DDD3",
+                  color: "#152B17",
+                  fontSize: 14,
+                  outline: "none",
+                }}
               />
 
               <Magnet padding={30} magnetStrength={3}>
@@ -192,7 +204,7 @@ export default function Newsletter() {
                   disabled={loading}
                   className="t-btn-press"
                   style={{
-                    background: "#EA580C",
+                    background: "#D9381E",
                     color: "#FFFFFF",
                     border: "none",
                     borderRadius: 999,
@@ -201,7 +213,7 @@ export default function Newsletter() {
                     fontWeight: 800,
                     cursor: "pointer",
                     whiteSpace: "nowrap",
-                    boxShadow: "0 4px 16px rgba(249, 115, 22, 0.38)",
+                    boxShadow: "0 4px 14px rgba(217, 56, 30, 0.3)",
                     flex: "0 0 auto",
                   }}
                 >
@@ -219,14 +231,14 @@ export default function Newsletter() {
               height: 62,
               borderRadius: "50%",
               overflow: "hidden",
-              border: "3px solid #FFFFFF",
+              border: "3px solid #E2DDD3",
               flexShrink: 0,
-              boxShadow: "0 8px 20px rgba(15, 23, 42, 0.12)",
+              boxShadow: "0 4px 16px rgba(0, 0, 0, 0.08)",
             }}
           >
             <img
               src={sunImg}
-              alt="FeatherTown Bird"
+              alt="FeatherTown companion conure bird"
               loading="lazy"
               decoding="async"
               style={{ width: "100%", height: "100%", objectFit: "cover" }}

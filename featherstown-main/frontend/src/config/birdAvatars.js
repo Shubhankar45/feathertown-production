@@ -20,7 +20,7 @@ export const BIRD_AVATARS = [
     tagline: "Vibrant & Playful",
     category: "conures-lovebirds",
     path: "/avatars/indian-ringneck.svg",
-    color: "#16A34A",
+    color: "#1B3B22",
   },
   // 2. Scarlet Macaw
   {
@@ -30,7 +30,7 @@ export const BIRD_AVATARS = [
     tagline: "Bold & Iconic",
     category: "macaws-cockatoos",
     path: "/avatars/scarlet-macaw.svg",
-    color: "#EF4444",
+    color: "#D9381E",
   },
   // 3. Blue & Gold Macaw
   {
@@ -40,7 +40,7 @@ export const BIRD_AVATARS = [
     tagline: "Majestic & Friendly",
     category: "macaws-cockatoos",
     path: "/avatars/macaw-blue-gold.svg",
-    color: "#2563EB",
+    color: "#D9381E",
   },
   // 4. Classic Grey Cockatiel
   {
@@ -50,7 +50,7 @@ export const BIRD_AVATARS = [
     tagline: "Sweet & Whistling",
     category: "budgies-cockatiels",
     path: "/avatars/cockatiel.svg",
-    color: "#64748B",
+    color: "#736B5E",
   },
   // 5. Classic Green Budgerigar
   {
@@ -60,7 +60,7 @@ export const BIRD_AVATARS = [
     tagline: "Cheerful & Chatty",
     category: "budgies-cockatiels",
     path: "/avatars/budgie.svg",
-    color: "#22C55E",
+    color: "#1B3B22",
   },
   // 6. Peach-faced Lovebird
   {
@@ -70,7 +70,7 @@ export const BIRD_AVATARS = [
     tagline: "Affectionate & Lively",
     category: "conures-lovebirds",
     path: "/avatars/lovebird.svg",
-    color: "#F43F5E",
+    color: "#D9381E",
   },
   // 7. Galah / Rose Cockatoo
   {
@@ -80,7 +80,7 @@ export const BIRD_AVATARS = [
     tagline: "Gentle & Acrobatic",
     category: "macaws-cockatoos",
     path: "/avatars/cockatoo-galah.svg",
-    color: "#F472B6",
+    color: "#D9381E",
   },
   // 8. Sulphur-crested White Cockatoo
   {
@@ -90,7 +90,7 @@ export const BIRD_AVATARS = [
     tagline: "Majestic & Loyal",
     category: "macaws-cockatoos",
     path: "/avatars/cockatoo.svg",
-    color: "#FACC15",
+    color: "#D9381E",
   },
   // 9. Sun Conure
   {
@@ -100,7 +100,7 @@ export const BIRD_AVATARS = [
     tagline: "Golden & Radiant",
     category: "conures-lovebirds",
     path: "/avatars/sun-conure.svg",
-    color: "#F59E0B",
+    color: "#D9381E",
   },
   // 10. Sky Blue Budgie
   {
@@ -110,7 +110,7 @@ export const BIRD_AVATARS = [
     tagline: "Sweet & Social",
     category: "budgies-cockatiels",
     path: "/avatars/budgie-blue.svg",
-    color: "#0284C7",
+    color: "#D9381E",
   },
   // 11. African Grey Parrot
   {
@@ -120,7 +120,7 @@ export const BIRD_AVATARS = [
     tagline: "Wise & Intellectual",
     category: "exotic-parrots",
     path: "/avatars/african-grey.svg",
-    color: "#6366F1",
+    color: "#D9381E",
   },
   // 12. Green Cheek Conure
   {
@@ -130,7 +130,7 @@ export const BIRD_AVATARS = [
     tagline: "Cuddly & Curious",
     category: "conures-lovebirds",
     path: "/avatars/green-cheek.svg",
-    color: "#65A30D",
+    color: "#1B3B22",
   },
   // 13. Rainbow Lorikeet
   {
@@ -140,7 +140,7 @@ export const BIRD_AVATARS = [
     tagline: "Dazzling & Playful",
     category: "exotic-parrots",
     path: "/avatars/rainbow-lorikeet.svg",
-    color: "#4F46E5",
+    color: "#D9381E",
   },
   // 14. Blue-fronted Amazon
   {
@@ -150,7 +150,7 @@ export const BIRD_AVATARS = [
     tagline: "Energetic & Vocal",
     category: "exotic-parrots",
     path: "/avatars/amazon-parrot.svg",
-    color: "#16A34A",
+    color: "#1B3B22",
   },
   // 15. Emerald Eclectus (Male)
   {
@@ -160,7 +160,7 @@ export const BIRD_AVATARS = [
     tagline: "Regal & Calm",
     category: "exotic-parrots",
     path: "/avatars/eclectus.svg",
-    color: "#10B981",
+    color: "#1B3B22",
   },
   // 16. Ruby Eclectus (Female)
   {
@@ -170,7 +170,7 @@ export const BIRD_AVATARS = [
     tagline: "Stunning & Bold",
     category: "exotic-parrots",
     path: "/avatars/eclectus-female.svg",
-    color: "#DC2626",
+    color: "#D9381E",
   },
   // 17. Lutino Cockatiel
   {
@@ -180,7 +180,7 @@ export const BIRD_AVATARS = [
     tagline: "Sunny & Whistling",
     category: "budgies-cockatiels",
     path: "/avatars/cockatiel-lutino.svg",
-    color: "#FACC15",
+    color: "#D9381E",
   },
   // 18. White-bellied Caique
   {
@@ -190,7 +190,7 @@ export const BIRD_AVATARS = [
     tagline: "Clown & Acrobat",
     category: "exotic-parrots",
     path: "/avatars/caique-whitebelly.svg",
-    color: "#EA580C",
+    color: "#D9381E",
   },
   // 19. Black-masked Lovebird
   {
@@ -200,7 +200,7 @@ export const BIRD_AVATARS = [
     tagline: "Charming & Spirited",
     category: "conures-lovebirds",
     path: "/avatars/lovebird-masked.svg",
-    color: "#FACC15",
+    color: "#D9381E",
   },
   // 20. Quaker / Monk Parakeet
   {
@@ -210,7 +210,7 @@ export const BIRD_AVATARS = [
     tagline: "Clever & Sociable",
     category: "exotic-parrots",
     path: "/avatars/quaker-monk.svg",
-    color: "#22C55E",
+    color: "#1B3B22",
   },
 ];
 

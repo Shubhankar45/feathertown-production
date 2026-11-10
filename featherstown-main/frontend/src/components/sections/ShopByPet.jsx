@@ -15,7 +15,8 @@ export default function ShopByPet() {
         width: "100%",
         maxWidth: "100%",
         margin: "0 auto",
-        background: "#FFFFFF",
+        background: "#FAF8F5",
+        borderTop: "1px solid #E2DDD3",
         fontFamily: "Outfit, system-ui, sans-serif",
       }}
     >
@@ -31,14 +32,14 @@ export default function ShopByPet() {
             display: "inline-flex",
             alignItems: "center",
             gap: 6,
-            background: "#ECFDF5",
-            border: "1px solid #A7F3D0",
+            background: "#E7EFE8",
+            border: "1px solid #B8D4BA",
             padding: "4px 12px",
             borderRadius: 999,
             fontSize: 11,
             fontWeight: 800,
             letterSpacing: 1.2,
-            color: "#059669",
+            color: "#1B3B22",
             textTransform: "uppercase",
             marginBottom: 12,
           }}
@@ -49,15 +50,15 @@ export default function ShopByPet() {
           style={{
             fontSize: "clamp(26px, 3.6vw, 40px)",
             fontWeight: 900,
-            color: "#0F172A",
+            color: "#152B17",
             lineHeight: 1.15,
             letterSpacing: "-0.025em",
             margin: "0 0 10px 0",
           }}
         >
-          <span className="text-emerald-600">Bird</span><span className="text-orange-500">pedia</span> Species Directory
+          <span style={{ color: "#1B3B22" }}>Bird</span><span style={{ color: "#D9381E" }}>pedia</span> Species Directory
         </h2>
-        <p style={{ fontSize: 14, color: "#64748B", margin: 0, maxWidth: 560, marginLeft: "auto", marginRight: "auto" }}>
+        <p style={{ fontSize: 14, color: "#736B5E", margin: 0, maxWidth: 560, marginLeft: "auto", marginRight: "auto" }}>
           Find detailed traits, talking ability ratings, and personalized care needs for every companion bird breed.
         </p>
       </div>
@@ -77,12 +78,13 @@ export default function ShopByPet() {
             style={{ textDecoration: "none" }}
           >
             <SpotlightCard
-              spotlightColor="rgba(22, 163, 74, 0.15)"
-              borderColor="#E2E8F0"
+              spotlightColor="rgba(27, 59, 34, 0.08)"
+              borderColor="#E2DDD3"
               className="t-hover-lift group flex flex-col items-center text-center p-6"
               style={{
                 borderRadius: 24,
-                boxShadow: "0 4px 18px rgba(15, 23, 42, 0.04)",
+                boxShadow: "0 4px 18px rgba(21, 43, 23, 0.04)",
+                background: "#FFFFFF",
               }}
             >
               {/* Cutout Bird Portrait Circle */}
@@ -91,15 +93,15 @@ export default function ShopByPet() {
                   width: "clamp(92px, 14vw, 116px)",
                   height: "clamp(92px, 14vw, 116px)",
                   borderRadius: "50%",
-                  background: "#F8FAFC",
+                  background: "#FAF8F5",
                   padding: 4,
                   marginBottom: 16,
-                  boxShadow: "0 4px 16px rgba(15, 23, 42, 0.06)",
+                  boxShadow: "0 4px 16px rgba(0, 0, 0, 0.06)",
                   display: "flex",
                   alignItems: "center",
                   justifyContent: "center",
                   overflow: "hidden",
-                  border: "2px solid #E2E8F0",
+                  border: "2px solid #E2DDD3",
                 }}
               >
                 <img
@@ -112,11 +114,10 @@ export default function ShopByPet() {
               </div>
 
               <span
-                className="group-hover:text-emerald-700 transition-colors"
                 style={{
                   fontSize: 16,
                   fontWeight: 800,
-                  color: "#0F172A",
+                  color: "#152B17",
                   display: "block",
                   marginBottom: 4,
                 }}
@@ -127,7 +128,7 @@ export default function ShopByPet() {
               <span
                 style={{
                   fontSize: 12,
-                  color: "#64748B",
+                  color: "#736B5E",
                   fontWeight: 500,
                   marginBottom: 16,
                 }}
@@ -135,19 +136,18 @@ export default function ShopByPet() {
                 {pet.tagline || "Companion Species"}
               </span>
 
-              {/* Mint Pill Button */}
+              {/* Pill Button */}
               <div
                 className="t-btn-press"
                 style={{
-                  background: "#ECFDF5",
-                  color: "#059669",
-                  border: "1px solid #A7F3D0",
+                  background: "#E7EFE8",
+                  color: "#1B3B22",
+                  border: "1px solid #B8D4BA",
                   padding: "7px 20px",
                   borderRadius: 999,
                   fontSize: 12,
                   fontWeight: 800,
                   letterSpacing: 0.3,
-                  boxShadow: "0 2px 6px rgba(5, 150, 105, 0.1)",
                 }}
               >
                 Learn More →
@@ -170,7 +170,7 @@ export default function ShopByPet() {
           to="/birds"
           className="t-btn-press"
           style={{
-            background: "#EA580C",
+            background: "#D9381E",
             color: "#FFFFFF",
             padding: "11px 28px",
             borderRadius: 999,
@@ -180,7 +180,7 @@ export default function ShopByPet() {
             display: "inline-flex",
             alignItems: "center",
             gap: 8,
-            boxShadow: "0 4px 16px rgba(234, 88, 12, 0.35)",
+            boxShadow: "0 4px 16px rgba(217, 56, 30, 0.3)",
           }}
         >
           <span>View All Available Birds</span>

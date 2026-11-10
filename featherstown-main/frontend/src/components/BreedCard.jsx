@@ -14,15 +14,16 @@ export default function BreedCard({ parrot }) {
   return (
     <SpotlightCard
       className="t-hover-lift flex flex-col h-full group"
-      spotlightColor="rgba(22, 163, 74, 0.14)"
-      borderColor="#E2E8F0"
+      spotlightColor="rgba(27, 59, 34, 0.12)"
+      borderColor="#E2DDD3"
       style={{
         borderRadius: 24,
-        boxShadow: "0 4px 20px -2px rgba(15, 23, 42, 0.05), 0 2px 6px -1px rgba(15, 23, 42, 0.02)",
+        background: "#FFFFFF",
+        boxShadow: "0 4px 20px -2px rgba(27, 59, 34, 0.05), 0 2px 6px -1px rgba(27, 59, 34, 0.02)",
       }}
     >
       {/* IMAGE CONTAINER WITH ZOOM */}
-      <div className="relative h-[230px] overflow-hidden bg-slate-50 t-img-zoom">
+      <div className="relative h-[230px] overflow-hidden bg-[#FAF8F5] t-img-zoom">
         <img
           src={parrot.image}
           alt={parrot.name}
@@ -33,7 +34,7 @@ export default function BreedCard({ parrot }) {
         {/* Top Badges */}
         <div className="absolute top-3 left-3 right-3 flex justify-between items-center z-20">
           {/* Category Pill */}
-          <span className="bg-white/95 backdrop-blur-md text-emerald-700 border border-emerald-200 text-[11px] font-extrabold px-3 py-1 rounded-full uppercase tracking-wider shadow-sm">
+          <span className="bg-white/95 backdrop-blur-md text-[#1B3B22] border border-[#B8D4BA] text-[11px] font-extrabold px-3 py-1 rounded-full uppercase tracking-wider shadow-sm">
             {parrot.category || "Parrot"}
           </span>
 
@@ -41,13 +42,13 @@ export default function BreedCard({ parrot }) {
           <span
             className={`text-[11px] font-bold px-2.5 py-1 rounded-full inline-flex items-center gap-1.5 shadow-sm backdrop-blur-md ${
               isAvailable
-                ? "bg-emerald-50/95 text-emerald-700 border border-emerald-300"
-                : "bg-rose-50/95 text-rose-700 border border-rose-300"
+                ? "bg-[#E7EFE8]/95 text-[#1B3B22] border border-[#B8D4BA]"
+                : "bg-red-50/95 text-[#D9381E] border border-red-200"
             }`}
           >
             <span
               className={`w-1.5 h-1.5 rounded-full ${
-                isAvailable ? "bg-emerald-600 ft-animate-badge-pulse" : "bg-rose-600"
+                isAvailable ? "bg-[#1B3B22] ft-animate-badge-pulse" : "bg-[#D9381E]"
               }`}
             />
             {isAvailable ? "Available" : "Waitlist"}
@@ -55,7 +56,7 @@ export default function BreedCard({ parrot }) {
         </div>
 
         {/* Price tag on photo */}
-        <div className="absolute bottom-3 right-3 z-20 bg-white/95 backdrop-blur-md border border-emerald-200 text-emerald-700 font-extrabold text-sm px-3.5 py-1 rounded-full shadow-md">
+        <div className="absolute bottom-3 right-3 z-20 bg-white/95 backdrop-blur-md border border-[#E2DDD3] text-[#D9381E] font-extrabold text-sm px-3.5 py-1 rounded-full shadow-md">
           {parrot.price}
         </div>
       </div>
@@ -63,33 +64,33 @@ export default function BreedCard({ parrot }) {
       {/* CARD CONTENT */}
       <div className="p-5 flex flex-col flex-1 z-20">
         <div className="flex items-baseline justify-between gap-2 mb-1.5">
-          <h3 className="font-extrabold text-lg text-slate-900 group-hover:text-emerald-700 transition-colors duration-200">
+          <h3 className="font-extrabold text-lg text-[#152B17] group-hover:text-[#1B3B22] transition-colors duration-200">
             {parrot.name}
           </h3>
           {parrot.species && (
-            <span className="text-[11px] text-slate-400 italic truncate max-w-[120px]">
+            <span className="text-[11px] text-[#736B5E] italic truncate max-w-[120px]">
               {parrot.species}
             </span>
           )}
         </div>
 
-        <p className="text-xs text-slate-600 leading-relaxed mb-4 flex-1 line-clamp-2">
+        <p className="text-xs text-[#736B5E] leading-relaxed mb-4 flex-1 line-clamp-2">
           {parrot.description}
         </p>
 
         {/* Quick Trait Badges */}
-        <div className="grid grid-cols-3 gap-2 bg-slate-50 rounded-xl p-2.5 mb-4 border border-slate-100 text-center">
+        <div className="grid grid-cols-3 gap-2 bg-[#FAF8F5] rounded-xl p-2.5 mb-4 border border-[#E2DDD3] text-center">
           <div>
-            <div className="text-[9.5px] text-slate-400 font-bold uppercase tracking-wider">Size</div>
-            <div className="text-xs text-slate-800 font-bold mt-0.5">{parrot.size || "Medium"}</div>
+            <div className="text-[9.5px] text-[#736B5E] font-bold uppercase tracking-wider">Size</div>
+            <div className="text-xs text-[#152B17] font-bold mt-0.5">{parrot.size || "Medium"}</div>
           </div>
-          <div className="border-x border-slate-200">
-            <div className="text-[9.5px] text-slate-400 font-bold uppercase tracking-wider">Lifespan</div>
-            <div className="text-xs text-slate-800 font-bold mt-0.5">{parrot.lifespan || "20-30y"}</div>
+          <div className="border-x border-[#E2DDD3]">
+            <div className="text-[9.5px] text-[#736B5E] font-bold uppercase tracking-wider">Lifespan</div>
+            <div className="text-xs text-[#152B17] font-bold mt-0.5">{parrot.lifespan || "20-30y"}</div>
           </div>
           <div>
-            <div className="text-[9.5px] text-slate-400 font-bold uppercase tracking-wider">Speech</div>
-            <div className="text-xs text-slate-800 font-bold mt-0.5 truncate">{parrot.talkingAbility || "Good"}</div>
+            <div className="text-[9.5px] text-[#736B5E] font-bold uppercase tracking-wider">Speech</div>
+            <div className="text-xs text-[#152B17] font-bold mt-0.5 truncate">{parrot.talkingAbility || "Good"}</div>
           </div>
         </div>
 
@@ -97,7 +98,7 @@ export default function BreedCard({ parrot }) {
         <div className="grid grid-cols-2 gap-2 mt-auto">
           <Link
             to={`/breed/${parrot.id}`}
-            className="t-btn-press text-center py-2.5 px-3 rounded-xl border border-slate-300 text-slate-800 font-bold text-xs bg-white hover:bg-orange-50 hover:border-orange-500 hover:text-orange-600 transition-all shadow-sm"
+            className="t-btn-press text-center py-2.5 px-3 rounded-xl border border-[#E2DDD3] text-[#152B17] font-bold text-xs bg-white hover:bg-[#FAF8F5] hover:border-[#1B3B22] hover:text-[#1B3B22] transition-all shadow-sm"
           >
             Care Profile →
           </Link>
@@ -106,7 +107,7 @@ export default function BreedCard({ parrot }) {
             href={whatsappLink}
             target="_blank"
             rel="noreferrer"
-            className="t-btn-press flex items-center justify-center gap-1.5 py-2 px-3 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs shadow-sm hover:shadow-md transition-all"
+            className="t-btn-press flex items-center justify-center gap-1.5 py-2 px-3 rounded-xl bg-[#1B3B22] hover:bg-[#152B17] text-white font-bold text-xs shadow-sm hover:shadow-md transition-all"
           >
             <span>💬</span> Inquire
           </a>

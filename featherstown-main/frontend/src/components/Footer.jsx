@@ -1,5 +1,4 @@
 import { Link } from "react-router-dom";
-import logoImg from "../assets/logo-optimized.png";
 import { useSettings } from "../context/SettingsContext";
 
 export default function Footer() {
@@ -9,19 +8,19 @@ export default function Footer() {
     window.dispatchEvent(new CustomEvent("ft_reopen_cookie_preferences"));
   };
 
-  const waNum = (settings.whatsapp || "919556747518").replace(/\D/g, "");
-  const instaUrl = settings.instagramUrl || "https://www.instagram.com/feather_town__?igsh=MWV2ZXdqbzlidmk4aw==";
-  const supportEmail = settings.email || "support@feathertown.online";
+  const waNum = (settings?.whatsapp || "919556747518").replace(/\D/g, "");
+  const instaUrl = settings?.instagramUrl || "https://www.instagram.com/feather_town__?igsh=MWV2ZXdqbzlidmk4aw==";
+  const supportEmail = settings?.email || "care@feathertown.online";
 
   return (
     <footer
       style={{
-        background: "#FFFFFF",
-        color: "#334155",
+        background: "#FAF8F5",
+        color: "#736B5E",
         fontFamily: "Outfit, system-ui, sans-serif",
         paddingTop: "60px",
         paddingBottom: "calc(28px + env(safe-area-inset-bottom, 0px))",
-        borderTop: "1px solid #E2E8F0",
+        borderTop: "1px solid #E2DDD3",
         margin: 0,
         marginBottom: 0,
       }}
@@ -49,59 +48,67 @@ export default function Footer() {
             <Link
               to="/"
               style={{
-                display: "flex",
-                alignItems: "center",
-                gap: 10,
+                display: "inline-flex",
+                alignItems: "baseline",
                 textDecoration: "none",
                 marginBottom: 16,
+                lineHeight: 1,
               }}
             >
-              <img
-                src={logoImg}
-                alt="FeatherTown"
+              <span
                 style={{
-                  height: 48,
-                  width: "auto",
-                  background: "#F8FAFC",
-                  border: "1px solid #E2E8F0",
-                  padding: "4px 8px",
-                  borderRadius: 12,
+                  fontFamily: "Outfit, system-ui, sans-serif",
+                  fontSize: 26,
+                  fontWeight: 900,
+                  color: "#1B3B22",
+                  letterSpacing: "-0.025em",
+                }}
+              >
+                Feather
+              </span>
+              <span
+                style={{
+                  fontFamily: "Outfit, system-ui, sans-serif",
+                  fontSize: 26,
+                  fontWeight: 900,
+                  color: "#D9381E",
+                  letterSpacing: "-0.025em",
+                }}
+              >
+                Town
+              </span>
+              <span
+                style={{
+                  display: "inline-block",
+                  width: 6,
+                  height: 6,
+                  borderRadius: "50%",
+                  background: "#D9381E",
+                  marginLeft: 3,
                 }}
               />
-              <div>
-                <span
-                  style={{
-                    fontFamily: "Outfit, system-ui, sans-serif",
-                    fontSize: 22,
-                    fontWeight: 800,
-                    color: "#16A34A",
-                    display: "block",
-                    lineHeight: 1,
-                  }}
-                >
-                  Feather<span style={{ color: "#EA580C" }}>Town</span>
-                </span>
-                <span
-                  style={{
-                    fontSize: 9.5,
-                    fontWeight: 700,
-                    letterSpacing: 1.2,
-                    textTransform: "uppercase",
-                    color: "#15803D",
-                  }}
-                >
-                  Small Pets, Big Love
-                </span>
-              </div>
             </Link>
+
+            <div
+              style={{
+                fontSize: 10,
+                fontWeight: 700,
+                letterSpacing: 1.2,
+                textTransform: "uppercase",
+                color: "#1B3B22",
+                marginBottom: 14,
+              }}
+            >
+              Small Pets, Big Love • Ethical Aviary
+            </div>
 
             <p
               style={{
                 fontSize: 13,
                 lineHeight: 1.65,
-                color: "#475569",
+                color: "#736B5E",
                 marginBottom: 20,
-                maxWidth: 280,
+                maxWidth: 290,
               }}
             >
               Dedicated to healthy companion birds, wholesome nutrition, hand-tamed bonding, and premium accessories across India.
@@ -113,19 +120,19 @@ export default function Footer() {
                 href={instaUrl}
                 target="_blank"
                 rel="noreferrer"
-                className="ft-btn-hover"
+                className="ft-btn-hover t-btn-press"
                 style={{
-                  width: 36,
-                  height: 36,
+                  width: 38,
+                  height: 38,
                   borderRadius: "50%",
-                  background: "#F1F5F9",
-                  border: "1px solid #E2E8F0",
+                  background: "#FFFFFF",
+                  border: "1px solid #E2DDD3",
                   display: "flex",
                   alignItems: "center",
                   justifyContent: "center",
-                  color: "#0F172A",
+                  color: "#1B3B22",
                   textDecoration: "none",
-                  transition: "background 0.2s",
+                  fontSize: 16,
                 }}
                 title="Instagram"
               >
@@ -135,19 +142,19 @@ export default function Footer() {
                 href={`https://wa.me/${waNum}`}
                 target="_blank"
                 rel="noreferrer"
-                className="ft-btn-hover"
+                className="ft-btn-hover t-btn-press"
                 style={{
-                  width: 36,
-                  height: 36,
+                  width: 38,
+                  height: 38,
                   borderRadius: "50%",
-                  background: "#F1F5F9",
-                  border: "1px solid #E2E8F0",
+                  background: "#FFFFFF",
+                  border: "1px solid #E2DDD3",
                   display: "flex",
                   alignItems: "center",
                   justifyContent: "center",
-                  color: "#0F172A",
+                  color: "#1B3B22",
                   textDecoration: "none",
-                  transition: "background 0.2s",
+                  fontSize: 16,
                 }}
                 title="WhatsApp Support"
               >
@@ -155,18 +162,19 @@ export default function Footer() {
               </a>
               <a
                 href={`mailto:${supportEmail}`}
-                className="ft-btn-hover"
+                className="ft-btn-hover t-btn-press"
                 style={{
-                  width: 36,
-                  height: 36,
+                  width: 38,
+                  height: 38,
                   borderRadius: "50%",
-                  background: "#F1F5F9",
-                  border: "1px solid #E2E8F0",
+                  background: "#FFFFFF",
+                  border: "1px solid #E2DDD3",
                   display: "flex",
                   alignItems: "center",
                   justifyContent: "center",
-                  color: "#0F172A",
+                  color: "#1B3B22",
                   textDecoration: "none",
+                  fontSize: 16,
                 }}
                 title="Email Us"
               >
@@ -179,17 +187,17 @@ export default function Footer() {
           <div>
             <h4
               style={{
-                fontSize: 13,
-                fontWeight: 700,
+                fontSize: 12.5,
+                fontWeight: 800,
                 letterSpacing: 1.5,
                 textTransform: "uppercase",
-                color: "#059669",
+                color: "#1B3B22",
                 marginBottom: 18,
               }}
             >
               Shop
             </h4>
-            <ul style={{ listStyle: "none", padding: 0, margin: 0, display: "flex", flexDirection: "column", gap: 10 }}>
+            <ul style={{ listStyle: "none", padding: 0, margin: 0, display: "flex", flexDirection: "column", gap: 11 }}>
               <li>
                 <Link to="/birds" style={footerLink}>
                   All Companion Birds
@@ -222,17 +230,17 @@ export default function Footer() {
           <div>
             <h4
               style={{
-                fontSize: 13,
-                fontWeight: 700,
+                fontSize: 12.5,
+                fontWeight: 800,
                 letterSpacing: 1.5,
                 textTransform: "uppercase",
-                color: "#059669",
+                color: "#1B3B22",
                 marginBottom: 18,
               }}
             >
               Help &amp; Support
             </h4>
-            <ul style={{ listStyle: "none", padding: 0, margin: 0, display: "flex", flexDirection: "column", gap: 10 }}>
+            <ul style={{ listStyle: "none", padding: 0, margin: 0, display: "flex", flexDirection: "column", gap: 11 }}>
               <li>
                 <Link to="/contact" style={footerLink}>
                   Contact Us &amp; FAQs
@@ -276,15 +284,15 @@ export default function Footer() {
             </ul>
           </div>
 
-          {/* Col 4: Trust Badges (Matches Reference Image) */}
+          {/* Col 4: Trust Badges */}
           <div>
             <h4
               style={{
-                fontSize: 13,
-                fontWeight: 700,
+                fontSize: 12.5,
+                fontWeight: 800,
                 letterSpacing: 1.5,
                 textTransform: "uppercase",
-                color: "#059669",
+                color: "#1B3B22",
                 marginBottom: 18,
               }}
             >
@@ -294,24 +302,24 @@ export default function Footer() {
               <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
                 <span style={{ fontSize: 20 }}>🔒</span>
                 <div>
-                  <div style={{ fontSize: 13.5, fontWeight: 700, color: "#0F172A" }}>Secure Payments</div>
-                  <div style={{ fontSize: 11.5, color: "#64748B" }}>256-bit encrypted Razorpay</div>
+                  <div style={{ fontSize: 13.5, fontWeight: 700, color: "#152B17" }}>Secure Payments</div>
+                  <div style={{ fontSize: 11.5, color: "#736B5E" }}>256-bit encrypted Razorpay</div>
                 </div>
               </div>
 
               <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
                 <span style={{ fontSize: 20 }}>🩺</span>
                 <div>
-                  <div style={{ fontSize: 13.5, fontWeight: 700, color: "#0F172A" }}>48h Health Guarantee</div>
-                  <div style={{ fontSize: 11.5, color: "#64748B" }}>Vet-certified &amp; parasite-free</div>
+                  <div style={{ fontSize: 13.5, fontWeight: 700, color: "#152B17" }}>48h Health Guarantee</div>
+                  <div style={{ fontSize: 11.5, color: "#736B5E" }}>Vet-certified &amp; parasite-free</div>
                 </div>
               </div>
 
               <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
-                <span style={{ fontSize: 20 }}>💚</span>
+                <span style={{ fontSize: 20 }}>❤️</span>
                 <div>
-                  <div style={{ fontSize: 13.5, fontWeight: 700, color: "#0F172A" }}>Happiness Guarantee</div>
-                  <div style={{ fontSize: 11.5, color: "#64748B" }}>Lifetime feeding &amp; care support</div>
+                  <div style={{ fontSize: 13.5, fontWeight: 700, color: "#152B17" }}>Happiness Guarantee</div>
+                  <div style={{ fontSize: 11.5, color: "#736B5E" }}>Lifetime feeding &amp; care support</div>
                 </div>
               </div>
             </div>
@@ -321,7 +329,7 @@ export default function Footer() {
         {/* Bottom Bar */}
         <div
           style={{
-            borderTop: "1px solid #F1F5F9",
+            borderTop: "1px solid #E2DDD3",
             paddingTop: "24px",
             display: "flex",
             alignItems: "center",
@@ -329,23 +337,23 @@ export default function Footer() {
             flexWrap: "wrap",
             gap: 12,
             fontSize: 12.5,
-            color: "#64748B",
+            color: "#736B5E",
           }}
         >
           <div>
             © 2026 FeatherTown Marketplace. All rights reserved.
           </div>
           <div style={{ display: "flex", gap: "clamp(12px, 3vw, 20px)", alignItems: "center", flexWrap: "wrap" }}>
-            <Link to="/privacy-policy" style={{ color: "#64748B", textDecoration: "none" }}>
+            <Link to="/privacy-policy" style={{ color: "#736B5E", textDecoration: "none" }}>
               Privacy
             </Link>
-            <Link to="/terms" style={{ color: "#64748B", textDecoration: "none" }}>
+            <Link to="/terms" style={{ color: "#736B5E", textDecoration: "none" }}>
               Terms
             </Link>
-            <a href="/sitemap.xml" style={{ color: "#64748B", textDecoration: "none" }}>
+            <a href="/sitemap.xml" style={{ color: "#736B5E", textDecoration: "none" }}>
               Sitemap
             </a>
-            <span>Made with 💚 for bird lovers</span>
+            <span>Carefully raised companion birds across India</span>
           </div>
         </div>
       </div>
@@ -355,7 +363,7 @@ export default function Footer() {
 
 const footerLink = {
   fontSize: "13.5px",
-  color: "#475569",
+  color: "#736B5E",
   textDecoration: "none",
   transition: "color 0.2s",
 };

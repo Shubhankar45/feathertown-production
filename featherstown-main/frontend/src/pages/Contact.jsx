@@ -56,7 +56,6 @@ export default function Contact() {
 
     setLoading(true);
     try {
-      // Simulate or dispatch contact request
       await new Promise((res) => setTimeout(res, 600));
       trackEvent("contact_form_submitted", { subject: formData.subject });
       setSubmitted(true);
@@ -75,7 +74,7 @@ export default function Contact() {
   };
 
   return (
-    <div style={{ background: "#F8FAFC", color: "#0F172A", fontFamily: "Outfit, system-ui, sans-serif", minHeight: "100vh" }}>
+    <div style={{ background: "#F7F5F0", color: "#152B17", fontFamily: "Outfit, system-ui, sans-serif", minHeight: "100vh" }}>
       <SEOHead
         title="Contact FeatherTown | Bird Care Support & Avian Consultation"
         description="Reach out to FeatherTown for parrot adoption inquiries, diet guidance, custom cage sizing, or order support. Quick replies via WhatsApp and email."
@@ -106,11 +105,11 @@ export default function Contact() {
                 background: "#FFFFFF",
                 borderRadius: 24,
                 padding: "clamp(20px, 4vw, 32px) clamp(16px, 4vw, 28px)",
-                border: "1px solid #E2E8F0",
-                boxShadow: "0 2px 10px rgba(15, 23, 42, 0.04)",
+                border: "1px solid #E2DDD3",
+                boxShadow: "0 2px 10px rgba(27, 59, 34, 0.04)",
               }}
             >
-              <h3 style={{ fontSize: 20, fontWeight: 700, color: "#0F172A", marginBottom: 20 }}>
+              <h3 style={{ fontSize: 20, fontWeight: 700, color: "#152B17", marginBottom: 20 }}>
                 Avian Consultation &amp; Care
               </h3>
 
@@ -118,35 +117,57 @@ export default function Contact() {
                 <div style={{ display: "flex", gap: 12, alignItems: "flex-start" }}>
                   <span style={{ fontSize: 20 }}>📍</span>
                   <div>
-                    <div style={{ fontSize: 14, fontWeight: 700, color: "#0F172A" }}>Aviary Location</div>
-                    <div style={{ fontSize: 13, color: "#64748B" }}>{settings.address || "Sundargarh, Odisha, India - 770001"}</div>
+                    <div style={{ fontSize: 12, color: "#736B5E", fontWeight: 700, textTransform: "uppercase" }}>Aviary Location</div>
+                    <div style={{ fontSize: 14, fontWeight: 600, color: "#152B17", marginTop: 2 }}>
+                      {settings.address || "Sundargarh, Odisha 770001, India"}
+                    </div>
                   </div>
                 </div>
 
                 <div style={{ display: "flex", gap: 12, alignItems: "flex-start" }}>
                   <span style={{ fontSize: 20 }}>📞</span>
                   <div>
-                    <div style={{ fontSize: 14, fontWeight: 700, color: "#0F172A" }}>Helpline &amp; Calls</div>
-                    <div style={{ fontSize: 13, color: "#64748B" }}>{settings.phone || "+91 9556747518"} ({settings.businessHours || "9 AM – 8 PM"})</div>
+                    <div style={{ fontSize: 12, color: "#736B5E", fontWeight: 700, textTransform: "uppercase" }}>Phone Support</div>
+                    <a
+                      href={`tel:${(settings.phone || "+91 95567 47518").replace(/\s/g, "")}`}
+                      style={{ fontSize: 14, fontWeight: 600, color: "#1B3B22", textDecoration: "none", marginTop: 2, display: "inline-block" }}
+                    >
+                      {settings.phone || "+91 95567 47518"}
+                    </a>
                   </div>
                 </div>
 
                 <div style={{ display: "flex", gap: 12, alignItems: "flex-start" }}>
-                  <span style={{ fontSize: 20 }}>📧</span>
+                  <span style={{ fontSize: 20 }}>✉️</span>
                   <div>
-                    <div style={{ fontSize: 14, fontWeight: 700, color: "#0F172A" }}>Direct Support Email</div>
-                    <div style={{ fontSize: 13, color: "#64748B" }}>{settings.email || "support@feathertown.online"}</div>
+                    <div style={{ fontSize: 12, color: "#736B5E", fontWeight: 700, textTransform: "uppercase" }}>Email Inquiries</div>
+                    <a
+                      href={`mailto:${settings.email || "care@feathertown.online"}`}
+                      style={{ fontSize: 14, fontWeight: 600, color: "#1B3B22", textDecoration: "none", marginTop: 2, display: "inline-block" }}
+                    >
+                      {settings.email || "care@feathertown.online"}
+                    </a>
+                  </div>
+                </div>
+
+                <div style={{ display: "flex", gap: 12, alignItems: "flex-start" }}>
+                  <span style={{ fontSize: 20 }}>⏰</span>
+                  <div>
+                    <div style={{ fontSize: 12, color: "#736B5E", fontWeight: 700, textTransform: "uppercase" }}>Hours</div>
+                    <div style={{ fontSize: 14, fontWeight: 600, color: "#152B17", marginTop: 2 }}>
+                      {settings.businessHours || "Mon – Sun: 9:00 AM – 8:00 PM IST"}
+                    </div>
                   </div>
                 </div>
               </div>
 
-              <div style={{ borderTop: "1px solid #F1F5F9", marginTop: 24, paddingTop: 20 }}>
+              <div style={{ borderTop: "1px solid #E2DDD3", marginTop: 24, paddingTop: 20 }}>
                 <button
                   onClick={handleWhatsApp}
                   className="ft-btn-hover"
                   style={{
                     width: "100%",
-                    background: "#16A34A",
+                    background: "#1B3B22",
                     color: "#FFFFFF",
                     border: "none",
                     padding: "13px 20px",
@@ -158,8 +179,11 @@ export default function Contact() {
                     alignItems: "center",
                     justifyContent: "center",
                     gap: 8,
-                    boxShadow: "0 4px 14px rgba(16, 185, 129, 0.25)",
+                    boxShadow: "0 4px 14px rgba(27, 59, 34, 0.25)",
+                    transition: "background 0.2s ease",
                   }}
+                  onMouseEnter={(e) => (e.currentTarget.style.background = "#152B17")}
+                  onMouseLeave={(e) => (e.currentTarget.style.background = "#1B3B22")}
                 >
                   <span>💬</span>
                   <span>Instant WhatsApp Chat</span>
@@ -168,40 +192,41 @@ export default function Contact() {
             </div>
           </div>
 
-          {/* Right Column: Contact Form with Validation & Honeypot */}
+          {/* Right Column: Direct Message Form */}
           <div
             className="rv-right ft-card-lift"
             style={{
               background: "#FFFFFF",
               borderRadius: 24,
-              padding: "clamp(20px, 4vw, 36px) clamp(16px, 4vw, 32px)",
-              border: "1px solid #E2E8F0",
-              boxShadow: "0 2px 10px rgba(15, 23, 42, 0.04)",
+              padding: "clamp(20px, 4vw, 32px) clamp(16px, 4vw, 32px)",
+              border: "1px solid #E2DDD3",
+              boxShadow: "0 2px 10px rgba(27, 59, 34, 0.04)",
             }}
           >
-            <h3 style={{ fontSize: 22, fontWeight: 700, color: "#0F172A", marginBottom: 8 }}>
-              Send Us a Message
+            <h3 style={{ fontSize: 20, fontWeight: 700, color: "#152B17", marginBottom: 6 }}>
+              Send an Avian Query
             </h3>
-            <p style={{ fontSize: 13.5, color: "#64748B", marginBottom: 24 }}>
-              Fill in the form below and an avian specialist will reply within 4 hours.
+            <p style={{ fontSize: 13.5, color: "#736B5E", marginBottom: 24 }}>
+              Fill in your details below and our team will get back within 2-4 business hours.
             </p>
 
             {submitted ? (
               <div
+                className="rv-scale"
                 style={{
-                  background: "#ECFDF5",
-                  border: "1px solid #A7F3D0",
+                  background: "#FAF8F5",
                   borderRadius: 16,
-                  padding: "32px 24px",
+                  padding: "32px 20px",
                   textAlign: "center",
+                  border: "1px solid #E2DDD3",
                 }}
               >
-                <div style={{ fontSize: 36, marginBottom: 12 }}>🎉</div>
-                <h4 style={{ fontSize: 18, fontWeight: 700, color: "#065F46", marginBottom: 6 }}>
+                <div style={{ fontSize: 44, marginBottom: 12 }}>📬</div>
+                <h4 style={{ fontSize: 18, fontWeight: 700, color: "#152B17", marginBottom: 6 }}>
                   Message Received!
                 </h4>
-                <p style={{ fontSize: 13.5, color: "#047857", lineHeight: 1.5, marginBottom: 18 }}>
-                  Thank you for reaching out. We will review your inquiry and get back to you promptly.
+                <p style={{ fontSize: 13.5, color: "#736B5E", maxWidth: 360, margin: "0 auto 18px" }}>
+                  Thank you for reaching out. An avian specialist will review your request and get in touch shortly.
                 </p>
                 <button
                   onClick={() => {
@@ -210,7 +235,7 @@ export default function Contact() {
                   }}
                   className="ft-btn-hover"
                   style={{
-                    background: "#16A34A",
+                    background: "#1B3B22",
                     color: "#FFFFFF",
                     border: "none",
                     padding: "10px 20px",
@@ -238,22 +263,22 @@ export default function Contact() {
 
                 <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(100%, 200px), 1fr))", gap: 14, marginBottom: 14 }}>
                   <div>
-                    <label style={{ display: "block", fontSize: 12.5, fontWeight: 700, color: "#475569", marginBottom: 6 }}>
-                      Your Name *
+                    <label style={{ display: "block", fontSize: 12.5, fontWeight: 700, color: "#152B17", marginBottom: 6 }}>
+                      Your Full Name *
                     </label>
                     <input
                       type="text"
                       name="name"
                       value={formData.name}
                       onChange={handleChange}
-                      placeholder="e.g. Rahul Sharma"
+                      placeholder="e.g. Ramesh Patel"
                       required
                       style={inputStyle}
                     />
                   </div>
 
                   <div>
-                    <label style={{ display: "block", fontSize: 12.5, fontWeight: 700, color: "#475569", marginBottom: 6 }}>
+                    <label style={{ display: "block", fontSize: 12.5, fontWeight: 700, color: "#152B17", marginBottom: 6 }}>
                       Email Address *
                     </label>
                     <input
@@ -261,7 +286,7 @@ export default function Contact() {
                       name="email"
                       value={formData.email}
                       onChange={handleChange}
-                      placeholder="e.g. rahul@example.com"
+                      placeholder="your.email@example.com"
                       required
                       style={inputStyle}
                     />
@@ -270,7 +295,7 @@ export default function Contact() {
 
                 <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(100%, 200px), 1fr))", gap: 14, marginBottom: 14 }}>
                   <div>
-                    <label style={{ display: "block", fontSize: 12.5, fontWeight: 700, color: "#475569", marginBottom: 6 }}>
+                    <label style={{ display: "block", fontSize: 12.5, fontWeight: 700, color: "#152B17", marginBottom: 6 }}>
                       Phone (10-Digit)
                     </label>
                     <input
@@ -285,7 +310,7 @@ export default function Contact() {
                   </div>
 
                   <div>
-                    <label style={{ display: "block", fontSize: 12.5, fontWeight: 700, color: "#475569", marginBottom: 6 }}>
+                    <label style={{ display: "block", fontSize: 12.5, fontWeight: 700, color: "#152B17", marginBottom: 6 }}>
                       Inquiry Topic
                     </label>
                     <select
@@ -304,7 +329,7 @@ export default function Contact() {
                 </div>
 
                 <div style={{ marginBottom: 20 }}>
-                  <label style={{ display: "block", fontSize: 12.5, fontWeight: 700, color: "#475569", marginBottom: 6 }}>
+                  <label style={{ display: "block", fontSize: 12.5, fontWeight: 700, color: "#152B17", marginBottom: 6 }}>
                     Your Message *
                   </label>
                   <textarea
@@ -324,7 +349,7 @@ export default function Contact() {
                   className="ft-btn-hover"
                   style={{
                     width: "100%",
-                    background: "#16A34A",
+                    background: "#D9381E",
                     color: "#FFFFFF",
                     border: "none",
                     padding: "13px",
@@ -332,8 +357,11 @@ export default function Contact() {
                     fontSize: 14.5,
                     fontWeight: 700,
                     cursor: "pointer",
-                    boxShadow: "0 4px 14px rgba(16, 185, 129, 0.25)",
+                    boxShadow: "0 4px 14px rgba(217, 56, 30, 0.25)",
+                    transition: "background 0.2s ease",
                   }}
+                  onMouseEnter={(e) => (e.currentTarget.style.background = "#B82E17")}
+                  onMouseLeave={(e) => (e.currentTarget.style.background = "#D9381E")}
                 >
                   {loading ? "Sending Message…" : "Send Message"}
                 </button>
@@ -350,9 +378,9 @@ const inputStyle = {
   width: "100%",
   padding: "11px 14px",
   borderRadius: 12,
-  border: "1.5px solid #CBD5E1",
+  border: "1.5px solid #E2DDD3",
   fontSize: 13.5,
-  color: "#0F172A",
-  background: "#F8FAFC",
+  color: "#152B17",
+  background: "#FAF8F5",
   outline: "none",
 };

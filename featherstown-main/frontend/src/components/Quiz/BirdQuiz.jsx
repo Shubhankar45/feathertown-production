@@ -128,9 +128,9 @@ const quizEditorialStyles = `
 
 .ed-quiz-box {
   background: #FFFFFF;
-  border: 1px solid #E2E8F0;
+  border: 1px solid #E2DDD3;
   border-radius: 24px;
-  box-shadow: 0 10px 32px rgba(15, 23, 42, 0.06);
+  box-shadow: 0 10px 32px rgba(21, 43, 23, 0.05);
   padding: clamp(24px, 4vw, 40px);
   width: 100%;
   position: relative;
@@ -144,8 +144,8 @@ const quizEditorialStyles = `
   width: 100%;
   padding: 16px 20px;
   border-radius: 14px;
-  background: #F8FAFC;
-  border: 1.5px solid #E2E8F0;
+  background: #FAF8F5;
+  border: 1.5px solid #E2DDD3;
   cursor: pointer;
   text-align: left;
   font-family: 'Outfit', sans-serif;
@@ -153,21 +153,21 @@ const quizEditorialStyles = `
   position: relative;
 }
 .ed-quiz-opt:hover {
-  border-color: #059669;
-  background: #ECFDF5;
+  border-color: #1B3B22;
+  background: #E7EFE8;
   transform: translateY(-2px);
 }
 .ed-quiz-opt.active {
-  background: #ECFDF5;
-  border-color: #059669;
-  box-shadow: 0 4px 16px rgba(5, 150, 105, 0.12);
+  background: #E7EFE8;
+  border-color: #1B3B22;
+  box-shadow: 0 4px 16px rgba(27, 59, 34, 0.12);
 }
 
 .ed-radio-mark {
   width: 20px;
   height: 20px;
   border-radius: 50%;
-  border: 1.5px solid #CBD5E1;
+  border: 1.5px solid #E2DDD3;
   background: #FFFFFF;
   display: flex;
   align-items: center;
@@ -176,19 +176,19 @@ const quizEditorialStyles = `
   transition: all 0.2s ease;
 }
 .ed-quiz-opt.active .ed-radio-mark {
-  background: #059669;
-  border-color: #059669;
+  background: #1B3B22;
+  border-color: #1B3B22;
 }
 
 .ed-btn-next {
-  background: linear-gradient(135deg, #F97316, #EA580C);
+  background: #D9381E;
   color: #FFFFFF;
   border: none;
   padding: 12px 26px;
   border-radius: 999px;
   font-family: 'Outfit', sans-serif;
   font-size: 13px;
-  font-weight: 700;
+  font-weight: 800;
   letter-spacing: 0.04em;
   cursor: pointer;
   transition: all 0.22s ease;
@@ -196,23 +196,23 @@ const quizEditorialStyles = `
   align-items: center;
   justify-content: center;
   gap: 8px;
-  box-shadow: 0 4px 14px rgba(249, 115, 22, 0.35);
+  box-shadow: 0 4px 14px rgba(217, 56, 30, 0.3);
 }
 .ed-btn-next:hover:not(:disabled) {
   transform: translateY(-2px);
-  box-shadow: 0 8px 24px rgba(249, 115, 22, 0.45);
+  box-shadow: 0 8px 24px rgba(217, 56, 30, 0.4);
 }
 .ed-btn-next:disabled {
-  background: #F1F5F9;
-  color: #94A3B8;
+  background: #FAF8F5;
+  color: #736B5E;
   cursor: not-allowed;
   box-shadow: none;
 }
 
 .ed-btn-back {
   background: #FFFFFF;
-  color: #475569;
-  border: 1.5px solid #CBD5E1;
+  color: #152B17;
+  border: 1.5px solid #E2DDD3;
   padding: 13px 22px;
   border-radius: 999px;
   font-family: 'Outfit', sans-serif;
@@ -222,9 +222,9 @@ const quizEditorialStyles = `
   transition: all 0.2s ease;
 }
 .ed-btn-back:hover:not(:disabled) {
-  border-color: #059669;
-  color: #059669;
-  background: #ECFDF5;
+  border-color: #1B3B22;
+  color: #1B3B22;
+  background: #E7EFE8;
 }
 .ed-btn-back:disabled {
   opacity: 0.4;
@@ -305,7 +305,7 @@ export default function BirdQuiz({ parrots = [] }) {
                 fontWeight: 800,
                 letterSpacing: "0.15em",
                 textTransform: "uppercase",
-                color: "#059669",
+                color: "#1B3B22",
                 marginBottom: 8,
               }}
             >
@@ -315,15 +315,15 @@ export default function BirdQuiz({ parrots = [] }) {
               style={{
                 fontFamily: "Outfit, system-ui, sans-serif",
                 fontSize: "clamp(26px, 3.8vw, 42px)",
-                fontWeight: 800,
-                color: "#0F172A",
+                fontWeight: 900,
+                color: "#152B17",
                 lineHeight: 1.15,
                 margin: 0,
               }}
             >
               Your Ideal{" "}
-              <span style={{ color: "#16A34A" }}>Feathered</span>{" "}
-              <span style={{ color: "#EA580C" }}>Companion</span>
+              <span style={{ color: "#1B3B22" }}>Feathered</span>{" "}
+              <span style={{ color: "#D9381E" }}>Companion</span>
             </h2>
           </div>
 
@@ -331,10 +331,10 @@ export default function BirdQuiz({ parrots = [] }) {
           <div
             style={{
               background: "#FFFFFF",
-              border: "1px solid #FED7AA",
+              border: "1px solid #E2DDD3",
               borderRadius: "24px",
               overflow: "hidden",
-              boxShadow: "0 10px 32px rgba(15, 23, 42, 0.08)",
+              boxShadow: "0 10px 32px rgba(21, 43, 23, 0.06)",
               display: "grid",
               gridTemplateColumns: "repeat(auto-fit, minmax(min(100%, 340px), 1fr))",
               alignItems: "stretch",
@@ -344,7 +344,7 @@ export default function BirdQuiz({ parrots = [] }) {
             {/* Left: Gallery Cutout Photo */}
             <div
               style={{
-                background: "linear-gradient(145deg, #F8FAFC 0%, #FFF7ED 100%)",
+                background: "#FAF8F5",
                 padding: "36px 20px",
                 display: "flex",
                 flexDirection: "column",
@@ -359,13 +359,13 @@ export default function BirdQuiz({ parrots = [] }) {
                   position: "absolute",
                   top: 16,
                   left: 16,
-                  background: "#FFF7ED",
-                  color: "#EA580C",
-                  border: "1px solid #FED7AA",
+                  background: "#E7EFE8",
+                  color: "#1B3B22",
+                  border: "1px solid #B8D4BA",
                   padding: "4px 12px",
                   borderRadius: 999,
                   fontSize: 10.5,
-                  fontWeight: 700,
+                  fontWeight: 800,
                   letterSpacing: "0.1em",
                   textTransform: "uppercase",
                 }}
@@ -396,10 +396,10 @@ export default function BirdQuiz({ parrots = [] }) {
             >
               <div>
                 <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", marginBottom: 6 }}>
-                  <span style={{ fontSize: 11, fontWeight: 700, letterSpacing: "0.16em", textTransform: "uppercase", color: "#64748B" }}>
+                  <span style={{ fontSize: 11, fontWeight: 700, letterSpacing: "0.16em", textTransform: "uppercase", color: "#736B5E" }}>
                     Curated Avian Pair
                   </span>
-                  <span style={{ fontSize: 18, fontWeight: 800, color: "#059669" }}>
+                  <span style={{ fontSize: 18, fontWeight: 800, color: "#1B3B22" }}>
                     {top.parrot.price}
                   </span>
                 </div>
@@ -408,8 +408,8 @@ export default function BirdQuiz({ parrots = [] }) {
                   style={{
                     fontFamily: "'Cormorant Garamond', Georgia, serif",
                     fontSize: "clamp(28px, 3.5vw, 40px)",
-                    fontWeight: 600,
-                    color: "#0F172A",
+                    fontWeight: 700,
+                    color: "#152B17",
                     lineHeight: 1.1,
                     marginBottom: 10,
                   }}
@@ -419,13 +419,13 @@ export default function BirdQuiz({ parrots = [] }) {
 
                 {/* Compatibility Chips */}
                 <div style={{ display: "flex", flexWrap: "wrap", gap: 6, marginBottom: 18 }}>
-                  <div style={{ background: "#F1F5F9", border: "1px solid #E2E8F0", borderRadius: 8, padding: "4px 10px", fontSize: 11.5, fontWeight: 600, color: "#334155" }}>
+                  <div style={{ background: "#FAF8F5", border: "1px solid #E2DDD3", borderRadius: 8, padding: "4px 10px", fontSize: 11.5, fontWeight: 600, color: "#152B17" }}>
                     🏠 {answers.space || "Apartment Friendly"}
                   </div>
-                  <div style={{ background: "#F1F5F9", border: "1px solid #E2E8F0", borderRadius: 8, padding: "4px 10px", fontSize: 11.5, fontWeight: 600, color: "#334155" }}>
+                  <div style={{ background: "#FAF8F5", border: "1px solid #E2DDD3", borderRadius: 8, padding: "4px 10px", fontSize: 11.5, fontWeight: 600, color: "#152B17" }}>
                     🔊 {answers.noise || "Low"} Noise
                   </div>
-                  <div style={{ background: "#F1F5F9", border: "1px solid #E2E8F0", borderRadius: 8, padding: "4px 10px", fontSize: 11.5, fontWeight: 600, color: "#334155" }}>
+                  <div style={{ background: "#FAF8F5", border: "1px solid #E2DDD3", borderRadius: 8, padding: "4px 10px", fontSize: 11.5, fontWeight: 600, color: "#152B17" }}>
                     🎓 {answers.experience || "Beginner Friendly"}
                   </div>
                 </div>
@@ -433,12 +433,12 @@ export default function BirdQuiz({ parrots = [] }) {
                 {/* Avian Reason */}
                 <div
                   style={{
-                    borderLeft: "2px solid #059669",
+                    borderLeft: "2px solid #1B3B22",
                     paddingLeft: 14,
                     marginBottom: 24,
                   }}
                 >
-                  <p style={{ fontSize: 13.5, color: "#475569", lineHeight: 1.7, margin: 0, fontStyle: "italic" }}>
+                  <p style={{ fontSize: 13.5, color: "#736B5E", lineHeight: 1.7, margin: 0, fontStyle: "italic" }}>
                     &ldquo;{top.reason}&rdquo;
                   </p>
                 </div>
@@ -464,11 +464,11 @@ export default function BirdQuiz({ parrots = [] }) {
           </div>
 
           {/* Footer Navigation */}
-          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", borderTop: "1px solid #E2E8F0", paddingTop: 18 }}>
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", borderTop: "1px solid #E2DDD3", paddingTop: 18 }}>
             <button type="button" onClick={reset} className="ed-btn-back">
               &larr; Retake Compatibility Quiz
             </button>
-            <Link to="/birds" style={{ fontSize: 13, fontWeight: 700, color: "#059669", textDecoration: "none" }}>
+            <Link to="/birds" style={{ fontSize: 13, fontWeight: 700, color: "#1B3B22", textDecoration: "none" }}>
               Explore Full Aviary Catalog &rarr;
             </Link>
           </div>
@@ -485,7 +485,7 @@ export default function BirdQuiz({ parrots = [] }) {
                   fontWeight: 800,
                   letterSpacing: "0.14em",
                   textTransform: "uppercase",
-                  color: "#059669",
+                  color: "#1B3B22",
                   marginBottom: 10,
                 }}
               >
@@ -497,16 +497,16 @@ export default function BirdQuiz({ parrots = [] }) {
                   fontFamily: "Outfit, system-ui, sans-serif",
                   fontSize: "clamp(28px, 4vw, 44px)",
                   fontWeight: 800,
-                  color: "#0F172A",
+                  color: "#152B17",
                   lineHeight: 1.15,
                   marginBottom: 12,
                 }}
               >
                 Which Companion Is{" "}
-                <span style={{ color: "#059669" }}>Right for You?</span>
+                <span style={{ color: "#1B3B22" }}>Right for You?</span>
               </h2>
 
-              <p style={{ fontSize: 14.5, color: "#64748B", lineHeight: 1.65, margin: 0 }}>
+              <p style={{ fontSize: 14.5, color: "#736B5E", lineHeight: 1.65, margin: 0 }}>
                 Answer 6 lifestyle criteria. Our aviary specialists pair your space, routine, budget, and handling ease with healthy captive-bred companion birds.
               </p>
             </div>
@@ -515,38 +515,38 @@ export default function BirdQuiz({ parrots = [] }) {
             <div
               style={{
                 background: "#FFFFFF",
-                border: "1px solid #E2E8F0",
+                border: "1px solid #E2DDD3",
                 borderRadius: "20px",
                 padding: "20px 22px",
-                boxShadow: "0 4px 16px rgba(15, 23, 42, 0.04)",
+                boxShadow: "0 4px 16px rgba(21, 43, 23, 0.04)",
               }}
             >
-              <div style={{ fontSize: 12, fontWeight: 800, letterSpacing: "0.1em", textTransform: "uppercase", color: "#059669", marginBottom: 14 }}>
+              <div style={{ fontSize: 12, fontWeight: 800, letterSpacing: "0.1em", textTransform: "uppercase", color: "#1B3B22", marginBottom: 14 }}>
                 Active Match Parameters:
               </div>
 
               <div style={{ display: "flex", flexDirection: "column", gap: 10, fontSize: 13 }}>
                 <div style={{ display: "flex", justifyContent: "space-between" }}>
-                  <span style={{ color: "#64748B" }}>Budget:</span>
-                  <span style={{ fontWeight: 700, color: answers.budget ? "#0F172A" : "#94A3B8" }}>
+                  <span style={{ color: "#736B5E" }}>Budget:</span>
+                  <span style={{ fontWeight: 700, color: answers.budget ? "#152B17" : "#736B5E" }}>
                     {answers.budget ? (answers.budget >= 999999 ? "No limit" : `Under ₹${answers.budget.toLocaleString()}`) : "Pending"}
                   </span>
                 </div>
                 <div style={{ display: "flex", justifyContent: "space-between" }}>
-                  <span style={{ color: "#64748B" }}>Vocal Volume:</span>
-                  <span style={{ fontWeight: 700, color: answers.noise ? "#0F172A" : "#94A3B8" }}>
+                  <span style={{ color: "#736B5E" }}>Vocal Volume:</span>
+                  <span style={{ fontWeight: 700, color: answers.noise ? "#152B17" : "#736B5E" }}>
                     {answers.noise || "Pending"}
                   </span>
                 </div>
                 <div style={{ display: "flex", justifyContent: "space-between" }}>
-                  <span style={{ color: "#64748B" }}>Experience:</span>
-                  <span style={{ fontWeight: 700, color: answers.experience ? "#0F172A" : "#94A3B8" }}>
+                  <span style={{ color: "#736B5E" }}>Experience:</span>
+                  <span style={{ fontWeight: 700, color: answers.experience ? "#152B17" : "#736B5E" }}>
                     {answers.experience || "Pending"}
                   </span>
                 </div>
                 <div style={{ display: "flex", justifyContent: "space-between" }}>
-                  <span style={{ color: "#64748B" }}>Living Space:</span>
-                  <span style={{ fontWeight: 700, color: answers.space ? "#0F172A" : "#94A3B8" }}>
+                  <span style={{ color: "#736B5E" }}>Living Space:</span>
+                  <span style={{ fontWeight: 700, color: answers.space ? "#152B17" : "#736B5E" }}>
                     {answers.space || "Pending"}
                   </span>
                 </div>
@@ -558,10 +558,10 @@ export default function BirdQuiz({ parrots = [] }) {
           <div className="ed-quiz-box">
             {loading ? (
               <div style={{ textAlign: "center", padding: "48px 16px", animation: "edFadeUp 0.3s ease both" }}>
-                <div style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 28, fontStyle: "italic", color: "#059669", marginBottom: 8 }}>
+                <div style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 28, fontStyle: "italic", color: "#1B3B22", marginBottom: 8 }}>
                   Calculating Ideal Companion Pair...
                 </div>
-                <p style={{ fontSize: 13.5, color: "#64748B", maxWidth: 360, margin: "0 auto" }}>
+                <p style={{ fontSize: 13.5, color: "#736B5E", maxWidth: 360, margin: "0 auto" }}>
                   Evaluating temperament profiles and nursery records across {parrots.length || "our"} companion breeds.
                 </p>
               </div>
@@ -574,25 +574,25 @@ export default function BirdQuiz({ parrots = [] }) {
                       fontFamily: "'Cormorant Garamond', serif",
                       fontSize: 18,
                       fontWeight: 700,
-                      color: "#059669",
+                      color: "#1B3B22",
                     }}
                   >
                     Criteria {currentStep.num} / 06
                   </span>
-                  <span style={{ fontSize: 12, fontWeight: 600, color: "#64748B" }}>
+                  <span style={{ fontSize: 12, fontWeight: 600, color: "#736B5E" }}>
                     {pct}% Completed
                   </span>
                 </div>
 
-                {/* Delicate Progress Line */}
-                <div style={{ height: 3, background: "#F1F5F9", borderRadius: 999, overflow: "hidden", marginBottom: 24, position: "relative" }}>
+                {/* Progress Line */}
+                <div style={{ height: 3, background: "#E2DDD3", borderRadius: 999, overflow: "hidden", marginBottom: 24, position: "relative" }}>
                   <div
                     style={{
                       position: "absolute",
                       left: 0,
                       top: 0,
                       bottom: 0,
-                      background: "#10B981",
+                      background: "#1B3B22",
                       width: `${pct}%`,
                       transition: "width 0.4s ease",
                     }}
@@ -606,14 +606,14 @@ export default function BirdQuiz({ parrots = [] }) {
                       fontFamily: "'Cormorant Garamond', Georgia, serif",
                       fontSize: "clamp(24px, 3.2vw, 32px)",
                       fontWeight: 600,
-                      color: "#0F172A",
+                      color: "#152B17",
                       lineHeight: 1.15,
                       marginBottom: 6,
                     }}
                   >
                     {currentStep.question}
                   </h3>
-                  <p style={{ fontSize: 13.5, color: "#64748B", margin: 0 }}>
+                  <p style={{ fontSize: 13.5, color: "#736B5E", margin: 0 }}>
                     {currentStep.subtitle}
                   </p>
                 </div>
@@ -630,11 +630,11 @@ export default function BirdQuiz({ parrots = [] }) {
                         onClick={() => selectOption(currentStep.id, opt.value)}
                       >
                         <div>
-                          <div style={{ fontSize: 14.5, fontWeight: 700, color: isSelected ? "#059669" : "#0F172A" }}>
+                          <div style={{ fontSize: 14.5, fontWeight: 700, color: isSelected ? "#1B3B22" : "#152B17" }}>
                             {opt.label}
                           </div>
                           {opt.desc && (
-                            <div style={{ fontSize: 12, color: "#64748B", marginTop: 2 }}>
+                            <div style={{ fontSize: 12, color: "#736B5E", marginTop: 2 }}>
                               {opt.desc}
                             </div>
                           )}

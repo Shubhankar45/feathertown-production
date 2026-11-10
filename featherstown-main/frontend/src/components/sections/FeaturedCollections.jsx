@@ -13,7 +13,8 @@ export default function FeaturedCollections() {
         width: "100%",
         maxWidth: "100%",
         margin: "0 auto",
-        background: "#FFFFFF",
+        background: "#FAF8F5",
+        borderTop: "1px solid #E2DDD3",
         fontFamily: "Outfit, system-ui, sans-serif",
       }}
     >
@@ -33,14 +34,14 @@ export default function FeaturedCollections() {
               display: "inline-flex",
               alignItems: "center",
               gap: 6,
-              background: "#ECFDF5",
-              border: "1px solid #A7F3D0",
+              background: "#E7EFE8",
+              border: "1px solid #B8D4BA",
               padding: "4px 12px",
               borderRadius: 999,
               fontSize: 11,
               fontWeight: 800,
               letterSpacing: 1.2,
-              color: "#059669",
+              color: "#1B3B22",
               textTransform: "uppercase",
               marginBottom: 10,
             }}
@@ -51,15 +52,15 @@ export default function FeaturedCollections() {
             style={{
               fontSize: "clamp(26px, 3.6vw, 40px)",
               fontWeight: 900,
-              color: "#0F172A",
+              color: "#152B17",
               lineHeight: 1.15,
               margin: "0 0 6px 0",
               letterSpacing: "-0.02em",
             }}
           >
-            <span className="text-emerald-600">Featured</span> Collections
+            <span style={{ color: "#1B3B22" }}>Featured</span> Collections
           </h2>
-          <p style={{ fontSize: 14, color: "#64748B", margin: 0 }}>
+          <p style={{ fontSize: 14, color: "#736B5E", margin: 0 }}>
             Curated essentials, spacious aviaries, and organic nutrition to keep your companion birds thriving.
           </p>
         </div>
@@ -70,15 +71,15 @@ export default function FeaturedCollections() {
           style={{
             fontSize: 13,
             fontWeight: 800,
-            color: "#16A34A",
+            color: "#1B3B22",
             textDecoration: "none",
             display: "inline-flex",
             alignItems: "center",
             gap: 6,
             padding: "9px 20px",
             borderRadius: 999,
-            background: "#ECFDF5",
-            border: "1px solid #A7F3D0",
+            background: "#E7EFE8",
+            border: "1px solid #B8D4BA",
           }}
         >
           View all collections ›
@@ -99,14 +100,14 @@ export default function FeaturedCollections() {
             style={{ textDecoration: "none" }}
           >
             <SpotlightCard
-              spotlightColor="rgba(22, 163, 74, 0.15)"
-              borderColor="#E2E8F0"
+              spotlightColor="rgba(27, 59, 34, 0.08)"
+              borderColor="#E2DDD3"
               className="t-hover-lift group flex flex-col justify-end p-6"
               style={{
                 borderRadius: 24,
                 height: 230,
                 background: "#FFFFFF",
-                boxShadow: "0 4px 18px rgba(15, 23, 42, 0.04)",
+                boxShadow: "0 4px 18px rgba(21, 43, 23, 0.04)",
               }}
             >
               {/* Background Illustration / Emoji */}
@@ -117,7 +118,7 @@ export default function FeaturedCollections() {
                   top: 18,
                   right: 20,
                   fontSize: 68,
-                  opacity: 0.18,
+                  opacity: 0.16,
                   userSelect: "none",
                   pointerEvents: "none",
                 }}
@@ -131,17 +132,15 @@ export default function FeaturedCollections() {
                   display: "inline-flex",
                   alignItems: "center",
                   gap: 6,
-                  background: "rgba(255, 255, 255, 0.95)",
-                  backdropFilter: "blur(10px)",
+                  background: "#FAF8F5",
                   padding: "5px 14px",
                   borderRadius: 999,
-                  color: "#16A34A",
+                  color: "#1B3B22",
                   fontSize: 12,
                   fontWeight: 800,
                   width: "fit-content",
                   marginBottom: 12,
-                  border: "1px solid #DCFCE7",
-                  boxShadow: "0 2px 8px rgba(22, 163, 74, 0.1)",
+                  border: "1px solid #E2DDD3",
                 }}
               >
                 <span>{col.icon}</span>
@@ -149,11 +148,10 @@ export default function FeaturedCollections() {
               </div>
 
               <h3
-                className="group-hover:text-emerald-700 transition-colors"
                 style={{
                   fontSize: 19,
                   fontWeight: 800,
-                  color: "#0F172A",
+                  color: "#152B17",
                   marginBottom: 4,
                   lineHeight: 1.2,
                 }}
@@ -164,7 +162,7 @@ export default function FeaturedCollections() {
               <p
                 style={{
                   fontSize: 13,
-                  color: "#64748B",
+                  color: "#736B5E",
                   fontWeight: 500,
                   lineHeight: 1.4,
                   margin: 0,

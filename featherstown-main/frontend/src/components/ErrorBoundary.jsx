@@ -1,5 +1,4 @@
 import React from "react";
-import { logClientError } from "../utils/errorMonitoring";
 
 export default class ErrorBoundary extends React.Component {
   constructor(props) {
@@ -12,11 +11,9 @@ export default class ErrorBoundary extends React.Component {
   }
 
   componentDidCatch(error, errorInfo) {
-    logClientError({
-      message: error?.message || "React Component Render Error",
-      stack: errorInfo?.componentStack || error?.stack,
-      source: window.location.href,
-    });
+    if (process.env.NODE_ENV !== "production") {
+      console.error("ErrorBoundary caught:", error, errorInfo);
+    }
   }
 
   handleReload = () => {
@@ -31,28 +28,26 @@ export default class ErrorBoundary extends React.Component {
     if (this.state.hasError) {
       return (
         <div
-          role="alert"
           style={{
             minHeight: "100vh",
+            background: "#F7F5F0",
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
-            padding: 24,
-            background: "#0B0F14",
+            padding: "24px",
             fontFamily: "Outfit, system-ui, sans-serif",
-            color: "#F8FAFC",
           }}
         >
           <div
             style={{
               maxWidth: 480,
               width: "100%",
-              background: "#10161E",
+              background: "#FFFFFF",
               borderRadius: 24,
               padding: "40px 32px",
               textAlign: "center",
-              boxShadow: "0 24px 60px rgba(0, 0, 0, 0.5)",
-              border: "1px solid rgba(255, 255, 255, 0.08)",
+              boxShadow: "0 12px 36px rgba(0, 0, 0, 0.06)",
+              border: "1px solid #E2DDD3",
             }}
           >
             <div
@@ -60,7 +55,7 @@ export default class ErrorBoundary extends React.Component {
                 width: 72,
                 height: 72,
                 borderRadius: "50%",
-                background: "rgba(22, 163, 74, 0.1)",
+                background: "#E7EFE8",
                 display: "inline-flex",
                 alignItems: "center",
                 justifyContent: "center",
@@ -73,8 +68,8 @@ export default class ErrorBoundary extends React.Component {
             <h1
               style={{
                 fontSize: 24,
-                fontWeight: 700,
-                color: "#FFFFFF",
+                fontWeight: 900,
+                color: "#152B17",
                 marginBottom: 10,
                 letterSpacing: "-0.01em",
               }}
@@ -84,7 +79,7 @@ export default class ErrorBoundary extends React.Component {
             <p
               style={{
                 fontSize: 14,
-                color: "#94A3B8",
+                color: "#736B5E",
                 lineHeight: 1.6,
                 marginBottom: 28,
               }}
@@ -102,15 +97,14 @@ export default class ErrorBoundary extends React.Component {
               <button
                 onClick={this.handleReload}
                 style={{
-                  background: "linear-gradient(135deg, #10B981, #059669)",
+                  background: "#1B3B22",
                   color: "#FFFFFF",
                   border: "none",
                   padding: "12px 24px",
                   borderRadius: 999,
-                  fontWeight: 600,
+                  fontWeight: 800,
                   fontSize: 14,
                   cursor: "pointer",
-                  boxShadow: "0 4px 14px rgba(16, 185, 129, 0.35)",
                 }}
               >
                 Reload Page
@@ -118,17 +112,17 @@ export default class ErrorBoundary extends React.Component {
               <button
                 onClick={this.handleGoHome}
                 style={{
-                  background: "#161D27",
-                  color: "#F8FAFC",
-                  border: "1px solid rgba(255, 255, 255, 0.08)",
+                  background: "#FAF8F5",
+                  color: "#152B17",
+                  border: "1.5px solid #E2DDD3",
                   padding: "12px 24px",
                   borderRadius: 999,
-                  fontWeight: 600,
+                  fontWeight: 700,
                   fontSize: 14,
                   cursor: "pointer",
                 }}
               >
-                Return to Home
+                Return Home
               </button>
             </div>
           </div>

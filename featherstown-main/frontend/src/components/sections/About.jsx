@@ -28,8 +28,8 @@ export default function About({ standalone = false }) {
           const effectiveLink = link?.href || (title?.toLowerCase().includes("instagram") || title?.toLowerCase().includes("video") ? settings?.instagramUrl : null);
           return (
             <div key={title || idx} className="j-card rv" style={{ padding: "22px 20px", transitionDelay: `${idx * 70}ms` }}>
-              <div style={{ width: 46, height: 46, borderRadius: "var(--r)", background: `${color || "#22c55e"}16`, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 22, marginBottom: 14, border: `1px solid ${color || "#22c55e"}26` }}>{icon}</div>
-              <h3 style={{ fontWeight: 700, fontSize: 11, color: color || "#22c55e", marginBottom: 12, letterSpacing: 0.6, textTransform: "uppercase" }}>{title}</h3>
+              <div style={{ width: 46, height: 46, borderRadius: "var(--r)", background: `${color || "#1B3B22"}16`, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 22, marginBottom: 14, border: `1px solid ${color || "#1B3B22"}26` }}>{icon}</div>
+              <h3 style={{ fontWeight: 700, fontSize: 11, color: color || "#1B3B22", marginBottom: 12, letterSpacing: 0.6, textTransform: "uppercase" }}>{title}</h3>
               {Array.isArray(items) && items.length > 0 && (
                 <ul style={{ listStyle: "none", display: "flex", flexDirection: "column", gap: 7 }}>
                   {items.map((it) => (

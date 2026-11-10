@@ -48,7 +48,7 @@ export default function Breeds() {
   }, [selectedCat, searchQuery, sortBy]);
 
   return (
-    <div style={{ background: "#F8FAFC", color: "#0F172A", fontFamily: "Outfit, system-ui, sans-serif", minHeight: "100vh" }}>
+    <div style={{ background: "#F7F5F0", color: "#152B17", fontFamily: "Outfit, system-ui, sans-serif", minHeight: "100vh" }}>
       <SEOHead
         title="Parrot Breeds & Species Guide | FeatherTown India"
         description="Explore comprehensive parrot breed profiles — Cockatiels, Sun Conures, African Greys, and Macaws. Compare care difficulty, lifespans, speech capabilities, and adoption costs."
@@ -69,8 +69,8 @@ export default function Breeds() {
             background: "#FFFFFF",
             borderRadius: 24,
             padding: "clamp(16px, 3vw, 20px) clamp(16px, 3vw, 24px)",
-            border: "1px solid #E2E8F0",
-            boxShadow: "0 2px 10px rgba(15, 23, 42, 0.04)",
+            border: "1px solid #E2DDD3",
+            boxShadow: "0 2px 10px rgba(27, 59, 34, 0.04)",
             marginBottom: 36,
             display: "flex",
             flexDirection: "column",
@@ -94,7 +94,7 @@ export default function Breeds() {
                   left: 14,
                   top: "50%",
                   transform: "translateY(-50%)",
-                  color: "#64748B",
+                  color: "#736B5E",
                   fontSize: 16,
                 }}
               >
@@ -109,19 +109,19 @@ export default function Breeds() {
                   width: "100%",
                   padding: "12px 16px 12px 42px",
                   borderRadius: 999,
-                  border: "1.5px solid #CBD5E1",
+                  border: "1.5px solid #E2DDD3",
                   outline: "none",
                   fontSize: 14,
                   fontFamily: "Outfit, sans-serif",
-                  background: "#F8FAFC",
-                  color: "#0F172A",
+                  background: "#FAF8F5",
+                  color: "#152B17",
                   transition: "border-color 0.2s ease, background 0.2s ease",
                 }}
                 onFocus={(e) => {
-                  e.target.style.borderColor = "#10B981";
+                  e.target.style.borderColor = "#1B3B22";
                 }}
                 onBlur={(e) => {
-                  e.target.style.borderColor = "#CBD5E1";
+                  e.target.style.borderColor = "#E2DDD3";
                 }}
               />
               {searchQuery && (
@@ -135,7 +135,7 @@ export default function Breeds() {
                     background: "none",
                     border: "none",
                     cursor: "pointer",
-                    color: "#64748B",
+                    color: "#736B5E",
                     fontSize: 14,
                   }}
                 >
@@ -146,16 +146,16 @@ export default function Breeds() {
 
             {/* Sort Dropdown */}
             <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-              <label style={{ fontSize: 13, fontWeight: 700, color: "#64748B" }}>Sort by:</label>
+              <label style={{ fontSize: 13, fontWeight: 700, color: "#736B5E" }}>Sort by:</label>
               <select
                 value={sortBy}
                 onChange={(e) => setSortBy(e.target.value)}
                 style={{
                   padding: "10px 16px",
                   borderRadius: 999,
-                  border: "1.5px solid #CBD5E1",
-                  background: "#F8FAFC",
-                  color: "#0F172A",
+                  border: "1.5px solid #E2DDD3",
+                  background: "#FAF8F5",
+                  color: "#152B17",
                   fontSize: 13,
                   fontWeight: 600,
                   outline: "none",
@@ -177,11 +177,11 @@ export default function Breeds() {
               gap: 8,
               flexWrap: "wrap",
               alignItems: "center",
-              borderTop: "1px solid #F1F5F9",
+              borderTop: "1px solid #E2DDD3",
               paddingTop: 14,
             }}
           >
-            <span style={{ fontSize: 12, fontWeight: 700, color: "#64748B", textTransform: "uppercase", letterSpacing: 0.5 }}>
+            <span style={{ fontSize: 12, fontWeight: 700, color: "#736B5E", textTransform: "uppercase", letterSpacing: 0.5 }}>
               Category:
             </span>
             {categories.map((c) => {
@@ -198,9 +198,9 @@ export default function Breeds() {
                     fontSize: 13,
                     fontWeight: 600,
                     cursor: "pointer",
-                    border: active ? "1.5px solid #059669" : "1.5px solid #E2E8F0",
-                    background: active ? "#16A34A" : "#F8FAFC",
-                    color: active ? "#FFFFFF" : "#475569",
+                    border: active ? "1.5px solid #1B3B22" : "1.5px solid #E2DDD3",
+                    background: active ? "#1B3B22" : "#FAF8F5",
+                    color: active ? "#FFFFFF" : "#736B5E",
                     display: "flex",
                     alignItems: "center",
                     gap: 6,
@@ -211,8 +211,8 @@ export default function Breeds() {
                     style={{
                       fontSize: 11,
                       fontWeight: 800,
-                      background: active ? "rgba(255,255,255,0.25)" : "#E2E8F0",
-                      color: active ? "#FFFFFF" : "#64748B",
+                      background: active ? "rgba(255,255,255,0.25)" : "#E2DDD3",
+                      color: active ? "#FFFFFF" : "#152B17",
                       padding: "1px 7px",
                       borderRadius: 999,
                     }}
@@ -227,8 +227,8 @@ export default function Breeds() {
 
         {/* RESULTS HEADER */}
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 20 }}>
-          <p style={{ fontSize: 14, color: "#64748B" }}>
-            Showing <strong style={{ color: "#0F172A" }}>{filtered.length}</strong> breed profiles
+          <p style={{ fontSize: 14, color: "#736B5E" }}>
+            Showing <strong style={{ color: "#152B17" }}>{filtered.length}</strong> breed profiles
           </p>
           {(selectedCat !== "All" || searchQuery) && (
             <button
@@ -239,7 +239,7 @@ export default function Breeds() {
               style={{
                 background: "none",
                 border: "none",
-                color: "#059669",
+                color: "#D9381E",
                 fontWeight: 700,
                 fontSize: 13,
                 cursor: "pointer",
@@ -259,15 +259,15 @@ export default function Breeds() {
               padding: "60px 20px",
               background: "#FFFFFF",
               borderRadius: 24,
-              border: "1px solid #E2E8F0",
-              boxShadow: "0 2px 10px rgba(15, 23, 42, 0.04)",
+              border: "1px solid #E2DDD3",
+              boxShadow: "0 2px 10px rgba(27, 59, 34, 0.04)",
             }}
           >
             <div className="ft-animate-float" style={{ fontSize: 44, marginBottom: 12 }}>🦜</div>
-            <h3 style={{ fontSize: 18, fontWeight: 700, color: "#0F172A", marginBottom: 6 }}>
+            <h3 style={{ fontSize: 18, fontWeight: 700, color: "#152B17", marginBottom: 6 }}>
               No breeds found matching your criteria
             </h3>
-            <p style={{ color: "#64748B", fontSize: 14, marginBottom: 20 }}>
+            <p style={{ color: "#736B5E", fontSize: 14, marginBottom: 20 }}>
               Try searching for "Conure", "Cockatiel", or reset the active filters.
             </p>
             <button
@@ -277,7 +277,7 @@ export default function Breeds() {
               }}
               className="ft-btn-hover"
               style={{
-                background: "#16A34A",
+                background: "#1B3B22",
                 color: "#FFFFFF",
                 border: "none",
                 padding: "10px 24px",

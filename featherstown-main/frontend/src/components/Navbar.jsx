@@ -5,7 +5,6 @@ import { useUserAuth } from "../context/UserAuthContext";
 import { useSettings } from "../context/SettingsContext";
 import UserMenu from "./UserMenu";
 import Avatar from "./ui/Avatar";
-import logoImg from "../assets/logo-optimized.png";
 import { trackWhatsAppClick } from "../utils/analytics";
 
 const SearchIco = ({ size = 18 }) => (
@@ -104,7 +103,7 @@ export default function Navbar() {
           background: "rgba(255, 255, 255, 0.96)",
           backdropFilter: "blur(18px)",
           WebkitBackdropFilter: "blur(18px)",
-          borderBottom: "1px solid #E2E8F0",
+          borderBottom: "1px solid #E2DDD3",
           boxShadow: scrolled ? "0 4px 20px rgba(0,0,0,0.06)" : "none",
           transition: "box-shadow 0.3s ease",
           fontFamily: "Outfit, system-ui, sans-serif",
@@ -116,7 +115,7 @@ export default function Navbar() {
             <div className="ft-announcement-desktop">
               <span>{settings?.announcementText || `🚚 Free shipping on orders over ₹${settings?.freeShippingThreshold || 999}`}</span>
               <span style={{ opacity: 0.4 }}>•</span>
-              <Link to="/#quiz" style={{ color: "#FEF3C7", fontWeight: 800, textDecoration: "none", display: "inline-flex", alignItems: "center", gap: 5 }}>
+              <Link to="/#quiz" style={{ color: "#FAF8F5", fontWeight: 800, textDecoration: "none", display: "inline-flex", alignItems: "center", gap: 5 }}>
                 <span>🎯</span>
                 <span style={{ textDecoration: "underline", textUnderlineOffset: 3 }}>Find Your Bird (60s Quiz)</span>
               </Link>
@@ -126,7 +125,7 @@ export default function Navbar() {
             <div className="ft-announcement-mobile">
               <span>🚚 Free Shipping ₹{settings?.freeShippingThreshold || 999}+</span>
               <span style={{ opacity: 0.4 }}>•</span>
-              <Link to="/#quiz" style={{ color: "#FEF3C7", fontWeight: 800, textDecoration: "none" }}>
+              <Link to="/#quiz" style={{ color: "#FAF8F5", fontWeight: 800, textDecoration: "none" }}>
                 🎯 Bird Quiz
               </Link>
             </div>
@@ -168,38 +167,44 @@ export default function Navbar() {
             <Link
               to="/"
               style={{
-                display: "flex",
-                alignItems: "center",
-                gap: "clamp(6px, 1.4vw, 10px)",
+                display: "inline-flex",
+                alignItems: "baseline",
                 textDecoration: "none",
-                color: "inherit",
+                lineHeight: 1,
               }}
             >
-              <img
-                src={logoImg}
-                alt="FeatherTown Logo"
+              <span
                 style={{
-                  height: "clamp(32px, 4.2vw, 42px)",
-                  width: "auto",
-                  objectFit: "contain",
-                  flexShrink: 0,
+                  fontFamily: "Outfit, system-ui, sans-serif",
+                  fontSize: "clamp(21px, 2.8vw, 26px)",
+                  fontWeight: 900,
+                  color: "#1B3B22",
+                  letterSpacing: "-0.025em",
+                }}
+              >
+                Feather
+              </span>
+              <span
+                style={{
+                  fontFamily: "Outfit, system-ui, sans-serif",
+                  fontSize: "clamp(21px, 2.8vw, 26px)",
+                  fontWeight: 900,
+                  color: "#D9381E",
+                  letterSpacing: "-0.025em",
+                }}
+              >
+                Town
+              </span>
+              <span
+                style={{
+                  display: "inline-block",
+                  width: 6,
+                  height: 6,
+                  borderRadius: "50%",
+                  background: "#D9381E",
+                  marginLeft: 3,
                 }}
               />
-              <div style={{ display: "flex", flexDirection: "column" }}>
-                <span
-                  style={{
-                    fontFamily: "Outfit, system-ui, sans-serif",
-                    fontSize: "clamp(19px, 3vw, 23px)",
-                    fontWeight: 800,
-                    lineHeight: 1,
-                    letterSpacing: "-0.01em",
-                    whiteSpace: "nowrap",
-                  }}
-                >
-                  <span style={{ color: "#16A34A" }}>Feather</span>
-                  <span style={{ color: "#EA580C" }}>Town</span>
-                </span>
-              </div>
             </Link>
           </div>
 
@@ -215,20 +220,21 @@ export default function Navbar() {
               placeholder="Search companion birds, cages, food..."
               style={{
                 width: "100%",
-                background: "#F8FAFC",
-                border: "1px solid #CBD5E1",
+                background: "#FAF8F5",
+                border: "1.5px solid #E2DDD3",
                 borderRadius: 999,
                 padding: "9px 46px 9px 18px",
                 fontSize: 13.5,
-                color: "#0F172A",
+                color: "#152B17",
                 outline: "none",
                 transition: "border-color 0.2s, background 0.2s",
               }}
-              onFocus={(e) => (e.target.style.borderColor = "#EA580C")}
-              onBlur={(e) => (e.target.style.borderColor = "#CBD5E1")}
+              onFocus={(e) => (e.target.style.borderColor = "#1B3B22")}
+              onBlur={(e) => (e.target.style.borderColor = "#E2DDD3")}
             />
             <button
               type="submit"
+              className="t-btn-press"
               style={{
                 position: "absolute",
                 right: 3,
@@ -236,7 +242,7 @@ export default function Navbar() {
                 bottom: 3,
                 width: 34,
                 height: 34,
-                background: "linear-gradient(135deg, #16A34A, #EA580C)",
+                background: "#1B3B22",
                 color: "#FFFFFF",
                 border: "none",
                 borderRadius: "50%",
@@ -244,8 +250,7 @@ export default function Navbar() {
                 alignItems: "center",
                 justifyContent: "center",
                 cursor: "pointer",
-                transition: "transform 0.2s, background 0.2s",
-                boxShadow: "0 2px 6px rgba(234, 88, 12, 0.3)",
+                transition: "background 0.2s",
               }}
               aria-label="Search"
             >
@@ -280,12 +285,12 @@ export default function Navbar() {
             {/* Bird Quiz Match Button (Desktop & Tablet) */}
             <Link
               to="/#quiz"
-              className="ft-header-quiz"
+              className="ft-header-quiz t-btn-press"
               style={{
                 flexDirection: "column",
                 alignItems: "center",
                 textDecoration: "none",
-                color: "#059669",
+                color: "#1B3B22",
                 fontSize: 11,
                 fontWeight: 700,
                 position: "relative",
@@ -297,41 +302,32 @@ export default function Navbar() {
                   width: 38,
                   height: 38,
                   borderRadius: "50%",
-                  background: "#ECFDF5",
-                  border: "1.5px solid #A7F3D0",
+                  background: "#E7EFE8",
+                  border: "1.5px solid #B8D4BA",
                   display: "flex",
                   alignItems: "center",
                   justifyContent: "center",
                   fontSize: 18,
                   marginBottom: 1,
-                  boxShadow: "0 1px 3px rgba(16, 185, 129, 0.15)",
-                  transition: "transform 0.2s cubic-bezier(.34,1.56,.64,1), box-shadow 0.2s",
-                }}
-                onMouseEnter={(e) => {
-                  e.currentTarget.style.transform = "scale(1.08) translateY(-2px)";
-                  e.currentTarget.style.boxShadow = "0 6px 16px rgba(16, 185, 129, 0.25)";
-                }}
-                onMouseLeave={(e) => {
-                  e.currentTarget.style.transform = "scale(1) translateY(0)";
-                  e.currentTarget.style.boxShadow = "0 1px 3px rgba(16, 185, 129, 0.15)";
+                  boxShadow: "0 1px 3px rgba(27, 59, 34, 0.1)",
                 }}
               >
                 🎯
               </div>
-              <span className="ft-icon-label" style={{ color: "#059669" }}>Bird Quiz</span>
+              <span className="ft-icon-label" style={{ color: "#1B3B22" }}>Bird Quiz</span>
             </Link>
 
             {/* Compare Link with Icon (Desktop & Tablet) */}
             <Link
               to="/compare"
-              className="ft-header-compare"
+              className="ft-header-compare t-btn-press"
               style={{
                 flexDirection: "column",
                 alignItems: "center",
                 textDecoration: "none",
-                color: "#475569",
+                color: "#1B3B22",
                 fontSize: 11,
-                fontWeight: 600,
+                fontWeight: 700,
                 position: "relative",
               }}
               aria-label="Compare Breeds"
@@ -341,31 +337,32 @@ export default function Navbar() {
                   width: 38,
                   height: 38,
                   borderRadius: "50%",
-                  background: "#F1F5F9",
-                  border: "1px solid #E2E8F0",
+                  background: "#FAF8F5",
+                  border: "1px solid #E2DDD3",
                   display: "flex",
                   alignItems: "center",
                   justifyContent: "center",
-                  color: "#334155",
+                  color: "#1B3B22",
                   marginBottom: 1,
                 }}
               >
                 <CompareIco size={18} />
               </div>
-              <span className="ft-icon-label" style={{ color: "#475569" }}>Compare</span>
+              <span className="ft-icon-label" style={{ color: "#1B3B22" }}>Compare</span>
             </Link>
 
             {/* Cart with Live Count Badge */}
             <Link
               to="/cart"
+              className="t-btn-press"
               style={{
                 display: "flex",
                 flexDirection: "column",
                 alignItems: "center",
                 textDecoration: "none",
-                color: "#475569",
+                color: "#1B3B22",
                 fontSize: 11,
-                fontWeight: 600,
+                fontWeight: 700,
                 position: "relative",
               }}
               aria-label="View Shopping Cart"
@@ -375,12 +372,12 @@ export default function Navbar() {
                   width: 38,
                   height: 38,
                   borderRadius: "50%",
-                  background: "#F1F5F9",
-                  border: "1px solid #E2E8F0",
+                  background: "#FAF8F5",
+                  border: "1px solid #E2DDD3",
                   display: "flex",
                   alignItems: "center",
                   justifyContent: "center",
-                  color: "#334155",
+                  color: "#1B3B22",
                   position: "relative",
                   marginBottom: 1,
                 }}
@@ -396,43 +393,42 @@ export default function Navbar() {
                       minWidth: 18,
                       height: 18,
                       borderRadius: 999,
-                      background: "#EA580C",
+                      background: "#D9381E",
                       color: "#FFFFFF",
                       fontSize: 10.5,
-                      fontWeight: 700,
+                      fontWeight: 800,
                       display: "flex",
                       alignItems: "center",
                       justifyContent: "center",
                       padding: "0 4px",
-                      boxShadow: "0 2px 6px rgba(234, 88, 12, 0.4)",
-                      transition: "transform 0.2s cubic-bezier(.34,1.56,.64,1)",
+                      boxShadow: "0 2px 6px rgba(217, 56, 30, 0.4)",
                     }}
                   >
                     {cartCount}
                   </span>
                 )}
               </div>
-              <span className="ft-icon-label" style={{ color: "#475569" }}>Cart</span>
+              <span className="ft-icon-label" style={{ color: "#1B3B22" }}>Cart</span>
             </Link>
 
             {/* WhatsApp Quick Chat */}
             <button
               onClick={handleWhatsApp}
               style={{
-                background: "linear-gradient(135deg, #10B981, #059669)",
+                background: "#1B3B22",
                 color: "#FFFFFF",
                 border: "none",
                 padding: "8px 16px",
                 borderRadius: 999,
                 fontSize: 13,
-                fontWeight: 700,
+                fontWeight: 800,
+                display: "inline-flex",
                 alignItems: "center",
                 gap: 6,
                 cursor: "pointer",
-                boxShadow: "0 3px 12px rgba(16, 185, 129, 0.25)",
-                transition: "transform 0.2s, box-shadow 0.2s",
+                boxShadow: "0 2px 8px rgba(27, 59, 34, 0.2)",
               }}
-              className="ft-desktop-wa"
+              className="ft-desktop-wa t-btn-press"
             >
               <span>💬</span>
               <span>WhatsApp</span>
@@ -442,7 +438,7 @@ export default function Navbar() {
 
         {/* Mobile Search Row (Dropdown when toggled on mobile) */}
         {mobileSearchOpen && (
-          <div className="ft-mobile-search-bar">
+          <div className="ft-mobile-search-bar" style={{ background: "#FAF8F5", borderTop: "1px solid #E2DDD3" }}>
             <form onSubmit={handleSearchSubmit} style={{ position: "relative", width: "100%" }}>
               <input
                 type="text"
@@ -452,18 +448,19 @@ export default function Navbar() {
                 placeholder="Search food, cages, companion birds..."
                 style={{
                   width: "100%",
-                  background: "#F8FAFC",
-                  border: "1.5px solid #10B981",
+                  background: "#FFFFFF",
+                  border: "1.5px solid #E2DDD3",
                   borderRadius: 999,
                   padding: "10px 44px 10px 18px",
                   fontSize: 14,
-                  color: "#0F172A",
+                  color: "#152B17",
                   outline: "none",
                   boxSizing: "border-box",
                 }}
               />
               <button
                 type="submit"
+                aria-label="Search"
                 style={{
                   position: "absolute",
                   right: 4,
@@ -471,7 +468,7 @@ export default function Navbar() {
                   bottom: 4,
                   width: 34,
                   height: 34,
-                  background: "#10B981",
+                  background: "#1B3B22",
                   color: "#FFFFFF",
                   border: "none",
                   borderRadius: "50%",
@@ -480,7 +477,6 @@ export default function Navbar() {
                   justifyContent: "center",
                   cursor: "pointer",
                 }}
-                aria-label="Search"
               >
                 <SearchIco size={15} />
               </button>
@@ -492,9 +488,9 @@ export default function Navbar() {
         <nav
           aria-label="Site Navigation"
           style={{
-            background: "#FFFFFF",
-            borderTop: "1px solid #F1F5F9",
-            borderBottom: "1px solid #E2E8F0",
+            background: "#FAF8F5",
+            borderTop: "1px solid #E2DDD3",
+            borderBottom: "1px solid #E2DDD3",
             overflowX: "auto",
             scrollbarWidth: "none",
           }}
@@ -518,37 +514,36 @@ export default function Navbar() {
                   key={link.path}
                   to={link.path}
                   style={{
-                    padding: "9px 0",
+                    padding: "10px 0",
                     fontSize: 13,
-                    fontWeight: isActive ? 700 : link.highlight ? 700 : 500,
-                    color: isActive ? "#EA580C" : link.highlight ? "#16A34A" : "#475569",
+                    fontWeight: isActive ? 800 : link.highlight ? 800 : 600,
+                    color: isActive ? "#1B3B22" : link.highlight ? "#D9381E" : "#736B5E",
                     textDecoration: "none",
                     whiteSpace: "nowrap",
-                    borderBottom: isActive ? "2px solid #EA580C" : "2px solid transparent",
+                    borderBottom: isActive ? "2px solid #1B3B22" : "2px solid transparent",
                     transition: "color 0.2s, border-color 0.2s",
                     display: "inline-flex",
                     alignItems: "center",
                     gap: 6,
                   }}
                   onMouseEnter={(e) => {
-                    if (!isActive) e.target.style.color = "#EA580C";
+                    if (!isActive) e.target.style.color = "#1B3B22";
                   }}
                   onMouseLeave={(e) => {
-                    if (!isActive) e.target.style.color = link.highlight ? "#16A34A" : "#475569";
+                    if (!isActive) e.target.style.color = link.highlight ? "#D9381E" : "#736B5E";
                   }}
                 >
                   {link.label}
                   {link.badge && (
                     <span
                       style={{
-                        fontSize: 9,
+                        fontSize: 9.5,
                         fontWeight: 800,
-                        background: "linear-gradient(135deg, #F97316, #EA580C)",
+                        background: "#D9381E",
                         color: "#FFFFFF",
                         padding: "2px 7px",
                         borderRadius: 999,
                         letterSpacing: "0.02em",
-                        boxShadow: "0 2px 6px rgba(234, 88, 12, 0.3)",
                       }}
                     >
                       {link.badge}
@@ -564,8 +559,8 @@ export default function Navbar() {
         {mobileMenuOpen && (
           <div
             style={{
-              background: "#FFFFFF",
-              borderTop: "1px solid #E2E8F0",
+              background: "#FAF8F5",
+              borderTop: "1px solid #E2DDD3",
               padding: "16px 20px 24px",
               display: "flex",
               flexDirection: "column",
@@ -582,10 +577,10 @@ export default function Navbar() {
             {!user ? (
               <div
                 style={{
-                  background: "#F8FAFC",
+                  background: "#FFFFFF",
                   borderRadius: 16,
                   padding: "12px 14px",
-                  border: "1px solid #E2E8F0",
+                  border: "1px solid #E2DDD3",
                   display: "flex",
                   alignItems: "center",
                   justifyContent: "space-between",
@@ -599,8 +594,8 @@ export default function Navbar() {
                       width: 36,
                       height: 36,
                       borderRadius: "50%",
-                      background: "#ECFDF5",
-                      color: "#059669",
+                      background: "#E7EFE8",
+                      color: "#1B3B22",
                       display: "flex",
                       alignItems: "center",
                       justifyContent: "center",
@@ -611,15 +606,15 @@ export default function Navbar() {
                     🦜
                   </div>
                   <div>
-                    <div style={{ fontSize: 13.5, fontWeight: 700, color: "#0F172A" }}>Hello, Bird Lover!</div>
-                    <div style={{ fontSize: 11, color: "#059669" }}>Track orders &amp; care history</div>
+                    <div style={{ fontSize: 13.5, fontWeight: 700, color: "#152B17" }}>Hello, Bird Lover!</div>
+                    <div style={{ fontSize: 11, color: "#736B5E" }}>Track orders &amp; care history</div>
                   </div>
                 </div>
                 <Link
                   to="/login"
                   onClick={() => setMobileMenuOpen(false)}
                   style={{
-                    background: "linear-gradient(135deg, #10B981, #059669)",
+                    background: "#D9381E",
                     color: "#FFFFFF",
                     padding: "7px 15px",
                     borderRadius: 999,
@@ -627,7 +622,6 @@ export default function Navbar() {
                     fontWeight: 800,
                     textDecoration: "none",
                     whiteSpace: "nowrap",
-                    boxShadow: "0 2px 6px rgba(16, 185, 129, 0.25)",
                   }}
                 >
                   Sign In →
@@ -636,10 +630,10 @@ export default function Navbar() {
             ) : (
               <div
                 style={{
-                  background: "#F8FAFC",
+                  background: "#FFFFFF",
                   borderRadius: 16,
                   padding: "12px 14px",
-                  border: "1px solid #E2E8F0",
+                  border: "1px solid #E2DDD3",
                   display: "flex",
                   alignItems: "center",
                   justifyContent: "space-between",
@@ -650,10 +644,10 @@ export default function Navbar() {
                 <div style={{ display: "flex", alignItems: "center", gap: 10, minWidth: 0 }}>
                   <Avatar name={user.name} avatar={user.avatar} size={38} />
                   <div style={{ minWidth: 0 }}>
-                    <div style={{ fontSize: 13, fontWeight: 700, color: "#0F172A", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
+                    <div style={{ fontSize: 13, fontWeight: 700, color: "#152B17", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
                       {user.name}
                     </div>
-                    <div style={{ fontSize: 11, color: "#64748B", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
+                    <div style={{ fontSize: 11, color: "#736B5E", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
                       {user.email}
                     </div>
                   </div>
@@ -662,9 +656,9 @@ export default function Navbar() {
                   to="/my-orders"
                   onClick={() => setMobileMenuOpen(false)}
                   style={{
-                    background: "#ECFDF5",
-                    border: "1px solid #A7F3D0",
-                    color: "#059669",
+                    background: "#E7EFE8",
+                    border: "1px solid #B8D4BA",
+                    color: "#1B3B22",
                     padding: "6px 12px",
                     borderRadius: 999,
                     fontSize: 11.5,
@@ -687,9 +681,9 @@ export default function Navbar() {
                 placeholder="Search companion birds, cages, food..."
                 style={{
                   width: "100%",
-                  background: "#F8FAFC",
-                  border: "1px solid #CBD5E1",
-                  color: "#0F172A",
+                  background: "#FFFFFF",
+                  border: "1.5px solid #E2DDD3",
+                  color: "#152B17",
                   borderRadius: 999,
                   padding: "10px 42px 10px 16px",
                   fontSize: 14,
@@ -698,6 +692,7 @@ export default function Navbar() {
               />
               <button
                 type="submit"
+                aria-label="Search"
                 style={{
                   position: "absolute",
                   right: 4,
@@ -705,7 +700,7 @@ export default function Navbar() {
                   bottom: 4,
                   width: 32,
                   height: 32,
-                  background: "#10B981",
+                  background: "#1B3B22",
                   color: "#FFFFFF",
                   border: "none",
                   borderRadius: "50%",
@@ -723,8 +718,8 @@ export default function Navbar() {
               to="/#quiz"
               onClick={() => setMobileMenuOpen(false)}
               style={{
-                background: "#F8FAFC",
-                border: "1px solid #A7F3D0",
+                background: "#FFFFFF",
+                border: "1px solid #E2DDD3",
                 borderRadius: 14,
                 padding: "12px 14px",
                 display: "flex",
@@ -741,8 +736,8 @@ export default function Navbar() {
                     width: 36,
                     height: 36,
                     borderRadius: "50%",
-                    background: "#ECFDF5",
-                    color: "#059669",
+                    background: "#E7EFE8",
+                    color: "#1B3B22",
                     display: "flex",
                     alignItems: "center",
                     justifyContent: "center",
@@ -753,13 +748,13 @@ export default function Navbar() {
                   🎯
                 </div>
                 <div>
-                  <div style={{ fontSize: 13.5, fontWeight: 700, color: "#0F172A" }}>Which Bird Fits You?</div>
-                  <div style={{ fontSize: 11, color: "#059669" }}>Take our 60-sec lifestyle quiz</div>
+                  <div style={{ fontSize: 13.5, fontWeight: 700, color: "#152B17" }}>Which Bird Fits You?</div>
+                  <div style={{ fontSize: 11, color: "#736B5E" }}>Take our 60-sec lifestyle quiz</div>
                 </div>
               </div>
               <span
                 style={{
-                  background: "linear-gradient(135deg, #10B981, #059669)",
+                  background: "#D9381E",
                   color: "#FFFFFF",
                   padding: "6px 12px",
                   borderRadius: 999,
@@ -772,48 +767,50 @@ export default function Navbar() {
               </span>
             </Link>
 
-            {NAV_LINKS.map((link) => (
-              <Link
-                key={link.path}
-                to={link.path}
-                onClick={() => setMobileMenuOpen(false)}
-                style={{
-                  padding: "10px 12px",
-                  borderRadius: 10,
-                  fontSize: 15,
-                  fontWeight: 600,
-                  color: location.pathname === link.path ? "#059669" : "#334155",
-                  background: location.pathname === link.path ? "#ECFDF5" : "transparent",
-                  textDecoration: "none",
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "space-between",
-                }}
-              >
-                <span>{link.label}</span>
-                {link.badge && (
-                  <span
-                    style={{
-                      fontSize: 10,
-                      fontWeight: 800,
-                      background: "#ECFDF5",
-                      color: "#059669",
-                      padding: "2px 8px",
-                      borderRadius: 999,
-                      border: "1px solid #A7F3D0",
-                    }}
-                  >
-                    {link.badge}
-                  </span>
-                )}
-              </Link>
-            ))}
+            {NAV_LINKS.map((link) => {
+              const isActive = location.pathname === link.path;
+              return (
+                <Link
+                  key={link.path}
+                  to={link.path}
+                  onClick={() => setMobileMenuOpen(false)}
+                  style={{
+                    padding: "10px 12px",
+                    borderRadius: 10,
+                    fontSize: 15,
+                    fontWeight: isActive ? 800 : 600,
+                    color: isActive ? "#1B3B22" : "#152B17",
+                    background: isActive ? "#E7EFE8" : "transparent",
+                    textDecoration: "none",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "space-between",
+                  }}
+                >
+                  <span>{link.label}</span>
+                  {link.badge && (
+                    <span
+                      style={{
+                        fontSize: 10,
+                        fontWeight: 800,
+                        background: "#D9381E",
+                        color: "#FFFFFF",
+                        padding: "2px 8px",
+                        borderRadius: 999,
+                      }}
+                    >
+                      {link.badge}
+                    </span>
+                  )}
+                </Link>
+              );
+            })}
 
             <button
               onClick={handleWhatsApp}
               style={{
                 marginTop: 8,
-                background: "linear-gradient(135deg, #10B981, #059669)",
+                background: "#1B3B22",
                 color: "#FFFFFF",
                 border: "none",
                 padding: "12px",
@@ -825,7 +822,6 @@ export default function Navbar() {
                 justifyContent: "center",
                 gap: 8,
                 cursor: "pointer",
-                boxShadow: "0 2px 8px rgba(16, 185, 129, 0.25)",
               }}
             >
               <span>💬</span>

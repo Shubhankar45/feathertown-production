@@ -19,7 +19,7 @@ export default function BestSellers() {
             ...item,
             id: item._id,
             badge: item.badge || (item.isBestSeller ? "Bestseller" : idx === 0 ? "Popular" : idx === 1 ? "Top Rated" : "In Stock"),
-            badgeColor: item.badge?.toLowerCase().includes("top") ? "#EA580C" : idx % 2 === 0 ? "#16A34A" : "#F97316",
+            badgeColor: item.badge?.toLowerCase().includes("top") ? "#D9381E" : "#1B3B22",
             rating: item.rating || 4.9,
             reviewsCount: item.reviewsCount || (250 + idx * 85),
             image: item.images?.[0] || "https://images.unsplash.com/photo-1548767797-d8c844163c4c?w=500&auto=format&fit=crop&q=80",
@@ -44,8 +44,8 @@ export default function BestSellers() {
         width: "100%",
         maxWidth: "100%",
         margin: "0 auto",
-        background: "#F8FAFC",
-        borderTop: "1px solid #E2E8F0",
+        background: "#FAF8F5",
+        borderTop: "1px solid #E2DDD3",
         fontFamily: "Outfit, system-ui, sans-serif",
       }}
     >
@@ -65,14 +65,14 @@ export default function BestSellers() {
               display: "inline-flex",
               alignItems: "center",
               gap: 6,
-              background: "#FFF7ED",
-              border: "1px solid #FED7AA",
+              background: "#E7EFE8",
+              border: "1px solid #B8D4BA",
               padding: "4px 12px",
               borderRadius: 999,
               fontSize: 11,
               fontWeight: 800,
               letterSpacing: 1.2,
-              color: "#EA580C",
+              color: "#1B3B22",
               textTransform: "uppercase",
               marginBottom: 10,
             }}
@@ -83,15 +83,15 @@ export default function BestSellers() {
             style={{
               fontSize: "clamp(26px, 3.6vw, 40px)",
               fontWeight: 900,
-              color: "#0F172A",
+              color: "#152B17",
               lineHeight: 1.15,
               margin: "0 0 6px 0",
               letterSpacing: "-0.02em",
             }}
           >
-            <span className="text-emerald-600">Best</span> Sellers &amp; Essentials
+            <span style={{ color: "#1B3B22" }}>Best</span> Sellers &amp; Essentials
           </h2>
-          <p style={{ fontSize: 14, color: "#64748B", margin: 0 }}>
+          <p style={{ fontSize: 14, color: "#736B5E", margin: 0 }}>
             Most-loved nutrition, spacious habitats, and enrichment chosen by 5,000+ satisfied bird parents.
           </p>
         </div>
@@ -102,16 +102,15 @@ export default function BestSellers() {
           style={{
             fontSize: 13,
             fontWeight: 800,
-            color: "#16A34A",
+            color: "#1B3B22",
             textDecoration: "none",
             display: "inline-flex",
             alignItems: "center",
             gap: 6,
             padding: "9px 20px",
             borderRadius: 999,
-            background: "#ECFDF5",
-            border: "1px solid #A7F3D0",
-            boxShadow: "0 2px 6px rgba(22, 163, 74, 0.08)",
+            background: "#E7EFE8",
+            border: "1px solid #B8D4BA",
           }}
         >
           View all essentials ›
@@ -132,18 +131,18 @@ export default function BestSellers() {
               style={{
                 background: "#FFFFFF",
                 borderRadius: 24,
-                border: "1px solid #E2E8F0",
+                border: "1px solid #E2DDD3",
                 overflow: "hidden",
                 height: 330,
                 display: "flex",
                 flexDirection: "column",
               }}
             >
-              <div className="ft-shimmer" style={{ height: 170, width: "100%", background: "#F1F5F9" }} />
+              <div className="ft-shimmer" style={{ height: 170, width: "100%", background: "#FAF8F5" }} />
               <div style={{ padding: 16, flex: 1, display: "flex", flexDirection: "column", gap: 10 }}>
-                <div className="ft-shimmer" style={{ height: 16, width: "75%", borderRadius: 6, background: "#F1F5F9" }} />
-                <div className="ft-shimmer" style={{ height: 14, width: "40%", borderRadius: 6, background: "#F1F5F9" }} />
-                <div className="ft-shimmer" style={{ height: 38, width: "100%", borderRadius: 12, marginTop: "auto", background: "#F1F5F9" }} />
+                <div className="ft-shimmer" style={{ height: 16, width: "75%", borderRadius: 6, background: "#FAF8F5" }} />
+                <div className="ft-shimmer" style={{ height: 14, width: "40%", borderRadius: 6, background: "#FAF8F5" }} />
+                <div className="ft-shimmer" style={{ height: 38, width: "100%", borderRadius: 12, marginTop: "auto", background: "#FAF8F5" }} />
               </div>
             </div>
           ))}
@@ -159,12 +158,13 @@ export default function BestSellers() {
           {items.map((prod) => (
             <SpotlightCard
               key={prod.id || prod._id}
-              spotlightColor="rgba(249, 115, 22, 0.12)"
-              borderColor="#E2E8F0"
+              spotlightColor="rgba(27, 59, 34, 0.08)"
+              borderColor="#E2DDD3"
               className="t-hover-lift group flex flex-col h-full"
               style={{
                 borderRadius: 24,
-                boxShadow: "0 4px 18px rgba(15, 23, 42, 0.04)",
+                boxShadow: "0 4px 18px rgba(21, 43, 23, 0.04)",
+                background: "#FFFFFF",
               }}
             >
               {/* Badge Overlay */}
@@ -175,7 +175,7 @@ export default function BestSellers() {
                     top: 12,
                     left: 12,
                     zIndex: 20,
-                    background: prod.badgeColor || "#16A34A",
+                    background: prod.badgeColor || "#D9381E",
                     color: "#FFFFFF",
                     fontSize: 10.5,
                     fontWeight: 800,
@@ -195,7 +195,7 @@ export default function BestSellers() {
                 className="t-img-zoom block relative"
                 style={{
                   height: 180,
-                  background: "#F8FAFC",
+                  background: "#FAF8F5",
                   overflow: "hidden",
                   textDecoration: "none",
                 }}
@@ -212,9 +212,9 @@ export default function BestSellers() {
               <div style={{ padding: "16px 18px", display: "flex", flexDirection: "column", flex: 1, zIndex: 10 }}>
                 {/* Rating */}
                 <div style={{ display: "flex", alignItems: "center", gap: 5, marginBottom: 6 }}>
-                  <span style={{ color: "#F59E0B", fontSize: 13 }}>★</span>
-                  <span style={{ fontSize: 12, fontWeight: 800, color: "#0F172A" }}>{prod.rating}</span>
-                  <span style={{ fontSize: 11, color: "#94A3B8" }}>({prod.reviewsCount})</span>
+                  <span style={{ color: "#1B3B22", fontSize: 13 }}>★</span>
+                  <span style={{ fontSize: 12, fontWeight: 800, color: "#152B17" }}>{prod.rating}</span>
+                  <span style={{ fontSize: 11, color: "#736B5E" }}>({prod.reviewsCount})</span>
                 </div>
 
                 {/* Title */}
@@ -222,7 +222,7 @@ export default function BestSellers() {
                   to={`/accessories/${prod.id || prod._id}`}
                   style={{
                     textDecoration: "none",
-                    color: "#0F172A",
+                    color: "#152B17",
                     fontSize: 14,
                     fontWeight: 800,
                     lineHeight: 1.35,
@@ -232,18 +232,17 @@ export default function BestSellers() {
                     WebkitBoxOrient: "vertical",
                     overflow: "hidden",
                   }}
-                  className="group-hover:text-emerald-700 transition-colors"
                 >
                   {prod.name}
                 </Link>
 
                 {/* Price */}
                 <div style={{ display: "flex", alignItems: "baseline", gap: 8, marginTop: "auto", marginBottom: 14 }}>
-                  <span style={{ fontSize: 17, fontWeight: 900, color: "#16A34A" }}>
+                  <span style={{ fontSize: 17, fontWeight: 900, color: "#1B3B22" }}>
                     ₹{Number(prod.price).toLocaleString()}
                   </span>
                   {prod.originalPrice && (
-                    <span style={{ fontSize: 12, color: "#94A3B8", textDecoration: "line-through" }}>
+                    <span style={{ fontSize: 12, color: "#736B5E", textDecoration: "line-through" }}>
                       ₹{Number(prod.originalPrice).toLocaleString()}
                     </span>
                   )}
@@ -256,9 +255,9 @@ export default function BestSellers() {
                   style={{
                     width: "100%",
                     padding: "10px",
-                    borderRadius: 14,
+                    borderRadius: 999,
                     border: "none",
-                    background: "#16A34A",
+                    background: "#D9381E",
                     color: "#FFFFFF",
                     fontSize: 12.5,
                     fontWeight: 800,
@@ -267,7 +266,7 @@ export default function BestSellers() {
                     alignItems: "center",
                     justifyContent: "center",
                     gap: 6,
-                    boxShadow: "0 4px 12px rgba(22, 163, 74, 0.22)",
+                    boxShadow: "0 3px 10px rgba(217, 56, 30, 0.25)",
                   }}
                 >
                   <span>🛍️</span> Add to Cart

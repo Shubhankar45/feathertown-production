@@ -83,8 +83,8 @@ export default function Reviews({ standalone = false }) {
         width: "100%",
         maxWidth: "100%",
         margin: "0 auto",
-        background: "#F8FAFC",
-        borderTop: "1px solid #E2E8F0",
+        background: "#FAF8F5",
+        borderTop: "1px solid #E2DDD3",
         fontFamily: "Outfit, system-ui, sans-serif",
       }}
     >
@@ -94,14 +94,14 @@ export default function Reviews({ standalone = false }) {
             display: "inline-flex",
             alignItems: "center",
             gap: 6,
-            background: "#ECFDF5",
-            border: "1px solid #A7F3D0",
+            background: "#E7EFE8",
+            border: "1px solid #B8D4BA",
             padding: "4px 12px",
             borderRadius: 999,
             fontSize: 11,
             fontWeight: 800,
             letterSpacing: 1.2,
-            color: "#059669",
+            color: "#1B3B22",
             textTransform: "uppercase",
             marginBottom: 12,
           }}
@@ -112,15 +112,15 @@ export default function Reviews({ standalone = false }) {
           style={{
             fontSize: "clamp(26px, 3.6vw, 40px)",
             fontWeight: 900,
-            color: "#0F172A",
+            color: "#152B17",
             lineHeight: 1.2,
             margin: "0 0 8px 0",
             letterSpacing: "-0.02em",
           }}
         >
-          What <span className="text-emerald-600">Pet Parents</span> Say
+          What <span style={{ color: "#1B3B22" }}>Pet Parents</span> Say
         </h2>
-        <p style={{ fontSize: 14, color: "#64748B", margin: 0, maxWidth: 540, marginLeft: "auto", marginRight: "auto" }}>
+        <p style={{ fontSize: 14, color: "#736B5E", margin: 0, maxWidth: 540, marginLeft: "auto", marginRight: "auto" }}>
           Authentic stories from happy companion bird families who found their feathered souls through FeatherTown.
         </p>
       </div>
@@ -137,25 +137,26 @@ export default function Reviews({ standalone = false }) {
         {displayedReviews.map((r, i) => (
           <SpotlightCard
             key={r._id || i}
-            spotlightColor="rgba(22, 163, 74, 0.12)"
-            borderColor="#E2E8F0"
+            spotlightColor="rgba(27, 59, 34, 0.08)"
+            borderColor="#E2DDD3"
             className="t-hover-lift flex flex-col justify-between p-6"
             style={{
               borderRadius: 24,
-              boxShadow: "0 4px 18px rgba(15, 23, 42, 0.04)",
+              boxShadow: "0 4px 18px rgba(21, 43, 23, 0.04)",
+              background: "#FFFFFF",
             }}
           >
             <div>
               {/* Header with 5 Gold Stars & Verified Badge */}
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 14 }}>
-                <div style={{ color: "#F59E0B", fontSize: 15, letterSpacing: 2 }}>
+                <div style={{ color: "#1B3B22", fontSize: 15, letterSpacing: 2 }}>
                   {"★".repeat(r.rating || 5)}
                 </div>
                 <span
                   style={{
-                    background: "#ECFDF5",
-                    color: "#059669",
-                    border: "1px solid #A7F3D0",
+                    background: "#E7EFE8",
+                    color: "#1B3B22",
+                    border: "1px solid #B8D4BA",
                     fontSize: 10,
                     fontWeight: 800,
                     padding: "2px 8px",
@@ -173,7 +174,7 @@ export default function Reviews({ standalone = false }) {
               <p
                 style={{
                   fontSize: 13.5,
-                  color: "#334155",
+                  color: "#152B17",
                   lineHeight: 1.65,
                   fontStyle: "italic",
                   marginBottom: 20,
@@ -184,14 +185,14 @@ export default function Reviews({ standalone = false }) {
             </div>
 
             {/* Author Strip */}
-            <div style={{ display: "flex", alignItems: "center", gap: 10, borderTop: "1px solid #F1F5F9", paddingTop: 14 }}>
+            <div style={{ display: "flex", alignItems: "center", gap: 10, borderTop: "1px solid #E2DDD3", paddingTop: 14 }}>
               <Avatar name={r.name} avatar={r.avatar} />
               <div>
-                <div style={{ fontSize: 13.5, fontWeight: 800, color: "#0F172A" }}>
+                <div style={{ fontSize: 13.5, fontWeight: 800, color: "#152B17" }}>
                   — {r.name}
                 </div>
                 {r.location && (
-                  <div style={{ fontSize: 11.5, color: "#64748B" }}>
+                  <div style={{ fontSize: 11.5, color: "#736B5E" }}>
                     {r.location}
                   </div>
                 )}
@@ -209,20 +210,20 @@ export default function Reviews({ standalone = false }) {
           padding: "clamp(24px, 4vw, 44px) clamp(18px, 4vw, 40px)",
           maxWidth: 680,
           margin: "0 auto",
-          boxShadow: "0 4px 28px rgba(15, 23, 42, 0.06)",
-          border: "1px solid #E2E8F0",
+          boxShadow: "0 4px 28px rgba(21, 43, 23, 0.06)",
+          border: "1px solid #E2DDD3",
         }}
       >
         <h3
           style={{
             fontSize: 20,
             fontWeight: 800,
-            color: "#0F172A",
+            color: "#152B17",
             marginBottom: 18,
             textAlign: "center",
           }}
         >
-          Share your experience with <span className="text-emerald-600">Feather</span><span className="text-orange-500">Town</span>
+          Share your experience with <span style={{ color: "#1B3B22" }}>Feather</span><span style={{ color: "#D9381E" }}>Town</span>
         </h3>
 
         <form onSubmit={handleReviewSubmit}>
@@ -242,7 +243,16 @@ export default function Reviews({ standalone = false }) {
               value={reviewName}
               onChange={(e) => setRN(e.target.value)}
               required
-              className="w-full px-4 py-3 rounded-xl bg-slate-50 border border-slate-200 text-slate-800 text-sm focus:border-emerald-600 focus:bg-white outline-none transition-all"
+              style={{
+                width: "100%",
+                padding: "12px 16px",
+                borderRadius: 14,
+                background: "#FAF8F5",
+                border: "1.5px solid #E2DDD3",
+                color: "#152B17",
+                fontSize: 14,
+                outline: "none",
+              }}
             />
           </div>
 
@@ -253,14 +263,24 @@ export default function Reviews({ standalone = false }) {
               onChange={(e) => setRC(e.target.value)}
               rows={3}
               required
-              className="w-full px-4 py-3 rounded-xl bg-slate-50 border border-slate-200 text-slate-800 text-sm focus:border-emerald-600 focus:bg-white outline-none transition-all resize-none"
+              style={{
+                width: "100%",
+                padding: "12px 16px",
+                borderRadius: 14,
+                background: "#FAF8F5",
+                border: "1.5px solid #E2DDD3",
+                color: "#152B17",
+                fontSize: 14,
+                outline: "none",
+                resize: "none",
+              }}
             />
           </div>
 
           {/* Star Rating Select */}
           <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 20, flexWrap: "wrap", gap: 10 }}>
             <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-              <span style={{ fontSize: 13, fontWeight: 700, color: "#475569" }}>Your Rating:</span>
+              <span style={{ fontSize: 13, fontWeight: 700, color: "#736B5E" }}>Your Rating:</span>
               <Stars rating={rating} onRate={(n) => setRating(n)} editable />
             </div>
 
@@ -275,7 +295,7 @@ export default function Reviews({ standalone = false }) {
                 disabled={reviewLoading}
                 className="t-btn-press"
                 style={{
-                  background: "#16A34A",
+                  background: "#1B3B22",
                   color: "#FFFFFF",
                   padding: "12px 32px",
                   borderRadius: 999,
@@ -283,7 +303,7 @@ export default function Reviews({ standalone = false }) {
                   fontSize: 13,
                   border: "none",
                   cursor: reviewLoading ? "not-allowed" : "pointer",
-                  boxShadow: "0 4px 16px rgba(22, 163, 74, 0.3)",
+                  boxShadow: "0 4px 16px rgba(27, 59, 34, 0.25)",
                 }}
               >
                 {reviewLoading ? "Submitting..." : "Post Verified Review ✨"}

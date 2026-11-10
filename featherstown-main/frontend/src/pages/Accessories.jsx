@@ -40,7 +40,7 @@ export default function Accessories() {
               ...d,
               id: d._id || d.id,
               badge: d.badge || (d.isBestSeller ? "Bestseller" : (d.stock > 0 ? "In Stock" : "Out of Stock")),
-              badgeColor: d.badge ? "#EA580C" : (d.isBestSeller ? "#EA580C" : (d.stock > 0 ? "#16A34A" : "#DC2626")),
+              badgeColor: d.badge ? "#D9381E" : (d.isBestSeller ? "#D9381E" : "#1B3B22"),
               rating: d.rating || 4.9,
               reviewsCount: d.reviewsCount || 120,
               image: d.images?.[0] || "",
@@ -51,7 +51,6 @@ export default function Accessories() {
       .catch(() => {})
       .finally(() => setLoading(false));
   }, []);
-
 
   const filteredItems = useMemo(() => {
     return items
@@ -78,7 +77,7 @@ export default function Accessories() {
   };
 
   return (
-    <div style={{ background: "#F8FAFC", color: "#0F172A", fontFamily: "Outfit, system-ui, sans-serif", minHeight: "100vh" }}>
+    <div style={{ background: "#F7F5F0", color: "#152B17", fontFamily: "Outfit, system-ui, sans-serif", minHeight: "100vh" }}>
       <SEOHead
         title="Bird Accessories, Cages & Healthy Diets | FeatherTown"
         description="Shop certified bird accessories, spacious flight cages, natural perches, enrichment toys, and wholesome seed blends with fast delivery across India."
@@ -105,8 +104,8 @@ export default function Accessories() {
             background: "#FFFFFF",
             padding: "16px clamp(12px, 3vw, 20px)",
             borderRadius: 20,
-            boxShadow: "0 2px 10px rgba(15, 23, 42, 0.04)",
-            border: "1px solid #E2E8F0",
+            boxShadow: "0 2px 10px rgba(21, 43, 23, 0.04)",
+            border: "1px solid #E2DDD3",
           }}
         >
           {/* Category Filter Pills */}
@@ -124,10 +123,9 @@ export default function Accessories() {
                     fontSize: 13,
                     fontWeight: active ? 800 : 600,
                     cursor: "pointer",
-                    border: active ? "none" : "1.5px solid #E2E8F0",
-                    background: active ? "#16A34A" : "#F8FAFC",
-                    color: active ? "#FFFFFF" : "#64748B",
-                    boxShadow: active ? "0 4px 14px rgba(22, 163, 74, 0.28)" : "none",
+                    border: active ? "1.5px solid #1B3B22" : "1.5px solid #E2DDD3",
+                    background: active ? "#1B3B22" : "#FAF8F5",
+                    color: active ? "#FFFFFF" : "#152B17",
                   }}
                 >
                   {c}
@@ -146,21 +144,21 @@ export default function Accessories() {
               style={{
                 padding: "8px 16px",
                 borderRadius: 10,
-                border: "1.5px solid #CBD5E1",
+                border: "1.5px solid #E2DDD3",
                 fontSize: 13,
                 outline: "none",
-                background: "#F8FAFC",
-                color: "#0F172A",
+                background: "#FAF8F5",
+                color: "#152B17",
                 minWidth: "min(100%, 180px)",
                 transition: "border-color 0.2s, background 0.2s",
               }}
               onFocus={(e) => {
-                e.target.style.borderColor = "#059669";
+                e.target.style.borderColor = "#1B3B22";
                 e.target.style.background = "#FFFFFF";
               }}
               onBlur={(e) => {
-                e.target.style.borderColor = "#CBD5E1";
-                e.target.style.background = "#F8FAFC";
+                e.target.style.borderColor = "#E2DDD3";
+                e.target.style.background = "#FAF8F5";
               }}
             />
 
@@ -170,11 +168,11 @@ export default function Accessories() {
               style={{
                 padding: "8px 14px",
                 borderRadius: 10,
-                border: "1.5px solid #CBD5E1",
+                border: "1.5px solid #E2DDD3",
                 fontSize: 13,
-                fontWeight: 600,
-                color: "#0F172A",
-                background: "#F8FAFC",
+                outline: "none",
+                background: "#FAF8F5",
+                color: "#152B17",
                 cursor: "pointer",
               }}
             >
@@ -185,13 +183,13 @@ export default function Accessories() {
           </div>
         </div>
 
-        {/* Product Grid */}
+        {/* Products Grid */}
         {loading ? (
           <div
             style={{
               display: "grid",
-              gridTemplateColumns: "repeat(auto-fill, minmax(clamp(140px, 44vw, 240px), 1fr))",
-              gap: "clamp(12px, 2.5vw, 22px)",
+              gridTemplateColumns: "repeat(auto-fill, minmax(clamp(160px, 44vw, 240px), 1fr))",
+              gap: "clamp(14px, 2.5vw, 22px)",
             }}
           >
             {[1, 2, 3, 4, 5, 6, 7, 8].map((i) => (
@@ -199,55 +197,54 @@ export default function Accessories() {
                 key={i}
                 style={{
                   background: "#FFFFFF",
-                  borderRadius: 22,
-                  border: "1px solid #E2E8F0",
+                  borderRadius: 24,
+                  border: "1px solid #E2DDD3",
                   overflow: "hidden",
-                  height: 330,
+                  height: 340,
                   display: "flex",
                   flexDirection: "column",
                 }}
               >
-                <div className="ft-shimmer" style={{ height: 170, width: "100%", background: "#F1F5F9" }} />
-                <div style={{ padding: 14, flex: 1, display: "flex", flexDirection: "column", gap: 10 }}>
-                  <div className="ft-shimmer" style={{ height: 16, width: "80%", borderRadius: 6, background: "#F1F5F9" }} />
-                  <div className="ft-shimmer" style={{ height: 14, width: "45%", borderRadius: 6, background: "#F1F5F9" }} />
-                  <div className="ft-shimmer" style={{ height: 36, width: "100%", borderRadius: 10, marginTop: "auto", background: "#F1F5F9" }} />
+                <div className="ft-shimmer" style={{ height: 180, width: "100%", background: "#FAF8F5" }} />
+                <div style={{ padding: 16, flex: 1, display: "flex", flexDirection: "column", gap: 10 }}>
+                  <div className="ft-shimmer" style={{ height: 16, width: "80%", borderRadius: 6, background: "#FAF8F5" }} />
+                  <div className="ft-shimmer" style={{ height: 14, width: "40%", borderRadius: 6, background: "#FAF8F5" }} />
+                  <div className="ft-shimmer" style={{ height: 38, width: "100%", borderRadius: 12, marginTop: "auto", background: "#FAF8F5" }} />
                 </div>
               </div>
             ))}
           </div>
         ) : filteredItems.length === 0 ? (
           <div
-            className="rv"
             style={{
-              textAlign: "center",
-              padding: "60px 20px",
               background: "#FFFFFF",
               borderRadius: 24,
-              border: "1px solid #E2E8F0",
+              border: "1px solid #E2DDD3",
+              padding: "60px 24px",
+              textAlign: "center",
+              boxShadow: "0 2px 10px rgba(0,0,0,0.03)",
             }}
           >
-            <div className="ft-animate-float" style={{ fontSize: 44, marginBottom: 12 }}>🔍</div>
-            <h3 style={{ fontSize: 18, fontWeight: 700, color: "#0F172A", marginBottom: 6 }}>
+            <div style={{ fontSize: 44, marginBottom: 12 }}>🔍</div>
+            <h3 style={{ fontSize: 18, fontWeight: 800, color: "#152B17", marginBottom: 6 }}>
               No accessories found
             </h3>
-            <p style={{ fontSize: 13.5, color: "#64748B", marginBottom: 16 }}>
-              Try adjusting your search terms or selecting a different category.
+            <p style={{ fontSize: 14, color: "#736B5E", marginBottom: 20 }}>
+              Try searching for different keywords or clear your active category filter.
             </p>
             <button
               onClick={() => {
                 setCategory("All");
                 setSearch("");
-                setSort("");
               }}
-              className="ft-btn-hover"
               style={{
-                background: "#16A34A",
+                background: "#1B3B22",
                 color: "#FFFFFF",
                 border: "none",
                 padding: "9px 20px",
                 borderRadius: 999,
-                fontWeight: 600,
+                fontSize: 13,
+                fontWeight: 800,
                 cursor: "pointer",
               }}
             >
@@ -256,22 +253,22 @@ export default function Accessories() {
           </div>
         ) : (
           <div
-            className="rv-stagger"
             style={{
               display: "grid",
-              gridTemplateColumns: "repeat(auto-fill, minmax(clamp(140px, 44vw, 240px), 1fr))",
-              gap: "clamp(12px, 2.5vw, 22px)",
+              gridTemplateColumns: "repeat(auto-fill, minmax(clamp(160px, 44vw, 240px), 1fr))",
+              gap: "clamp(14px, 2.5vw, 22px)",
             }}
           >
             {filteredItems.map((prod) => (
               <SpotlightCard
-                key={prod.id || prod._id}
-                spotlightColor="rgba(22, 163, 74, 0.14)"
-                borderColor="#E2E8F0"
+                key={prod._id || prod.id}
+                spotlightColor="rgba(27, 59, 34, 0.08)"
+                borderColor="#E2DDD3"
                 className="t-hover-lift group flex flex-col h-full"
                 style={{
                   borderRadius: 24,
-                  boxShadow: "0 4px 18px rgba(15, 23, 42, 0.04)",
+                  boxShadow: "0 4px 18px rgba(21, 43, 23, 0.04)",
+                  background: "#FFFFFF",
                 }}
               >
                 {/* Badge Overlay */}
@@ -282,7 +279,7 @@ export default function Accessories() {
                       top: 12,
                       left: 12,
                       zIndex: 20,
-                      background: prod.badgeColor || "#16A34A",
+                      background: prod.badgeColor || "#D9381E",
                       color: "#FFFFFF",
                       fontSize: 10.5,
                       fontWeight: 800,
@@ -302,9 +299,9 @@ export default function Accessories() {
                   className="t-img-zoom block relative"
                   style={{
                     aspectRatio: "1/1",
-                    background: "#F8FAFC",
+                    background: "#FAF8F5",
                     overflow: "hidden",
-                    borderBottom: "1px solid #E2E8F0",
+                    borderBottom: "1px solid #E2DDD3",
                   }}
                 >
                   <img
@@ -323,7 +320,7 @@ export default function Accessories() {
                       fontSize: 10.5,
                       fontWeight: 800,
                       textTransform: "uppercase",
-                      color: "#16A34A",
+                      color: "#1B3B22",
                       letterSpacing: 0.8,
                       marginBottom: 4,
                     }}
@@ -333,11 +330,10 @@ export default function Accessories() {
 
                   <Link
                     to={prod.slug ? `/accessories/${prod.slug}` : `/accessories/${prod._id}`}
-                    className="group-hover:text-emerald-700 transition-colors"
                     style={{
                       fontSize: "clamp(13.5px, 2vw, 15px)",
                       fontWeight: 800,
-                      color: "#0F172A",
+                      color: "#152B17",
                       textDecoration: "none",
                       lineHeight: 1.35,
                       marginBottom: 8,
@@ -353,19 +349,19 @@ export default function Accessories() {
                   {/* Price & Rating */}
                   <div style={{ marginTop: "auto", paddingTop: 8 }}>
                     <div style={{ display: "flex", alignItems: "baseline", gap: 6, marginBottom: 4, flexWrap: "wrap" }}>
-                      <span style={{ fontSize: "clamp(15px, 2.2vw, 17px)", fontWeight: 900, color: "#16A34A" }}>
+                      <span style={{ fontSize: "clamp(15px, 2.2vw, 17px)", fontWeight: 900, color: "#1B3B22" }}>
                         ₹{prod.price?.toLocaleString("en-IN")}
                       </span>
                       {prod.mrp && prod.mrp > prod.price && (
-                        <span style={{ fontSize: 11.5, color: "#94A3B8", textDecoration: "line-through" }}>
+                        <span style={{ fontSize: 11.5, color: "#736B5E", textDecoration: "line-through" }}>
                           ₹{prod.mrp?.toLocaleString("en-IN")}
                         </span>
                       )}
                     </div>
 
-                    <div style={{ display: "flex", alignItems: "center", gap: 4, fontSize: 11, color: "#F59E0B", marginBottom: 12 }}>
+                    <div style={{ display: "flex", alignItems: "center", gap: 4, fontSize: 11, color: "#1B3B22", marginBottom: 12 }}>
                       <span>★★★★★</span>
-                      <span style={{ color: "#64748B", fontWeight: 600 }}>({prod.reviewsCount || 120})</span>
+                      <span style={{ color: "#736B5E", fontWeight: 600 }}>({prod.reviewsCount || 120})</span>
                     </div>
 
                     <button
@@ -373,11 +369,11 @@ export default function Accessories() {
                       className="t-btn-press"
                       style={{
                         width: "100%",
-                        background: "#16A34A",
+                        background: "#D9381E",
                         color: "#FFFFFF",
                         border: "none",
                         padding: "9px 12px",
-                        borderRadius: 14,
+                        borderRadius: 999,
                         fontSize: "clamp(12px, 1.8vw, 13px)",
                         fontWeight: 800,
                         cursor: "pointer",
@@ -385,7 +381,7 @@ export default function Accessories() {
                         alignItems: "center",
                         justifyContent: "center",
                         gap: 6,
-                        boxShadow: "0 4px 12px rgba(22, 163, 74, 0.25)",
+                        boxShadow: "0 3px 10px rgba(217, 56, 30, 0.25)",
                       }}
                     >
                       <span>🛍️</span>

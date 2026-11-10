@@ -2,21 +2,20 @@ import { Link } from "react-router-dom";
 import hummingbirdImg from "../../assets/hummingbird-flight.jpg";
 import CountUp from "../react-bits/CountUp";
 import Magnet from "../react-bits/Magnet";
-import ShinyText from "../react-bits/ShinyText";
 
 export default function AboutBirdSection() {
   return (
     <section
       id="about"
       style={{
-        background: "#FFFFFF",
+        background: "#FAF8F5",
         padding: "clamp(56px, 7vw, 96px) clamp(16px, 4vw, 64px)",
         position: "relative",
         overflow: "hidden",
+        borderTop: "1px solid #E2DDD3",
         fontFamily: "Outfit, system-ui, sans-serif",
       }}
     >
-
       <div
         style={{
           width: "100%",
@@ -45,14 +44,14 @@ export default function AboutBirdSection() {
               maxWidth: 480,
               borderRadius: 28,
               overflow: "hidden",
-              border: "1px solid #E2E8F0",
-              boxShadow: "0 20px 48px rgba(15, 23, 42, 0.08)",
-              background: "#F8FAFC",
+              border: "1px solid #E2DDD3",
+              boxShadow: "0 20px 48px rgba(21, 43, 23, 0.08)",
+              background: "#FFFFFF",
             }}
           >
             <img
               src={hummingbirdImg}
-              alt="Emerald Hummingbird in flight"
+              alt="Hummingbird in flight demonstrating ethical avian agility and vitality"
               style={{
                 width: "100%",
                 height: "auto",
@@ -68,23 +67,21 @@ export default function AboutBirdSection() {
                 position: "absolute",
                 bottom: 18,
                 left: 18,
-                background: "rgba(255, 255, 255, 0.94)",
+                background: "rgba(255, 255, 255, 0.95)",
                 backdropFilter: "blur(12px)",
-                border: "1px solid #DCFCE7",
+                border: "1px solid #B8D4BA",
                 padding: "8px 18px",
                 borderRadius: 999,
                 display: "flex",
                 alignItems: "center",
                 gap: 8,
-                boxShadow: "0 4px 14px rgba(15, 23, 42, 0.08)",
+                boxShadow: "0 4px 14px rgba(21, 43, 23, 0.08)",
               }}
             >
               <span style={{ fontSize: 14 }}>🌿</span>
-              <ShinyText
-                text="100% Ethical Avian Socialization"
-                speed={4}
-                style={{ fontSize: 12, fontWeight: 800 }}
-              />
+              <span style={{ fontSize: 12, fontWeight: 800, color: "#1B3B22" }}>
+                100% Ethical Avian Socialization
+              </span>
             </div>
           </div>
         </div>
@@ -97,14 +94,14 @@ export default function AboutBirdSection() {
               display: "inline-flex",
               alignItems: "center",
               gap: 6,
-              background: "#FFF7ED",
-              border: "1px solid #FED7AA",
+              background: "#E7EFE8",
+              border: "1px solid #B8D4BA",
               padding: "4px 12px",
               borderRadius: 999,
               fontSize: 11,
               fontWeight: 800,
               letterSpacing: 1.2,
-              color: "#EA580C",
+              color: "#1B3B22",
               textTransform: "uppercase",
               marginBottom: 14,
               width: "fit-content",
@@ -120,19 +117,19 @@ export default function AboutBirdSection() {
               fontWeight: 900,
               lineHeight: 1.08,
               letterSpacing: "-0.025em",
-              color: "#0F172A",
+              color: "#152B17",
               margin: "0 0 16px 0",
             }}
           >
             Know more <br />
-            types of <span className="text-emerald-600">Birds</span> <br />
-            with <span className="text-orange-500">FeatherTown</span>
+            types of <span style={{ color: "#1B3B22" }}>Birds</span> <br />
+            with <span style={{ color: "#1B3B22" }}>Feather</span><span style={{ color: "#D9381E" }}>Town</span>
           </h2>
 
           <p
             style={{
               fontSize: 14,
-              color: "#475569",
+              color: "#736B5E",
               lineHeight: 1.65,
               margin: "0 0 24px 0",
               maxWidth: 500,
@@ -149,31 +146,31 @@ export default function AboutBirdSection() {
               gap: 12,
               marginBottom: 28,
               padding: "16px 0",
-              borderTop: "1px solid #F1F5F9",
-              borderBottom: "1px solid #F1F5F9",
+              borderTop: "1px solid #E2DDD3",
+              borderBottom: "1px solid #E2DDD3",
             }}
           >
             <div>
-              <div style={{ fontSize: 22, fontWeight: 900, color: "#16A34A" }}>
+              <div style={{ fontSize: 22, fontWeight: 900, color: "#1B3B22" }}>
                 <CountUp to={1250} duration={2} suffix="+" />
               </div>
-              <div style={{ fontSize: 11, fontWeight: 700, color: "#64748B", marginTop: 2 }}>
+              <div style={{ fontSize: 11, fontWeight: 700, color: "#736B5E", marginTop: 2 }}>
                 Happy Pet Families
               </div>
             </div>
-            <div style={{ borderLeft: "1px solid #E2E8F0", paddingLeft: 12 }}>
-              <div style={{ fontSize: 22, fontWeight: 900, color: "#EA580C" }}>
+            <div style={{ borderLeft: "1px solid #E2DDD3", paddingLeft: 12 }}>
+              <div style={{ fontSize: 22, fontWeight: 900, color: "#D9381E" }}>
                 <CountUp to={100} duration={1.5} suffix="%" />
               </div>
-              <div style={{ fontSize: 11, fontWeight: 700, color: "#64748B", marginTop: 2 }}>
+              <div style={{ fontSize: 11, fontWeight: 700, color: "#736B5E", marginTop: 2 }}>
                 DNA &amp; Vet Certified
               </div>
             </div>
-            <div style={{ borderLeft: "1px solid #E2E8F0", paddingLeft: 12 }}>
-              <div style={{ fontSize: 22, fontWeight: 900, color: "#0F172A" }}>
+            <div style={{ borderLeft: "1px solid #E2DDD3", paddingLeft: 12 }}>
+              <div style={{ fontSize: 22, fontWeight: 900, color: "#152B17" }}>
                 <CountUp to={15} duration={1.5} suffix="+" />
               </div>
-              <div style={{ fontSize: 11, fontWeight: 700, color: "#64748B", marginTop: 2 }}>
+              <div style={{ fontSize: 11, fontWeight: 700, color: "#736B5E", marginTop: 2 }}>
                 Exotic Breeds
               </div>
             </div>
@@ -186,7 +183,7 @@ export default function AboutBirdSection() {
                 to="/about"
                 className="t-btn-press"
                 style={{
-                  background: "#16A34A",
+                  background: "#1B3B22",
                   color: "#FFFFFF",
                   padding: "12px 28px",
                   borderRadius: 999,
@@ -196,12 +193,10 @@ export default function AboutBirdSection() {
                   display: "inline-flex",
                   alignItems: "center",
                   gap: 8,
-                  boxShadow: "0 6px 18px rgba(22, 163, 74, 0.35)",
-                  transition: "box-shadow 0.2s, transform 0.2s",
+                  boxShadow: "0 4px 14px rgba(27, 59, 34, 0.25)",
                 }}
               >
-                <span>Learn More</span>
-                <span style={{ fontSize: 15 }}>→</span>
+                Learn More About Us ›
               </Link>
             </Magnet>
           </div>

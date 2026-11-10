@@ -32,7 +32,7 @@ export default function Home() {
   }, [location.pathname]);
 
   return (
-    <div style={{ background: "#F8FAFC", color: "#0F172A", fontFamily: "Outfit, system-ui, sans-serif", minHeight: "100vh" }}>
+    <div style={{ background: "#F7F5F0", color: "#152B17", fontFamily: "Outfit, system-ui, sans-serif", minHeight: "100vh" }}>
       <SEOHead
         title="FeatherTown | Buy Healthy Hand-Tamed Parrots & Bird Supplies Online in India"
         description="FeatherTown is India's leading ethical avian marketplace. Certified healthy hand-tamed conures, macaws, cockatiels, premium cages, toys, and organic seed blends with fast nationwide delivery."

@@ -65,10 +65,10 @@ export default function BirdsShowcase({ parrots, standalone = false }) {
                 fontSize: 10.5,
                 fontWeight: 800,
                 letterSpacing: 2,
-                color: "#EA580C",
+                color: "#1B3B22",
                 textTransform: "uppercase",
-                background: "#FFF7ED",
-                border: "1px solid #FED7AA",
+                background: "#E7EFE8",
+                border: "1px solid #B8D4BA",
                 padding: "4px 14px",
                 borderRadius: 999,
                 display: "inline-block",
@@ -81,13 +81,13 @@ export default function BirdsShowcase({ parrots, standalone = false }) {
               style={{
                 fontSize: "clamp(24px, 3.5vw, 34px)",
                 fontWeight: 800,
-                color: "#0F172A",
+                color: "#152B17",
                 lineHeight: 1.2,
               }}
             >
               Popular Companion Parrots
             </h2>
-            <p style={{ color: "#64748B", fontSize: 13.5, marginTop: 6 }}>
+            <p style={{ color: "#736B5E", fontSize: 13.5, marginTop: 6 }}>
               Select up to 3 birds to compare traits or chat with our aviary specialists.
             </p>
           </div>
@@ -100,8 +100,8 @@ export default function BirdsShowcase({ parrots, standalone = false }) {
             background: "#FFFFFF",
             borderRadius: 22,
             padding: "16px 20px",
-            border: "1px solid #E2E8F0",
-            boxShadow: "0 2px 12px rgba(15, 23, 42, 0.05)",
+            border: "1px solid #E2DDD3",
+            boxShadow: "0 2px 12px rgba(21, 43, 23, 0.04)",
             marginBottom: 32,
             display: "flex",
             flexDirection: "column",
@@ -116,7 +116,7 @@ export default function BirdsShowcase({ parrots, standalone = false }) {
                 left: 14,
                 top: "50%",
                 transform: "translateY(-50%)",
-                color: "#64748B",
+                color: "#736B5E",
                 display: "flex",
                 alignItems: "center",
               }}
@@ -132,21 +132,21 @@ export default function BirdsShowcase({ parrots, standalone = false }) {
                 width: "100%",
                 padding: "12px 16px 12px 42px",
                 borderRadius: 999,
-                border: "1.5px solid #CBD5E1",
+                border: "1.5px solid #E2DDD3",
                 fontSize: 14,
                 fontFamily: "Outfit, system-ui, sans-serif",
-                background: "#F8FAFC",
-                color: "#0F172A",
+                background: "#FAF8F5",
+                color: "#152B17",
                 outline: "none",
                 transition: "border-color 0.2s ease, background 0.2s ease",
               }}
               onFocus={(e) => {
-                e.target.style.borderColor = "#10B981";
+                e.target.style.borderColor = "#1B3B22";
                 e.target.style.background = "#FFFFFF";
               }}
               onBlur={(e) => {
-                e.target.style.borderColor = "#CBD5E1";
-                e.target.style.background = "#F8FAFC";
+                e.target.style.borderColor = "#E2DDD3";
+                e.target.style.background = "#FAF8F5";
               }}
             />
             {query && (
@@ -160,7 +160,7 @@ export default function BirdsShowcase({ parrots, standalone = false }) {
                   background: "none",
                   border: "none",
                   cursor: "pointer",
-                  color: "#64748B",
+                  color: "#736B5E",
                   fontSize: 14,
                 }}
               >
@@ -188,11 +188,11 @@ export default function BirdsShowcase({ parrots, standalone = false }) {
                     padding: "6px 16px",
                     borderRadius: 999,
                     fontSize: 13,
-                    fontWeight: 600,
+                    fontWeight: active ? 800 : 600,
                     cursor: "pointer",
-                    border: active ? "1.5px solid #059669" : "1.5px solid #E2E8F0",
-                    background: active ? "#16A34A" : "#F8FAFC",
-                    color: active ? "#FFFFFF" : "#475569",
+                    border: active ? "1.5px solid #1B3B22" : "1.5px solid #E2DDD3",
+                    background: active ? "#1B3B22" : "#FAF8F5",
+                    color: active ? "#FFFFFF" : "#152B17",
                     display: "flex",
                     alignItems: "center",
                     gap: 6,
@@ -204,8 +204,8 @@ export default function BirdsShowcase({ parrots, standalone = false }) {
                     style={{
                       fontSize: 11,
                       fontWeight: 800,
-                      background: active ? "rgba(255,255,255,0.25)" : "#E2E8F0",
-                      color: active ? "#FFFFFF" : "#64748B",
+                      background: active ? "rgba(255,255,255,0.25)" : "#E2DDD3",
+                      color: active ? "#FFFFFF" : "#736B5E",
                       padding: "1px 6px",
                       borderRadius: 999,
                     }}
@@ -238,7 +238,7 @@ export default function BirdsShowcase({ parrots, standalone = false }) {
             <button
               style={{
                 marginTop: 16,
-                background: "#16A34A",
+                background: "#1B3B22",
                 color: "#FFFFFF",
                 border: "none",
                 padding: "8px 20px",
@@ -272,16 +272,17 @@ export default function BirdsShowcase({ parrots, standalone = false }) {
             return (
               <SpotlightCard
                 key={p.id}
-                spotlightColor="rgba(22, 163, 74, 0.14)"
-                borderColor="#E2E8F0"
+                spotlightColor="rgba(27, 59, 34, 0.08)"
+                borderColor="#E2DDD3"
                 className="t-hover-lift flex flex-col h-full"
                 style={{
                   borderRadius: 24,
-                  boxShadow: "0 4px 18px rgba(15, 23, 42, 0.04)",
+                  boxShadow: "0 4px 18px rgba(21, 43, 23, 0.04)",
+                  background: "#FFFFFF",
                 }}
               >
                 {/* Photo container */}
-                <div style={{ position: "relative", height: 220, overflow: "hidden", background: "#F1F5F9" }}>
+                <div style={{ position: "relative", height: 220, overflow: "hidden", background: "#FAF8F5" }}>
                   <img
                     src={p.image}
                     alt={p.name}
@@ -306,9 +307,9 @@ export default function BirdsShowcase({ parrots, standalone = false }) {
                       top: 10,
                       left: 10,
                       zIndex: 3,
-                      background: "rgba(255, 255, 255, 0.9)",
+                      background: "rgba(255, 255, 255, 0.95)",
                       backdropFilter: "blur(6px)",
-                      border: "1px solid #CBD5E1",
+                      border: "1px solid #E2DDD3",
                       borderRadius: 8,
                       padding: "4px 8px",
                       display: "flex",
@@ -316,16 +317,16 @@ export default function BirdsShowcase({ parrots, standalone = false }) {
                       gap: 4,
                       fontSize: 11,
                       fontWeight: 700,
-                      color: "#334155",
+                      color: "#152B17",
                       cursor: "pointer",
-                      boxShadow: "0 2px 6px rgba(15, 23, 42, 0.08)",
+                      boxShadow: "0 2px 6px rgba(0, 0, 0, 0.06)",
                     }}
                   >
                     <input
                       type="checkbox"
                       checked={!!isCmp}
                       onChange={() => toggleCompare(p)}
-                      style={{ accentColor: "#10B981", cursor: "pointer" }}
+                      style={{ accentColor: "#1B3B22", cursor: "pointer" }}
                     />
                     Compare
                   </label>
@@ -334,9 +335,9 @@ export default function BirdsShowcase({ parrots, standalone = false }) {
                   <div style={{ position: "absolute", top: 10, right: 10, zIndex: 2 }}>
                     <span
                       style={{
-                        background: isAvailable ? "#ECFDF5" : "#FEF2F2",
-                        color: isAvailable ? "#059669" : "#DC2626",
-                        border: `1px solid ${isAvailable ? "#A7F3D0" : "#FECACA"}`,
+                        background: isAvailable ? "#E7EFE8" : "#FDECE8",
+                        color: isAvailable ? "#1B3B22" : "#D9381E",
+                        border: `1px solid ${isAvailable ? "#B8D4BA" : "#F4B8AC"}`,
                         borderRadius: 999,
                         padding: "3px 10px",
                         fontSize: 10.5,
@@ -352,7 +353,7 @@ export default function BirdsShowcase({ parrots, standalone = false }) {
                           width: 5,
                           height: 5,
                           borderRadius: "50%",
-                          background: isAvailable ? "#10B981" : "#EF4444",
+                          background: isAvailable ? "#1B3B22" : "#D9381E",
                         }}
                       />
                       {isAvailable ? "Available" : "Sold Out"}
@@ -366,17 +367,17 @@ export default function BirdsShowcase({ parrots, standalone = false }) {
                       bottom: 10,
                       left: 10,
                       zIndex: 2,
-                      background: "rgba(255, 255, 255, 0.9)",
+                      background: "rgba(255, 255, 255, 0.95)",
                       backdropFilter: "blur(6px)",
-                      color: "#059669",
-                      border: "1px solid rgba(16, 185, 129, 0.3)",
+                      color: "#1B3B22",
+                      border: "1px solid #B8D4BA",
                       fontSize: 10,
                       fontWeight: 800,
                       padding: "3px 10px",
                       borderRadius: 999,
                       letterSpacing: 0.5,
                       textTransform: "uppercase",
-                      boxShadow: "0 2px 6px rgba(15, 23, 42, 0.08)",
+                      boxShadow: "0 2px 6px rgba(0, 0, 0, 0.06)",
                     }}
                   >
                     {p.category}
@@ -389,13 +390,13 @@ export default function BirdsShowcase({ parrots, standalone = false }) {
                       bottom: 10,
                       right: 10,
                       zIndex: 2,
-                      background: "rgba(255, 255, 255, 0.85)",
-                      color: "#475569",
+                      background: "rgba(255, 255, 255, 0.9)",
+                      color: "#736B5E",
                       fontSize: 10,
                       padding: "3px 8px",
                       borderRadius: 6,
                       backdropFilter: "blur(4px)",
-                      border: "1px solid #E2E8F0",
+                      border: "1px solid #E2DDD3",
                       pointerEvents: "none",
                     }}
                   >
@@ -411,7 +412,7 @@ export default function BirdsShowcase({ parrots, standalone = false }) {
                         fontFamily: "Outfit, system-ui, sans-serif",
                         fontWeight: 800,
                         fontSize: 18,
-                        color: "#0F172A",
+                        color: "#152B17",
                         lineHeight: 1.25,
                       }}
                     >
@@ -421,9 +422,9 @@ export default function BirdsShowcase({ parrots, standalone = false }) {
                       style={{
                         fontWeight: 800,
                         fontSize: 13,
-                        color: "#059669",
-                        background: "#ECFDF5",
-                        border: "1px solid #A7F3D0",
+                        color: "#1B3B22",
+                        background: "#E7EFE8",
+                        border: "1px solid #B8D4BA",
                         padding: "3px 10px",
                         borderRadius: 8,
                         flexShrink: 0,
@@ -436,7 +437,7 @@ export default function BirdsShowcase({ parrots, standalone = false }) {
 
                   <p
                     style={{
-                      color: "#64748B",
+                      color: "#736B5E",
                       fontSize: 13,
                       lineHeight: 1.6,
                       marginBottom: savedAnswers ? 10 : 16,
@@ -462,7 +463,7 @@ export default function BirdsShowcase({ parrots, standalone = false }) {
                       display: "flex",
                       justifyContent: "space-between",
                       alignItems: "center",
-                      borderTop: "1px solid #F1F5F9",
+                      borderTop: "1px solid #E2DDD3",
                       paddingTop: 14,
                       gap: 8,
                     }}
@@ -470,17 +471,14 @@ export default function BirdsShowcase({ parrots, standalone = false }) {
                     <Link
                       to={`/breed/${p.id}`}
                       style={{
-                        color: "#059669",
-                        fontWeight: 700,
+                        color: "#1B3B22",
+                        fontWeight: 800,
                         fontSize: 13,
                         textDecoration: "none",
                         display: "flex",
                         alignItems: "center",
                         gap: 4,
-                        transition: "color 0.2s",
                       }}
-                      onMouseEnter={(e) => (e.currentTarget.style.color = "#047857")}
-                      onMouseLeave={(e) => (e.currentTarget.style.color = "#059669")}
                     >
                       Care Details →
                     </Link>
@@ -490,17 +488,17 @@ export default function BirdsShowcase({ parrots, standalone = false }) {
                       target="_blank"
                       rel="noreferrer"
                       style={{
-                        background: "#16A34A",
+                        background: "#1B3B22",
                         color: "#FFFFFF",
                         padding: "8px 14px",
-                        borderRadius: 10,
+                        borderRadius: 999,
                         fontSize: 12,
                         fontWeight: 700,
                         textDecoration: "none",
                         display: "inline-flex",
                         alignItems: "center",
                         gap: 5,
-                        boxShadow: "0 3px 10px rgba(16, 185, 129, 0.25)",
+                        boxShadow: "0 2px 8px rgba(27, 59, 34, 0.2)",
                         transition: "transform 0.2s",
                       }}
                       onMouseEnter={(e) => (e.currentTarget.style.transform = "translateY(-1px)")}
@@ -578,7 +576,7 @@ export default function BirdsShowcase({ parrots, standalone = false }) {
             left: "50%",
             transform: "translateX(-50%)",
             background: "#FFFFFF",
-            border: "1.5px solid #10B981",
+            border: "1.5px solid #1B3B22",
             borderRadius: "clamp(16px, 4vw, 999px)",
             padding: "10px clamp(12px, 3vw, 20px)",
             zIndex: 500,
@@ -586,13 +584,13 @@ export default function BirdsShowcase({ parrots, standalone = false }) {
             alignItems: "center",
             justifyContent: "center",
             gap: 10,
-            boxShadow: "0 14px 40px rgba(15, 23, 42, 0.15)",
+            boxShadow: "0 14px 40px rgba(21, 43, 23, 0.15)",
             maxWidth: "calc(100vw - 24px)",
             width: "max-content",
             flexWrap: "wrap",
           }}
         >
-          <span style={{ fontSize: 12, fontWeight: 800, color: "#059669", textTransform: "uppercase", letterSpacing: 0.5 }}>
+          <span style={{ fontSize: 12, fontWeight: 800, color: "#1B3B22", textTransform: "uppercase", letterSpacing: 0.5 }}>
             Compare ({compared.length}/3)
           </span>
 
@@ -603,13 +601,13 @@ export default function BirdsShowcase({ parrots, standalone = false }) {
                 display: "flex",
                 alignItems: "center",
                 gap: 6,
-                background: "#ECFDF5",
-                border: "1px solid #A7F3D0",
+                background: "#E7EFE8",
+                border: "1px solid #B8D4BA",
                 borderRadius: 999,
                 padding: "4px 10px",
                 fontSize: 12,
                 fontWeight: 700,
-                color: "#065F46",
+                color: "#1B3B22",
               }}
             >
               <span>{p.name}</span>
@@ -619,7 +617,7 @@ export default function BirdsShowcase({ parrots, standalone = false }) {
                   background: "none",
                   border: "none",
                   cursor: "pointer",
-                  color: "#059669",
+                  color: "#1B3B22",
                   display: "flex",
                   padding: 0,
                   fontSize: 12,
@@ -635,7 +633,7 @@ export default function BirdsShowcase({ parrots, standalone = false }) {
             target="_blank"
             rel="noreferrer"
             style={{
-              background: "#16A34A",
+              background: "#1B3B22",
               color: "#FFFFFF",
               padding: "7px 16px",
               borderRadius: 999,
@@ -646,7 +644,7 @@ export default function BirdsShowcase({ parrots, standalone = false }) {
               alignItems: "center",
               gap: 5,
               marginLeft: "auto",
-              boxShadow: "0 4px 14px rgba(16, 185, 129, 0.25)",
+              boxShadow: "0 2px 8px rgba(27, 59, 34, 0.2)",
             }}
           >
             <WAIco /> Compare on WhatsApp

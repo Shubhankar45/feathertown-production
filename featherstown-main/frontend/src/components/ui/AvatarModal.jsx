@@ -112,7 +112,7 @@ export default function AvatarModal({
                 textAlign: "center",
                 marginTop: 10,
                 fontSize: 13,
-                color: "#059669",
+                color: "#1B3B22",
                 fontWeight: 700,
               }}
             >

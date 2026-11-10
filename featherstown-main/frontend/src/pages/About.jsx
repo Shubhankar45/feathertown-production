@@ -19,7 +19,7 @@ export default function About() {
     "We set out to create a sanctuary where every conure, cockatiel, and macaw receives proper hand-feeding, human bonding, natural flight exercise, and certified avian veterinary checks before joining a family.";
 
   return (
-    <div style={{ background: "#F8FAFC", color: "#0F172A", fontFamily: "Outfit, system-ui, sans-serif", minHeight: "100vh" }}>
+    <div style={{ background: "#F7F5F0", color: "#152B17", fontFamily: "Outfit, system-ui, sans-serif", minHeight: "100vh" }}>
       <SEOHead
         title="About FeatherTown | Ethical Avian Breeding & Lifetime Care in India"
         description="Learn about FeatherTown's mission: ethical hand-tamed companion birds, certified veterinarian inspections, lifetime nutrition advice, and safe habitats across India."
@@ -40,8 +40,8 @@ export default function About() {
             background: "#FFFFFF",
             borderRadius: 28,
             padding: "clamp(24px, 4vw, 48px) clamp(16px, 4vw, 36px)",
-            border: "1px solid #E2E8F0",
-            boxShadow: "0 2px 10px rgba(15, 23, 42, 0.04)",
+            border: "1px solid #E2DDD3",
+            boxShadow: "0 2px 10px rgba(21, 43, 23, 0.04)",
             marginBottom: 40,
             display: "grid",
             gridTemplateColumns: "repeat(auto-fit, minmax(min(100%, 280px), 1fr))",
@@ -55,10 +55,10 @@ export default function About() {
                 fontSize: 11.5,
                 fontWeight: 800,
                 letterSpacing: 1.2,
-                color: "#059669",
+                color: "#1B3B22",
                 textTransform: "uppercase",
-                background: "#ECFDF5",
-                border: "1px solid #A7F3D0",
+                background: "#E7EFE8",
+                border: "1px solid #B8D4BA",
                 padding: "4px 12px",
                 borderRadius: 99,
                 display: "inline-block",
@@ -72,7 +72,7 @@ export default function About() {
               style={{
                 fontSize: "clamp(24px, 3.5vw, 36px)",
                 fontWeight: 800,
-                color: "#0F172A",
+                color: "#152B17",
                 lineHeight: 1.2,
                 marginBottom: 16,
               }}
@@ -80,11 +80,11 @@ export default function About() {
               {title}
             </h2>
 
-            <p style={{ fontSize: 15, color: "#475569", lineHeight: 1.75, marginBottom: 14 }}>
+            <p style={{ fontSize: 15, color: "#736B5E", lineHeight: 1.75, marginBottom: 14 }}>
               {story}
             </p>
 
-            <p style={{ fontSize: 15, color: "#475569", lineHeight: 1.75, marginBottom: 20 }}>
+            <p style={{ fontSize: 15, color: "#736B5E", lineHeight: 1.75, marginBottom: 20 }}>
               {mission}
             </p>
 
@@ -93,14 +93,14 @@ export default function About() {
                 to="/birds"
                 className="ft-btn-hover"
                 style={{
-                  background: "#16A34A",
+                  background: "#1B3B22",
                   color: "#FFFFFF",
                   padding: "12px 26px",
                   borderRadius: 999,
                   fontWeight: 700,
                   fontSize: 14,
                   textDecoration: "none",
-                  boxShadow: "0 4px 14px rgba(16, 185, 129, 0.25)",
+                  boxShadow: "0 4px 14px rgba(27, 59, 34, 0.25)",
                 }}
               >
                 Browse Companion Birds →
@@ -109,93 +109,86 @@ export default function About() {
                 to="/contact"
                 className="ft-btn-hover"
                 style={{
-                  background: "#F8FAFC",
-                  color: "#0F172A",
-                  border: "1.5px solid #CBD5E1",
-                  padding: "11px 22px",
+                  background: "#FAF8F5",
+                  color: "#152B17",
+                  border: "1.5px solid #E2DDD3",
+                  padding: "11px 24px",
                   borderRadius: 999,
-                  fontWeight: 600,
+                  fontWeight: 700,
                   fontSize: 14,
                   textDecoration: "none",
                 }}
               >
-                Contact Avian Team
+                Get in Touch
               </Link>
             </div>
           </div>
 
-          <div style={{ position: "relative", textAlign: "center" }} className="rv-right">
-            <div
-              className="ft-animate-float-slow"
+          <div className="rv-right" style={{ display: "flex", justifyContent: "center" }}>
+            <img
+              src={heroImg}
+              alt="FeatherTown aviary sanctuary companion bird"
               style={{
-                borderRadius: 24,
-                overflow: "hidden",
-                background: "#F8FAFC",
-                border: "1px solid #E2E8F0",
-                padding: "24px 20px",
-                boxShadow: "0 2px 10px rgba(15, 23, 42, 0.04)",
+                width: "100%",
+                maxWidth: 420,
+                borderRadius: 22,
+                objectFit: "cover",
+                boxShadow: "0 10px 30px rgba(21, 43, 23, 0.08)",
               }}
-            >
-              <img
-                src={heroImg || sunImg}
-                alt="FeatherTown Aviary"
-                style={{
-                  maxWidth: "90%",
-                  maxHeight: 340,
-                  objectFit: "contain",
-                  filter: "drop-shadow(0 12px 20px rgba(15,23,42,0.1))",
-                  transition: "transform 0.4s ease",
-                }}
-              />
+            />
+          </div>
+        </div>
+
+        {/* 4 Pillars Grid */}
+        <div style={{ marginBottom: 48 }}>
+          <div style={{ textAlign: "center", marginBottom: 28 }}>
+            <h3 style={{ fontSize: "clamp(22px, 3vw, 28px)", fontWeight: 800, color: "#152B17" }}>
+              The Four FeatherTown Commitments
+            </h3>
+            <p style={{ fontSize: 14, color: "#736B5E", marginTop: 4 }}>
+              How we protect bird welfare, owner education, and transparent pet parenting across India.
+            </p>
+          </div>
+
+          <div
+            className="rv-stagger"
+            style={{
+              display: "grid",
+              gridTemplateColumns: "repeat(auto-fit, minmax(min(100%, 240px), 1fr))",
+              gap: 20,
+            }}
+          >
+            <div style={pillarCard}>
+              <div style={pillarIcon}>🩺</div>
+              <div style={pillarTitle}>1. Certified Avian Health</div>
+              <div style={pillarText}>
+                Every bird is examined by certified avian specialists, free from psittacine beak and feather disease (PBFD), parasites, and respiratory issues before adoption.
+              </div>
             </div>
-          </div>
-        </div>
 
-        {/* 4 Pillars of Excellence (Matches Reference Aesthetics) */}
-        <div className="rv" style={{ marginBottom: 24, textAlign: "center" }}>
-          <h3 style={{ fontSize: 26, fontWeight: 800, color: "#0F172A" }}>Our Four Guiding Commitments</h3>
-          <p style={{ fontSize: 14, color: "#64748B", marginTop: 4 }}>Why thousands of bird parents trust FeatherTown</p>
-        </div>
+            <div style={pillarCard}>
+              <div style={pillarIcon}>🧬</div>
+              <div style={pillarTitle}>2. DNA Sex Certification</div>
+              <div style={pillarText}>
+                Monomorphic parrots receive lab-verified DNA feather/blood testing so you know your companion's biological gender with 99.9% certainty.
+              </div>
+            </div>
 
-        <div
-          className="rv-stagger"
-          style={{
-            display: "grid",
-            gridTemplateColumns: "repeat(auto-fit, minmax(min(100%, 220px), 1fr))",
-            gap: "clamp(14px, 2.5vw, 20px)",
-            marginBottom: 48,
-          }}
-        >
-          <div className="ft-card-lift" style={pillarCard}>
-            <div style={pillarIcon}>🩺</div>
-            <h4 style={pillarTitle}>Avian Vet Certification</h4>
-            <p style={pillarText}>
-              Every bird undergoes health screenings, beak &amp; feather virus checks, and nutritional evaluation before rehoming.
-            </p>
-          </div>
+            <div style={pillarCard}>
+              <div style={pillarIcon}>🤝</div>
+              <div style={pillarTitle}>3. Hand-Fed Socialization</div>
+              <div style={pillarText}>
+                We do not sell wild-caught birds. Every hatchling is spoon or syringe raised with warm hand-feeding formula and gentle human touch from day 14 onwards.
+              </div>
+            </div>
 
-          <div className="ft-card-lift" style={pillarCard}>
-            <div style={pillarIcon}>🤝</div>
-            <h4 style={pillarTitle}>Hand-Tamed Bonding</h4>
-            <p style={pillarText}>
-              Raised alongside human family members with gentle socialization, step-up training, and recall exercises.
-            </p>
-          </div>
-
-          <div className="ft-card-lift" style={pillarCard}>
-            <div style={pillarIcon}>🌾</div>
-            <h4 style={pillarTitle}>100% Non-Toxic &amp; Organic</h4>
-            <p style={pillarText}>
-              All cages, perches, toys, and seed mixes are free from zinc, lead, artificial dyes, and dangerous chemicals.
-            </p>
-          </div>
-
-          <div className="ft-card-lift" style={pillarCard}>
-            <div style={pillarIcon}>💚</div>
-            <h4 style={pillarTitle}>Lifetime Avian Mentorship</h4>
-            <p style={pillarText}>
-              Our WhatsApp support remains open for life. Diet questions, behavior troubleshooting, or vet advice — we are always here.
-            </p>
+            <div style={pillarCard}>
+              <div style={pillarIcon}>💬</div>
+              <div style={pillarTitle}>4. Lifetime Mentor WhatsApp</div>
+              <div style={pillarText}>
+                Adopting is just day one. Our avian care line stays open for weaning, cage setup questions, behavioral guidance, and diet adjustments for the bird's entire lifespan.
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -207,17 +200,17 @@ const pillarCard = {
   background: "#FFFFFF",
   borderRadius: 22,
   padding: "26px 22px",
-  border: "1px solid #E2E8F0",
-  boxShadow: "0 2px 10px rgba(15, 23, 42, 0.04)",
+  border: "1px solid #E2DDD3",
+  boxShadow: "0 2px 10px rgba(21, 43, 23, 0.04)",
 };
 
 const pillarIcon = {
   width: 50,
   height: 50,
   borderRadius: 14,
-  background: "#ECFDF5",
-  border: "1px solid #A7F3D0",
-  color: "#059669",
+  background: "#E7EFE8",
+  border: "1px solid #B8D4BA",
+  color: "#1B3B22",
   display: "flex",
   alignItems: "center",
   justifyContent: "center",
@@ -228,12 +221,12 @@ const pillarIcon = {
 const pillarTitle = {
   fontSize: 16,
   fontWeight: 800,
-  color: "#0F172A",
+  color: "#152B17",
   marginBottom: 6,
 };
 
 const pillarText = {
   fontSize: 13,
-  color: "#64748B",
+  color: "#736B5E",
   lineHeight: 1.6,
 };

@@ -1,6 +1,10 @@
 /* ═══════════════════════════════════════════════════════════════
    Feathers Town — Smart Chat Assistant
    /components/ChatAssistant/ChatAssistant.jsx
+   Strict 60-30-10 Palette:
+   60% Oat Milk (#F7F5F0, #FAF8F5, #FFFFFF, #E2DDD3)
+   30% Forest Green (#1B3B22, #152B17, #E7EFE8)
+   10% Tomato Red (#D9381E)
 ═══════════════════════════════════════════════════════════════ */
 import { useState, useRef, useEffect, useCallback } from "react";
 import { detectIntent, extractBudget, filterByIntent, buildChatReply } from "../../utils/recommendation";
@@ -24,7 +28,7 @@ function TypingDots() {
       {[0, 1, 2].map(i => (
         <div key={i} style={{
           width: 7, height: 7, borderRadius: "50%",
-          background: "var(--leaf2)",
+          background: "#1B3B22",
           animation: `chatBounce .9s ease-in-out ${i * 0.18}s infinite`,
         }} />
       ))}
@@ -39,34 +43,31 @@ function BirdChip({ parrot }) {
   return (
     <div style={{
       display: "flex", alignItems: "center", gap: 10,
-      background: "var(--j0)", border: "1px solid rgba(34,197,94,.15)",
+      background: "#FFFFFF", border: "1px solid #E2DDD3",
       borderRadius: 12, padding: "8px 10px",
-      transition: "transform .25s cubic-bezier(.34,1.56,.64,1), border-color .2s",
+      transition: "transform .2s, border-color .2s",
     }}
-      onMouseEnter={e => { e.currentTarget.style.transform = "translateY(-2px)"; e.currentTarget.style.borderColor = "rgba(34,197,94,.35)"; }}
-      onMouseLeave={e => { e.currentTarget.style.transform = "none"; e.currentTarget.style.borderColor = "rgba(34,197,94,.15)"; }}
+      onMouseEnter={e => { e.currentTarget.style.transform = "translateY(-2px)"; e.currentTarget.style.borderColor = "#1B3B22"; }}
+      onMouseLeave={e => { e.currentTarget.style.transform = "none"; e.currentTarget.style.borderColor = "#E2DDD3"; }}
     >
       <img src={parrot.image} alt={parrot.name}
         style={{ width: 44, height: 44, borderRadius: 8, objectFit: "cover", flexShrink: 0 }} />
       <div style={{ flex: 1, minWidth: 0 }}>
-        <div style={{ fontFamily: "var(--font-d)", fontSize: 14, fontWeight: 500, color: "var(--cream)", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
+        <div style={{ fontSize: 13.5, fontWeight: 700, color: "#152B17", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
           {parrot.name}
         </div>
-        <div style={{ fontSize: 11, fontWeight: 700, color: "var(--leaf)" }}>{parrot.price}</div>
+        <div style={{ fontSize: 12, fontWeight: 800, color: "#1B3B22" }}>{parrot.price}</div>
       </div>
       <a href={WA(parrot.name, waNum)} target="_blank" rel="noreferrer"
         onClick={e => e.stopPropagation()}
         style={{
           display: "inline-flex", alignItems: "center", gap: 4,
-          background: "linear-gradient(135deg,#1a9b48,#128036)",
-          color: "#fff", padding: "5px 10px", borderRadius: 8,
-          fontSize: 10.5, fontWeight: 700, textDecoration: "none",
-          fontFamily: "var(--font-b)", flexShrink: 0, whiteSpace: "nowrap",
+          background: "#1B3B22",
+          color: "#FFFFFF", padding: "6px 12px", borderRadius: 999,
+          fontSize: 11, fontWeight: 800, textDecoration: "none",
+          flexShrink: 0, whiteSpace: "nowrap",
         }}>
-        <svg width={10} height={10} viewBox="0 0 24 24" fill="currentColor">
-          <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z" />
-        </svg>
-        Ask
+        <span>Ask</span>
       </a>
     </div>
   );
@@ -76,31 +77,31 @@ const css = `
 @keyframes chatSlideUp{from{opacity:0;transform:translateY(20px) scale(.95);}to{opacity:1;transform:translateY(0) scale(1);}}
 @keyframes chatFadeIn{from{opacity:0;transform:translateY(8px);}to{opacity:1;transform:none;}}
 @keyframes chatBounce{0%,80%,100%{transform:scale(0);}40%{transform:scale(1);}}
-@keyframes chatPulse{0%{box-shadow:0 0 0 0 rgba(34,197,94,.5);}70%{box-shadow:0 0 0 10px rgba(34,197,94,0);}100%{box-shadow:0 0 0 0 rgba(34,197,94,0);}}
+@keyframes chatPulse{0%{box-shadow:0 0 0 0 rgba(27,59,34,.4);}70%{box-shadow:0 0 0 10px rgba(27,59,34,0);}100%{box-shadow:0 0 0 0 rgba(27,59,34,0);}}
 .chat-msg{animation:chatFadeIn .32s cubic-bezier(.16,1,.3,1) both;}
 .chat-input{
   flex:1;background:transparent;border:none;outline:none;
-  font-family:var(--font-b);font-size:13.5px;color:var(--cream);
+  font-size:13.5px;color:#152B17;font-family:Outfit,system-ui,sans-serif;
 }
-.chat-input::placeholder{color:var(--ghost);}
+.chat-input::placeholder{color:#736B5E;}
 .chat-send-btn{
-  width:32px;height:32px;border-radius:50%;
-  background:linear-gradient(135deg,var(--leaf),var(--orange));
+  width:34px;height:34px;border-radius:50%;
+  background:#D9381E;
   border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;
   flex-shrink:0;color:#fff;font-size:13px;
-  box-shadow:0 3px 10px rgba(249,115,22,.35);
-  transition:transform .25s cubic-bezier(.34,1.56,.64,1),box-shadow .2s;
+  box-shadow:0 2px 8px rgba(217,56,30,.3);
+  transition:transform .2s,box-shadow .2s;
 }
-.chat-send-btn:hover{transform:scale(1.12);box-shadow:0 6px 18px rgba(249,115,22,.45);}
+.chat-send-btn:hover{transform:scale(1.08);}
 .chat-send-btn:disabled{opacity:.4;cursor:not-allowed;transform:none!important;}
 .chat-chip{
-  padding:5px 12px;border-radius:999px;font-size:11px;font-weight:600;
-  border:1.5px solid rgba(249,115,22,.2);background:rgba(249,115,22,.05);
-  color:var(--orange2);cursor:pointer;font-family:var(--font-b);white-space:nowrap;
-  transition:border-color .18s,background .18s,transform .22s cubic-bezier(.34,1.56,.64,1);
+  padding:5px 12px;border-radius:999px;font-size:11px;font-weight:700;
+  border:1px solid #E2DDD3;background:#FAF8F5;
+  color:#1B3B22;cursor:pointer;white-space:nowrap;
+  transition:border-color .18s,background .18s,transform .2s;
   flex-shrink:0;
 }
-.chat-chip:hover{border-color:var(--orange);background:rgba(249,115,22,.12);transform:translateY(-2px);}
+.chat-chip:hover{border-color:#1B3B22;background:#E7EFE8;transform:translateY(-1px);}
 `;
 
 let msgId = 0;
@@ -160,35 +161,34 @@ export default function ChatAssistant({ parrots = [] }) {
     <>
       <style>{css}</style>
 
-      {/* Floating toggle button — sits just above the back-to-top button */}
+      {/* Floating toggle button */}
       <button
         onClick={() => { setOpen(o => !o); setUnread(0); }}
         aria-label="Open bird advisor chat"
         style={{
           position: "fixed", bottom: "clamp(60px, 8vh, 68px)", right: "clamp(12px, 3vw, 28px)", zIndex: 490,
           width: 50, height: 50, borderRadius: "50%",
-          background: open
-            ? "linear-gradient(135deg,#e74c3c,#c0392b)"
-            : "linear-gradient(135deg,var(--leaf),var(--orange))",
+          background: open ? "#D9381E" : "#1B3B22",
           border: "none", cursor: "pointer",
           display: "flex", alignItems: "center", justifyContent: "center",
           fontSize: open ? 19 : 23,
-          boxShadow: "0 6px 22px rgba(249,115,22,.38)",
+          boxShadow: "0 6px 20px rgba(27,59,34,.3)",
           animation: open ? "none" : "chatPulse 2.8s ease-out infinite",
-          transition: "background .3s, transform .3s cubic-bezier(.34,1.56,.64,1)",
+          transition: "background .3s, transform .2s",
+          color: "#FFFFFF",
         }}
-        onMouseEnter={e => (e.currentTarget.style.transform = "scale(1.1)")}
+        onMouseEnter={e => (e.currentTarget.style.transform = "scale(1.08)")}
         onMouseLeave={e => (e.currentTarget.style.transform = "scale(1)")}
       >
         {open ? "✕" : "🪶"}
         {unread > 0 && !open && (
-          <span className="ft-animate-badge-pulse" style={{
+          <span style={{
             position: "absolute", top: -3, right: -3,
             width: 18, height: 18, borderRadius: "50%",
-            background: "#EA580C", color: "#fff",
+            background: "#D9381E", color: "#fff",
             fontSize: 9, fontWeight: 800,
             display: "flex", alignItems: "center", justifyContent: "center",
-            border: "2px solid var(--j0)",
+            border: "2px solid #FFFFFF",
           }}>{unread}</span>
         )}
       </button>
@@ -199,40 +199,41 @@ export default function ChatAssistant({ parrots = [] }) {
           position: "fixed", bottom: "clamp(115px, 15vh, 130px)", right: "clamp(12px, 3vw, 28px)", zIndex: 490,
           width: "min(380px, calc(100vw - 24px))",
           background: "#FFFFFF",
-          border: "1px solid #FED7AA",
+          border: "1px solid #E2DDD3",
           borderRadius: 20,
-          boxShadow: "0 24px 60px rgba(15, 23, 42, 0.16), 0 4px 16px rgba(15, 23, 42, 0.06)",
+          boxShadow: "0 24px 60px rgba(21, 43, 23, 0.12), 0 4px 16px rgba(0, 0, 0, 0.04)",
           display: "flex", flexDirection: "column",
           overflow: "hidden",
           animation: "chatSlideUp .32s cubic-bezier(.16,1,.3,1) both",
           maxHeight: "min(540px, calc(100vh - 140px))",
+          fontFamily: "Outfit, system-ui, sans-serif",
         }}>
 
           {/* Header */}
           <div style={{
-            background: "linear-gradient(135deg,var(--leaf),var(--orange))",
+            background: "#1B3B22",
             padding: "13px 15px",
             display: "flex", alignItems: "center", gap: 10,
             flexShrink: 0,
           }}>
             <div style={{
               width: 36, height: 36, borderRadius: "50%",
-              background: "rgba(255,255,255,.2)",
+              background: "#FAF8F5",
               display: "flex", alignItems: "center", justifyContent: "center",
               fontSize: 18, flexShrink: 0,
             }}>🦜</div>
             <div style={{ flex: 1 }}>
-              <div style={{ fontWeight: 700, fontSize: 13.5, color: "#fff" }}>Bird Advisor</div>
+              <div style={{ fontWeight: 800, fontSize: 13.5, color: "#FFFFFF" }}>Bird Advisor</div>
               <div style={{ display: "flex", alignItems: "center", gap: 5 }}>
-                <div style={{ width: 6, height: 6, borderRadius: "50%", background: "#a3f0b5" }} />
-                <span style={{ fontSize: 10.5, color: "rgba(255,255,255,.8)" }}>Online · Feathers Town</span>
+                <div style={{ width: 6, height: 6, borderRadius: "50%", background: "#B8D4BA" }} />
+                <span style={{ fontSize: 10.5, color: "#FAF8F5" }}>Online · Feathers Town</span>
               </div>
             </div>
             <button onClick={() => setOpen(false)} style={{
               background: "rgba(255,255,255,.15)", border: "none",
               borderRadius: "50%", width: 28, height: 28,
               display: "flex", alignItems: "center", justifyContent: "center",
-              cursor: "pointer", color: "#fff", fontSize: 14,
+              cursor: "pointer", color: "#FFFFFF", fontSize: 14,
             }}>✕</button>
           </div>
 
@@ -241,7 +242,8 @@ export default function ChatAssistant({ parrots = [] }) {
             padding: "10px 12px 8px",
             display: "flex", gap: 6, flexWrap: "nowrap",
             overflowX: "auto", flexShrink: 0,
-            borderBottom: "1px solid rgba(34,197,94,.07)",
+            borderBottom: "1px solid #E2DDD3",
+            background: "#FAF8F5",
             scrollbarWidth: "none",
           }}>
             {SUGGESTIONS.map(s => (
@@ -255,7 +257,8 @@ export default function ChatAssistant({ parrots = [] }) {
           <div style={{
             flex: 1, overflowY: "auto", padding: "14px 14px 8px",
             display: "flex", flexDirection: "column", gap: 10,
-            scrollbarWidth: "thin", scrollbarColor: "var(--leaf2) transparent",
+            background: "#F7F5F0",
+            scrollbarWidth: "thin",
           }}>
             {messages.map(msg => (
               <div key={msg.id} className="chat-msg" style={{
@@ -267,14 +270,12 @@ export default function ChatAssistant({ parrots = [] }) {
                 {msg.type === "text" && (
                   <div style={{
                     maxWidth: "82%",
-                    background: msg.from === "user"
-                      ? "linear-gradient(135deg,var(--leaf),var(--leaf2))"
-                      : "var(--j2)",
-                    color: msg.from === "user" ? "#fff" : "var(--fog)",
-                    border: msg.from === "bot" ? "1px solid rgba(34,197,94,.1)" : "none",
+                    background: msg.from === "user" ? "#1B3B22" : "#FFFFFF",
+                    color: msg.from === "user" ? "#FFFFFF" : "#152B17",
+                    border: msg.from === "bot" ? "1px solid #E2DDD3" : "none",
                     borderRadius: msg.from === "user" ? "18px 18px 4px 18px" : "18px 18px 18px 4px",
                     padding: "10px 14px",
-                    fontSize: 13.5, lineHeight: 1.7,
+                    fontSize: 13.5, lineHeight: 1.6,
                   }}>
                     {msg.text}
                   </div>
@@ -290,7 +291,7 @@ export default function ChatAssistant({ parrots = [] }) {
             {typing && (
               <div style={{ display: "flex", justifyContent: "flex-start" }}>
                 <div style={{
-                  background: "var(--j2)", border: "1px solid rgba(34,197,94,.1)",
+                  background: "#FFFFFF", border: "1px solid #E2DDD3",
                   borderRadius: "18px 18px 18px 4px",
                 }}>
                   <TypingDots />
@@ -303,9 +304,9 @@ export default function ChatAssistant({ parrots = [] }) {
           {/* Input bar */}
           <div style={{
             padding: "10px 12px",
-            borderTop: "1px solid rgba(34,197,94,.08)",
+            borderTop: "1px solid #E2DDD3",
             display: "flex", alignItems: "center", gap: 8,
-            background: "var(--j1)", flexShrink: 0,
+            background: "#FAF8F5", flexShrink: 0,
           }}>
             <input
               ref={inputRef}
@@ -315,15 +316,15 @@ export default function ChatAssistant({ parrots = [] }) {
               onKeyDown={handleKeyDown}
               placeholder="Ask about any bird…"
               style={{
-                flex: 1, background: "var(--j2)",
-                border: "1.5px solid rgba(34,197,94,.11)",
+                flex: 1, background: "#FFFFFF",
+                border: "1.5px solid #E2DDD3",
                 borderRadius: 20, padding: "9px 14px",
-                fontSize: 13, fontFamily: "var(--font-b)",
-                color: "var(--cream)", outline: "none",
+                fontSize: 13,
+                color: "#152B17", outline: "none",
                 transition: "border-color .2s",
               }}
-              onFocus={e => (e.target.style.borderColor = "var(--leaf2)")}
-              onBlur={e => (e.target.style.borderColor = "rgba(34,197,94,.11)")}
+              onFocus={e => (e.target.style.borderColor = "#1B3B22")}
+              onBlur={e => (e.target.style.borderColor = "#E2DDD3")}
             />
             <button
               className="chat-send-btn"

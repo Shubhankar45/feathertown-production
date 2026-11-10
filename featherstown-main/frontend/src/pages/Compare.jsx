@@ -7,7 +7,7 @@ export default function ComparePage() {
   const { birds } = useBirds();
 
   return (
-    <div style={{ background: "#F8FAFC", color: "#0F172A", fontFamily: "Outfit, system-ui, sans-serif", minHeight: "100vh" }}>
+    <div style={{ background: "#F7F5F0", color: "#152B17", fontFamily: "Outfit, system-ui, sans-serif", minHeight: "100vh" }}>
       <SEOHead
         title="Compare Parrot Breeds Side-by-Side | FeatherTown"
         description="Compare Conures, Cockatiels, African Grey, and Macaws on noise level, talking ability, lifespan, care difficulty, and price."

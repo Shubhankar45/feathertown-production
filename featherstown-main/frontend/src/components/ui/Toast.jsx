@@ -20,10 +20,10 @@ export const toast = {
 };
 
 const T_CFG = {
-  success: { icon: "✓", pill: "#22c55e", bg: "#f0fdf4", border: "#bbf7d0", txt: "#166534" },
-  error:   { icon: "✕", pill: "#ef4444", bg: "#fef2f2", border: "#fecaca", txt: "#991b1b" },
-  warn:    { icon: "!", pill: "#f59e0b", bg: "#fffbeb", border: "#fde68a", txt: "#92400e" },
-  info:    { icon: "i", pill: "#3b82f6", bg: "#eff6ff", border: "#bfdbfe", txt: "#1e40af" },
+  success: { icon: "✓", pill: "#1B3B22", bg: "#E7EFE8", border: "#B8D4BA", txt: "#152B17" },
+  error:   { icon: "✕", pill: "#D9381E", bg: "#FDECE8", border: "#F4B8AC", txt: "#9E200C" },
+  warn:    { icon: "!", pill: "#D9381E", bg: "#FAF8F5", border: "#E2DDD3", txt: "#152B17" },
+  info:    { icon: "i", pill: "#1B3B22", bg: "#FAF8F5", border: "#E2DDD3", txt: "#152B17" },
 };
 
 export default function ToastContainer() {

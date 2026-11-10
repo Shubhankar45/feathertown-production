@@ -7,9 +7,9 @@ import { useRef, useState } from "react";
 export default function SpotlightCard({
   children,
   className = "",
-  spotlightColor = "rgba(22, 163, 74, 0.12)",
-  borderColor = "#E2E8F0",
-  hoverBorderColor = "#16A34A",
+  spotlightColor = "rgba(27, 59, 34, 0.12)",
+  borderColor = "#E2DDD3",
+  hoverBorderColor = "#1B3B22",
   style = {},
   ...props
 }) {

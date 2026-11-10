@@ -15,8 +15,8 @@ export default function CareGuides() {
         width: "100%",
         maxWidth: "100%",
         margin: "0 auto",
-        background: "#FFFFFF",
-        borderTop: "1px solid #E2E8F0",
+        background: "#FAF8F5",
+        borderTop: "1px solid #E2DDD3",
         fontFamily: "Outfit, system-ui, sans-serif",
       }}
     >
@@ -36,14 +36,14 @@ export default function CareGuides() {
               display: "inline-flex",
               alignItems: "center",
               gap: 6,
-              background: "#ECFDF5",
-              border: "1px solid #A7F3D0",
+              background: "#E7EFE8",
+              border: "1px solid #B8D4BA",
               padding: "4px 12px",
               borderRadius: 999,
               fontSize: 11,
               fontWeight: 800,
               letterSpacing: 1.2,
-              color: "#059669",
+              color: "#1B3B22",
               textTransform: "uppercase",
               marginBottom: 10,
             }}
@@ -54,15 +54,15 @@ export default function CareGuides() {
             style={{
               fontSize: "clamp(26px, 3.6vw, 40px)",
               fontWeight: 900,
-              color: "#0F172A",
+              color: "#152B17",
               lineHeight: 1.15,
               margin: "0 0 6px 0",
               letterSpacing: "-0.02em",
             }}
           >
-            <span className="text-emerald-600">Care Guides</span> &amp; Avian Health
+            <span style={{ color: "#1B3B22" }}>Care Guides</span> &amp; Avian Health
           </h2>
-          <p style={{ fontSize: 14, color: "#64748B", margin: 0 }}>
+          <p style={{ fontSize: 14, color: "#736B5E", margin: 0 }}>
             Expert guidelines to give your companion the healthiest, longest, and happiest flight.
           </p>
         </div>
@@ -73,15 +73,15 @@ export default function CareGuides() {
           style={{
             fontSize: 13,
             fontWeight: 800,
-            color: "#16A34A",
+            color: "#1B3B22",
             textDecoration: "none",
             display: "inline-flex",
             alignItems: "center",
             gap: 6,
             padding: "9px 20px",
             borderRadius: 999,
-            background: "#ECFDF5",
-            border: "1px solid #A7F3D0",
+            background: "#E7EFE8",
+            border: "1px solid #B8D4BA",
           }}
         >
           View all guides ›
@@ -98,12 +98,13 @@ export default function CareGuides() {
         {guides.map((g, idx) => (
           <SpotlightCard
             key={g.id || idx}
-            spotlightColor="rgba(22, 163, 74, 0.14)"
-            borderColor="#E2E8F0"
+            spotlightColor="rgba(27, 59, 34, 0.08)"
+            borderColor="#E2DDD3"
             className="t-hover-lift group flex flex-col justify-between p-6"
             style={{
               borderRadius: 24,
-              boxShadow: "0 4px 18px rgba(15, 23, 42, 0.04)",
+              boxShadow: "0 4px 18px rgba(21, 43, 23, 0.04)",
+              background: "#FFFFFF",
             }}
           >
             <div>
@@ -112,9 +113,9 @@ export default function CareGuides() {
                   style={{
                     fontSize: 11,
                     fontWeight: 800,
-                    color: "#16A34A",
-                    background: "#ECFDF5",
-                    border: "1px solid #DCFCE7",
+                    color: "#1B3B22",
+                    background: "#E7EFE8",
+                    border: "1px solid #B8D4BA",
                     padding: "4px 12px",
                     borderRadius: 999,
                   }}
@@ -127,8 +128,8 @@ export default function CareGuides() {
                     height: 52,
                     borderRadius: "50%",
                     overflow: "hidden",
-                    border: "2px solid #E2E8F0",
-                    boxShadow: "0 2px 8px rgba(15, 23, 42, 0.06)",
+                    border: "2px solid #E2DDD3",
+                    boxShadow: "0 2px 8px rgba(0, 0, 0, 0.06)",
                   }}
                 >
                   <img
@@ -142,11 +143,10 @@ export default function CareGuides() {
               </div>
 
               <h3
-                className="group-hover:text-emerald-700 transition-colors"
                 style={{
                   fontSize: 18,
                   fontWeight: 800,
-                  color: "#0F172A",
+                  color: "#152B17",
                   marginBottom: 8,
                   lineHeight: 1.3,
                 }}
@@ -157,7 +157,7 @@ export default function CareGuides() {
               <p
                 style={{
                   fontSize: 13,
-                  color: "#475569",
+                  color: "#736B5E",
                   lineHeight: 1.6,
                   marginBottom: 18,
                 }}
@@ -172,7 +172,7 @@ export default function CareGuides() {
               style={{
                 fontSize: 13,
                 fontWeight: 800,
-                color: "#16A34A",
+                color: "#1B3B22",
                 textDecoration: "none",
                 display: "inline-flex",
                 alignItems: "center",

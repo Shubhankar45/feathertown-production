@@ -8,23 +8,23 @@ import { calcCompatibility } from "../utils/recommendation";
 
 /* ══════════════════════════════════════════════════════════
    DESIGN TOKENS — Dark Minimal FeatherTown Theme
-   Matching reference aesthetic (#0B0F14, emerald #10B981)
+   Strict 60-30-10 palette (Oat Milk #F7F5F0, Forest Green #1B3B22, Tomato Red #D9381E)
 ══════════════════════════════════════════════════════════ */
 const T = {
-  bg: "#F8FAFC",
+  bg: "#F7F5F0",
   card: "#FFFFFF",
-  forest: "#16A34A",
-  leaf: "#16A34A",
-  leafLight: "#ECFDF5",
-  leafHover: "#15803D",
-  amber: "#EA580C",
-  amberLight: "#FFEDD5",
-  dark: "#0F172A",
-  text: "#334155",
-  muted: "#64748B",
-  border: "#E2E8F0",
-  shadowSm: "0 2px 10px rgba(15, 23, 42, 0.04)",
-  shadowMd: "0 12px 28px rgba(15, 23, 42, 0.08)",
+  forest: "#1B3B22",
+  leaf: "#1B3B22",
+  leafLight: "#E7EFE8",
+  leafHover: "#2D5A37",
+  amber: "#D9381E",
+  amberLight: "#FDECE8",
+  dark: "#152B17",
+  text: "#152B17",
+  muted: "#736B5E",
+  border: "#E2DDD3",
+  shadowSm: "0 2px 10px rgba(21, 43, 23, 0.04)",
+  shadowMd: "0 12px 28px rgba(21, 43, 23, 0.06)",
 };
 
 /* ══════════════════════════════════════════════════════════
@@ -352,7 +352,7 @@ export default function BreedDetails() {
         <Link
           to="/breeds"
           style={{
-            background: "#16A34A",
+            background: T.forest,
             color: "#FFFFFF",
             padding: "10px 24px",
             borderRadius: 999,
@@ -379,10 +379,10 @@ export default function BreedDetails() {
   ];
 
   const stats = [
-    { label: "Intelligence", icon: "🧠", value: parrot.intelligence ?? 75, color: "#10B981" },
-    { label: "Low Noise", icon: "🔊", value: parrot.noiseLevelScore ?? 65, color: "#F59E0B" },
-    { label: "Friendliness", icon: "🤝", value: parrot.friendliness ?? 85, color: "#34D399" },
-    { label: "Care Ease", icon: "🧹", value: parrot.maintenanceScore ?? 60, color: "#06B6D4" },
+    { label: "Intelligence", icon: "🧠", value: parrot.intelligence ?? 75, color: T.forest },
+    { label: "Low Noise", icon: "🔊", value: parrot.noiseLevelScore ?? 65, color: T.accent },
+    { label: "Friendliness", icon: "🤝", value: parrot.friendliness ?? 85, color: T.forest },
+    { label: "Care Ease", icon: "🧹", value: parrot.maintenanceScore ?? 60, color: T.accent },
   ];
 
   async function handleDownloadPDF() {
@@ -483,9 +483,9 @@ export default function BreedDetails() {
                     borderRadius: 14,
                     overflow: "hidden",
                     cursor: "pointer",
-                    border: activeImg === i ? `2px solid #059669` : `1.5px solid ${T.border}`,
+                    border: activeImg === i ? `2px solid #1B3B22` : `1.5px solid ${T.border}`,
                     padding: 0,
-                    background: "#F1F5F9",
+                    background: "#FAF8F5",
                     opacity: activeImg === i ? 1 : 0.65,
                     transition: "all 0.2s ease",
                   }}
@@ -499,7 +499,7 @@ export default function BreedDetails() {
             <div
               style={{
                 marginTop: 20,
-                background: "#FFFFFF",
+                background: "#FAF8F5",
                 borderRadius: 18,
                 padding: "16px 20px",
                 border: `1px solid ${T.border}`,
@@ -509,19 +509,19 @@ export default function BreedDetails() {
                 boxShadow: T.shadowSm,
               }}
             >
-              <div style={{ display: "flex", alignItems: "center", gap: 8, fontSize: 12.5, color: "#059669" }}>
+              <div style={{ display: "flex", alignItems: "center", gap: 8, fontSize: 12.5, color: "#1B3B22" }}>
                 <span>🩺</span>
                 <strong>Avian Vet Inspected</strong>
               </div>
-              <div style={{ display: "flex", alignItems: "center", gap: 8, fontSize: 12.5, color: "#059669" }}>
+              <div style={{ display: "flex", alignItems: "center", gap: 8, fontSize: 12.5, color: "#1B3B22" }}>
                 <span>📜</span>
                 <strong>Legal Non-Native Bird</strong>
               </div>
-              <div style={{ display: "flex", alignItems: "center", gap: 8, fontSize: 12.5, color: "#059669" }}>
+              <div style={{ display: "flex", alignItems: "center", gap: 8, fontSize: 12.5, color: "#1B3B22" }}>
                 <span>🚚</span>
                 <strong>Doorstep Live Bird Escort</strong>
               </div>
-              <div style={{ display: "flex", alignItems: "center", gap: 8, fontSize: 12.5, color: "#059669" }}>
+              <div style={{ display: "flex", alignItems: "center", gap: 8, fontSize: 12.5, color: "#1B3B22" }}>
                 <span>📞</span>
                 <strong>Lifetime Diet Guidance</strong>
               </div>
@@ -542,15 +542,15 @@ export default function BreedDetails() {
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 12 }}>
               <span
                 style={{
-                  background: "#ECFDF5",
-                  color: "#059669",
+                  background: "#E7EFE8",
+                  color: "#1B3B22",
                   fontSize: 11,
                   fontWeight: 800,
                   padding: "4px 12px",
                   borderRadius: 999,
                   textTransform: "uppercase",
                   letterSpacing: 0.5,
-                  border: "1px solid #A7F3D0",
+                  border: "1px solid #B8D4BA",
                 }}
               >
                 {parrot.category}
@@ -558,9 +558,9 @@ export default function BreedDetails() {
 
               <span
                 style={{
-                  background: "#ECFDF5",
-                  color: "#059669",
-                  border: "1px solid #A7F3D0",
+                  background: "#E7EFE8",
+                  color: "#1B3B22",
+                  border: "1px solid #B8D4BA",
                   fontSize: 11,
                   fontWeight: 700,
                   padding: "3px 12px",
@@ -570,7 +570,7 @@ export default function BreedDetails() {
                   gap: 5,
                 }}
               >
-                <span style={{ width: 6, height: 6, borderRadius: "50%", background: "#10B981" }} />
+                <span style={{ width: 6, height: 6, borderRadius: "50%", background: "#1B3B22" }} />
                 {parrot.status || "Available"}
               </span>
             </div>
@@ -590,14 +590,14 @@ export default function BreedDetails() {
 
             {/* Price */}
             <div style={{ display: "flex", alignItems: "baseline", gap: 10, marginBottom: 16 }}>
-              <span style={{ fontSize: 26, fontWeight: 800, color: "#059669" }}>
+              <span style={{ fontSize: 26, fontWeight: 800, color: "#D9381E" }}>
                 {parrot.price}
               </span>
               <span style={{ fontSize: 12, color: T.muted }}>*Hand-tamed starting price</span>
             </div>
 
             {/* Description */}
-            <p style={{ fontSize: 14.5, color: "#475569", lineHeight: 1.75, marginBottom: 20 }}>
+            <p style={{ fontSize: 14.5, color: "#736B5E", lineHeight: 1.75, marginBottom: 20 }}>
               {parrot.description}
             </p>
 
@@ -607,28 +607,28 @@ export default function BreedDetails() {
                 display: "grid",
                 gridTemplateColumns: "repeat(auto-fit, minmax(130px, 1fr))",
                 gap: 10,
-                background: "#F8FAFC",
+                background: "#FAF8F5",
                 borderRadius: 16,
                 padding: "14px 16px",
                 marginBottom: 24,
-                border: "1px solid #E2E8F0",
+                border: "1px solid #E2DDD3",
               }}
             >
               <div>
                 <span style={{ fontSize: 10.5, fontWeight: 700, color: T.muted, textTransform: "uppercase" }}>Size</span>
-                <p style={{ fontSize: 13.5, fontWeight: 700, color: "#0F172A", marginTop: 2 }}>{parrot.size || "Medium"}</p>
+                <p style={{ fontSize: 13.5, fontWeight: 700, color: "#152B17", marginTop: 2 }}>{parrot.size || "Medium"}</p>
               </div>
               <div>
                 <span style={{ fontSize: 10.5, fontWeight: 700, color: T.muted, textTransform: "uppercase" }}>Lifespan</span>
-                <p style={{ fontSize: 13.5, fontWeight: 700, color: "#0F172A", marginTop: 2 }}>{parrot.lifespan || "20-30 years"}</p>
+                <p style={{ fontSize: 13.5, fontWeight: 700, color: "#152B17", marginTop: 2 }}>{parrot.lifespan || "20-30 years"}</p>
               </div>
               <div>
                 <span style={{ fontSize: 10.5, fontWeight: 700, color: T.muted, textTransform: "uppercase" }}>Talking Ability</span>
-                <p style={{ fontSize: 13.5, fontWeight: 700, color: "#0F172A", marginTop: 2 }}>{parrot.talkingAbility || "Moderate"}</p>
+                <p style={{ fontSize: 13.5, fontWeight: 700, color: "#152B17", marginTop: 2 }}>{parrot.talkingAbility || "Moderate"}</p>
               </div>
               <div>
                 <span style={{ fontSize: 10.5, fontWeight: 700, color: T.muted, textTransform: "uppercase" }}>Experience Level</span>
-                <p style={{ fontSize: 13.5, fontWeight: 700, color: "#0F172A", marginTop: 2 }}>{parrot.difficulty || "Beginner Friendly"}</p>
+                <p style={{ fontSize: 13.5, fontWeight: 700, color: "#152B17", marginTop: 2 }}>{parrot.difficulty || "Beginner Friendly"}</p>
               </div>
             </div>
 
@@ -636,18 +636,18 @@ export default function BreedDetails() {
             {savedAnswers && (
               <div
                 style={{
-                  background: "#ECFDF5",
-                  border: "1px solid #A7F3D0",
+                  background: "#E7EFE8",
+                  border: "1px solid #B8D4BA",
                   borderRadius: 16,
                   padding: "14px 16px",
                   marginBottom: 22,
                 }}
               >
-                <div style={{ fontSize: 11, fontWeight: 800, color: "#065F46", textTransform: "uppercase", marginBottom: 6 }}>
+                <div style={{ fontSize: 11, fontWeight: 800, color: "#152B17", textTransform: "uppercase", marginBottom: 6 }}>
                   Your Lifestyle Match
                 </div>
                 <CompatibilityBadge parrot={parrot} answers={savedAnswers} />
-                <p style={{ fontSize: 12.5, color: "#065F46", fontWeight: 600, marginTop: 6 }}>
+                <p style={{ fontSize: 12.5, color: "#1B3B22", fontWeight: 600, marginTop: 6 }}>
                   {score >= 80 ? "Perfect Match for your home! 🏆" : score >= 60 ? "Great choice with routine bonding 👍" : "Requires experienced avian handling ⚠️"}
                 </p>
               </div>
@@ -666,17 +666,23 @@ export default function BreedDetails() {
                 width: "100%",
                 padding: "16px 24px",
                 borderRadius: 999,
-                background: "#16A34A",
+                background: "#1B3B22",
                 color: "#FFFFFF",
                 fontSize: 15,
                 fontWeight: 800,
                 textDecoration: "none",
-                boxShadow: "0 6px 20px rgba(16, 185, 129, 0.25)",
+                boxShadow: "0 6px 20px rgba(27, 59, 34, 0.25)",
                 marginBottom: 12,
-                transition: "transform 0.2s ease",
+                transition: "transform 0.2s ease, background 0.2s ease",
               }}
-              onMouseEnter={(e) => (e.currentTarget.style.transform = "translateY(-2px)")}
-              onMouseLeave={(e) => (e.currentTarget.style.transform = "none")}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.transform = "translateY(-2px)";
+                e.currentTarget.style.background = "#152B17";
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.transform = "none";
+                e.currentTarget.style.background = "#1B3B22";
+              }}
             >
               <span style={{ fontSize: 20 }}>💬</span>
               Inquire via WhatsApp ({phoneDisplay})
@@ -690,9 +696,9 @@ export default function BreedDetails() {
                 width: "100%",
                 padding: "12px 20px",
                 borderRadius: 999,
-                border: "1.5px solid #CBD5E1",
-                background: "#F8FAFC",
-                color: "#0F172A",
+                border: "1.5px solid #E2DDD3",
+                background: "#FAF8F5",
+                color: "#152B17",
                 fontSize: 13.5,
                 fontWeight: 700,
                 cursor: exporting ? "wait" : "pointer",
@@ -704,11 +710,11 @@ export default function BreedDetails() {
               }}
               onMouseEnter={(e) => {
                 e.currentTarget.style.background = "#FFFFFF";
-                e.currentTarget.style.borderColor = "#059669";
+                e.currentTarget.style.borderColor = "#1B3B22";
               }}
               onMouseLeave={(e) => {
-                e.currentTarget.style.background = "#F8FAFC";
-                e.currentTarget.style.borderColor = "#CBD5E1";
+                e.currentTarget.style.background = "#FAF8F5";
+                e.currentTarget.style.borderColor = "#E2DDD3";
               }}
             >
               <span>📄</span>
@@ -729,7 +735,7 @@ export default function BreedDetails() {
           }}
         >
           <div style={{ textAlign: "center", marginBottom: 24 }}>
-            <h3 style={{ fontSize: 18, fontWeight: 800, color: "#0F172A" }}>Breed Temperament & Attributes</h3>
+            <h3 style={{ fontSize: 18, fontWeight: 800, color: "#152B17" }}>Breed Temperament & Attributes</h3>
             <p style={{ fontSize: 13, color: T.muted }}>Based on avian behavioral data and home socialization.</p>
           </div>
           <div style={{ display: "flex", justifyContent: "center", gap: "clamp(20px, 5vw, 64px)", flexWrap: "wrap" }}>
@@ -760,10 +766,10 @@ export default function BreedDetails() {
                     fontSize: 14,
                     fontWeight: 700,
                     cursor: "pointer",
-                    border: active ? "1.5px solid #059669" : "1.5px solid #E2E8F0",
-                    background: active ? "#16A34A" : "#FFFFFF",
-                    color: active ? "#FFFFFF" : "#64748B",
-                    boxShadow: active ? "0 4px 14px rgba(16,185,129,0.25)" : "none",
+                    border: active ? "1.5px solid #1B3B22" : "1.5px solid #E2DDD3",
+                    background: active ? "#1B3B22" : "#FFFFFF",
+                    color: active ? "#FFFFFF" : "#736B5E",
+                    boxShadow: active ? "0 4px 14px rgba(27,59,34,0.25)" : "none",
                   }}
                 >
                   {t.label}
@@ -803,17 +809,17 @@ export default function BreedDetails() {
                     <div
                       key={idx}
                       style={{
-                        background: "#F8FAFC",
+                        background: "#FAF8F5",
                         borderRadius: 16,
                         padding: "18px 20px",
-                        border: "1px solid #E2E8F0",
+                        border: "1px solid #E2DDD3",
                       }}
                     >
                       <div style={{ fontSize: 22, marginBottom: 6 }}>{item.icon}</div>
                       <div style={{ fontSize: 11, fontWeight: 800, color: T.muted, textTransform: "uppercase" }}>
                         {item.label}
                       </div>
-                      <div style={{ fontSize: 14, fontWeight: 600, color: "#0F172A", marginTop: 4 }}>
+                      <div style={{ fontSize: 14, fontWeight: 600, color: "#152B17", marginTop: 4 }}>
                         {item.value}
                       </div>
                     </div>
@@ -829,7 +835,7 @@ export default function BreedDetails() {
                 </h3>
                 <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))", gap: 24 }}>
                   <div>
-                    <h4 style={{ fontSize: 15, fontWeight: 800, color: "#059669", marginBottom: 12 }}>
+                    <h4 style={{ fontSize: 15, fontWeight: 800, color: "#1B3B22", marginBottom: 12 }}>
                       🌱 Foundation Training
                     </h4>
                     {(parrot.training?.basic ?? [
@@ -838,12 +844,12 @@ export default function BreedDetails() {
                       "Teach the classic 'Step-Up' command onto your index finger gently.",
                       "Reward calm perching with positive verbal praise.",
                     ]).map((item, i) => (
-                      <TrainingStep key={i} text={item} idx={i} color="#059669" />
+                      <TrainingStep key={i} text={item} idx={i} color="#1B3B22" />
                     ))}
                   </div>
 
                   <div>
-                    <h4 style={{ fontSize: 15, fontWeight: 800, color: "#D97706", marginBottom: 12 }}>
+                    <h4 style={{ fontSize: 15, fontWeight: 800, color: "#D9381E", marginBottom: 12 }}>
                       🚀 Advanced Tricks & Speech
                     </h4>
                     {(parrot.training?.advanced ?? [
@@ -851,7 +857,7 @@ export default function BreedDetails() {
                       "Teach recall flight: call bird across the living room to perch on your arm.",
                       "Introduce puzzle forage toys requiring lid lifting for sunflower seeds.",
                     ]).map((item, i) => (
-                      <TrainingStep key={i} text={item} idx={i} color="#D97706" />
+                      <TrainingStep key={i} text={item} idx={i} color="#D9381E" />
                     ))}
                   </div>
                 </div>
@@ -883,7 +889,7 @@ export default function BreedDetails() {
         <div style={{ marginTop: 48 }}>
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 20 }}>
             <div>
-              <h3 style={{ fontSize: 20, fontWeight: 800, color: "#0F172A" }}>Other Companion Birds You Might Love</h3>
+              <h3 style={{ fontSize: 20, fontWeight: 800, color: "#152B17" }}>Other Companion Birds You Might Love</h3>
               <p style={{ fontSize: 13, color: T.muted }}>Hand-tamed and available with nationwide delivery.</p>
             </div>
             <Link
@@ -891,7 +897,7 @@ export default function BreedDetails() {
               style={{
                 fontSize: 13,
                 fontWeight: 700,
-                color: "#059669",
+                color: "#1B3B22",
                 textDecoration: "none",
               }}
             >
@@ -933,7 +939,7 @@ export default function BreedDetails() {
                       e.currentTarget.style.boxShadow = T.shadowSm;
                     }}
                   >
-                    <div style={{ height: 160, overflow: "hidden", background: "#F1F5F9" }}>
+                    <div style={{ height: 160, overflow: "hidden", background: "#FAF8F5" }}>
                       <img
                         src={b.image}
                         alt={b.name}
@@ -945,20 +951,20 @@ export default function BreedDetails() {
                         style={{
                           fontSize: 10,
                           fontWeight: 700,
-                          color: "#059669",
-                          background: "#ECFDF5",
+                          color: "#1B3B22",
+                          background: "#E7EFE8",
                           padding: "2px 8px",
                           borderRadius: 999,
                           textTransform: "uppercase",
-                          border: "1px solid #A7F3D0",
+                          border: "1px solid #B8D4BA",
                         }}
                       >
                         {b.category}
                       </span>
-                      <h4 style={{ fontSize: 16, fontWeight: 800, color: "#0F172A", marginTop: 6, marginBottom: 4 }}>
+                      <h4 style={{ fontSize: 16, fontWeight: 800, color: "#152B17", marginTop: 6, marginBottom: 4 }}>
                         {b.name}
                       </h4>
-                      <p style={{ fontSize: 14, fontWeight: 800, color: "#059669" }}>{b.price}</p>
+                      <p style={{ fontSize: 14, fontWeight: 800, color: "#D9381E" }}>{b.price}</p>
                     </div>
                   </div>
                 </Link>

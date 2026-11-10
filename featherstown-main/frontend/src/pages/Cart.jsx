@@ -14,7 +14,7 @@ export default function Cart() {
   const progressPercent = Math.min(100, Math.round((subtotal / FREE_SHIPPING_THRESHOLD) * 100));
 
   return (
-    <div style={{ background: "#F8FAFC", color: "#0F172A", fontFamily: "Outfit, system-ui, sans-serif", minHeight: "100vh" }}>
+    <div style={{ background: "#F7F5F0", color: "#152B17", fontFamily: "Outfit, system-ui, sans-serif", minHeight: "100vh" }}>
       <SEOHead
         title="Shopping Cart | FeatherTown"
         description="Review your bird cages, organic food, and companion accessories before proceeding to secure checkout."
@@ -31,22 +31,22 @@ export default function Cart() {
               padding: "60px 24px",
               background: "#FFFFFF",
               borderRadius: 28,
-              border: "1px solid #E2E8F0",
-              boxShadow: "0 2px 10px rgba(15, 23, 42, 0.04)",
+              border: "1px solid #E2DDD3",
+              boxShadow: "0 2px 10px rgba(27, 59, 34, 0.04)",
             }}
           >
             <div className="ft-animate-float" style={{ fontSize: 52, marginBottom: 14 }}>🛍️</div>
-            <h3 style={{ fontSize: 22, fontWeight: 800, color: "#0F172A", marginBottom: 8 }}>
+            <h3 style={{ fontSize: 22, fontWeight: 800, color: "#152B17", marginBottom: 8 }}>
               Your cart is empty
             </h3>
-            <p style={{ color: "#64748B", fontSize: 14, marginBottom: 24, maxWidth: 380, margin: "0 auto 24px" }}>
+            <p style={{ color: "#736B5E", fontSize: 14, marginBottom: 24, maxWidth: 380, margin: "0 auto 24px" }}>
               Explore our best-selling cages, organic conure blends, and natural java perches!
             </p>
             <Link
               to="/accessories"
               className="ft-btn-hover"
               style={{
-                background: "#16A34A",
+                background: "#1B3B22",
                 color: "#FFFFFF",
                 padding: "13px 28px",
                 borderRadius: 999,
@@ -54,7 +54,7 @@ export default function Cart() {
                 fontSize: 14.5,
                 textDecoration: "none",
                 display: "inline-block",
-                boxShadow: "0 4px 14px rgba(16, 185, 129, 0.25)",
+                boxShadow: "0 4px 14px rgba(27, 59, 34, 0.25)",
               }}
             >
               Browse Accessories →
@@ -70,23 +70,23 @@ export default function Cart() {
                   background: "#FFFFFF",
                   borderRadius: 18,
                   padding: "16px 20px",
-                  border: "1px solid #E2E8F0",
+                  border: "1px solid #E2DDD3",
                   marginBottom: 16,
-                  boxShadow: "0 2px 8px rgba(15, 23, 42, 0.04)",
+                  boxShadow: "0 2px 8px rgba(27, 59, 34, 0.04)",
                 }}
               >
                 <div style={{ display: "flex", justifyContent: "space-between", fontSize: 13, fontWeight: 700, marginBottom: 8 }}>
-                  <span style={{ color: "#0F172A" }}>
+                  <span style={{ color: "#152B17" }}>
                     {freeShippingUnlocked ? "🎉 You've unlocked FREE Shipping!" : `🚚 Add ₹${amountNeeded} more for FREE shipping`}
                   </span>
-                  <span style={{ color: "#16A34A", fontWeight: 800 }}>{progressPercent}%</span>
+                  <span style={{ color: "#1B3B22", fontWeight: 800 }}>{progressPercent}%</span>
                 </div>
-                <div style={{ width: "100%", height: 6, background: "#E2E8F0", borderRadius: 99, overflow: "hidden" }}>
+                <div style={{ width: "100%", height: 6, background: "#E2DDD3", borderRadius: 99, overflow: "hidden" }}>
                   <div
                     style={{
                       width: `${progressPercent}%`,
                       height: "100%",
-                      background: "#16A34A",
+                      background: "#1B3B22",
                       borderRadius: 99,
                       transition: "width 0.3s ease",
                     }}
@@ -107,16 +107,16 @@ export default function Cart() {
                       background: "#FFFFFF",
                       borderRadius: 20,
                       padding: "clamp(12px, 2.5vw, 16px)",
-                      border: "1px solid #E2E8F0",
-                      boxShadow: "0 2px 8px rgba(15, 23, 42, 0.04)",
+                      border: "1px solid #E2DDD3",
+                      boxShadow: "0 2px 8px rgba(27, 59, 34, 0.04)",
                       flexWrap: "wrap",
                       transition: "transform 0.28s cubic-bezier(.34,1.56,.64,1), border-color 0.2s, box-shadow 0.28s",
                     }}
                     onMouseEnter={(e) => {
-                      e.currentTarget.style.borderColor = "rgba(16, 185, 129, 0.4)";
+                      e.currentTarget.style.borderColor = "#1B3B22";
                     }}
                     onMouseLeave={(e) => {
-                      e.currentTarget.style.borderColor = "#E2E8F0";
+                      e.currentTarget.style.borderColor = "#E2DDD3";
                     }}
                   >
                     <div
@@ -125,9 +125,9 @@ export default function Cart() {
                         height: 72,
                         borderRadius: 14,
                         overflow: "hidden",
-                        background: "#F1F5F9",
+                        background: "#FAF8F5",
                         flexShrink: 0,
-                        border: "1px solid #E2E8F0",
+                        border: "1px solid #E2DDD3",
                       }}
                     >
                       <img
@@ -143,7 +143,7 @@ export default function Cart() {
                         style={{
                           textDecoration: "none",
                           fontWeight: 700,
-                          color: "#0F172A",
+                          color: "#152B17",
                           fontSize: 14.5,
                           lineHeight: 1.3,
                           display: "-webkit-box",
@@ -154,7 +154,7 @@ export default function Cart() {
                       >
                         {item.name}
                       </Link>
-                      <div style={{ fontSize: 13, color: "#64748B", marginTop: 4 }}>
+                      <div style={{ fontSize: 13, color: "#736B5E", marginTop: 4 }}>
                         ₹{item.price?.toLocaleString("en-IN")} each
                       </div>
                     </div>
@@ -164,29 +164,29 @@ export default function Cart() {
                       style={{
                         display: "flex",
                         alignItems: "center",
-                        border: "1.5px solid #CBD5E1",
+                        border: "1.5px solid #E2DDD3",
                         borderRadius: 10,
-                        background: "#F8FAFC",
+                        background: "#FAF8F5",
                         flexShrink: 0,
                       }}
                     >
                       <button
                         onClick={() => updateQuantity(item.id, item.quantity - 1)}
-                        style={{ width: 30, height: 30, border: "none", background: "none", fontWeight: 700, cursor: "pointer", color: "#0F172A" }}
+                        style={{ width: 30, height: 30, border: "none", background: "none", fontWeight: 700, cursor: "pointer", color: "#152B17" }}
                       >
                         −
                       </button>
-                      <span style={{ width: 28, textAlign: "center", fontWeight: 700, fontSize: 13.5, color: "#0F172A" }}>{item.quantity}</span>
+                      <span style={{ width: 28, textAlign: "center", fontWeight: 700, fontSize: 13.5, color: "#152B17" }}>{item.quantity}</span>
                       <button
                         onClick={() => updateQuantity(item.id, item.quantity + 1)}
-                        style={{ width: 30, height: 30, border: "none", background: "none", fontWeight: 700, cursor: "pointer", color: "#0F172A" }}
+                        style={{ width: 30, height: 30, border: "none", background: "none", fontWeight: 700, cursor: "pointer", color: "#152B17" }}
                       >
                         +
                       </button>
                     </div>
 
                     {/* Line Total */}
-                    <div style={{ width: 80, textAlign: "right", fontWeight: 800, fontSize: 15, color: "#059669", flexShrink: 0 }}>
+                    <div style={{ width: 80, textAlign: "right", fontWeight: 800, fontSize: 15, color: "#D9381E", flexShrink: 0 }}>
                       ₹{(item.price * item.quantity).toLocaleString("en-IN")}
                     </div>
 
@@ -196,14 +196,14 @@ export default function Cart() {
                       style={{
                         border: "none",
                         background: "none",
-                        color: "#64748B",
+                        color: "#736B5E",
                         cursor: "pointer",
                         padding: 6,
                         fontSize: 16,
                         transition: "color 0.2s",
                       }}
-                      onMouseEnter={(e) => (e.currentTarget.style.color = "#EF4444")}
-                      onMouseLeave={(e) => (e.currentTarget.style.color = "#64748B")}
+                      onMouseEnter={(e) => (e.currentTarget.style.color = "#D9381E")}
+                      onMouseLeave={(e) => (e.currentTarget.style.color = "#736B5E")}
                       title="Remove Item"
                     >
                       ✕
@@ -220,40 +220,40 @@ export default function Cart() {
                 background: "#FFFFFF",
                 borderRadius: 24,
                 padding: "26px 24px",
-                border: "1px solid #E2E8F0",
-                boxShadow: "0 2px 10px rgba(15, 23, 42, 0.04)",
+                border: "1px solid #E2DDD3",
+                boxShadow: "0 2px 10px rgba(27, 59, 34, 0.04)",
               }}
             >
-              <h3 style={{ fontSize: 18, fontWeight: 800, color: "#0F172A", marginBottom: 18 }}>
+              <h3 style={{ fontSize: 18, fontWeight: 800, color: "#152B17", marginBottom: 18 }}>
                 Order Summary
               </h3>
 
-              <div style={{ display: "flex", justifyContent: "space-between", fontSize: 14, color: "#64748B", marginBottom: 12 }}>
+              <div style={{ display: "flex", justifyContent: "space-between", fontSize: 14, color: "#736B5E", marginBottom: 12 }}>
                 <span>Items Subtotal</span>
-                <span style={{ fontWeight: 700, color: "#0F172A" }}>₹{subtotal.toLocaleString("en-IN")}</span>
+                <span style={{ fontWeight: 700, color: "#152B17" }}>₹{subtotal.toLocaleString("en-IN")}</span>
               </div>
 
-              <div style={{ display: "flex", justifyContent: "space-between", fontSize: 14, color: "#64748B", marginBottom: 16 }}>
+              <div style={{ display: "flex", justifyContent: "space-between", fontSize: 14, color: "#736B5E", marginBottom: 16 }}>
                 <span>Shipping</span>
-                <span style={{ fontWeight: 700, color: freeShippingUnlocked ? "#059669" : "#0F172A" }}>
+                <span style={{ fontWeight: 700, color: freeShippingUnlocked ? "#1B3B22" : "#152B17" }}>
                   {freeShippingUnlocked ? "FREE" : "₹99"}
                 </span>
               </div>
 
               <div
                 style={{
-                  borderTop: "1px solid #F1F5F9",
+                  borderTop: "1px solid #E2DDD3",
                   paddingTop: 16,
                   marginBottom: 22,
                   display: "flex",
                   justifyContent: "space-between",
                   fontSize: 18,
                   fontWeight: 900,
-                  color: "#0F172A",
+                  color: "#152B17",
                 }}
               >
                 <span>Total Amount</span>
-                <span style={{ color: "#16A34A" }}>
+                <span style={{ color: "#D9381E" }}>
                   ₹{(subtotal + (freeShippingUnlocked ? 0 : 99)).toLocaleString("en-IN")}
                 </span>
               </div>
@@ -263,7 +263,7 @@ export default function Cart() {
                 className="t-btn-press"
                 style={{
                   width: "100%",
-                  background: "#16A34A",
+                  background: "#D9381E",
                   color: "#FFFFFF",
                   border: "none",
                   padding: "14px",
@@ -271,19 +271,22 @@ export default function Cart() {
                   fontWeight: 800,
                   fontSize: 15,
                   cursor: "pointer",
-                  boxShadow: "0 4px 14px rgba(22, 163, 74, 0.3)",
+                  boxShadow: "0 4px 14px rgba(217, 56, 30, 0.3)",
+                  transition: "background 0.2s ease",
                 }}
+                onMouseEnter={(e) => (e.currentTarget.style.background = "#B82E17")}
+                onMouseLeave={(e) => (e.currentTarget.style.background = "#D9381E")}
               >
                 Proceed to Checkout →
               </button>
 
               <div style={{ textAlign: "center", marginTop: 16 }}>
-                <Link to="/accessories" style={{ fontSize: 13, color: "#64748B", textDecoration: "underline" }}>
+                <Link to="/accessories" style={{ fontSize: 13, color: "#1B3B22", fontWeight: 700, textDecoration: "underline" }}>
                   Continue Shopping
                 </Link>
               </div>
 
-              <div style={{ borderTop: "1px solid #F1F5F9", marginTop: 20, paddingTop: 16, fontSize: 12, color: "#64748B", textAlign: "center" }}>
+              <div style={{ borderTop: "1px solid #E2DDD3", marginTop: 20, paddingTop: 16, fontSize: 12, color: "#736B5E", textAlign: "center" }}>
                 🔒 256-bit encrypted Razorpay SSL Checkout
               </div>
             </div>

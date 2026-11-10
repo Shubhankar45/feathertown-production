@@ -19,6 +19,6 @@ export const CheckIco = ({ size = 15 }) => (
   <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
 );
 export const Leaf = ({ style = {} }) => (
-  <svg viewBox="0 0 60 100" className="lf" style={style}><path d="M30 0 C60 20 60 80 30 100 C0 80 0 20 30 0Z" fill="#22c55e"/></svg>
+  <svg viewBox="0 0 60 100" className="lf" style={style}><path d="M30 0 C60 20 60 80 30 100 C0 80 0 20 30 0Z" fill="#1B3B22"/></svg>
 );
 export const Spin = () => <span className="bspin"/>;

@@ -84,17 +84,17 @@ export default function AdminLayout() {
                   fontSize: 20,
                   fontWeight: 700,
                   lineHeight: 1.1,
-                  color: "#0F172A",
+                  color: "#1B3B22",
                 }}
               >
-                Feather<span style={{ color: "#D97706" }}>Town</span>
+                Feather<span style={{ color: "#D9381E" }}>Town</span>
               </div>
               <div
                 style={{
                   fontSize: 10.5,
                   letterSpacing: 1.5,
                   textTransform: "uppercase",
-                  color: "#059669",
+                  color: "#1B3B22",
                   fontWeight: 700,
                   marginTop: 2,
                 }}
@@ -137,9 +137,9 @@ export default function AdminLayout() {
               justifyContent: "space-between",
               padding: "10px 14px",
               borderRadius: 10,
-              background: "#ECFDF5",
-              border: "1px solid #A7F3D0",
-              color: "#059669",
+              background: "#E7EFE8",
+              border: "1px solid #B8D4BA",
+              color: "#1B3B22",
               textDecoration: "none",
               fontSize: 12.5,
               fontWeight: 600,
@@ -147,7 +147,7 @@ export default function AdminLayout() {
             }}
           >
             <span style={{ display: "flex", alignItems: "center", gap: 8 }}>
-              <span style={{ width: 8, height: 8, borderRadius: "50%", background: "#10B981" }} />
+              <span style={{ width: 8, height: 8, borderRadius: "50%", background: "#1B3B22" }} />
               Live Storefront
             </span>
             <span style={{ fontSize: 13 }}>↗</span>
@@ -184,9 +184,9 @@ export default function AdminLayout() {
                 fontSize: 14,
                 fontWeight: 600,
                 textDecoration: "none",
-                color: isActive ? "#059669" : "#475569",
-                background: isActive ? "#ECFDF5" : "transparent",
-                borderLeft: isActive ? "3px solid #10B981" : "3px solid transparent",
+                color: isActive ? "#1B3B22" : "#475569",
+                background: isActive ? "#E7EFE8" : "transparent",
+                borderLeft: isActive ? "3px solid #1B3B22" : "3px solid transparent",
                 transition: "all 0.15s ease",
               })}
             >
@@ -211,7 +211,7 @@ export default function AdminLayout() {
                 width: 36,
                 height: 36,
                 borderRadius: "50%",
-                background: "linear-gradient(135deg, #10B981, #F59E0B)",
+                background: "#1B3B22",
                 color: "#FFFFFF",
                 fontWeight: 700,
                 fontSize: 14,
@@ -297,14 +297,14 @@ export default function AdminLayout() {
                 gap: 6,
                 padding: "4px 10px",
                 borderRadius: 99,
-                background: "#ECFDF5",
-                border: "1px solid #A7F3D0",
-                color: "#059669",
+                background: "#E7EFE8",
+                border: "1px solid #B8D4BA",
+                color: "#1B3B22",
                 fontSize: 12,
                 fontWeight: 600,
               }}
             >
-              <span style={{ width: 6, height: 6, borderRadius: "50%", background: "#10B981" }} />
+              <span style={{ width: 6, height: 6, borderRadius: "50%", background: "#1B3B22" }} />
               Live Online
             </span>
           </div>

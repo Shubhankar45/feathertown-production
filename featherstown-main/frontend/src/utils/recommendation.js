@@ -189,9 +189,9 @@ export function calcCompatibility(parrot, answers) {
 
 /** Compatibility label & colour */
 export function compatLabel(pct) {
-  if (pct >= 80) return { label: "Perfect Match", color: "#22c55e", bg: "rgba(34,197,94,.12)", border: "rgba(34,197,94,.28)" };
-  if (pct >= 60) return { label: "Good Choice",   color: "#f59e0b", bg: "rgba(245,158,11,.10)", border: "rgba(245,158,11,.26)" };
-  return               { label: "Needs Consideration", color: "#ef4444", bg: "rgba(239,68,68,.08)", border: "rgba(239,68,68,.2)" };
+  if (pct >= 80) return { label: "Perfect Match", color: "#1B3B22", bg: "#E7EFE8", border: "#B8D4BA" };
+  if (pct >= 60) return { label: "Good Choice",   color: "#152B17", bg: "#FAF8F5", border: "#E2DDD3" };
+  return               { label: "Needs Consideration", color: "#D9381E", bg: "rgba(217,56,30,0.08)", border: "rgba(217,56,30,0.25)" };
 }
 
 /** Parse "₹3,500" → 3500 */

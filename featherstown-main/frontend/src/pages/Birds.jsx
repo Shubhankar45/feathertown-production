@@ -7,7 +7,7 @@ export default function BirdsPage() {
   const { birds } = useBirds();
 
   return (
-    <div style={{ background: "#F8FAFC", color: "#0F172A", fontFamily: "Outfit, system-ui, sans-serif", minHeight: "100vh" }}>
+    <div style={{ background: "#F7F5F0", color: "#152B17", fontFamily: "Outfit, system-ui, sans-serif", minHeight: "100vh" }}>
       <SEOHead
         title="Companion Birds &amp; Parrots for Sale in India | FeatherTown"
         description="Browse certified healthy, hand-tamed companion parrots including Sun Conures, Cockatiels, African Grey, and Macaws with nationwide doorstep delivery."

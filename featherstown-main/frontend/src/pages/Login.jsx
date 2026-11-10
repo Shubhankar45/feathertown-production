@@ -5,7 +5,6 @@ import SEOHead from "../components/SEOHead";
 import GoogleSignInButton from "../components/GoogleSignInButton";
 import { useUserAuth } from "../context/UserAuthContext";
 import { toast } from "../components/ui/Toast";
-import logoImg from "../assets/logo-optimized.png";
 import { isValidEmail } from "../utils/validation";
 import AvatarPicker from "../components/ui/AvatarPicker";
 
@@ -72,7 +71,7 @@ export default function Login() {
   };
 
   return (
-    <div style={{ background: "#F8FAFC", color: "#0F172A", fontFamily: "Outfit, system-ui, sans-serif", minHeight: "100vh" }}>
+    <div style={{ background: "#F7F5F0", color: "#152B17", fontFamily: "Outfit, system-ui, sans-serif", minHeight: "100vh" }}>
       <SEOHead
         title={mode === "login" ? "Sign In | FeatherTown" : "Create Account | FeatherTown"}
         description="Sign in or register for your FeatherTown account to manage bird orders, accessory tracking, and consultations."
@@ -92,29 +91,29 @@ export default function Login() {
             background: "#FFFFFF",
             borderRadius: 28,
             padding: "clamp(24px, 4vw, 40px) clamp(16px, 4vw, 32px)",
-            boxShadow: "0 2px 10px rgba(15, 23, 42, 0.04)",
-            border: "1px solid #E2E8F0",
+            boxShadow: "0 2px 10px rgba(27, 59, 34, 0.04)",
+            border: "1px solid #E2DDD3",
             textAlign: "center",
           }}
         >
-          {/* Brand Logo */}
+          {/* Typographic Brand Logo */}
           <div style={{ marginBottom: 20 }}>
-            <img
-              src={logoImg}
-              alt="FeatherTown"
-              style={{ height: 48, width: "auto", margin: "0 auto", display: "block" }}
-            />
+            <div style={{ fontSize: 26, fontWeight: 900, letterSpacing: "-0.03em", display: "inline-flex", alignItems: "baseline" }}>
+              <span style={{ color: "#1B3B22" }}>Feather</span>
+              <span style={{ color: "#D9381E" }}>Town</span>
+              <span style={{ color: "#D9381E", fontSize: 30, lineHeight: 0 }}>.</span>
+            </div>
           </div>
 
           {/* Mode Switcher Tabs */}
           <div
             style={{
               display: "flex",
-              background: "#F1F5F9",
+              background: "#FAF8F5",
               borderRadius: 14,
               padding: 4,
               marginBottom: 24,
-              border: "1px solid #E2E8F0",
+              border: "1px solid #E2DDD3",
             }}
           >
             {["login", "register"].map((m) => (
@@ -126,14 +125,14 @@ export default function Login() {
                   flex: 1,
                   padding: "10px 0",
                   borderRadius: 10,
-                  border: mode === m ? "1px solid #CBD5E1" : "none",
+                  border: mode === m ? "1px solid #E2DDD3" : "none",
                   cursor: "pointer",
                   fontSize: 13.5,
                   fontWeight: 700,
                   textTransform: "capitalize",
                   background: mode === m ? "#FFFFFF" : "transparent",
-                  color: mode === m ? "#059669" : "#64748B",
-                  boxShadow: mode === m ? "0 1px 3px rgba(15, 23, 42, 0.08)" : "none",
+                  color: mode === m ? "#1B3B22" : "#736B5E",
+                  boxShadow: mode === m ? "0 1px 3px rgba(27, 59, 34, 0.08)" : "none",
                   transition: "all 0.2s cubic-bezier(0.16, 1, 0.3, 1)",
                 }}
               >
@@ -198,7 +197,7 @@ export default function Login() {
               className="ft-btn-hover"
               style={{
                 width: "100%",
-                background: "#16A34A",
+                background: "#D9381E",
                 color: "#FFFFFF",
                 border: "none",
                 padding: "13px",
@@ -206,8 +205,11 @@ export default function Login() {
                 fontWeight: 700,
                 fontSize: 14.5,
                 cursor: "pointer",
-                boxShadow: "0 4px 14px rgba(16, 185, 129, 0.25)",
+                boxShadow: "0 4px 14px rgba(217, 56, 30, 0.25)",
+                transition: "background 0.2s ease",
               }}
+              onMouseEnter={(e) => (e.currentTarget.style.background = "#B82E17")}
+              onMouseLeave={(e) => (e.currentTarget.style.background = "#D9381E")}
             >
               {submitting ? "Processing…" : mode === "login" ? "Sign In →" : "Create Account →"}
             </button>
@@ -216,22 +218,22 @@ export default function Login() {
           {googleAuthEnabled && (
             <div style={{ marginTop: 20 }}>
               <div style={{ display: "flex", alignItems: "center", gap: 10, margin: "18px 0" }}>
-                <div style={{ flex: 1, height: 1, background: "#E2E8F0" }} />
-                <span style={{ fontSize: 12, color: "#64748B", textTransform: "uppercase" }}>Or</span>
-                <div style={{ flex: 1, height: 1, background: "#E2E8F0" }} />
+                <div style={{ flex: 1, height: 1, background: "#E2DDD3" }} />
+                <span style={{ fontSize: 12, color: "#736B5E", textTransform: "uppercase" }}>Or</span>
+                <div style={{ flex: 1, height: 1, background: "#E2DDD3" }} />
               </div>
               <GoogleSignInButton />
             </div>
           )}
 
-          <div style={{ marginTop: 24, fontSize: 13, color: "#64748B" }}>
+          <div style={{ marginTop: 24, fontSize: 13, color: "#736B5E" }}>
             {mode === "login" ? (
               <>
                 Don't have an account yet?{" "}
                 <button
                   type="button"
                   onClick={() => switchMode("register")}
-                  style={{ background: "none", border: "none", color: "#059669", fontWeight: 700, cursor: "pointer", padding: 0 }}
+                  style={{ background: "none", border: "none", color: "#1B3B22", fontWeight: 700, cursor: "pointer", padding: 0 }}
                 >
                   Create one now
                 </button>
@@ -242,7 +244,7 @@ export default function Login() {
                 <button
                   type="button"
                   onClick={() => switchMode("login")}
-                  style={{ background: "none", border: "none", color: "#059669", fontWeight: 700, cursor: "pointer", padding: 0 }}
+                  style={{ background: "none", border: "none", color: "#1B3B22", fontWeight: 700, cursor: "pointer", padding: 0 }}
                 >
                   Sign in here
                 </button>
@@ -259,7 +261,7 @@ const labelStyle = {
   display: "block",
   fontSize: 12.5,
   fontWeight: 700,
-  color: "#475569",
+  color: "#152B17",
   marginBottom: 6,
 };
 
@@ -267,10 +269,10 @@ const inputStyle = {
   width: "100%",
   padding: "11px 14px",
   borderRadius: 12,
-  border: "1.5px solid #CBD5E1",
+  border: "1.5px solid #E2DDD3",
   fontSize: 14,
   outline: "none",
-  background: "#F8FAFC",
-  color: "#0F172A",
+  background: "#FAF8F5",
+  color: "#152B17",
   boxSizing: "border-box",
 };
