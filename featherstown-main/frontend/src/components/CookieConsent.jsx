@@ -71,11 +71,11 @@ export default function CookieConsent() {
             maxWidth: 580,
             margin: "0 auto",
             zIndex: 99998,
-            background: "#10161E",
+            background: "#FAF8F5",
             borderRadius: 20,
             padding: "clamp(14px, 3vw, 20px) clamp(14px, 3vw, 24px)",
-            boxShadow: "0 24px 60px rgba(0, 0, 0, 0.6)",
-            border: "1px solid rgba(255, 255, 255, 0.08)",
+            boxShadow: "0 16px 40px rgba(27, 59, 34, 0.12)",
+            border: "1px solid #E2DDD3",
             animation: "fadeUp .4s cubic-bezier(.16,1,.3,1)",
             fontFamily: "Outfit, system-ui, sans-serif",
           }}
@@ -86,8 +86,8 @@ export default function CookieConsent() {
                 width: 40,
                 height: 40,
                 borderRadius: 12,
-                background: "rgba(16, 185, 129, 0.12)",
-                color: "#10B981",
+                background: "#E7EFE8",
+                color: "#1B3B22",
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",
@@ -101,8 +101,8 @@ export default function CookieConsent() {
               <h3
                 style={{
                   fontSize: 15,
-                  fontWeight: 700,
-                  color: "#FFFFFF",
+                  fontWeight: 800,
+                  color: "#152B17",
                   marginBottom: 6,
                 }}
               >
@@ -111,7 +111,7 @@ export default function CookieConsent() {
               <p
                 style={{
                   fontSize: 13,
-                  color: "#94A3B8",
+                  color: "#736B5E",
                   lineHeight: 1.55,
                   marginBottom: 16,
                 }}
@@ -119,7 +119,7 @@ export default function CookieConsent() {
                 We use cookies to improve your shopping experience, remember cart items, and provide secure checkout. Read our{" "}
                 <Link
                   to="/privacy-policy"
-                  style={{ color: "#10B981", textDecoration: "underline", fontWeight: 600 }}
+                  style={{ color: "#1B3B22", textDecoration: "underline", fontWeight: 700 }}
                 >
                   Privacy Policy
                 </Link>
@@ -135,30 +135,32 @@ export default function CookieConsent() {
               >
                 <button
                   onClick={handleAcceptAll}
+                  className="t-btn-press"
                   style={{
-                    background: "linear-gradient(135deg, #10B981, #059669)",
+                    background: "#D9381E",
                     color: "#FFFFFF",
                     border: "none",
                     padding: "9px 20px",
                     borderRadius: 999,
                     fontSize: 13,
-                    fontWeight: 600,
+                    fontWeight: 800,
                     cursor: "pointer",
-                    boxShadow: "0 3px 12px rgba(16, 185, 129, 0.3)",
+                    boxShadow: "0 3px 12px rgba(217, 56, 30, 0.3)",
                   }}
                 >
                   Accept All
                 </button>
                 <button
                   onClick={handleEssentialOnly}
+                  className="t-btn-press"
                   style={{
-                    background: "#161D27",
-                    color: "#F8FAFC",
-                    border: "1px solid rgba(255, 255, 255, 0.1)",
+                    background: "#FFFFFF",
+                    color: "#1B3B22",
+                    border: "1px solid #E2DDD3",
                     padding: "9px 18px",
                     borderRadius: 999,
                     fontSize: 13,
-                    fontWeight: 600,
+                    fontWeight: 700,
                     cursor: "pointer",
                   }}
                 >
@@ -168,11 +170,11 @@ export default function CookieConsent() {
                   onClick={() => setModalOpen(true)}
                   style={{
                     background: "transparent",
-                    color: "#94A3B8",
+                    color: "#736B5E",
                     border: "none",
                     padding: "9px 12px",
                     fontSize: 13,
-                    fontWeight: 500,
+                    fontWeight: 600,
                     cursor: "pointer",
                     textDecoration: "underline",
                   }}
@@ -195,7 +197,7 @@ export default function CookieConsent() {
             position: "fixed",
             inset: 0,
             zIndex: 99999,
-            background: "rgba(15, 23, 42, 0.6)",
+            background: "rgba(21, 43, 23, 0.6)",
             backdropFilter: "blur(6px)",
             display: "flex",
             alignItems: "center",
@@ -208,31 +210,31 @@ export default function CookieConsent() {
           <div
             onClick={(e) => e.stopPropagation()}
             style={{
-              background: "#10161E",
+              background: "#FAF8F5",
               borderRadius: 24,
               padding: "clamp(20px, 4vw, 32px) clamp(16px, 4vw, 28px)",
               maxWidth: 480,
               width: "100%",
-              boxShadow: "0 24px 64px rgba(0,0,0,0.6)",
-              border: "1px solid rgba(255, 255, 255, 0.08)",
+              boxShadow: "0 24px 64px rgba(27, 59, 34, 0.2)",
+              border: "1px solid #E2DDD3",
               animation: "scaleIn .25s ease",
             }}
           >
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 16 }}>
-              <h2 id="cookie-modal-title" style={{ fontSize: 20, fontWeight: 700, color: "#FFFFFF" }}>
+              <h2 id="cookie-modal-title" style={{ fontSize: 20, fontWeight: 800, color: "#152B17" }}>
                 Cookie Preferences
               </h2>
               <button
                 onClick={() => setModalOpen(false)}
                 style={{
-                  background: "#161D27",
-                  border: "none",
+                  background: "#FFFFFF",
+                  border: "1px solid #E2DDD3",
                   borderRadius: "50%",
                   width: 32,
                   height: 32,
                   cursor: "pointer",
                   fontSize: 16,
-                  color: "#94A3B8",
+                  color: "#736B5E",
                   display: "flex",
                   alignItems: "center",
                   justifyContent: "center",
@@ -243,7 +245,7 @@ export default function CookieConsent() {
               </button>
             </div>
 
-            <p style={{ fontSize: 13, color: "#94A3B8", lineHeight: 1.5, marginBottom: 20 }}>
+            <p style={{ fontSize: 13, color: "#736B5E", lineHeight: 1.5, marginBottom: 20 }}>
               Choose which categories of cookies you permit. Strictly essential cookies are required for shopping cart and authentication functions.
             </p>
 
@@ -253,18 +255,18 @@ export default function CookieConsent() {
                 style={{
                   padding: "12px 14px",
                   borderRadius: 14,
-                  background: "#161D27",
-                  border: "1px solid rgba(255, 255, 255, 0.06)",
+                  background: "#FFFFFF",
+                  border: "1px solid #E2DDD3",
                   display: "flex",
                   justifyContent: "space-between",
                   alignItems: "center",
                 }}
               >
                 <div>
-                  <div style={{ fontSize: 14, fontWeight: 700, color: "#FFFFFF" }}>Strictly Necessary</div>
-                  <div style={{ fontSize: 12, color: "#94A3B8" }}>Cart items, security &amp; login session</div>
+                  <div style={{ fontSize: 14, fontWeight: 700, color: "#152B17" }}>Strictly Necessary</div>
+                  <div style={{ fontSize: 12, color: "#736B5E" }}>Cart items, security &amp; login session</div>
                 </div>
-                <span style={{ fontSize: 12, fontWeight: 700, color: "#34D399", background: "rgba(16, 185, 129, 0.12)", border: "1px solid rgba(16, 185, 129, 0.25)", padding: "3px 8px", borderRadius: 99 }}>
+                <span style={{ fontSize: 12, fontWeight: 700, color: "#1B3B22", background: "#E7EFE8", border: "1px solid #B8D4BA", padding: "3px 8px", borderRadius: 99 }}>
                   Always Active
                 </span>
               </div>
@@ -274,8 +276,8 @@ export default function CookieConsent() {
                 style={{
                   padding: "12px 14px",
                   borderRadius: 14,
-                  background: "#161D27",
-                  border: "1px solid rgba(255, 255, 255, 0.06)",
+                  background: "#FFFFFF",
+                  border: "1px solid #E2DDD3",
                   display: "flex",
                   justifyContent: "space-between",
                   alignItems: "center",
@@ -283,14 +285,14 @@ export default function CookieConsent() {
                 }}
               >
                 <div>
-                  <div style={{ fontSize: 14, fontWeight: 700, color: "#FFFFFF" }}>Analytics &amp; Performance</div>
-                  <div style={{ fontSize: 12, color: "#94A3B8" }}>Anonymous usage metrics to help improve speed</div>
+                  <div style={{ fontSize: 14, fontWeight: 700, color: "#152B17" }}>Analytics &amp; Performance</div>
+                  <div style={{ fontSize: 12, color: "#736B5E" }}>Anonymous usage metrics to help improve speed</div>
                 </div>
                 <input
                   type="checkbox"
                   checked={analyticsAllowed}
                   onChange={(e) => setAnalyticsAllowed(e.target.checked)}
-                  style={{ width: 18, height: 18, accentColor: "#10B981" }}
+                  style={{ width: 18, height: 18, accentColor: "#1B3B22" }}
                 />
               </label>
 
@@ -299,8 +301,8 @@ export default function CookieConsent() {
                 style={{
                   padding: "12px 14px",
                   borderRadius: 14,
-                  background: "#161D27",
-                  border: "1px solid rgba(255, 255, 255, 0.06)",
+                  background: "#FFFFFF",
+                  border: "1px solid #E2DDD3",
                   display: "flex",
                   justifyContent: "space-between",
                   alignItems: "center",
@@ -308,14 +310,14 @@ export default function CookieConsent() {
                 }}
               >
                 <div>
-                  <div style={{ fontSize: 14, fontWeight: 700, color: "#FFFFFF" }}>Personalized Offers</div>
-                  <div style={{ fontSize: 12, color: "#94A3B8" }}>Special species discounts &amp; bundle suggestions</div>
+                  <div style={{ fontSize: 14, fontWeight: 700, color: "#152B17" }}>Personalized Offers</div>
+                  <div style={{ fontSize: 12, color: "#736B5E" }}>Special species discounts &amp; bundle suggestions</div>
                 </div>
                 <input
                   type="checkbox"
                   checked={marketingAllowed}
                   onChange={(e) => setMarketingAllowed(e.target.checked)}
-                  style={{ width: 18, height: 18, accentColor: "#10B981" }}
+                  style={{ width: 18, height: 18, accentColor: "#1B3B22" }}
                 />
               </label>
             </div>
@@ -324,13 +326,13 @@ export default function CookieConsent() {
               <button
                 onClick={() => setModalOpen(false)}
                 style={{
-                  background: "#161D27",
-                  color: "#F8FAFC",
-                  border: "1px solid rgba(255, 255, 255, 0.1)",
+                  background: "#FFFFFF",
+                  color: "#152B17",
+                  border: "1px solid #E2DDD3",
                   padding: "10px 18px",
                   borderRadius: 999,
                   fontSize: 13,
-                  fontWeight: 600,
+                  fontWeight: 700,
                   cursor: "pointer",
                 }}
               >
@@ -338,16 +340,17 @@ export default function CookieConsent() {
               </button>
               <button
                 onClick={handleSaveCustom}
+                className="t-btn-press"
                 style={{
-                  background: "linear-gradient(135deg, #10B981, #059669)",
+                  background: "#D9381E",
                   color: "#FFFFFF",
                   border: "none",
                   padding: "10px 22px",
                   borderRadius: 999,
                   fontSize: 13,
-                  fontWeight: 600,
+                  fontWeight: 800,
                   cursor: "pointer",
-                  boxShadow: "0 4px 14px rgba(16, 185, 129, 0.3)",
+                  boxShadow: "0 4px 14px rgba(217, 56, 30, 0.3)",
                 }}
               >
                 Save Preferences

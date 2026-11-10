@@ -16,8 +16,8 @@ export default function NotFound() {
   return (
     <div
       style={{
-        background: "#F8FAFC",
-        color: "#0F172A",
+        background: "#F7F5F0",
+        color: "#152B17",
         fontFamily: "Outfit, system-ui, sans-serif",
         minHeight: "75vh",
         display: "flex",
@@ -40,8 +40,8 @@ export default function NotFound() {
           background: "#FFFFFF",
           borderRadius: 28,
           padding: "clamp(24px, 4vw, 48px) clamp(16px, 4vw, 36px)",
-          boxShadow: "0 2px 10px rgba(15, 23, 42, 0.04)",
-          border: "1px solid #E2E8F0",
+          boxShadow: "0 12px 32px rgba(27, 59, 34, 0.06)",
+          border: "1px solid #E2DDD3",
         }}
       >
         <div
@@ -62,9 +62,9 @@ export default function NotFound() {
             fontWeight: 800,
             letterSpacing: 2,
             textTransform: "uppercase",
-            color: "#059669",
-            background: "#ECFDF5",
-            border: "1px solid #A7F3D0",
+            color: "#1B3B22",
+            background: "#E7EFE8",
+            border: "1px solid #B8D4BA",
             padding: "4px 14px",
             borderRadius: 99,
             marginBottom: 12,
@@ -75,10 +75,9 @@ export default function NotFound() {
 
         <h1
           style={{
-            fontFamily: "Cormorant Garamond, serif",
-            fontSize: "clamp(28px, 4vw, 42px)",
-            fontWeight: 700,
-            color: "#0F172A",
+            fontSize: "clamp(26px, 3.8vw, 38px)",
+            fontWeight: 900,
+            color: "#152B17",
             lineHeight: 1.2,
             marginBottom: 12,
           }}
@@ -89,7 +88,7 @@ export default function NotFound() {
         <p
           style={{
             fontSize: 15,
-            color: "#64748B",
+            color: "#736B5E",
             lineHeight: 1.6,
             marginBottom: 28,
             maxWidth: 440,
@@ -110,28 +109,28 @@ export default function NotFound() {
               width: "100%",
               padding: "12px 100px 12px 18px",
               borderRadius: 999,
-              border: "1.5px solid #CBD5E1",
-              background: "#F8FAFC",
-              color: "#0F172A",
+              border: "1.5px solid #E2DDD3",
+              background: "#FAF8F5",
+              color: "#152B17",
               fontSize: 14,
               outline: "none",
             }}
           />
           <button
             type="submit"
-            className="ft-btn-hover"
+            className="ft-btn-hover t-btn-press"
             style={{
               position: "absolute",
               right: 5,
               top: 5,
               bottom: 5,
-              background: "#16A34A",
+              background: "#D9381E",
               color: "#FFFFFF",
               border: "none",
               borderRadius: 999,
               padding: "0 18px",
               fontSize: 13,
-              fontWeight: 600,
+              fontWeight: 700,
               cursor: "pointer",
             }}
           >
@@ -143,30 +142,30 @@ export default function NotFound() {
         <div style={{ display: "flex", gap: 12, justifyContent: "center", flexWrap: "wrap" }}>
           <Link
             to="/"
-            className="ft-btn-hover"
+            className="ft-btn-hover t-btn-press"
             style={{
-              background: "#16A34A",
+              background: "#D9381E",
               color: "#FFFFFF",
               padding: "12px 26px",
               borderRadius: 999,
-              fontWeight: 700,
+              fontWeight: 800,
               fontSize: 14,
               textDecoration: "none",
-              boxShadow: "0 4px 14px rgba(16, 185, 129, 0.25)",
+              boxShadow: "0 4px 14px rgba(217, 56, 30, 0.3)",
             }}
           >
-            Go to Homepage
+            Return to Aviary
           </Link>
           <Link
             to="/birds"
-            className="ft-btn-hover"
+            className="ft-btn-hover t-btn-press"
             style={{
-              background: "#F1F5F9",
-              color: "#475569",
-              border: "1.5px solid #CBD5E1",
+              background: "#FAF8F5",
+              color: "#1B3B22",
+              border: "1.5px solid #E2DDD3",
               padding: "12px 22px",
               borderRadius: 999,
-              fontWeight: 600,
+              fontWeight: 700,
               fontSize: 14,
               textDecoration: "none",
             }}
@@ -175,14 +174,14 @@ export default function NotFound() {
           </Link>
           <Link
             to="/accessories"
-            className="ft-btn-hover"
+            className="ft-btn-hover t-btn-press"
             style={{
-              background: "#F1F5F9",
-              color: "#475569",
-              border: "1.5px solid #CBD5E1",
+              background: "#FAF8F5",
+              color: "#1B3B22",
+              border: "1.5px solid #E2DDD3",
               padding: "12px 22px",
               borderRadius: 999,
-              fontWeight: 600,
+              fontWeight: 700,
               fontSize: 14,
               textDecoration: "none",
             }}

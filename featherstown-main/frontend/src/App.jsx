@@ -15,6 +15,7 @@ import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
 import PageChrome from "./components/PageChrome";
 import CookieConsent from "./components/CookieConsent";
+import StickyMobileCTA from "./components/StickyMobileCTA";
 import ErrorBoundary from "./components/ErrorBoundary";
 
 import Accessories from "./pages/Accessories";
@@ -76,16 +77,17 @@ function ScrollManager() {
   return null;
 }
 
-/* Public site — normal chrome (navbar/footer/cookies). */
+/* Public site — normal chrome (navbar/footer/cookies/sticky mobile CTA). */
 function SiteLayout({ children }) {
   return (
-    <div style={{ minHeight: "100dvh", display: "flex", flexDirection: "column", background: "#F8FAFC", margin: 0, padding: 0 }}>
+    <div style={{ minHeight: "100dvh", display: "flex", flexDirection: "column", background: "#F7F5F0", margin: 0, padding: 0 }}>
       <PageChrome />
       <ScrollManager />
       <Navbar />
-      <main style={{ flex: "1 0 auto", background: "#F8FAFC", display: "flex", flexDirection: "column", margin: 0, padding: 0 }}>{children}</main>
+      <main style={{ flex: "1 0 auto", background: "#F7F5F0", display: "flex", flexDirection: "column", margin: 0, padding: 0 }}>{children}</main>
       <Footer />
       <CookieConsent />
+      <StickyMobileCTA />
     </div>
   );
 }

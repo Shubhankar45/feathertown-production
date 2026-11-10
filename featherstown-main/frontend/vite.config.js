@@ -4,16 +4,24 @@ import react from '@vitejs/plugin-react'
 export default defineConfig({
   plugins: [react()],
   base: "/",
+  build: {
+    rollupOptions: {
+      output: {
+        manualChunks(id) {
+          if (id.includes('node_modules/react') || id.includes('node_modules/react-dom') || id.includes('node_modules/react-router-dom')) {
+            return 'vendor-react';
+          }
+        },
+      },
+    },
+    chunkSizeWarningLimit: 600,
+  },
   server: {
     proxy: {
-      // Dev-only: forward /api/* to the Express backend so the Vite dev
-      // server (localhost:5173) can reach it on port 5000. This has NO
-      // effect on the production build — in production Express serves the
-      // built frontend and the API from the same origin.
       "/api": {
         target: "http://localhost:5000",
         changeOrigin: true,
-        allowedHosts:"affirm-booting-earthlike.ngrok-free.dev",
+        allowedHosts: "affirm-booting-earthlike.ngrok-free.dev",
       },
     },
   },

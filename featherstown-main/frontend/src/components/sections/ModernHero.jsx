@@ -2,14 +2,12 @@
    Feathers Town — Modern Editorial Avian Hero Section
    /components/sections/ModernHero.jsx
 
-   Crafted per tasteskill 2.5 & impeccable standards:
-   - One screen fit: balanced vertical proportion, fits above fold
-   - Restrained, elegant showcase card (400px max-width, 16:10 ratio)
-   - Zero bird occlusion: photo sits in dedicated top stage
-   - Plain, confident editorial copy & high-contrast typography
-   - Solid modern emerald (#16A34A) & sunset orange (#EA580C) palette
-   - Clean micro-interactions: lift, press, smooth species cross-fade
-   - Sleek integrated species switcher & category quick-anchors
+   Crafted per strict 60-30-10 color design system:
+   - 60% Oat Milk (#F7F5F0 canvas, #FAF8F5 surfaces, #E2DDD3 borders)
+   - 30% Forest Green (#1B3B22 brand, #152B17 deep ink, #E7EFE8 wash)
+   - 10% Tomato Red (#D9381E primary CTAs, discount badges, cart pop)
+   - Descriptive SEO alt text on all imagery
+   - Fully responsive across all mobile & desktop breakpoints
 ═══════════════════════════════════════════════════════════════ */
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
@@ -165,8 +163,8 @@ export default function ModernHero() {
     <section
       style={{
         position: "relative",
-        background: "#F8FAFC",
-        color: "#0F172A",
+        background: "#F7F5F0",
+        color: "#152B17",
         width: "100%",
         paddingTop: "clamp(20px, 3vh, 36px)",
         paddingBottom: "clamp(24px, 3.5vh, 44px)",
@@ -179,7 +177,7 @@ export default function ModernHero() {
         style={{
           width: "100%",
           maxWidth: "100%",
-          padding: "0 clamp(20px, 4.5vw, 84px)",
+          padding: "0 clamp(16px, 4.5vw, 84px)",
         }}
       >
         {/* ── 2-Column Responsive Split ── */}
@@ -202,20 +200,20 @@ export default function ModernHero() {
                 display: "inline-flex",
                 alignItems: "center",
                 gap: 7,
-                background: "#ECFDF5",
-                border: "1px solid #BBF7D0",
+                background: "#E7EFE8",
+                border: "1px solid #B8D4BA",
                 padding: "5px 14px",
                 borderRadius: 999,
                 fontSize: 11,
                 fontWeight: 800,
-                color: "#15803D",
+                color: "#1B3B22",
                 letterSpacing: 0.8,
                 textTransform: "uppercase",
                 width: "fit-content",
                 marginBottom: 16,
               }}
             >
-              <span style={{ width: 6, height: 6, borderRadius: "50%", background: "#16A34A" }} />
+              <span style={{ width: 6, height: 6, borderRadius: "50%", background: "#1B3B22" }} />
               <span>Ethical Aviary &amp; Certified Breeders</span>
             </div>
 
@@ -226,12 +224,12 @@ export default function ModernHero() {
                 fontWeight: 900,
                 lineHeight: 1.12,
                 letterSpacing: "-0.03em",
-                color: "#0F172A",
+                color: "#152B17",
                 margin: "0 0 16px 0",
               }}
             >
               Companion birds, <br />
-              <span style={{ color: "#16A34A" }}>raised with care</span> &amp; devotion.
+              <span style={{ color: "#1B3B22" }}>raised with care</span> &amp; devotion.
             </h1>
 
             {/* Subtitle */}
@@ -239,7 +237,7 @@ export default function ModernHero() {
               style={{
                 fontSize: "clamp(15px, 1.2vw, 17px)",
                 lineHeight: 1.6,
-                color: "#475569",
+                color: "#736B5E",
                 margin: "0 0 24px 0",
                 maxWidth: 580,
               }}
@@ -249,7 +247,7 @@ export default function ModernHero() {
               and climate-controlled safe doorstep delivery.
             </p>
 
-            {/* Dual CTA Button Group */}
+            {/* Dual CTA Button Group (Above The Fold CTA) */}
             <div
               style={{
                 display: "flex",
@@ -259,11 +257,12 @@ export default function ModernHero() {
                 marginBottom: 28,
               }}
             >
+              {/* Primary Tomato Red CTA Button */}
               <Link
                 to="/birds"
                 className="t-hover-lift t-btn-press"
                 style={{
-                  background: "#16A34A",
+                  background: "#D9381E",
                   color: "#FFFFFF",
                   padding: "13px 28px",
                   borderRadius: 12,
@@ -273,7 +272,7 @@ export default function ModernHero() {
                   display: "inline-flex",
                   alignItems: "center",
                   gap: 8,
-                  boxShadow: "0 4px 14px rgba(22, 163, 74, 0.3)",
+                  boxShadow: "0 4px 14px rgba(217, 56, 30, 0.35)",
                   transition: "background 0.2s, transform 0.2s",
                 }}
               >
@@ -281,6 +280,7 @@ export default function ModernHero() {
                 <span style={{ fontSize: 16 }}>→</span>
               </Link>
 
+              {/* Secondary Oat/Forest Specialist Button */}
               <a
                 href={`https://wa.me/${waNum}?text=${encodeURIComponent(
                   `Hi FeatherTown! I'd like to consult on adopting a ${activeBird.name} (${activeBird.price}). Could you please share live photos and aviary details?`
@@ -290,8 +290,8 @@ export default function ModernHero() {
                 className="t-hover-lift t-btn-press"
                 style={{
                   background: "#FFFFFF",
-                  color: "#0F172A",
-                  border: "1.5px solid #CBD5E1",
+                  color: "#1B3B22",
+                  border: "1.5px solid #E2DDD3",
                   padding: "12px 24px",
                   borderRadius: 12,
                   fontSize: 13.5,
@@ -316,24 +316,24 @@ export default function ModernHero() {
                 gap: "clamp(16px, 3vw, 32px)",
                 flexWrap: "wrap",
                 paddingTop: 18,
-                borderTop: "1px solid #E2E8F0",
+                borderTop: "1px solid #E2DDD3",
               }}
             >
               <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
                 <span style={{ fontSize: 18 }}>🛡️</span>
-                <span style={{ fontSize: 13, fontWeight: 700, color: "#334155" }}>
+                <span style={{ fontSize: 13, fontWeight: 700, color: "#1B3B22" }}>
                   DNA &amp; Vet Certified
                 </span>
               </div>
               <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
                 <span style={{ fontSize: 18 }}>🚚</span>
-                <span style={{ fontSize: 13, fontWeight: 700, color: "#334155" }}>
+                <span style={{ fontSize: 13, fontWeight: 700, color: "#1B3B22" }}>
                   Climate-Safe Transit
                 </span>
               </div>
               <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
                 <span style={{ fontSize: 18 }}>⭐</span>
-                <span style={{ fontSize: 13, fontWeight: 700, color: "#334155" }}>
+                <span style={{ fontSize: 13, fontWeight: 700, color: "#1B3B22" }}>
                   4.9/5 Lifetime Care
                 </span>
               </div>
@@ -361,8 +361,8 @@ export default function ModernHero() {
                 background: "#FFFFFF",
                 borderRadius: 22,
                 overflow: "hidden",
-                border: "1px solid #E2E8F0",
-                boxShadow: "0 12px 36px -4px rgba(15, 23, 42, 0.08), 0 2px 8px -2px rgba(15, 23, 42, 0.04)",
+                border: "1px solid #E2DDD3",
+                boxShadow: "0 12px 32px -4px rgba(27, 59, 34, 0.08), 0 2px 8px -2px rgba(27, 59, 34, 0.04)",
               }}
             >
               {/* STAGE: Compact 16:10 Photo Viewport */}
@@ -372,14 +372,14 @@ export default function ModernHero() {
                   width: "100%",
                   aspectRatio: "16 / 10",
                   maxHeight: 270,
-                  background: "#0F172A",
+                  background: "#152B17",
                   overflow: "hidden",
                 }}
               >
                 <img
                   key={activeBird.id}
                   src={activeBird.image}
-                  alt={activeBird.name}
+                  alt={`Hand-tamed healthy ${activeBird.name} (${activeBird.species}) companion bird raised ethically at FeatherTown aviary`}
                   style={{
                     width: "100%",
                     height: "100%",
@@ -397,8 +397,8 @@ export default function ModernHero() {
                     top: 12,
                     left: 12,
                     background: "rgba(255, 255, 255, 0.96)",
-                    color: "#15803D",
-                    border: "1px solid #BBF7D0",
+                    color: "#1B3B22",
+                    border: "1px solid #B8D4BA",
                     padding: "4px 12px",
                     borderRadius: 999,
                     fontSize: 11,
@@ -409,23 +409,23 @@ export default function ModernHero() {
                     boxShadow: "0 2px 6px rgba(0, 0, 0, 0.08)",
                   }}
                 >
-                  <span style={{ width: 6, height: 6, borderRadius: "50%", background: "#16A34A" }} />
+                  <span style={{ width: 6, height: 6, borderRadius: "50%", background: "#1B3B22" }} />
                   <span>Available at Aviary</span>
                 </div>
 
-                {/* Discount Badge */}
+                {/* Discount Badge in Tomato Red */}
                 <div
                   style={{
                     position: "absolute",
                     top: 12,
                     right: 12,
-                    background: "#EA580C",
+                    background: "#D9381E",
                     color: "#FFFFFF",
                     padding: "4px 12px",
                     borderRadius: 999,
                     fontSize: 11,
                     fontWeight: 800,
-                    boxShadow: "0 2px 6px rgba(234, 88, 12, 0.3)",
+                    boxShadow: "0 2px 6px rgba(217, 56, 30, 0.35)",
                   }}
                 >
                   {activeBird.discount}
@@ -433,7 +433,7 @@ export default function ModernHero() {
               </div>
 
               {/* CARD BODY: Compact, Clean, Structured */}
-              <div style={{ padding: "16px 20px 18px" }}>
+              <div style={{ padding: "16px 20px 18px", background: "#FFFFFF" }}>
                 {/* Name & Price Row */}
                 <div
                   style={{
@@ -449,7 +449,7 @@ export default function ModernHero() {
                       style={{
                         fontSize: 19,
                         fontWeight: 800,
-                        color: "#0F172A",
+                        color: "#152B17",
                         letterSpacing: "-0.015em",
                         margin: 0,
                       }}
@@ -459,7 +459,7 @@ export default function ModernHero() {
                     <div
                       style={{
                         fontSize: 12,
-                        color: "#15803D",
+                        color: "#1B3B22",
                         fontWeight: 600,
                         fontStyle: "italic",
                         marginTop: 2,
@@ -474,7 +474,7 @@ export default function ModernHero() {
                       style={{
                         fontSize: 21,
                         fontWeight: 900,
-                        color: "#16A34A",
+                        color: "#D9381E",
                         letterSpacing: "-0.02em",
                       }}
                     >
@@ -483,7 +483,7 @@ export default function ModernHero() {
                     <div
                       style={{
                         fontSize: 11.5,
-                        color: "#94A3B8",
+                        color: "#736B5E",
                         fontWeight: 600,
                         textDecoration: "line-through",
                       }}
@@ -497,7 +497,7 @@ export default function ModernHero() {
                 <p
                   style={{
                     fontSize: 12.5,
-                    color: "#64748B",
+                    color: "#736B5E",
                     lineHeight: 1.5,
                     margin: "6px 0 12px 0",
                     display: "-webkit-box",
@@ -515,8 +515,8 @@ export default function ModernHero() {
                     display: "grid",
                     gridTemplateColumns: "repeat(3, 1fr)",
                     gap: 8,
-                    background: "#F8FAFC",
-                    border: "1px solid #E2E8F0",
+                    background: "#FAF8F5",
+                    border: "1px solid #E2DDD3",
                     borderRadius: 12,
                     padding: "8px 12px",
                     marginBottom: 14,
@@ -524,26 +524,26 @@ export default function ModernHero() {
                   }}
                 >
                   <div>
-                    <div style={{ fontSize: 9.5, color: "#64748B", fontWeight: 700, textTransform: "uppercase" }}>
+                    <div style={{ fontSize: 9.5, color: "#736B5E", fontWeight: 700, textTransform: "uppercase" }}>
                       Mimicry
                     </div>
-                    <div style={{ fontSize: 12, fontWeight: 800, color: "#0F172A", marginTop: 2 }}>
+                    <div style={{ fontSize: 12, fontWeight: 800, color: "#152B17", marginTop: 2 }}>
                       {activeBird.talking}
                     </div>
                   </div>
-                  <div style={{ borderLeft: "1px solid #E2E8F0", borderRight: "1px solid #E2E8F0" }}>
-                    <div style={{ fontSize: 9.5, color: "#64748B", fontWeight: 700, textTransform: "uppercase" }}>
+                  <div style={{ borderLeft: "1px solid #E2DDD3", borderRight: "1px solid #E2DDD3" }}>
+                    <div style={{ fontSize: 9.5, color: "#736B5E", fontWeight: 700, textTransform: "uppercase" }}>
                       Lifespan
                     </div>
-                    <div style={{ fontSize: 12, fontWeight: 800, color: "#0F172A", marginTop: 2 }}>
+                    <div style={{ fontSize: 12, fontWeight: 800, color: "#152B17", marginTop: 2 }}>
                       {activeBird.lifespan}
                     </div>
                   </div>
                   <div>
-                    <div style={{ fontSize: 9.5, color: "#64748B", fontWeight: 700, textTransform: "uppercase" }}>
+                    <div style={{ fontSize: 9.5, color: "#736B5E", fontWeight: 700, textTransform: "uppercase" }}>
                       Nature
                     </div>
-                    <div style={{ fontSize: 12, fontWeight: 800, color: "#0F172A", marginTop: 2 }}>
+                    <div style={{ fontSize: 12, fontWeight: 800, color: "#152B17", marginTop: 2 }}>
                       {activeBird.temperament}
                     </div>
                   </div>
@@ -559,7 +559,7 @@ export default function ModernHero() {
                     rel="noreferrer"
                     className="t-btn-press"
                     style={{
-                      background: "#16A34A",
+                      background: "#D9381E",
                       color: "#FFFFFF",
                       textAlign: "center",
                       padding: "9px 14px",
@@ -571,7 +571,7 @@ export default function ModernHero() {
                       alignItems: "center",
                       justifyContent: "center",
                       gap: 6,
-                      boxShadow: "0 2px 8px rgba(22, 163, 74, 0.25)",
+                      boxShadow: "0 2px 8px rgba(217, 56, 30, 0.3)",
                     }}
                   >
                     <span>Adopt on WhatsApp</span>
@@ -582,9 +582,9 @@ export default function ModernHero() {
                     to="/birds"
                     className="t-btn-press"
                     style={{
-                      background: "#F8FAFC",
-                      color: "#0F172A",
-                      border: "1px solid #CBD5E1",
+                      background: "#FAF8F5",
+                      color: "#1B3B22",
+                      border: "1px solid #E2DDD3",
                       textAlign: "center",
                       padding: "9px 12px",
                       borderRadius: 10,
@@ -613,8 +613,8 @@ export default function ModernHero() {
                 background: "#FFFFFF",
                 borderRadius: 16,
                 padding: "9px 12px",
-                border: "1px solid #E2E8F0",
-                boxShadow: "0 2px 8px rgba(15, 23, 42, 0.04)",
+                border: "1px solid #E2DDD3",
+                boxShadow: "0 2px 8px rgba(27, 59, 34, 0.04)",
               }}
             >
               {/* Progress Line */}
@@ -622,7 +622,7 @@ export default function ModernHero() {
                 style={{
                   height: 3,
                   width: "100%",
-                  background: "#F1F5F9",
+                  background: "#EFECE4",
                   borderRadius: 999,
                   overflow: "hidden",
                   marginBottom: 10,
@@ -632,7 +632,7 @@ export default function ModernHero() {
                   style={{
                     height: "100%",
                     width: `${timerProgress}%`,
-                    background: "#16A34A",
+                    background: "#1B3B22",
                     transition: "width 0.08s linear",
                   }}
                 />
@@ -656,8 +656,8 @@ export default function ModernHero() {
                         setTimerProgress(0);
                       }}
                       style={{
-                        background: isSelected ? "#F0FDF4" : "#FFFFFF",
-                        border: isSelected ? "1.5px solid #16A34A" : "1px solid #E2E8F0",
+                        background: isSelected ? "#E7EFE8" : "#FFFFFF",
+                        border: isSelected ? "1.5px solid #1B3B22" : "1px solid #E2DDD3",
                         borderRadius: 12,
                         padding: "6px 2px",
                         cursor: "pointer",
@@ -674,13 +674,13 @@ export default function ModernHero() {
                           height: 28,
                           borderRadius: "50%",
                           overflow: "hidden",
-                          background: "#F8FAFC",
-                          border: isSelected ? "1.5px solid #16A34A" : "1px solid #E2E8F0",
+                          background: "#FAF8F5",
+                          border: isSelected ? "1.5px solid #1B3B22" : "1px solid #E2DDD3",
                         }}
                       >
                         <img
                           src={b.thumb}
-                          alt={b.name}
+                          alt={`${b.name} species avatar thumbnail`}
                           style={{ width: "100%", height: "100%", objectFit: "cover" }}
                         />
                       </div>
@@ -688,7 +688,7 @@ export default function ModernHero() {
                         style={{
                           fontSize: 9,
                           fontWeight: isSelected ? 800 : 600,
-                          color: isSelected ? "#16A34A" : "#64748B",
+                          color: isSelected ? "#1B3B22" : "#736B5E",
                           whiteSpace: "nowrap",
                           overflow: "hidden",
                           textOverflow: "ellipsis",
@@ -710,7 +710,7 @@ export default function ModernHero() {
           style={{
             marginTop: "clamp(28px, 4vh, 44px)",
             paddingTop: 18,
-            borderTop: "1px solid #E2E8F0",
+            borderTop: "1px solid #E2DDD3",
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
@@ -727,7 +727,7 @@ export default function ModernHero() {
               style={{
                 textDecoration: "none",
                 background: "#FFFFFF",
-                border: "1px solid #E2E8F0",
+                border: "1px solid #E2DDD3",
                 borderRadius: 999,
                 padding: "6px 14px",
                 display: "inline-flex",
@@ -735,8 +735,8 @@ export default function ModernHero() {
                 gap: 7,
                 fontSize: 12,
                 fontWeight: 700,
-                color: "#334155",
-                boxShadow: "0 1px 4px rgba(15, 23, 42, 0.04)",
+                color: "#1B3B22",
+                boxShadow: "0 1px 4px rgba(27, 59, 34, 0.04)",
                 transition: "all 0.2s ease",
               }}
             >
