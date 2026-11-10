@@ -6,7 +6,9 @@
 
 # Dependencies & Build artifacts
 node_modules/
-dist/
+# dist is included so Docker copies the pre-built 4.4MB assets in 2 seconds
+!dist/
+!dist/**
 
 # Logs
 npm-debug.log*
