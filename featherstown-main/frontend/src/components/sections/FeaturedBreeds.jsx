@@ -4,19 +4,21 @@
 
    Directly modeled on the reference "Seasonal Collection" section:
    - Header: "Featured Companion Birds" with "View All →" on right
-   - 4-column card grid
+   - 4-column card grid, full-width expansive responsive layout
    - Rich, clear companion bird photograph in top viewport
    - White bottom card strip with Breed Name, trait subtitle, and chevron arrow (>)
    - Smooth hover states, links directly to /birds or breed details
+   - 100% customizable from Admin Panel
 ═══════════════════════════════════════════════════════════════ */
 import { Link } from "react-router-dom";
 import { ArrowRight, ChevronRight } from "lucide-react";
+import { useSettings } from "../../context/SettingsContext";
 import sunCrop from "../../assets/birds/crop-sun-conure.jpg";
 import cockatielCrop from "../../assets/birds/crop-cockatiel.jpg";
 import greenCrop from "../../assets/birds/crop-green-cheek.jpg";
 import greyCrop from "../../assets/birds/crop-african-grey.jpg";
 
-const FEATURED_BREEDS = [
+const DEFAULT_FEATURED_BREEDS = [
   {
     id: "sun-conure",
     name: "Sun Conure",
@@ -47,16 +49,44 @@ const FEATURED_BREEDS = [
   },
 ];
 
+const FALLBACK_IMAGES = {
+  "sun-conure": sunCrop,
+  "cockatiel": cockatielCrop,
+  "green-cheek": greenCrop,
+  "african-grey": greyCrop,
+};
+
 export default function FeaturedBreeds() {
+  const { settings } = useSettings();
+
+  const title = settings?.featuredBreedsTitle || "Featured Companion Birds";
+  const rawList =
+    settings?.featuredBreeds && settings.featuredBreeds.length > 0
+      ? settings.featuredBreeds
+      : DEFAULT_FEATURED_BREEDS;
+
+  const resolveImage = (item, idx) => {
+    if (!item?.image) {
+      return DEFAULT_FEATURED_BREEDS[idx % 4]?.image || sunCrop;
+    }
+    const img = item.image;
+    if (img === "/assets/birds/crop-sun-conure.jpg") return sunCrop;
+    if (img === "/assets/birds/crop-cockatiel.jpg") return cockatielCrop;
+    if (img === "/assets/birds/crop-green-cheek.jpg") return greenCrop;
+    if (img === "/assets/birds/crop-african-grey.jpg") return greyCrop;
+    return img;
+  };
+
   return (
     <section
       style={{
-        padding: "clamp(36px, 5vw, 68px) clamp(16px, 4.5vw, 64px)",
+        padding: "clamp(36px, 5vw, 68px) clamp(20px, 4.5vw, 64px)",
         width: "100%",
         maxWidth: "100%",
         margin: "0 auto",
         background: "#FAF8F5",
         fontFamily: "Outfit, system-ui, sans-serif",
+        boxSizing: "border-box",
       }}
     >
       {/* Header */}
@@ -77,7 +107,7 @@ export default function FeaturedBreeds() {
             margin: 0,
           }}
         >
-          Featured Companion Birds
+          {title}
         </h2>
 
         <Link
@@ -98,111 +128,123 @@ export default function FeaturedBreeds() {
         </Link>
       </div>
 
-      {/* 4 Cards Grid */}
+      {/* 4-Card Responsive Grid */}
       <div
         style={{
           display: "grid",
-          gridTemplateColumns: "repeat(auto-fill, minmax(clamp(200px, 22vw, 270px), 1fr))",
-          gap: "clamp(16px, 2.2vw, 24px)",
+          gridTemplateColumns: "repeat(auto-fit, minmax(min(100%, 260px), 1fr))",
+          gap: "clamp(16px, 2.5vw, 24px)",
+          width: "100%",
         }}
       >
-        {FEATURED_BREEDS.map((breed) => (
-          <Link
-            key={breed.id}
-            to={breed.link}
-            className="group"
-            style={{
-              textDecoration: "none",
-              background: "#FFFFFF",
-              borderRadius: 20,
-              border: "1px solid #E2DDD3",
-              overflow: "hidden",
-              display: "flex",
-              flexDirection: "column",
-              transition: "transform 0.22s ease, box-shadow 0.22s ease, border-color 0.22s ease",
-            }}
-            onMouseEnter={(e) => {
-              e.currentTarget.style.borderColor = "#1B3B22";
-              e.currentTarget.style.boxShadow = "0 8px 24px rgba(27, 59, 34, 0.08)";
-              e.currentTarget.style.transform = "translateY(-4px)";
-            }}
-            onMouseLeave={(e) => {
-              e.currentTarget.style.borderColor = "#E2DDD3";
-              e.currentTarget.style.boxShadow = "none";
-              e.currentTarget.style.transform = "translateY(0)";
-            }}
-          >
-            {/* Image Viewport */}
-            <div
-              style={{
-                width: "100%",
-                aspectRatio: "4 / 3",
-                background: "#FAF8F5",
-                overflow: "hidden",
-              }}
-            >
-              <img
-                src={breed.image}
-                alt={breed.name}
-                loading="lazy"
-                style={{
-                  width: "100%",
-                  height: "100%",
-                  objectFit: "cover",
-                  transition: "transform 0.35s ease",
-                }}
-                className="group-hover:scale-106"
-              />
-            </div>
+        {rawList.map((breed, idx) => {
+          const imgSrc = resolveImage(breed, idx);
+          const fallback = DEFAULT_FEATURED_BREEDS[idx % 4]?.image || sunCrop;
 
-            {/* Bottom Info Strip with Chevron */}
-            <div
+          return (
+            <Link
+              key={breed.id || breed.name || idx}
+              to={breed.link || "/birds"}
+              className="t-hover-lift"
               style={{
-                padding: "16px",
                 display: "flex",
-                alignItems: "center",
-                justifyContent: "space-between",
+                flexDirection: "column",
+                textDecoration: "none",
                 background: "#FFFFFF",
+                borderRadius: 20,
+                overflow: "hidden",
+                border: "1px solid #E2DDD3",
+                boxShadow: "0 2px 10px rgba(0, 0, 0, 0.04)",
+                transition: "box-shadow 0.2s, transform 0.2s",
               }}
             >
-              <div>
-                <h3
-                  style={{
-                    fontSize: 15,
-                    fontWeight: 800,
-                    color: "#152B17",
-                    margin: "0 0 3px 0",
-                  }}
-                >
-                  {breed.name}
-                </h3>
-                <p
-                  style={{
-                    fontSize: 12,
-                    color: "#736B5E",
-                    margin: 0,
-                  }}
-                >
-                  {breed.subtitle}
-                </p>
-              </div>
-
+              {/* Photo Viewport */}
               <div
                 style={{
-                  color: "#1B3B22",
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  paddingLeft: 8,
+                  width: "100%",
+                  aspectRatio: "1 / 1",
+                  background: "#FAF8F5",
+                  overflow: "hidden",
+                  position: "relative",
                 }}
               >
-                <ChevronRight size={18} strokeWidth={2.4} />
+                <img
+                  src={imgSrc}
+                  alt={breed.name}
+                  onError={(e) => {
+                    e.currentTarget.onerror = null;
+                    e.currentTarget.src = fallback;
+                  }}
+                  style={{
+                    width: "100%",
+                    height: "100%",
+                    objectFit: "cover",
+                    display: "block",
+                    transition: "transform 0.4s ease",
+                  }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.transform = "scale(1.05)";
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.transform = "scale(1)";
+                  }}
+                />
               </div>
-            </div>
-          </Link>
-        ))}
+
+              {/* Bottom Card Strip */}
+              <div
+                style={{
+                  padding: "16px 18px",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "space-between",
+                  background: "#FFFFFF",
+                  borderTop: "1px solid #F0ECE4",
+                }}
+              >
+                <div>
+                  <div
+                    style={{
+                      fontSize: 15.5,
+                      fontWeight: 800,
+                      color: "#152B17",
+                      marginBottom: 2,
+                    }}
+                  >
+                    {breed.name}
+                  </div>
+                  <div
+                    style={{
+                      fontSize: 12.5,
+                      fontWeight: 500,
+                      color: "#736B5E",
+                    }}
+                  >
+                    {breed.subtitle}
+                  </div>
+                </div>
+
+                <div
+                  style={{
+                    width: 32,
+                    height: 32,
+                    borderRadius: "50%",
+                    background: "#FAF8F5",
+                    border: "1px solid #E2DDD3",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    color: "#1B3B22",
+                    flexShrink: 0,
+                  }}
+                >
+                  <ChevronRight size={16} strokeWidth={2.4} />
+                </div>
+              </div>
+            </Link>
+          );
+        })}
       </div>
     </section>
   );
 }
-

@@ -75,6 +75,7 @@ FRONTEND_PATH = (BASE_DIR.parent / "frontend" / "dist").resolve()
 INDEX_PATH = FRONTEND_PATH / "index.html"
 TEMPLATES_DIR = (BASE_DIR / "templates").resolve()
 PUBLIC_FRONTEND_PATH = (BASE_DIR.parent / "frontend" / "public").resolve()
+UPLOADS_DIR = (BASE_DIR / "uploads").resolve()
 
 # Allowed CORS Origins
 env_origins = [

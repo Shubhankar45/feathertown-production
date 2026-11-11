@@ -1,5 +1,6 @@
 import { useEffect, useState, useMemo } from "react";
-import { adminFetch } from "../../utils/adminApi";
+import { Upload } from "lucide-react";
+import { adminFetch, adminUpload } from "../../utils/adminApi";
 import { toast } from "../../components/ui/Toast";
 import { resolveBirdImage } from "../../context/BirdsContext";
 import { useSettings } from "../../context/SettingsContext";
@@ -852,15 +853,51 @@ export default function AdminBirds() {
 
               {/* Image URL & Preview */}
               <div style={{ marginBottom: 16 }}>
-                <label style={labelStyle}>Image URL or Path</label>
-                <div style={{ display: "flex", gap: 12, alignItems: "center" }}>
+                <label style={labelStyle}>Image URL or File Upload</label>
+                <div style={{ display: "flex", gap: 10, alignItems: "center" }}>
                   <input
                     type="text"
-                    placeholder="https://... or /assets/Sun-conure.jfif"
+                    placeholder="https://... or upload a photo"
                     value={form.image}
                     onChange={(e) => setForm({ ...form, image: e.target.value })}
                     style={{ ...inputStyle, flex: 1 }}
                   />
+                  <label
+                    style={{
+                      display: "inline-flex",
+                      alignItems: "center",
+                      gap: 6,
+                      padding: "9px 14px",
+                      borderRadius: 8,
+                      background: "#1B3B22",
+                      color: "#FFFFFF",
+                      fontSize: 12,
+                      fontWeight: 700,
+                      cursor: "pointer",
+                      whiteSpace: "nowrap",
+                    }}
+                  >
+                    <Upload size={13} strokeWidth={2.2} />
+                    <span>Upload</span>
+                    <input
+                      type="file"
+                      accept="image/*"
+                      onChange={async (e) => {
+                        const file = e.target.files?.[0];
+                        if (!file) return;
+                        try {
+                          const res = await adminUpload(file);
+                          if (res?.url) {
+                            setForm((prev) => ({ ...prev, image: res.url }));
+                            toast.success("Bird photo uploaded!");
+                          }
+                        } catch (err) {
+                          toast.error(err.message || "Failed to upload photo");
+                        }
+                      }}
+                      style={{ display: "none" }}
+                    />
+                  </label>
                   {form.image && (
                     <img
                       src={resolveBirdImage(form.image)}

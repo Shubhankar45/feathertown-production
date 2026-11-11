@@ -3,9 +3,9 @@
    /components/sections/ModernHero.jsx
 
    Faithful to the Zuvipaw reference layout:
-   - Clean Oat Milk (#FAF8F5) background with warm editorial typography
-   - Single ultra-high-resolution companion birds photograph
-     (Sun Conure & Cockatiel perched warmly together on rope)
+   - Full-width expansive editorial layout with responsive horizontal padding
+   - 100% customizable via Admin Panel (Hero image, title, subtitle, CTAs, badge, trust chips)
+   - Single high-resolution companion birds photograph with instant fallback
    - Rounded corner showcase card with soft border & subtle shadow
    - Floating Forest Green circular badge ("Birds Make Life Brighter")
    - Strict 60-30-10 palette (Oat Milk 60%, Forest Green 30%, Tomato Red 10%)
@@ -14,9 +14,32 @@
 ═══════════════════════════════════════════════════════════════ */
 import { Link } from "react-router-dom";
 import { ArrowRight, Wheat, Heart, ShieldCheck, Feather } from "lucide-react";
+import { useSettings } from "../../context/SettingsContext";
 import heroBirdsCompanion from "../../assets/hero-birds-companion.jpg";
 
 export default function ModernHero() {
+  const { settings } = useSettings();
+
+  // Dynamic admin-customizable values with rock-solid fallbacks
+  const heroImageSrc = settings?.heroImage && settings.heroImage.trim()
+    ? settings.heroImage.trim()
+    : heroBirdsCompanion;
+
+  const eyebrow = settings?.heroBadgeText || "LOVE. CARE. FLOCK.";
+  const title = settings?.heroTitle || "Everything Your Bird Needs";
+  const subtitle =
+    settings?.heroSubtitle ||
+    "Premium organic nutrition, spacious habitats, and certified hand-tamed companion birds for happier, healthier flocks.";
+  const floatingBadge = settings?.heroFloatingBadge || "Birds Make Life Brighter";
+  const ctaText = settings?.heroCtaText || "Shop Now";
+  const ctaLink = settings?.heroCtaLink || "/accessories";
+  const secondaryCtaText = settings?.heroSecondaryCtaText || "Browse Birds";
+  const secondaryCtaLink = settings?.heroSecondaryCtaLink || "/birds";
+
+  const trust1 = settings?.heroTrust1 || "Better Nutrition";
+  const trust2 = settings?.heroTrust2 || "Happier Birds";
+  const trust3 = settings?.heroTrust3 || "Certified Aviary";
+
   return (
     <section
       style={{
@@ -24,8 +47,8 @@ export default function ModernHero() {
         background: "#FAF8F5",
         color: "#152B17",
         width: "100%",
-        paddingTop: "clamp(28px, 4.5vw, 56px)",
-        paddingBottom: "clamp(36px, 5.5vw, 68px)",
+        paddingTop: "clamp(24px, 3.5vw, 48px)",
+        paddingBottom: "clamp(32px, 4.5vw, 60px)",
         fontFamily: "Outfit, system-ui, sans-serif",
         overflow: "hidden",
       }}
@@ -33,23 +56,31 @@ export default function ModernHero() {
       <div
         style={{
           width: "100%",
-          maxWidth: 1240,
-          margin: "0 auto",
-          padding: "0 clamp(16px, 4vw, 56px)",
+          maxWidth: "100%",
+          padding: "0 clamp(20px, 4.5vw, 64px)",
+          boxSizing: "border-box",
         }}
       >
         <div
           style={{
             display: "grid",
-            gridTemplateColumns: "repeat(auto-fit, minmax(min(100%, 460px), 1fr))",
-            gap: "clamp(28px, 4.5vw, 60px)",
+            gridTemplateColumns: "repeat(auto-fit, minmax(min(100%, 500px), 1fr))",
+            gap: "clamp(32px, 4.5vw, 72px)",
             alignItems: "center",
+            width: "100%",
           }}
         >
           {/* ══════════════════════════════════════════
               LEFT COLUMN: Confident Editorial Copy
              ══════════════════════════════════════════ */}
-          <div style={{ display: "flex", flexDirection: "column", maxWidth: 580 }}>
+          <div
+            style={{
+              display: "flex",
+              flexDirection: "column",
+              maxWidth: 660,
+              width: "100%",
+            }}
+          >
             {/* Eyebrow */}
             <div
               style={{
@@ -70,35 +101,34 @@ export default function ModernHero() {
               }}
             >
               <span style={{ width: 6, height: 6, borderRadius: "50%", background: "#1B3B22" }} />
-              <span>LOVE. CARE. FLOCK.</span>
+              <span>{eyebrow}</span>
             </div>
 
             {/* Master Headline */}
             <h1
               style={{
-                fontSize: "clamp(34px, 4.4vw, 58px)",
+                fontSize: "clamp(36px, 4.6vw, 62px)",
                 fontWeight: 900,
-                lineHeight: 1.1,
+                lineHeight: 1.08,
                 letterSpacing: "-0.03em",
                 color: "#152B17",
                 margin: "0 0 16px 0",
               }}
             >
-              Everything <br />
-              <span style={{ color: "#1B3B22" }}>Your Bird</span> Needs
+              {title}
             </h1>
 
             {/* Subtitle */}
             <p
               style={{
-                fontSize: "clamp(15px, 1.2vw, 17px)",
+                fontSize: "clamp(15.5px, 1.25vw, 18px)",
                 lineHeight: 1.6,
                 color: "#736B5E",
                 margin: "0 0 28px 0",
-                maxWidth: 520,
+                maxWidth: 580,
               }}
             >
-              Premium organic nutrition, spacious habitats, and certified hand-tamed companion birds for happier, healthier flocks.
+              {subtitle}
             </p>
 
             {/* CTA Button Group */}
@@ -112,12 +142,12 @@ export default function ModernHero() {
               }}
             >
               <Link
-                to="/accessories"
+                to={ctaLink}
                 className="t-hover-lift t-btn-press"
                 style={{
                   background: "#D9381E",
                   color: "#FFFFFF",
-                  padding: "14px 34px",
+                  padding: "15px 36px",
                   borderRadius: 999,
                   fontSize: 15,
                   fontWeight: 800,
@@ -125,34 +155,36 @@ export default function ModernHero() {
                   display: "inline-flex",
                   alignItems: "center",
                   gap: 8,
-                  boxShadow: "0 6px 18px rgba(217, 56, 30, 0.28)",
+                  boxShadow: "0 6px 20px rgba(217, 56, 30, 0.28)",
                   transition: "background 0.2s, transform 0.2s",
                 }}
               >
-                <span>Shop Now</span>
+                <span>{ctaText}</span>
                 <ArrowRight size={17} strokeWidth={2.4} />
               </Link>
 
-              <Link
-                to="/birds"
-                className="t-hover-lift t-btn-press"
-                style={{
-                  background: "#FFFFFF",
-                  color: "#1B3B22",
-                  border: "1.5px solid #E2DDD3",
-                  padding: "13px 26px",
-                  borderRadius: 999,
-                  fontSize: 14.5,
-                  fontWeight: 700,
-                  textDecoration: "none",
-                  display: "inline-flex",
-                  alignItems: "center",
-                  gap: 6,
-                }}
-              >
-                <span>Browse Birds</span>
-                <Feather size={15} strokeWidth={2.2} />
-              </Link>
+              {secondaryCtaText && (
+                <Link
+                  to={secondaryCtaLink}
+                  className="t-hover-lift t-btn-press"
+                  style={{
+                    background: "#FFFFFF",
+                    color: "#1B3B22",
+                    border: "1.5px solid #E2DDD3",
+                    padding: "14px 28px",
+                    borderRadius: 999,
+                    fontSize: 14.5,
+                    fontWeight: 700,
+                    textDecoration: "none",
+                    display: "inline-flex",
+                    alignItems: "center",
+                    gap: 6,
+                  }}
+                >
+                  <span>{secondaryCtaText}</span>
+                  <Feather size={15} strokeWidth={2.2} />
+                </Link>
+              )}
             </div>
 
             {/* 3 Horizontal Trust Indicators */}
@@ -160,17 +192,17 @@ export default function ModernHero() {
               style={{
                 display: "flex",
                 alignItems: "center",
-                gap: "clamp(14px, 2.5vw, 28px)",
+                gap: "clamp(14px, 2.5vw, 32px)",
                 flexWrap: "wrap",
-                paddingTop: 18,
+                paddingTop: 20,
                 borderTop: "1px solid #E2DDD3",
               }}
             >
               <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
                 <div
                   style={{
-                    width: 32,
-                    height: 32,
+                    width: 34,
+                    height: 34,
                     borderRadius: "50%",
                     background: "#EAF2EC",
                     display: "flex",
@@ -179,18 +211,18 @@ export default function ModernHero() {
                     color: "#1B3B22",
                   }}
                 >
-                  <Wheat size={16} strokeWidth={2.4} />
+                  <Wheat size={17} strokeWidth={2.4} />
                 </div>
-                <span style={{ fontSize: 13, fontWeight: 700, color: "#1B3B22" }}>
-                  Better Nutrition
+                <span style={{ fontSize: 13.5, fontWeight: 700, color: "#1B3B22" }}>
+                  {trust1}
                 </span>
               </div>
 
               <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
                 <div
                   style={{
-                    width: 32,
-                    height: 32,
+                    width: 34,
+                    height: 34,
                     borderRadius: "50%",
                     background: "#FDF2E9",
                     display: "flex",
@@ -199,18 +231,18 @@ export default function ModernHero() {
                     color: "#D9381E",
                   }}
                 >
-                  <Heart size={16} strokeWidth={2.4} />
+                  <Heart size={17} strokeWidth={2.4} />
                 </div>
-                <span style={{ fontSize: 13, fontWeight: 700, color: "#1B3B22" }}>
-                  Happier Birds
+                <span style={{ fontSize: 13.5, fontWeight: 700, color: "#1B3B22" }}>
+                  {trust2}
                 </span>
               </div>
 
               <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
                 <div
                   style={{
-                    width: 32,
-                    height: 32,
+                    width: 34,
+                    height: 34,
                     borderRadius: "50%",
                     background: "#EAF2EC",
                     display: "flex",
@@ -219,23 +251,22 @@ export default function ModernHero() {
                     color: "#1B3B22",
                   }}
                 >
-                  <ShieldCheck size={16} strokeWidth={2.4} />
+                  <ShieldCheck size={17} strokeWidth={2.4} />
                 </div>
-                <span style={{ fontSize: 13, fontWeight: 700, color: "#1B3B22" }}>
-                  Certified Aviary
+                <span style={{ fontSize: 13.5, fontWeight: 700, color: "#1B3B22" }}>
+                  {trust3}
                 </span>
               </div>
             </div>
           </div>
 
           {/* ══════════════════════════════════════════
-              RIGHT COLUMN: Single High-Res Showcase Card
+              RIGHT COLUMN: Full-Width Showcase Card
              ══════════════════════════════════════════ */}
           <div
             style={{
               position: "relative",
               width: "100%",
-              maxWidth: 560,
               margin: "0 auto",
             }}
           >
@@ -243,14 +274,14 @@ export default function ModernHero() {
             <div
               style={{
                 position: "absolute",
-                top: "10%",
-                left: "10%",
-                width: "80%",
-                height: "80%",
+                top: "5%",
+                left: "5%",
+                width: "90%",
+                height: "90%",
                 borderRadius: "50%",
                 background:
-                  "radial-gradient(circle at 50% 50%, rgba(234, 242, 236, 0.7) 0%, rgba(253, 242, 233, 0.5) 50%, rgba(250, 248, 245, 0) 70%)",
-                filter: "blur(28px)",
+                  "radial-gradient(circle at 50% 50%, rgba(234, 242, 236, 0.75) 0%, rgba(253, 242, 233, 0.55) 50%, rgba(250, 248, 245, 0) 72%)",
+                filter: "blur(32px)",
                 zIndex: 0,
                 pointerEvents: "none",
               }}
@@ -261,24 +292,29 @@ export default function ModernHero() {
               style={{
                 position: "relative",
                 width: "100%",
-                aspectRatio: "4 / 3",
-                borderRadius: 28,
+                aspectRatio: "16 / 10",
+                minHeight: "clamp(300px, 38vw, 540px)",
+                borderRadius: "clamp(22px, 2.5vw, 32px)",
                 overflow: "hidden",
                 border: "1.5px solid #E2DDD3",
                 boxShadow:
-                  "0 18px 44px -8px rgba(27, 59, 34, 0.12), 0 4px 12px rgba(0, 0, 0, 0.04)",
+                  "0 22px 50px -10px rgba(27, 59, 34, 0.14), 0 4px 14px rgba(0, 0, 0, 0.04)",
                 background: "#FFFFFF",
                 zIndex: 1,
               }}
             >
               <img
-                src={heroBirdsCompanion}
-                alt="Companion Sun Conure and Cockatiel perched warmly together at FeatherTown aviary"
+                src={heroImageSrc}
+                alt={title}
+                onError={(e) => {
+                  e.currentTarget.onerror = null;
+                  e.currentTarget.src = heroBirdsCompanion;
+                }}
                 style={{
                   width: "100%",
                   height: "100%",
                   objectFit: "cover",
-                  objectPosition: "center 25%",
+                  objectPosition: "center 26%",
                   display: "block",
                   transition: "transform 0.4s ease",
                 }}
@@ -289,21 +325,21 @@ export default function ModernHero() {
             <div
               style={{
                 position: "absolute",
-                top: -16,
-                right: -14,
+                top: "clamp(-16px, -1.8vw, -10px)",
+                right: "clamp(-14px, -1.5vw, -6px)",
                 background: "#1B3B22",
                 color: "#FAF8F5",
                 borderRadius: "50%",
-                width: "clamp(88px, 11vw, 110px)",
-                height: "clamp(88px, 11vw, 110px)",
+                width: "clamp(92px, 10.5vw, 118px)",
+                height: "clamp(92px, 10.5vw, 118px)",
                 display: "flex",
                 flexDirection: "column",
                 alignItems: "center",
                 justifyContent: "center",
                 textAlign: "center",
                 padding: 10,
-                boxShadow: "0 10px 26px rgba(27, 59, 34, 0.30)",
-                border: "3px solid #FAF8F5",
+                boxShadow: "0 12px 28px rgba(27, 59, 34, 0.32)",
+                border: "3.5px solid #FAF8F5",
                 zIndex: 10,
                 transform: "rotate(6deg)",
                 pointerEvents: "none",
@@ -313,13 +349,14 @@ export default function ModernHero() {
               <span
                 style={{
                   fontFamily: "Outfit, system-ui, sans-serif",
-                  fontSize: "clamp(10px, 0.95vw, 11.5px)",
+                  fontSize: "clamp(10px, 0.9vw, 12px)",
                   fontWeight: 800,
                   lineHeight: 1.2,
                   letterSpacing: "0.2px",
+                  whiteSpace: "pre-line",
                 }}
               >
-                Birds Make <br /> Life Brighter
+                {floatingBadge.replace(/\s+(Make|Life|Brighter)/gi, "\n$1")}
               </span>
             </div>
           </div>

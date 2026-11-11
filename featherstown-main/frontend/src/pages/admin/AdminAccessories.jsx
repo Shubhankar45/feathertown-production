@@ -1,5 +1,6 @@
 import { useEffect, useState, useMemo } from "react";
-import { adminFetch } from "../../utils/adminApi";
+import { Upload } from "lucide-react";
+import { adminFetch, adminUpload } from "../../utils/adminApi";
 import { toast } from "../../components/ui/Toast";
 import { useSettings } from "../../context/SettingsContext";
 
@@ -745,14 +746,54 @@ export default function AdminAccessories() {
               </div>
 
               <div style={{ marginBottom: 16 }}>
-                <label style={labelStyle}>Image URLs (comma-separated)</label>
-                <input
-                  type="text"
-                  placeholder="https://images.unsplash.com/..., https://..."
-                  value={form.images}
-                  onChange={(e) => setForm({ ...form, images: e.target.value })}
-                  style={inputStyle}
-                />
+                <label style={labelStyle}>Image URLs or File Upload (comma-separated)</label>
+                <div style={{ display: "flex", gap: 10, alignItems: "center" }}>
+                  <input
+                    type="text"
+                    placeholder="https://... or upload photo"
+                    value={form.images}
+                    onChange={(e) => setForm({ ...form, images: e.target.value })}
+                    style={{ ...inputStyle, flex: 1 }}
+                  />
+                  <label
+                    style={{
+                      display: "inline-flex",
+                      alignItems: "center",
+                      gap: 6,
+                      padding: "9px 14px",
+                      borderRadius: 8,
+                      background: "#1B3B22",
+                      color: "#FFFFFF",
+                      fontSize: 12,
+                      fontWeight: 700,
+                      cursor: "pointer",
+                      whiteSpace: "nowrap",
+                    }}
+                  >
+                    <Upload size={13} strokeWidth={2.2} />
+                    <span>Upload</span>
+                    <input
+                      type="file"
+                      accept="image/*"
+                      onChange={async (e) => {
+                        const file = e.target.files?.[0];
+                        if (!file) return;
+                        try {
+                          const res = await adminUpload(file);
+                          if (res?.url) {
+                            const curr = form.images ? form.images.split(",").map(s => s.trim()).filter(Boolean) : [];
+                            curr.push(res.url);
+                            setForm((prev) => ({ ...prev, images: curr.join(", ") }));
+                            toast.success("Product image uploaded!");
+                          }
+                        } catch (err) {
+                          toast.error(err.message || "Failed to upload image");
+                        }
+                      }}
+                      style={{ display: "none" }}
+                    />
+                  </label>
+                </div>
               </div>
 
               <div style={{ marginBottom: 16 }}>

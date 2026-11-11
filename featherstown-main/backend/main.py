@@ -22,6 +22,8 @@ from fastapi.middleware.gzip import GZipMiddleware
 from fastapi.exceptions import RequestValidationError
 import uvicorn
 
+from fastapi.staticfiles import StaticFiles
+
 # Ensure backend root is on sys.path
 backend_dir = Path(__file__).resolve().parent
 if str(backend_dir) not in sys.path:
@@ -35,6 +37,7 @@ from app.config import (
     FRONTEND_PATH,
     INDEX_PATH,
     PUBLIC_FRONTEND_PATH,
+    UPLOADS_DIR,
 )
 from app.database import init_db
 from app.rate_limiter import api_limiter
@@ -143,6 +146,10 @@ app.include_router(auth.router)
 app.include_router(user_auth.router)
 app.include_router(admin.router)
 app.include_router(common.router)
+
+# ───────── STATIC UPLOADS DIRECTORY ─────────
+UPLOADS_DIR.mkdir(parents=True, exist_ok=True)
+app.mount("/uploads", StaticFiles(directory=str(UPLOADS_DIR)), name="uploads")
 
 # ───────── SEO ROUTES: SITEMAP & ROBOTS & FAVICON ─────────
 @app.get("/sitemap.xml", include_in_schema=False)

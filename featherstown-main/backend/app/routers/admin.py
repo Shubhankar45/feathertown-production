@@ -1,10 +1,14 @@
+import os
 import re
 import time
+import uuid
+import shutil
 from datetime import datetime, timezone
 from typing import Optional, Dict, Any, List
-from fastapi import APIRouter, HTTPException, Depends, Query, status
+from fastapi import APIRouter, HTTPException, Depends, Query, status, UploadFile, File
 from pymongo import ASCENDING, DESCENDING
 
+from app.config import UPLOADS_DIR, FRONTEND_PATH
 from app.auth import get_current_admin
 from app.database import (
     birds_col,
@@ -610,8 +614,43 @@ async def admin_delete_subscriber(id: str):
     return {"msg": "Deleted"}
 
 # ═══════════════════════════════════════════════════════════
-# 7. STORE SETTINGS
+# 7. STORE SETTINGS & ASSETS
 # ═══════════════════════════════════════════════════════════
+
+@router.post("/upload")
+async def admin_upload_image(file: UploadFile = File(...)):
+    filename = file.filename or "image.jpg"
+    ext = os.path.splitext(filename)[1].lower()
+    allowed_exts = [".jpg", ".jpeg", ".png", ".webp", ".svg", ".gif", ".jfif", ".avif"]
+    if ext not in allowed_exts:
+        raise HTTPException(
+            status_code=400,
+            detail={"msg": f"Unsupported format '{ext}'. Allowed: {', '.join(allowed_exts)}"}
+        )
+
+    safe_base = re.sub(r"[^a-zA-Z0-9_\-\.]", "_", filename)
+    unique_name = f"{uuid.uuid4().hex[:10]}_{safe_base}"
+
+    UPLOADS_DIR.mkdir(parents=True, exist_ok=True)
+    target_path = UPLOADS_DIR / unique_name
+
+    content = await file.read()
+    with open(target_path, "wb") as f:
+        f.write(content)
+
+    # Sync to frontend dist/uploads if folder exists
+    dist_uploads = FRONTEND_PATH / "uploads"
+    try:
+        dist_uploads.mkdir(parents=True, exist_ok=True)
+        shutil.copyfile(target_path, dist_uploads / unique_name)
+    except Exception as e:
+        print(f"Warning syncing upload to frontend dist: {e}")
+
+    return {
+        "url": f"/uploads/{unique_name}",
+        "filename": unique_name,
+        "msg": "Image uploaded successfully",
+    }
 
 @router.get("/settings")
 async def admin_get_settings():
@@ -643,7 +682,20 @@ async def admin_update_settings(body: Dict[str, Any]):
         "heroCtaLink",
         "heroSecondaryCtaText",
         "heroSecondaryCtaLink",
+        "heroImage",
+        "heroFloatingBadge",
+        "heroTrust1",
+        "heroTrust2",
+        "heroTrust3",
         "promoBanners",
+        "featuredBreedsTitle",
+        "featuredBreedsSubtitle",
+        "featuredBreeds",
+        "categoryPills",
+        "logoUrl",
+        "siteTitle",
+        "footerTagline",
+        "trustStrip",
         "petCategories",
         "featuredCollections",
         "habitatEssentials",
