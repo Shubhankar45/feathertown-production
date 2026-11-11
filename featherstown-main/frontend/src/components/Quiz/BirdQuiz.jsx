@@ -95,7 +95,7 @@ const STEPS = [
     subtitle: "Companion parrots are social flock creatures requiring attention.",
     type: "grid",
     options: [
-      { label: "Moderate (30–60 mins/day) ⏱️", desc: "Independent companion content with enrichment toys", value: "Low" },
+      { label: "Moderate (30–60 mins/day)", desc: "Independent companion content with enrichment toys", value: "Low" },
       { label: "Devoted (2+ hours/day)", desc: "Hands-on bonding, free-flight training & cuddling", value: "High" },
     ],
   },

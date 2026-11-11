@@ -3,18 +3,13 @@ import { useLocation } from "react-router-dom";
 import { useBirds } from "../context/BirdsContext";
 import SEOHead from "../components/SEOHead";
 import ModernHero from "../components/sections/ModernHero";
-import AboutBirdSection from "../components/sections/AboutBirdSection";
-import ExploreVideoSection from "../components/sections/ExploreVideoSection";
-import ShopByPet from "../components/sections/ShopByPet";
-import CommunityPhotos from "../components/sections/CommunityPhotos";
-import FeaturedCollections from "../components/sections/FeaturedCollections";
-import BirdEssentials from "../components/sections/BirdEssentials";
+import CategoryPills from "../components/sections/CategoryPills";
 import BestSellers from "../components/sections/BestSellers";
-import CareGuides from "../components/sections/CareGuides";
 import PromoBanners from "../components/sections/PromoBanners";
-import Reviews from "../components/sections/Reviews";
-import Newsletter from "../components/sections/Newsletter";
+import FeaturedBreeds from "../components/sections/FeaturedBreeds";
 import BirdQuiz from "../components/Quiz/BirdQuiz";
+import TrustStrip from "../components/sections/TrustStrip";
+import Newsletter from "../components/sections/Newsletter";
 import ChatAssistant from "../components/ChatAssistant/ChatAssistant";
 
 export default function Home() {
@@ -22,62 +17,63 @@ export default function Home() {
   const location = useLocation();
 
   useEffect(() => {
-    if (location.pathname === "/quiz" || location.pathname === "/find-your-bird") {
+    if (location.pathname === "/quiz" || location.pathname === "/find-your-bird" || location.hash === "#quiz") {
       const timer = setTimeout(() => {
         const el = document.getElementById("quiz");
         if (el) el.scrollIntoView({ behavior: "smooth" });
       }, 180);
       return () => clearTimeout(timer);
     }
-  }, [location.pathname]);
+  }, [location.pathname, location.hash]);
 
   return (
-    <div style={{ background: "#F7F5F0", color: "#152B17", fontFamily: "Outfit, system-ui, sans-serif", minHeight: "100vh" }}>
+    <div
+      style={{
+        background: "#FAF8F5",
+        color: "#152B17",
+        fontFamily: "Outfit, system-ui, sans-serif",
+        minHeight: "100vh",
+      }}
+    >
       <SEOHead
-        title="FeatherTown | Buy Healthy Hand-Tamed Parrots & Bird Supplies Online in India"
+        title="FeatherTown | Premium Companion Birds, Cages & Avian Supplies in India"
         description="FeatherTown is India's leading ethical avian marketplace. Certified healthy hand-tamed conures, macaws, cockatiels, premium cages, toys, and organic seed blends with fast nationwide delivery."
       />
 
-      {/* 1. Hero Section (Matches Reference Hero with Perched Sun Conure & Mint Card) */}
+      {/* 1. Hero Section (Matches Reference: "Everything Your Bird Needs", "Shop Now →", 3 Trust Chips, Badge) */}
       <ModernHero />
 
-      {/* 2. About Section (Matches Reference Section 2 with Flying Emerald Hummingbird) */}
-      <AboutBirdSection />
+      {/* 2. Circular Category Quick-Pills (Matches Reference: 9 Circular Pastel Pills) */}
+      <CategoryPills />
 
-      {/* 3. Explore Existing Birds / Aviary Preview (Matches Reference Section 3 with Nature Aviary & Play ▶️) */}
-      <ExploreVideoSection />
-
-      {/* 4. Birdpedia Species Information (Matches Reference Section 4 with Cutout Bird Cards & Arrows) */}
-      <ShopByPet />
-
-      {/* 5. Top Weekly Community Photos (Matches Reference Section 5 with Bento Photo Grid) */}
-      <CommunityPhotos />
-
-      {/* 6. Featured Collections (Cages, Diets, Toys) */}
-      <FeaturedCollections />
-
-      {/* 7. Habitat & Care Essentials */}
-      <BirdEssentials />
-
-      {/* 8. Best Sellers Product Grid */}
+      {/* 3. Best Selling Products (Matches Reference: 4-Column Grid with Circular Add-to-Cart Buttons) */}
       <BestSellers />
 
-      {/* 9. Care Guides & Tips */}
-      <CareGuides />
-
-      {/* 10. Promo Banners */}
+      {/* 4. Dual Promotional Split Banners (Matches Reference: Peach & Mint Dual Cards) */}
       <PromoBanners />
 
-      {/* 11. Interactive Compatibility Quiz */}
-      <BirdQuiz parrots={birds} />
+      {/* 5. Featured Companion Birds (Matches Reference Seasonal Collection: 4 Curated Photo Cards with Chevrons) */}
+      <FeaturedBreeds />
 
-      {/* 12. Customer Testimonials */}
-      <Reviews />
+      {/* 6. Which Bird Suits You? Quiz (Cleanly integrated avian compatibility matchmaker) */}
+      <div
+        id="quiz"
+        style={{
+          background: "#FAF8F5",
+          borderTop: "1px solid #E2DDD3",
+          padding: "clamp(48px, 6vw, 84px) clamp(16px, 4.5vw, 64px)",
+        }}
+      >
+        <BirdQuiz parrots={birds} />
+      </div>
 
-      {/* 13. Newsletter Subscribe Banner */}
+      {/* 7. Value Proposition Trust Strip (Matches Reference: 4 Horizontal Trust Cards) */}
+      <TrustStrip />
+
+      {/* 8. Newsletter Strip (Matches Reference: "Join Our Flock!", Inline Input + Subscribe Button) */}
       <Newsletter />
 
-      {/* 14. AI Bird Care Chat Assistant */}
+      {/* Avian Care AI Assistant */}
       <ChatAssistant parrots={birds} />
     </div>
   );

@@ -80,11 +80,11 @@ function ScrollManager() {
 /* Public site — normal chrome (navbar/footer/cookies/sticky mobile CTA). */
 function SiteLayout({ children }) {
   return (
-    <div style={{ minHeight: "100dvh", display: "flex", flexDirection: "column", background: "#F7F5F0", margin: 0, padding: 0 }}>
+    <div style={{ minHeight: "100dvh", display: "flex", flexDirection: "column", background: "#FAF8F5", margin: 0, padding: 0 }}>
       <PageChrome />
       <ScrollManager />
       <Navbar />
-      <main style={{ flex: "1 0 auto", background: "#F7F5F0", display: "flex", flexDirection: "column", margin: 0, padding: 0 }}>{children}</main>
+      <main style={{ flex: "1 0 auto", background: "#FAF8F5", display: "flex", flexDirection: "column", margin: 0, padding: 0 }}>{children}</main>
       <Footer />
       <CookieConsent />
       <StickyMobileCTA />
@@ -147,6 +147,7 @@ function App() {
                           <Route path="/register" element={<Login />} />
                           <Route path="/privacy-policy" element={<PrivacyPolicy />} />
                           <Route path="/terms" element={<TermsConditions />} />
+                          <Route path="/terms-conditions" element={<TermsConditions />} />
                           <Route path="/terms-and-conditions" element={<TermsConditions />} />
                           {/* Custom 404 Catch-All */}
                           <Route path="*" element={<NotFound />} />

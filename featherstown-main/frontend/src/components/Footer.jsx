@@ -1,29 +1,68 @@
+/* ═══════════════════════════════════════════════════════════════
+   Feathers Town — Modern Editorial E-Commerce Footer
+   /components/Footer.jsx
+
+   Directly modeled on the reference design:
+   - Full-width Deep Forest Green background (#1B3B22)
+   - Left: Typographic logo, mission statement, clean social icons
+   - 3 clean columns: Shop, Customer Care, About Us
+   - Right: "A Kinder World for Birds ❤️" stylized script graphic
+   - Bottom Bar: Copyright 2026, Privacy Policy, Terms of Service, Sitemap
+   - Strict 60-30-10 palette, 100% Lucide React icons, zero emojis
+═══════════════════════════════════════════════════════════════ */
 import { Link } from "react-router-dom";
-import { Camera, MessageCircle, Mail, ShieldCheck, Stethoscope, Heart } from "lucide-react";
+import {
+  MessageCircle,
+  Mail,
+  Feather,
+  Heart,
+  HelpCircle,
+  Truck,
+  ShieldCheck,
+} from "lucide-react";
 import { useSettings } from "../context/SettingsContext";
+
+function InstagramIcon({ size = 17, strokeWidth = 2.2 }) {
+  return (
+    <svg
+      width={size}
+      height={size}
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth={strokeWidth}
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
+      <rect width="20" height="20" x="2" y="2" rx="5" ry="5" />
+      <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z" />
+      <line x1="17.5" x2="17.51" y1="6.5" y2="6.5" />
+    </svg>
+  );
+}
 
 export default function Footer() {
   const { settings } = useSettings();
+
   const openCookiePreferences = (e) => {
     e.preventDefault();
     window.dispatchEvent(new CustomEvent("ft_reopen_cookie_preferences"));
   };
 
   const waNum = (settings?.whatsapp || "919556747518").replace(/\D/g, "");
-  const instaUrl = settings?.instagramUrl || "https://www.instagram.com/feather_town__?igsh=MWV2ZXdqbzlidmk4aw==";
+  const instaUrl =
+    settings?.instagramUrl || "https://www.instagram.com/feather_town__?igsh=MWV2ZXdqbzlidmk4aw==";
   const supportEmail = settings?.email || "care@feathertown.online";
 
   return (
     <footer
       style={{
-        background: "#FAF8F5",
-        color: "#736B5E",
+        background: "#1B3B22",
+        color: "#FAF8F5",
         fontFamily: "Outfit, system-ui, sans-serif",
-        paddingTop: "60px",
-        paddingBottom: "calc(28px + env(safe-area-inset-bottom, 0px))",
-        borderTop: "1px solid #E2DDD3",
-        margin: 0,
-        marginBottom: 0,
+        paddingTop: "clamp(48px, 6vw, 72px)",
+        paddingBottom: "calc(24px + env(safe-area-inset-bottom, 0px))",
+        borderTop: "1px solid rgba(255, 255, 255, 0.12)",
       }}
     >
       <div
@@ -31,21 +70,21 @@ export default function Footer() {
           width: "100%",
           maxWidth: "100%",
           margin: "0 auto",
-          padding: "0 clamp(16px, 4vw, 64px)",
+          padding: "0 clamp(16px, 4.5vw, 64px)",
         }}
       >
-        {/* Main 4-Column Grid */}
+        {/* Main Columns Grid */}
         <div
-          className="rv-stagger"
           style={{
             display: "grid",
-            gridTemplateColumns: "repeat(auto-fit, minmax(min(100%, 220px), 1fr))",
-            gap: "clamp(28px, 4vw, 40px)",
-            marginBottom: "48px",
+            gridTemplateColumns: "repeat(auto-fit, minmax(min(100%, 200px), 1fr))",
+            gap: "clamp(32px, 4vw, 48px)",
+            marginBottom: "clamp(40px, 5vw, 60px)",
+            alignItems: "flex-start",
           }}
         >
-          {/* Col 1: Brand & Social */}
-          <div>
+          {/* Column 1: Brand & Bio */}
+          <div style={{ maxWidth: 320 }}>
             <Link
               to="/"
               style={{
@@ -58,10 +97,9 @@ export default function Footer() {
             >
               <span
                 style={{
-                  fontFamily: "Outfit, system-ui, sans-serif",
                   fontSize: 26,
                   fontWeight: 900,
-                  color: "#1B3B22",
+                  color: "#FAF8F5",
                   letterSpacing: "-0.025em",
                 }}
               >
@@ -69,7 +107,6 @@ export default function Footer() {
               </span>
               <span
                 style={{
-                  fontFamily: "Outfit, system-ui, sans-serif",
                   fontSize: 26,
                   fontWeight: 900,
                   color: "#D9381E",
@@ -90,284 +127,317 @@ export default function Footer() {
               />
             </Link>
 
-            <div
-              style={{
-                fontSize: 10,
-                fontWeight: 700,
-                letterSpacing: 1.2,
-                textTransform: "uppercase",
-                color: "#1B3B22",
-                marginBottom: 14,
-              }}
-            >
-              Small Pets, Big Love • Ethical Aviary
-            </div>
-
             <p
               style={{
-                fontSize: 13,
-                lineHeight: 1.65,
-                color: "#736B5E",
-                marginBottom: 20,
-                maxWidth: 290,
+                fontSize: 13.5,
+                lineHeight: 1.6,
+                color: "#CCD8CE",
+                margin: "0 0 20px 0",
               }}
             >
-              Dedicated to healthy companion birds, wholesome nutrition, hand-tamed bonding, and premium accessories across India.
+              Premium aviary &amp; companion bird essentials for happier, healthier flocks. Because birds are family.
             </p>
 
-            {/* Social Icons Strip */}
-            <div style={{ display: "flex", gap: 12, alignItems: "center" }}>
+            {/* Social Icons */}
+            <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
               <a
                 href={instaUrl}
                 target="_blank"
                 rel="noreferrer"
-                className="ft-btn-hover t-btn-press"
                 style={{
-                  width: 38,
-                  height: 38,
+                  width: 36,
+                  height: 36,
                   borderRadius: "50%",
-                  background: "#FFFFFF",
-                  border: "1px solid #E2DDD3",
+                  background: "rgba(255, 255, 255, 0.1)",
+                  color: "#FAF8F5",
                   display: "flex",
                   alignItems: "center",
                   justifyContent: "center",
-                  color: "#1B3B22",
                   textDecoration: "none",
+                  transition: "background 0.15s ease",
                 }}
-                title="Instagram"
+                className="t-hover-lift"
+                aria-label="Instagram"
               >
-                <Camera size={18} strokeWidth={2} />
+                <InstagramIcon size={17} strokeWidth={2.2} />
               </a>
+
               <a
-                href={`https://wa.me/${waNum}`}
+                href={`https://wa.me/${waNum}?text=Hi%20FeatherTown!`}
                 target="_blank"
                 rel="noreferrer"
-                className="ft-btn-hover t-btn-press"
                 style={{
-                  width: 38,
-                  height: 38,
+                  width: 36,
+                  height: 36,
                   borderRadius: "50%",
-                  background: "#FFFFFF",
-                  border: "1px solid #E2DDD3",
+                  background: "rgba(255, 255, 255, 0.1)",
+                  color: "#FAF8F5",
                   display: "flex",
                   alignItems: "center",
                   justifyContent: "center",
-                  color: "#1B3B22",
                   textDecoration: "none",
+                  transition: "background 0.15s ease",
                 }}
-                title="WhatsApp Support"
+                className="t-hover-lift"
+                aria-label="WhatsApp"
               >
-                <MessageCircle size={18} strokeWidth={2} />
+                <MessageCircle size={17} strokeWidth={2.2} />
               </a>
+
               <a
                 href={`mailto:${supportEmail}`}
-                className="ft-btn-hover t-btn-press"
                 style={{
-                  width: 38,
-                  height: 38,
+                  width: 36,
+                  height: 36,
                   borderRadius: "50%",
-                  background: "#FFFFFF",
-                  border: "1px solid #E2DDD3",
+                  background: "rgba(255, 255, 255, 0.1)",
+                  color: "#FAF8F5",
                   display: "flex",
                   alignItems: "center",
                   justifyContent: "center",
-                  color: "#1B3B22",
                   textDecoration: "none",
+                  transition: "background 0.15s ease",
                 }}
-                title="Email Us"
+                className="t-hover-lift"
+                aria-label="Email"
               >
-                <Mail size={18} strokeWidth={2} />
+                <Mail size={17} strokeWidth={2.2} />
               </a>
             </div>
           </div>
 
-          {/* Col 2: Shop */}
+          {/* Column 2: Shop */}
           <div>
             <h4
               style={{
-                fontSize: 12.5,
+                fontSize: 14,
                 fontWeight: 800,
-                letterSpacing: 1.5,
+                color: "#FAF8F5",
+                letterSpacing: 0.8,
                 textTransform: "uppercase",
-                color: "#1B3B22",
-                marginBottom: 18,
+                margin: "0 0 16px 0",
               }}
             >
               Shop
             </h4>
-            <ul style={{ listStyle: "none", padding: 0, margin: 0, display: "flex", flexDirection: "column", gap: 11 }}>
+            <ul style={{ listStyle: "none", padding: 0, margin: 0, display: "flex", flexDirection: "column", gap: 10 }}>
               <li>
-                <Link to="/birds" style={footerLink}>
-                  All Companion Birds
+                <Link to="/accessories?category=food" style={{ color: "#CCD8CE", fontSize: 13.5, textDecoration: "none" }} className="hover:text-white transition-colors">
+                  Bird Food &amp; Seeds
                 </Link>
               </li>
               <li>
-                <Link to="/accessories" style={footerLink}>
-                  Accessories &amp; Cages
+                <Link to="/birds" style={{ color: "#CCD8CE", fontSize: 13.5, textDecoration: "none" }} className="hover:text-white transition-colors">
+                  Companion Birds
                 </Link>
               </li>
               <li>
-                <Link to="/accessories?category=Food" style={footerLink}>
-                  Nutritious Food &amp; Treats
+                <Link to="/accessories?category=toys" style={{ color: "#CCD8CE", fontSize: 13.5, textDecoration: "none" }} className="hover:text-white transition-colors">
+                  Foraging &amp; Toys
                 </Link>
               </li>
               <li>
-                <Link to="/accessories?category=Toys" style={footerLink}>
-                  Toys &amp; Enrichment
+                <Link to="/accessories?category=cages" style={{ color: "#CCD8CE", fontSize: 13.5, textDecoration: "none" }} className="hover:text-white transition-colors">
+                  Cages &amp; Aviaries
                 </Link>
               </li>
               <li>
-                <Link to="/compare" style={footerLink}>
-                  Compare Bird Species
+                <Link to="/accessories?category=grooming" style={{ color: "#CCD8CE", fontSize: 13.5, textDecoration: "none" }} className="hover:text-white transition-colors">
+                  Grooming &amp; Hygiene
+                </Link>
+              </li>
+              <li>
+                <Link to="/accessories?category=health" style={{ color: "#CCD8CE", fontSize: 13.5, textDecoration: "none" }} className="hover:text-white transition-colors">
+                  Health &amp; Wellness
+                </Link>
+              </li>
+              <li>
+                <Link to="/accessories?badge=Sale" style={{ color: "#F5A396", fontSize: 13.5, textDecoration: "none", fontWeight: 700 }} className="hover:text-white transition-colors">
+                  Special Deals
                 </Link>
               </li>
             </ul>
           </div>
 
-          {/* Col 3: Help & Support */}
+          {/* Column 3: Customer Care */}
           <div>
             <h4
               style={{
-                fontSize: 12.5,
+                fontSize: 14,
                 fontWeight: 800,
-                letterSpacing: 1.5,
+                color: "#FAF8F5",
+                letterSpacing: 0.8,
                 textTransform: "uppercase",
-                color: "#1B3B22",
-                marginBottom: 18,
+                margin: "0 0 16px 0",
               }}
             >
-              Help &amp; Support
+              Customer Care
             </h4>
-            <ul style={{ listStyle: "none", padding: 0, margin: 0, display: "flex", flexDirection: "column", gap: 11 }}>
+            <ul style={{ listStyle: "none", padding: 0, margin: 0, display: "flex", flexDirection: "column", gap: 10 }}>
               <li>
-                <Link to="/contact" style={footerLink}>
-                  Contact Us &amp; FAQs
-                </Link>
-              </li>
-              <li>
-                <Link to="/#care-guides" style={footerLink}>
-                  Bird Care Guides
-                </Link>
-              </li>
-              <li>
-                <Link to="/my-orders" style={footerLink}>
+                <Link to="/my-orders" style={{ color: "#CCD8CE", fontSize: 13.5, textDecoration: "none" }} className="hover:text-white transition-colors">
                   Track Your Order
                 </Link>
               </li>
               <li>
-                <Link to="/privacy-policy" style={footerLink}>
-                  Privacy Policy
+                <Link to="/contact" style={{ color: "#CCD8CE", fontSize: 13.5, textDecoration: "none" }} className="hover:text-white transition-colors">
+                  Returns &amp; Exchanges
                 </Link>
               </li>
               <li>
-                <Link to="/terms" style={footerLink}>
-                  Terms &amp; Conditions
+                <Link to="/contact" style={{ color: "#CCD8CE", fontSize: 13.5, textDecoration: "none" }} className="hover:text-white transition-colors">
+                  Shipping Information
                 </Link>
               </li>
               <li>
-                <button
-                  onClick={openCookiePreferences}
-                  style={{
-                    ...footerLink,
-                    background: "none",
-                    border: "none",
-                    padding: 0,
-                    cursor: "pointer",
-                    textAlign: "left",
-                  }}
-                >
-                  Cookie Preferences
-                </button>
+                <Link to="/contact" style={{ color: "#CCD8CE", fontSize: 13.5, textDecoration: "none" }} className="hover:text-white transition-colors">
+                  Help &amp; FAQs
+                </Link>
+              </li>
+              <li>
+                <Link to="/contact" style={{ color: "#CCD8CE", fontSize: 13.5, textDecoration: "none" }} className="hover:text-white transition-colors">
+                  Contact Us
+                </Link>
               </li>
             </ul>
           </div>
 
-          {/* Col 4: Trust Badges */}
+          {/* Column 4: About Us */}
           <div>
             <h4
               style={{
-                fontSize: 12.5,
+                fontSize: 14,
                 fontWeight: 800,
-                letterSpacing: 1.5,
+                color: "#FAF8F5",
+                letterSpacing: 0.8,
                 textTransform: "uppercase",
-                color: "#1B3B22",
-                marginBottom: 18,
+                margin: "0 0 16px 0",
               }}
             >
-              Our Promises
+              About Us
             </h4>
-            <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
-              <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
-                <span style={{ display: "flex", alignItems: "center", justifyContent: "center", width: 32, height: 32, borderRadius: "50%", background: "#E7EFE8", color: "#1B3B22" }}>
-                  <ShieldCheck size={18} strokeWidth={2.2} />
-                </span>
-                <div>
-                  <div style={{ fontSize: 13.5, fontWeight: 700, color: "#152B17" }}>Secure Payments</div>
-                  <div style={{ fontSize: 11.5, color: "#736B5E" }}>256-bit encrypted Razorpay</div>
-                </div>
-              </div>
+            <ul style={{ listStyle: "none", padding: 0, margin: 0, display: "flex", flexDirection: "column", gap: 10 }}>
+              <li>
+                <Link to="/about" style={{ color: "#CCD8CE", fontSize: 13.5, textDecoration: "none" }} className="hover:text-white transition-colors">
+                  Our Aviary Story
+                </Link>
+              </li>
+              <li>
+                <Link to="/about" style={{ color: "#CCD8CE", fontSize: 13.5, textDecoration: "none" }} className="hover:text-white transition-colors">
+                  Health &amp; Breeding Standards
+                </Link>
+              </li>
+              <li>
+                <Link to="/compare" style={{ color: "#CCD8CE", fontSize: 13.5, textDecoration: "none" }} className="hover:text-white transition-colors">
+                  Compare Parrot Breeds
+                </Link>
+              </li>
+              <li>
+                <Link to="/quiz" style={{ color: "#CCD8CE", fontSize: 13.5, textDecoration: "none" }} className="hover:text-white transition-colors">
+                  Which Bird Suits You? Quiz
+                </Link>
+              </li>
+              <li>
+                <Link to="/reviews" style={{ color: "#CCD8CE", fontSize: 13.5, textDecoration: "none" }} className="hover:text-white transition-colors">
+                  Customer Reviews
+                </Link>
+              </li>
+            </ul>
+          </div>
 
-              <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
-                <span style={{ display: "flex", alignItems: "center", justifyContent: "center", width: 32, height: 32, borderRadius: "50%", background: "#E7EFE8", color: "#1B3B22" }}>
-                  <Stethoscope size={18} strokeWidth={2.2} />
-                </span>
-                <div>
-                  <div style={{ fontSize: 13.5, fontWeight: 700, color: "#152B17" }}>48h Health Guarantee</div>
-                  <div style={{ fontSize: 11.5, color: "#736B5E" }}>Vet-certified &amp; parasite-free</div>
-                </div>
-              </div>
+          {/* Column 5: Right Aesthetic Callout ("A Kinder World for Birds ❤️") */}
+          <div
+            style={{
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "flex-start",
+              justifyContent: "center",
+              paddingLeft: "clamp(0px, 2vw, 24px)",
+            }}
+          >
+            <div
+              style={{
+                width: 44,
+                height: 44,
+                borderRadius: "50%",
+                background: "rgba(255, 255, 255, 0.1)",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                color: "#FAF8F5",
+                marginBottom: 14,
+              }}
+            >
+              <Feather size={22} strokeWidth={2.2} />
+            </div>
 
-              <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
-                <span style={{ display: "flex", alignItems: "center", justifyContent: "center", width: 32, height: 32, borderRadius: "50%", background: "#E7EFE8", color: "#1B3B22" }}>
-                  <Heart size={18} strokeWidth={2.2} />
-                </span>
-                <div>
-                  <div style={{ fontSize: 13.5, fontWeight: 700, color: "#152B17" }}>Happiness Guarantee</div>
-                  <div style={{ fontSize: 11.5, color: "#736B5E" }}>Lifetime feeding &amp; care support</div>
-                </div>
-              </div>
+            <div
+              style={{
+                fontFamily: "Outfit, system-ui, sans-serif",
+                fontSize: "clamp(22px, 2.2vw, 28px)",
+                fontWeight: 800,
+                lineHeight: 1.25,
+                color: "#FAF8F5",
+                letterSpacing: "-0.015em",
+              }}
+            >
+              A Kinder <br />
+              World for <br />
+              <span style={{ color: "#D9381E", display: "inline-flex", alignItems: "center", gap: 6 }}>
+                Birds <Heart size={20} fill="#D9381E" strokeWidth={0} />
+              </span>
             </div>
           </div>
         </div>
 
-        {/* Bottom Bar */}
+        {/* Bottom Bar: Copyright & Legal */}
         <div
           style={{
-            borderTop: "1px solid #E2DDD3",
-            paddingTop: "24px",
+            paddingTop: 24,
+            borderTop: "1px solid rgba(255, 255, 255, 0.1)",
             display: "flex",
             alignItems: "center",
             justifyContent: "space-between",
             flexWrap: "wrap",
-            gap: 12,
+            gap: 16,
             fontSize: 12.5,
-            color: "#736B5E",
+            color: "#A2B4A5",
           }}
         >
           <div>
-            © 2026 FeatherTown Marketplace. All rights reserved.
+            &copy; {new Date().getFullYear()} FeatherTown. All rights reserved.
           </div>
-          <div style={{ display: "flex", gap: "clamp(12px, 3vw, 20px)", alignItems: "center", flexWrap: "wrap" }}>
-            <Link to="/privacy-policy" style={{ color: "#736B5E", textDecoration: "none" }}>
-              Privacy
+
+          <div style={{ display: "flex", alignItems: "center", gap: 18, flexWrap: "wrap" }}>
+            <Link to="/privacy-policy" style={{ color: "#A2B4A5", textDecoration: "none" }} className="hover:text-white transition-colors">
+              Privacy Policy
             </Link>
-            <Link to="/terms" style={{ color: "#736B5E", textDecoration: "none" }}>
-              Terms
+            <span>•</span>
+            <Link to="/terms-conditions" style={{ color: "#A2B4A5", textDecoration: "none" }} className="hover:text-white transition-colors">
+              Terms of Service
             </Link>
-            <a href="/sitemap.xml" style={{ color: "#736B5E", textDecoration: "none" }}>
+            <span>•</span>
+            <a href="/sitemap.xml" style={{ color: "#A2B4A5", textDecoration: "none" }} className="hover:text-white transition-colors">
               Sitemap
             </a>
-            <span>Carefully raised companion birds across India</span>
+            <span>•</span>
+            <button
+              onClick={openCookiePreferences}
+              style={{
+                background: "none",
+                border: "none",
+                color: "#A2B4A5",
+                fontSize: 12.5,
+                cursor: "pointer",
+                padding: 0,
+              }}
+              className="hover:text-white transition-colors"
+            >
+              Cookie Preferences
+            </button>
           </div>
         </div>
       </div>
     </footer>
   );
 }
-
-const footerLink = {
-  fontSize: "13.5px",
-  color: "#736B5E",
-  textDecoration: "none",
-  transition: "color 0.2s",
-};

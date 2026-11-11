@@ -34,18 +34,34 @@ export default function UserMenu() {
         state={{ from: location }}
         className="t-btn-press"
         style={{
-          fontSize: 13,
-          fontWeight: 800,
-          color: "#FFFFFF",
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
           textDecoration: "none",
-          padding: "8px 18px",
-          borderRadius: 999,
-          background: "#D9381E",
-          whiteSpace: "nowrap",
-          transition: "background 0.15s ease",
+          color: "#1B3B22",
+          fontSize: 11,
+          fontWeight: 700,
+          position: "relative",
         }}
+        aria-label="Account Login"
       >
-        Sign in
+        <div
+          style={{
+            width: 38,
+            height: 38,
+            borderRadius: "50%",
+            background: "#FAF8F5",
+            border: "1px solid #E2DDD3",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            color: "#1B3B22",
+            marginBottom: 1,
+          }}
+        >
+          <User size={19} strokeWidth={2.2} />
+        </div>
+        <span className="ft-icon-label" style={{ color: "#1B3B22" }}>Account</span>
       </Link>
     );
   }
@@ -76,19 +92,36 @@ export default function UserMenu() {
           onClick={() => setOpen((o) => !o)}
           style={{
             display: "flex",
+            flexDirection: "column",
             alignItems: "center",
-            gap: 8,
-            background: open ? "#E7EFE8" : "none",
+            background: "none",
             border: "none",
             cursor: "pointer",
-            padding: "3px 6px",
-            borderRadius: 999,
-            transition: "background 0.15s ease",
+            padding: 0,
+            color: "#1B3B22",
+            fontSize: 11,
+            fontWeight: 700,
           }}
           title={user.name}
+          aria-label="User Account Menu"
         >
-          <Avatar name={user.name} avatar={user.avatar} size={34} border={false} />
-          <span style={{ fontSize: 12, color: "#1B3B22" }}>▾</span>
+          <div
+            style={{
+              width: 38,
+              height: 38,
+              borderRadius: "50%",
+              background: open ? "#E7EFE8" : "#FAF8F5",
+              border: "1px solid #E2DDD3",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              marginBottom: 1,
+              transition: "background 0.15s ease",
+            }}
+          >
+            <Avatar name={user.name} avatar={user.avatar} size={30} border={false} />
+          </div>
+          <span className="ft-icon-label" style={{ color: "#1B3B22" }}>Account</span>
         </button>
 
         {open && (

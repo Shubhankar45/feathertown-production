@@ -12,6 +12,9 @@ import {
   ShieldCheck,
   Scale,
   User,
+  Tag,
+  Feather,
+  Heart,
 } from "lucide-react";
 import { useCart } from "../context/CartContext";
 import { useUserAuth } from "../context/UserAuthContext";
@@ -22,14 +25,14 @@ import { trackWhatsAppClick } from "../utils/analytics";
 
 const NAV_LINKS = [
   { label: "Home", path: "/" },
-  { label: "Parrots", path: "/birds" },
-  { label: "Find Your Bird", path: "/#quiz", badge: "Quiz", highlight: true },
-  { label: "Accessories & Cages", path: "/accessories" },
+  { label: "Shop All", path: "/accessories" },
+  { label: "Companion Birds", path: "/birds" },
+  { label: "Food & Nutrition", path: "/accessories?category=food" },
+  { label: "Cages & Aviaries", path: "/accessories?category=cages" },
+  { label: "Toys & Play", path: "/accessories?category=toys" },
   { label: "Compare Breeds", path: "/compare" },
-  { label: "Care Guides", path: "/#care-guides" },
-  { label: "Reviews", path: "/reviews" },
-  { label: "About Us", path: "/about" },
-  { label: "Contact", path: "/contact" },
+  { label: "Bird Quiz", path: "/quiz", badge: "Quiz", highlight: true },
+  { label: "Deals", path: "/accessories?badge=Sale" },
 ];
 
 export default function Navbar() {
@@ -103,17 +106,17 @@ export default function Navbar() {
             <div className="ft-announcement-desktop">
               <span style={{ display: "inline-flex", alignItems: "center", gap: 6 }}>
                 <Truck size={13} strokeWidth={2.2} />
-                <span>{settings?.announcementText ? settings.announcementText.replace(/[\u{1F300}-\u{1F9FF}]/gu, "").trim() : `Free shipping on orders over ₹${settings?.freeShippingThreshold || 999}`}</span>
+                <span>{settings?.announcementText ? settings.announcementText.replace(/[\u{1F300}-\u{1F9FF}]/gu, "").trim() : `Free Shipping on Orders Over ₹${settings?.freeShippingThreshold || 999}`}</span>
               </span>
               <span style={{ opacity: 0.4 }}>•</span>
-              <Link to="/#quiz" style={{ color: "#FAF8F5", fontWeight: 800, textDecoration: "none", display: "inline-flex", alignItems: "center", gap: 5 }}>
-                <Compass size={13} strokeWidth={2.2} />
-                <span style={{ textDecoration: "underline", textUnderlineOffset: 3 }}>Find Your Bird (60s Quiz)</span>
-              </Link>
+              <span style={{ display: "inline-flex", alignItems: "center", gap: 6 }}>
+                <Feather size={13} strokeWidth={2.2} />
+                <span>100% Healthy Companion Birds</span>
+              </span>
               <span style={{ opacity: 0.4 }}>•</span>
               <span style={{ display: "inline-flex", alignItems: "center", gap: 6 }}>
-                <ShieldCheck size={13} strokeWidth={2.2} />
-                <span>100% Healthy &amp; Happy Companion Birds!</span>
+                <Tag size={13} strokeWidth={2.2} />
+                <span>10% Off Your First Order | Use Code: <strong style={{ color: "#FAF8F5", letterSpacing: "0.5px" }}>FEATHER10</strong></span>
               </span>
             </div>
             <div className="ft-announcement-mobile">
@@ -122,10 +125,10 @@ export default function Navbar() {
                 <span>Free Shipping ₹{settings?.freeShippingThreshold || 999}+</span>
               </span>
               <span style={{ opacity: 0.4 }}>•</span>
-              <Link to="/#quiz" style={{ color: "#FAF8F5", fontWeight: 800, textDecoration: "none", display: "inline-flex", alignItems: "center", gap: 4 }}>
-                <Compass size={12} strokeWidth={2.2} />
-                <span>Bird Quiz</span>
-              </Link>
+              <span style={{ display: "inline-flex", alignItems: "center", gap: 4 }}>
+                <Tag size={12} strokeWidth={2.2} />
+                <span>Code: FEATHER10</span>
+              </span>
             </div>
           </div>
         )}
@@ -240,7 +243,7 @@ export default function Navbar() {
                 bottom: 3,
                 width: 34,
                 height: 34,
-                background: "#1B3B22",
+                background: "#D9381E",
                 color: "#FFFFFF",
                 border: "none",
                 borderRadius: "50%",
@@ -466,7 +469,7 @@ export default function Navbar() {
                   bottom: 4,
                   width: 34,
                   height: 34,
-                  background: "#1B3B22",
+                  background: "#D9381E",
                   color: "#FFFFFF",
                   border: "none",
                   borderRadius: "50%",
