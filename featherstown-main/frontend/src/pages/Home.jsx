@@ -7,6 +7,7 @@ import CategoryPills from "../components/sections/CategoryPills";
 import BestSellers from "../components/sections/BestSellers";
 import PromoBanners from "../components/sections/PromoBanners";
 import FeaturedBreeds from "../components/sections/FeaturedBreeds";
+import Reviews from "../components/sections/Reviews";
 import BirdQuiz from "../components/Quiz/BirdQuiz";
 import TrustStrip from "../components/sections/TrustStrip";
 import Newsletter from "../components/sections/Newsletter";
@@ -55,7 +56,10 @@ export default function Home() {
       {/* 5. Featured Companion Birds (Matches Reference Seasonal Collection: 4 Curated Photo Cards with Chevrons) */}
       <FeaturedBreeds />
 
-      {/* 6. Which Bird Suits You? Quiz (Cleanly integrated avian compatibility matchmaker) */}
+      {/* 6. Customer Reviews & Ratings (Breakdown bar, filter tabs, helpful voting, write review modal) */}
+      <Reviews />
+
+      {/* 7. Which Bird Suits You? Quiz (Cleanly integrated avian compatibility matchmaker) */}
       <div
         id="quiz"
         style={{
@@ -67,10 +71,10 @@ export default function Home() {
         <BirdQuiz parrots={birds} />
       </div>
 
-      {/* 7. Value Proposition Trust Strip (Matches Reference: 4 Horizontal Trust Cards) */}
+      {/* 8. Value Proposition Trust Strip (Matches Reference: 4 Horizontal Trust Cards) */}
       <TrustStrip />
 
-      {/* 8. Newsletter Strip (Matches Reference: "Join Our Flock!", Inline Input + Subscribe Button) */}
+      {/* 9. Newsletter Strip (Matches Reference: "Join Our Flock!", Inline Input + Subscribe Button) */}
       <Newsletter />
 
       {/* Avian Care AI Assistant */}

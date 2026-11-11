@@ -6,6 +6,9 @@ import AvatarPicker from "../../components/ui/AvatarPicker";
 
 const EMPTY_FORM = {
   name: "",
+  title: "",
+  productOrBreed: "",
+  category: "birds",
   location: "",
   rating: 5,
   comment: "",
@@ -48,6 +51,9 @@ export default function AdminReviews() {
     setEditingId(r._id);
     setForm({
       name: r.name || "",
+      title: r.title || "",
+      productOrBreed: r.productOrBreed || "",
+      category: r.category || "birds",
       location: r.location || "",
       rating: r.rating || 5,
       comment: r.comment || "",
@@ -92,9 +98,13 @@ export default function AdminReviews() {
     try {
       const payload = {
         name: form.name.trim(),
+        title: form.title?.trim() || "",
+        productOrBreed: form.productOrBreed?.trim() || "",
+        category: form.category || "birds",
         location: form.location.trim(),
         rating: Number(form.rating) || 5,
         comment: form.comment.trim(),
+        avatar: form.avatar || "/avatars/cockatiel.svg",
         isVerified: Boolean(form.isVerified),
         status: form.status,
       };

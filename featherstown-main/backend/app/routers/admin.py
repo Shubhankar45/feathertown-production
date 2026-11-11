@@ -514,11 +514,15 @@ async def admin_create_review(body: Dict[str, Any]):
     now = datetime.now(timezone.utc)
     review_doc = {
         "name": name.strip(),
+        "title": str(body.get("title") or "Wonderful experience with FeatherTown!").strip(),
+        "productOrBreed": str(body.get("productOrBreed") or "Companion Bird & Supplies").strip(),
+        "category": str(body.get("category") or "birds").strip(),
         "rating": r_num,
         "comment": comment.strip(),
         "location": str(body.get("location") or "India").strip(),
         "avatar": str(body.get("avatar") or "").strip(),
         "isVerified": bool(body.get("isVerified", True)),
+        "helpfulCount": int(body.get("helpfulCount") or 0),
         "status": body.get("status") or "approved",
         "createdAt": now,
         "updatedAt": now,
@@ -551,6 +555,17 @@ async def admin_update_review(id: str, body: Dict[str, Any]):
         updates["location"] = str(body.get("location") or "").strip()
     if "avatar" in body:
         updates["avatar"] = str(body.get("avatar") or "").strip()
+    if "title" in body:
+        updates["title"] = str(body["title"]).strip()
+    if "productOrBreed" in body:
+        updates["productOrBreed"] = str(body["productOrBreed"]).strip()
+    if "category" in body:
+        updates["category"] = str(body["category"]).strip()
+    if "helpfulCount" in body:
+        try:
+            updates["helpfulCount"] = int(body["helpfulCount"])
+        except (ValueError, TypeError):
+            pass
     if "isVerified" in body:
         updates["isVerified"] = bool(body["isVerified"])
     if "status" in body:
