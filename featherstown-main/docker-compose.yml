@@ -29,8 +29,9 @@ services:
       - RAZORPAY_KEY_ID=${RAZORPAY_KEY_ID:-}
       - RAZORPAY_KEY_SECRET=${RAZORPAY_KEY_SECRET:-}
       
-      # ── Google OAuth Customer Sign-In (Optional) ──
+      # ── Google & Apple OAuth Customer Sign-In (Optional) ──
       - GOOGLE_CLIENT_ID=${GOOGLE_CLIENT_ID:-}
+      - APPLE_CLIENT_ID=${APPLE_CLIENT_ID:-}
       
       # ── Outbound Email (SMTP) ──
       - MAIL_HOST=${MAIL_HOST:-smtp.hostinger.com}
