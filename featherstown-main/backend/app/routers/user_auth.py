@@ -737,5 +737,7 @@ async def update_user_avatar(body: Dict[str, Any], user: Dict[str, Any] = Depend
 async def user_auth_status():
     return {
         "googleAuthEnabled": GOOGLE_AUTH_ENABLED,
+        "googleClientId": GOOGLE_CLIENT_ID if GOOGLE_AUTH_ENABLED else "",
         "appleAuthEnabled": APPLE_AUTH_ENABLED,
+        "appleClientId": APPLE_CLIENT_ID if APPLE_AUTH_ENABLED else "",
     }

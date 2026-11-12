@@ -18,13 +18,14 @@ function loadGis() {
 }
 
 export default function GoogleSignInButton({ size = "large", onSuccess }) {
-  const { googleAuthEnabled, loginWithGoogle } = useUserAuth();
+  const { googleAuthEnabled, googleClientId, loginWithGoogle } = useUserAuth();
   const navigate = useNavigate();
   const btnRef = useRef(null);
   const [gisRendered, setGisRendered] = useState(false);
+  const activeClientId = googleClientId || CLIENT_ID;
 
   useEffect(() => {
-    if (!CLIENT_ID || !btnRef.current) return;
+    if (!activeClientId || !btnRef.current) return;
     let cancelled = false;
 
     (async () => {
@@ -33,7 +34,7 @@ export default function GoogleSignInButton({ size = "large", onSuccess }) {
 
       try {
         window.google.accounts.id.initialize({
-          client_id: CLIENT_ID,
+          client_id: activeClientId,
           callback: async (response) => {
             try {
               await loginWithGoogle(response.credential);

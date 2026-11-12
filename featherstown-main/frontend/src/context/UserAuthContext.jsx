@@ -22,7 +22,9 @@ async function postJson(url, body) {
 export function UserAuthProvider({ children }) {
   const [user, setUser] = useState(null);
   const [googleAuthEnabled, setGoogleAuthEnabled] = useState(false);
+  const [googleClientId, setGoogleClientId] = useState(import.meta.env.VITE_GOOGLE_CLIENT_ID || "");
   const [appleAuthEnabled, setAppleAuthEnabled] = useState(true);
+  const [appleClientId, setAppleClientId] = useState(import.meta.env.VITE_APPLE_CLIENT_ID || "");
   const [verificationPending, setVerificationPending] = useState(null);
   const [loading, setLoading] = useState(true);
 
@@ -51,7 +53,9 @@ export function UserAuthProvider({ children }) {
         .then((r) => (r.ok ? r.json() : { googleAuthEnabled: false, appleAuthEnabled: true }))
         .then((status) => {
           setGoogleAuthEnabled(Boolean(status.googleAuthEnabled));
+          if (status.googleClientId) setGoogleClientId(status.googleClientId);
           setAppleAuthEnabled(status.appleAuthEnabled !== false);
+          if (status.appleClientId) setAppleClientId(status.appleClientId);
         })
         .catch(() => {
           setGoogleAuthEnabled(false);
@@ -150,7 +154,9 @@ export function UserAuthProvider({ children }) {
         user,
         loading,
         googleAuthEnabled,
+        googleClientId,
         appleAuthEnabled,
+        appleClientId,
         verificationPending,
         setVerificationPending,
         register,

@@ -23,17 +23,18 @@ function loadAppleSdk() {
 }
 
 export default function AppleSignInButton({ onSuccess }) {
-  const { appleAuthEnabled, loginWithApple } = useUserAuth();
+  const { appleAuthEnabled, appleClientId, loginWithApple } = useUserAuth();
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
+  const activeClientId = appleClientId || APPLE_CLIENT_ID;
 
   useEffect(() => {
-    if (APPLE_CLIENT_ID) {
+    if (activeClientId) {
       loadAppleSdk().then((ok) => {
         if (ok && window.AppleID) {
           try {
             window.AppleID.auth.init({
-              clientId: APPLE_CLIENT_ID,
+              clientId: activeClientId,
               scope: "name email",
               redirectURI: REDIRECT_URI,
               usePopup: true,
@@ -44,7 +45,7 @@ export default function AppleSignInButton({ onSuccess }) {
         }
       });
     }
-  }, []);
+  }, [activeClientId]);
 
   if (!appleAuthEnabled) return null;
 
@@ -114,3 +115,4 @@ export default function AppleSignInButton({ onSuccess }) {
     </button>
   );
 }
+
