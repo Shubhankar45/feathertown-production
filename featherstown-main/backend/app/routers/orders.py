@@ -13,7 +13,7 @@ from app.config import (
     PAYMENTS_ENABLED,
 )
 from app.database import accessories_col, orders_col
-from app.auth import get_optional_user, get_current_user
+from app.auth import get_optional_user, get_current_user, get_current_verified_user
 from app.rate_limiter import checkout_limiter
 from app.utils import is_valid_object_id, to_object_id, serialize_doc
 
@@ -108,6 +108,16 @@ async def create_razorpay_order(
     body: Dict[str, Any],
     user: Optional[Dict[str, Any]] = Depends(get_optional_user),
 ):
+    if user and not user.get("emailVerified"):
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail={
+                "msg": "Please verify your email address before placing an order.",
+                "needsVerification": True,
+                "email": user.get("email", ""),
+            },
+        )
+
     if not razorpay_client:
         raise HTTPException(
             status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
@@ -218,6 +228,16 @@ async def create_cod_order(
     body: Dict[str, Any],
     user: Optional[Dict[str, Any]] = Depends(get_optional_user),
 ):
+    if user and not user.get("emailVerified"):
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail={
+                "msg": "Please verify your email address before placing an order.",
+                "needsVerification": True,
+                "email": user.get("email", ""),
+            },
+        )
+
     try:
         cart = await validate_and_price_cart(body)
         order_items = cart["orderItems"]
@@ -261,7 +281,7 @@ async def create_cod_order(
         )
 
 @router.get("/mine")
-async def my_orders(user: Dict[str, Any] = Depends(get_current_user)):
+async def my_orders(user: Dict[str, Any] = Depends(get_current_verified_user)):
     user_id = to_object_id(user["sub"])
     cursor = orders_col.find({"user": user_id}).sort("createdAt", -1).limit(200)
     orders = await cursor.to_list(length=200)

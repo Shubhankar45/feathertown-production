@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect } from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
-import { User, Package, LogOut, Smile } from "lucide-react";
+import { User, Package, LogOut, Smile, CheckCircle2, AlertTriangle } from "lucide-react";
 import { useUserAuth } from "../context/UserAuthContext";
 import Avatar from "./ui/Avatar";
 import AvatarModal from "./ui/AvatarModal";
@@ -174,6 +174,44 @@ export default function UserMenu() {
                 >
                   {user.email}
                 </div>
+                {user.emailVerified ? (
+                  <div
+                    style={{
+                      display: "inline-flex",
+                      alignItems: "center",
+                      gap: 4,
+                      marginTop: 4,
+                      fontSize: 10.5,
+                      color: "#166534",
+                      fontWeight: 700,
+                    }}
+                  >
+                    <CheckCircle2 size={11} strokeWidth={2.4} />
+                    <span>Verified Account</span>
+                  </div>
+                ) : (
+                  <Link
+                    to="/login"
+                    onClick={() => setOpen(false)}
+                    style={{
+                      display: "inline-flex",
+                      alignItems: "center",
+                      gap: 4,
+                      marginTop: 4,
+                      fontSize: 10.5,
+                      color: "#D9381E",
+                      fontWeight: 700,
+                      textDecoration: "none",
+                      background: "#FDF2E9",
+                      padding: "2px 8px",
+                      borderRadius: 999,
+                      border: "1px solid #F5D0C5",
+                    }}
+                  >
+                    <AlertTriangle size={10} strokeWidth={2.4} />
+                    <span>Verify Email Now</span>
+                  </Link>
+                )}
               </div>
             </div>
 

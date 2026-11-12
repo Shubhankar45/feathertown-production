@@ -16,8 +16,33 @@ export const PINCODE_REGEX = /^[1-9][0-9]{5}$/;
 
 export function isValidEmail(email) {
   if (!email || typeof email !== "string") return false;
-  const clean = email.trim();
-  return clean.length <= 254 && EMAIL_REGEX.test(clean);
+  const clean = email.trim().toLowerCase();
+  if (clean.length > 254 || !EMAIL_REGEX.test(clean)) return false;
+  const domain = clean.split("@")[1];
+  if (!domain || domain.indexOf(".") === -1 || domain.split(".").pop().length < 2) return false;
+  return !isDisposableEmail(clean);
+}
+
+export const DISPOSABLE_EMAIL_DOMAINS = new Set([
+  "mailinator.com",
+  "10minutemail.com",
+  "tempmail.com",
+  "guerrillamail.com",
+  "trashmail.com",
+  "sharklasers.com",
+  "getairmail.com",
+  "yopmail.com",
+  "dispostable.com",
+  "fakeinbox.com",
+  "temp-mail.org",
+  "throwawaymail.com",
+]);
+
+export function isDisposableEmail(email) {
+  if (!email || typeof email !== "string") return false;
+  const parts = email.trim().toLowerCase().split("@");
+  if (parts.length !== 2) return false;
+  return DISPOSABLE_EMAIL_DOMAINS.has(parts[1]);
 }
 
 export function isValidPhone(phone) {

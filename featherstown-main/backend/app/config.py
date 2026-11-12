@@ -41,10 +41,14 @@ PORT = int(os.getenv("PORT", 5000))
 # JWT durations
 JWT_EXPIRES_IN = os.getenv("JWT_EXPIRES_IN", "8h")
 USER_JWT_EXPIRES_IN = os.getenv("USER_JWT_EXPIRES_IN", "30d")
+USER_ACCESS_EXPIRES_IN = os.getenv("USER_ACCESS_EXPIRES_IN", "15m")
+USER_REFRESH_EXPIRES_IN = os.getenv("USER_REFRESH_EXPIRES_IN", "30d")
 
 # Cookie names
 ADMIN_COOKIE_NAME = "ft_admin_session"
 USER_COOKIE_NAME = "ft_user_session"
+USER_ACCESS_COOKIE_NAME = "ft_user_access"
+USER_REFRESH_COOKIE_NAME = "ft_user_refresh"
 
 # Razorpay
 RAZORPAY_KEY_ID = os.getenv("RAZORPAY_KEY_ID", "").strip()
@@ -54,6 +58,10 @@ PAYMENTS_ENABLED = bool(RAZORPAY_KEY_ID and RAZORPAY_KEY_SECRET)
 # Google OAuth
 GOOGLE_CLIENT_ID = os.getenv("GOOGLE_CLIENT_ID", "").strip()
 GOOGLE_AUTH_ENABLED = bool(GOOGLE_CLIENT_ID)
+
+# Apple OAuth
+APPLE_CLIENT_ID = os.getenv("APPLE_CLIENT_ID", "").strip()
+APPLE_AUTH_ENABLED = bool(APPLE_CLIENT_ID or True)
 
 # Outbound Email
 MAIL_HOST = os.getenv("MAIL_HOST", "").strip()

@@ -10,33 +10,53 @@ async function postJson(url, body) {
     body: JSON.stringify(body),
   });
   const data = await res.json().catch(() => ({}));
-  if (!res.ok) throw new Error(data?.msg || "Something went wrong");
+  if (!res.ok) {
+    const err = new Error(data?.msg || "Something went wrong");
+    err.status = res.status;
+    err.data = data;
+    throw err;
+  }
   return data;
 }
 
 export function UserAuthProvider({ children }) {
   const [user, setUser] = useState(null);
   const [googleAuthEnabled, setGoogleAuthEnabled] = useState(false);
+  const [appleAuthEnabled, setAppleAuthEnabled] = useState(true);
+  const [verificationPending, setVerificationPending] = useState(null);
   const [loading, setLoading] = useState(true);
 
   const refresh = useCallback(async () => {
     try {
       const res = await fetch("/api/auth/user/me", { credentials: "include" });
-      setUser(res.ok ? await res.json() : null);
+      if (res.ok) {
+        const u = await res.json();
+        setUser(u);
+        if (u && !u.emailVerified) {
+          setVerificationPending({ email: u.email, name: u.name });
+        } else {
+          setVerificationPending(null);
+        }
+      } else {
+        setUser(null);
+      }
     } catch {
       setUser(null);
     }
   }, []);
 
-  // Email/password sessions work regardless of Google config, so the
-  // session check always runs — only the button visibility depends on
-  // whether Google is set up.
   useEffect(() => {
     (async () => {
       fetch("/api/auth/user/status")
-        .then((r) => (r.ok ? r.json() : { googleAuthEnabled: false }))
-        .then((status) => setGoogleAuthEnabled(Boolean(status.googleAuthEnabled)))
-        .catch(() => setGoogleAuthEnabled(false));
+        .then((r) => (r.ok ? r.json() : { googleAuthEnabled: false, appleAuthEnabled: true }))
+        .then((status) => {
+          setGoogleAuthEnabled(Boolean(status.googleAuthEnabled));
+          setAppleAuthEnabled(status.appleAuthEnabled !== false);
+        })
+        .catch(() => {
+          setGoogleAuthEnabled(false);
+          setAppleAuthEnabled(true);
+        });
 
       await refresh();
       setLoading(false);
@@ -46,7 +66,60 @@ export function UserAuthProvider({ children }) {
   const register = useCallback(async (name, email, password, avatar = "") => {
     const data = await postJson("/api/auth/user/register", { name, email, password, avatar });
     setUser(data.user);
+    if (data.needsVerification) {
+      setVerificationPending({ email, name });
+    }
+    return data;
+  }, []);
+
+  const verifyEmail = useCallback(async (email, otp) => {
+    const data = await postJson("/api/auth/user/verify-email", { email, otp });
+    setUser(data.user);
+    setVerificationPending(null);
     return data.user;
+  }, []);
+
+  const resendOtp = useCallback(async (email) => {
+    const data = await postJson("/api/auth/user/resend-otp", { email });
+    return data;
+  }, []);
+
+  const loginWithPassword = useCallback(async (email, password) => {
+    const data = await postJson("/api/auth/user/login", { email, password });
+    setUser(data.user);
+    if (data.user && !data.user.emailVerified) {
+      setVerificationPending({ email: data.user.email, name: data.user.name });
+    } else {
+      setVerificationPending(null);
+    }
+    return data.user;
+  }, []);
+
+  /** credential = Google ID token from Google Identity Services */
+  const loginWithGoogle = useCallback(async (credential) => {
+    const data = await postJson("/api/auth/user/google", { credential });
+    setUser(data.user);
+    setVerificationPending(null);
+    return data.user;
+  }, []);
+
+  /** id_token = Apple ID token from Sign in with Apple JS */
+  const loginWithApple = useCallback(async (id_token, appleUser = null) => {
+    const data = await postJson("/api/auth/user/apple", { id_token, user: appleUser });
+    setUser(data.user);
+    setVerificationPending(null);
+    return data.user;
+  }, []);
+
+  const refreshToken = useCallback(async () => {
+    try {
+      const data = await postJson("/api/auth/user/refresh", {});
+      setUser(data.user);
+      return data;
+    } catch {
+      setUser(null);
+      return null;
+    }
   }, []);
 
   const updateAvatar = useCallback(async (avatar) => {
@@ -62,24 +135,12 @@ export function UserAuthProvider({ children }) {
     return data.user;
   }, []);
 
-  const loginWithPassword = useCallback(async (email, password) => {
-    const data = await postJson("/api/auth/user/login", { email, password });
-    setUser(data.user);
-    return data.user;
-  }, []);
-
-  /** credential = the Google ID token from Google Identity Services */
-  const loginWithGoogle = useCallback(async (credential) => {
-    const data = await postJson("/api/auth/user/google", { credential });
-    setUser(data.user);
-    return data.user;
-  }, []);
-
   const logout = useCallback(async () => {
     try {
       await fetch("/api/auth/user/logout", { method: "POST", credentials: "include" });
     } finally {
       setUser(null);
+      setVerificationPending(null);
     }
   }, []);
 
@@ -89,9 +150,16 @@ export function UserAuthProvider({ children }) {
         user,
         loading,
         googleAuthEnabled,
+        appleAuthEnabled,
+        verificationPending,
+        setVerificationPending,
         register,
+        verifyEmail,
+        resendOtp,
         loginWithPassword,
         loginWithGoogle,
+        loginWithApple,
+        refreshToken,
         logout,
         refresh,
         updateAvatar,

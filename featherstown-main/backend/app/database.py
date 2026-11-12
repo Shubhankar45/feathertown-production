@@ -34,6 +34,9 @@ subscribers_col = db["subscribers"]
 settings_col = db["settings"]
 users_col = db["users"]
 admins_col = db["admins"]
+refresh_tokens_col = db["refresh_tokens"]
+email_verifications_col = db["email_verifications"]
+login_attempts_col = db["login_attempts"]
 
 async def init_db():
     """Initializes indexes and seeds the database if empty."""
@@ -59,12 +62,25 @@ async def init_db():
         # 5. Users indexes
         await users_col.create_index([("email", ASCENDING)], unique=True)
         await users_col.create_index([("googleId", ASCENDING)], unique=True, sparse=True)
+        await users_col.create_index([("appleId", ASCENDING)], unique=True, sparse=True)
 
         # 6. Orders indexes
         await orders_col.create_index([("razorpayOrderId", ASCENDING)], unique=True, sparse=True)
 
         # 7. Settings indexes
         await settings_col.create_index([("key", ASCENDING)], unique=True)
+
+        # 8. Refresh Tokens (Auto-expires on expiresAt)
+        await refresh_tokens_col.create_index([("userId", ASCENDING), ("jti", ASCENDING)], unique=True)
+        await refresh_tokens_col.create_index([("expiresAt", ASCENDING)], expireAfterSeconds=0)
+
+        # 9. Email Verifications (Auto-expires on expiresAt)
+        await email_verifications_col.create_index([("email", ASCENDING)], unique=True)
+        await email_verifications_col.create_index([("expiresAt", ASCENDING)], expireAfterSeconds=0)
+
+        # 10. Login Security & Brute-Force Lockouts (Auto-expires on lockedUntil)
+        await login_attempts_col.create_index([("key", ASCENDING)], unique=True)
+        await login_attempts_col.create_index([("lockedUntil", ASCENDING)], expireAfterSeconds=0)
 
         # Auto-seed Birds
         bird_count = await birds_col.count_documents({})
