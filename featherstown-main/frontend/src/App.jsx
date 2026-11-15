@@ -1,4 +1,4 @@
-import { Routes, Route, useLocation } from "react-router-dom";
+import { Routes, Route, useLocation, Navigate } from "react-router-dom";
 import { useEffect } from "react";
 import Home from "./pages/Home";
 import About from "./pages/About";
@@ -101,7 +101,9 @@ function App() {
             <UserAuthProvider>
               <CartProvider>
                 <Routes>
-                  {/* ── Admin console — no navbar/footer, separate auth flow ── */}
+                  {/* ── Admin console — separate auth flow ── */}
+                  <Route path="/admin" element={<Navigate to={`${ADMIN_BASE}/login`} replace />} />
+                  <Route path="/admin/login" element={<Navigate to={`${ADMIN_BASE}/login`} replace />} />
                   <Route path={`${ADMIN_BASE}/login`} element={<AdminLogin />} />
                   <Route
                     path={ADMIN_BASE}
