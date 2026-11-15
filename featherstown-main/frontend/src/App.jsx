@@ -40,6 +40,11 @@ import AdminReviews from "./pages/admin/AdminReviews";
 import AdminSubscribers from "./pages/admin/AdminSubscribers";
 import AdminSettings from "./pages/admin/AdminSettings";
 import AdminCategories from "./pages/admin/AdminCategories";
+import AdminCreateBill from "./pages/admin/AdminCreateBill";
+import AdminInvoices from "./pages/admin/AdminInvoices";
+import AdminBookingTracker from "./pages/admin/AdminBookingTracker";
+import AdminCustomers from "./pages/admin/AdminCustomers";
+import AdminTransactions from "./pages/admin/AdminTransactions";
 import { BirdsProvider } from "./context/BirdsContext";
 import { SettingsProvider } from "./context/SettingsContext";
 import { ADMIN_BASE } from "./config/adminConfig";
@@ -114,6 +119,11 @@ function App() {
                     }
                   >
                     <Route index element={<AdminDashboard />} />
+                    <Route path="create-bill" element={<AdminCreateBill />} />
+                    <Route path="invoices" element={<AdminInvoices />} />
+                    <Route path="bookings" element={<AdminBookingTracker />} />
+                    <Route path="customers" element={<AdminCustomers />} />
+                    <Route path="transactions" element={<AdminTransactions />} />
                     <Route path="birds" element={<AdminBirds />} />
                     <Route path="accessories" element={<AdminAccessories />} />
                     <Route path="categories" element={<AdminCategories />} />

@@ -1,20 +1,68 @@
 import { useState } from "react";
-import { LayoutDashboard, Feather, ShoppingBag, Tag, Package, Mail, Settings, LogOut, Menu, X, Star } from "lucide-react";
+import {
+  LayoutDashboard,
+  Receipt,
+  FileText,
+  CalendarCheck,
+  Users,
+  Wallet,
+  Feather,
+  ShoppingBag,
+  Tag,
+  Package,
+  Mail,
+  Settings,
+  LogOut,
+  Menu,
+  X,
+  Star,
+  ExternalLink,
+} from "lucide-react";
 import { NavLink, Outlet, useNavigate, useLocation } from "react-router-dom";
 import { useAdminAuth } from "../../context/AdminAuthContext";
 import { ADMIN_BASE } from "../../config/adminConfig";
 import ToastContainer from "../ui/Toast";
 import logoImg from "../../assets/logo-optimized.png";
 
-const NAV = [
-  { to: `${ADMIN_BASE}`, label: "Overview", Icon: LayoutDashboard, end: true },
-  { to: `${ADMIN_BASE}/birds`, label: "Birds & Breeds", Icon: Feather },
-  { to: `${ADMIN_BASE}/accessories`, label: "Accessories", Icon: ShoppingBag },
-  { to: `${ADMIN_BASE}/categories`, label: "Categories", Icon: Tag },
-  { to: `${ADMIN_BASE}/orders`, label: "Orders", Icon: Package },
-  { to: `${ADMIN_BASE}/reviews`, label: "Reviews", Icon: Star },
-  { to: `${ADMIN_BASE}/subscribers`, label: "Subscribers", Icon: Mail },
-  { to: `${ADMIN_BASE}/settings`, label: "Store Settings", Icon: Settings },
+// Top horizontal pills matching user screenshot
+const TOP_PILLS = [
+  { to: `${ADMIN_BASE}`, label: "Dashboard", end: true },
+  { to: `${ADMIN_BASE}/create-bill`, label: "Create Bill" },
+  { to: `${ADMIN_BASE}/bookings`, label: "Booking Tracker" },
+  { to: `${ADMIN_BASE}/customers`, label: "Customers" },
+  { to: `${ADMIN_BASE}/transactions`, label: "Transactions" },
+];
+
+// Comprehensive Sidebar Navigation
+const NAV_SECTIONS = [
+  {
+    title: "Billing & Operations",
+    items: [
+      { to: `${ADMIN_BASE}`, label: "Dashboard", Icon: LayoutDashboard, end: true },
+      { to: `${ADMIN_BASE}/create-bill`, label: "Create Bill", Icon: Receipt },
+      { to: `${ADMIN_BASE}/invoices`, label: "Invoices", Icon: FileText },
+      { to: `${ADMIN_BASE}/bookings`, label: "Booking Tracker", Icon: CalendarCheck },
+      { to: `${ADMIN_BASE}/customers`, label: "Customers", Icon: Users },
+      { to: `${ADMIN_BASE}/transactions`, label: "Transactions", Icon: Wallet },
+    ],
+  },
+  {
+    title: "Catalog & Sales",
+    items: [
+      { to: `${ADMIN_BASE}/birds`, label: "Birds & Breeds", Icon: Feather },
+      { to: `${ADMIN_BASE}/accessories`, label: "Accessories", Icon: ShoppingBag },
+      { to: `${ADMIN_BASE}/categories`, label: "Categories", Icon: Tag },
+      { to: `${ADMIN_BASE}/orders`, label: "Store Orders", Icon: Package },
+      { to: `${ADMIN_BASE}/reviews`, label: "Reviews", Icon: Star },
+      { to: `${ADMIN_BASE}/subscribers`, label: "Subscribers", Icon: Mail },
+    ],
+  },
+  {
+    title: "Configuration",
+    items: [
+      { to: `${ADMIN_BASE}/settings`, label: "Store Settings", Icon: Settings },
+    ],
+  },
 ];
 
 export default function AdminLayout() {
@@ -28,9 +76,16 @@ export default function AdminLayout() {
     navigate(`${ADMIN_BASE}/login`, { replace: true });
   };
 
-  const currentNav = NAV.find((item) =>
-    item.end ? location.pathname === item.to : location.pathname.startsWith(item.to)
-  );
+  // Find current active title
+  let currentLabel = "Admin Console";
+  for (const sec of NAV_SECTIONS) {
+    for (const item of sec.items) {
+      if (item.end ? location.pathname === item.to : location.pathname.startsWith(item.to)) {
+        currentLabel = item.label;
+        break;
+      }
+    }
+  }
 
   return (
     <div className="ft-admin-shell">
@@ -51,12 +106,12 @@ export default function AdminLayout() {
         />
       )}
 
-      {/* Sidebar Navigation - TRULY FIXED to viewport */}
+      {/* Sidebar Navigation - Fixed to viewport */}
       <aside className={`ft-admin-sidebar ${mobileMenuOpen ? "open" : ""}`}>
         {/* Brand Header */}
         <div
           style={{
-            padding: "20px 18px",
+            padding: "18px 16px",
             borderBottom: "1px solid #E2E8F0",
             display: "flex",
             alignItems: "center",
@@ -65,24 +120,24 @@ export default function AdminLayout() {
             background: "#FFFFFF",
           }}
         >
-          <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+          <div style={{ display: "flex", alignItems: "center", gap: 11 }}>
             <img
               src={logoImg}
               alt="FeatherTown"
               style={{
-                height: 38,
+                height: 36,
                 width: "auto",
-                background: "#F8FAFC",
-                borderRadius: 10,
-                padding: "3px 6px",
-                border: "1px solid #E2E8F0",
+                background: "#FAF8F5",
+                borderRadius: 8,
+                padding: "2px 6px",
+                border: "1px solid #E2DDD3",
               }}
             />
             <div>
               <div
                 style={{
                   fontFamily: "Cormorant Garamond, serif",
-                  fontSize: 20,
+                  fontSize: 19,
                   fontWeight: 700,
                   lineHeight: 1.1,
                   color: "#1B3B22",
@@ -92,15 +147,15 @@ export default function AdminLayout() {
               </div>
               <div
                 style={{
-                  fontSize: 10.5,
-                  letterSpacing: 1.5,
+                  fontSize: 10,
+                  letterSpacing: 1.4,
                   textTransform: "uppercase",
                   color: "#1B3B22",
                   fontWeight: 700,
                   marginTop: 2,
                 }}
               >
-                Admin Suite
+                Enterprise Suite
               </div>
             </div>
           </div>
@@ -127,7 +182,7 @@ export default function AdminLayout() {
         </div>
 
         {/* Live Store Quick Shortcut */}
-        <div style={{ padding: "14px 16px 6px", flexShrink: 0 }}>
+        <div style={{ padding: "12px 14px 4px", flexShrink: 0 }}>
           <a
             href="/"
             target="_blank"
@@ -136,89 +191,94 @@ export default function AdminLayout() {
               display: "flex",
               alignItems: "center",
               justifyContent: "space-between",
-              padding: "10px 14px",
-              borderRadius: 10,
-              background: "#E7EFE8",
-              border: "1px solid #B8D4BA",
+              padding: "9px 12px",
+              borderRadius: 8,
+              background: "#FAF8F5",
+              border: "1px solid #E2DDD3",
               color: "#1B3B22",
               textDecoration: "none",
-              fontSize: 12.5,
+              fontSize: 12,
               fontWeight: 600,
-              transition: "all 0.2s",
+              transition: "all 0.15s ease",
             }}
           >
-            <span style={{ display: "flex", alignItems: "center", gap: 8 }}>
-              <span style={{ width: 8, height: 8, borderRadius: "50%", background: "#1B3B22" }} />
+            <span style={{ display: "flex", alignItems: "center", gap: 7 }}>
+              <span style={{ width: 7, height: 7, borderRadius: "50%", background: "#1B3B22" }} />
               Live Storefront
             </span>
-            <span style={{ fontSize: 13 }}>↗</span>
+            <ExternalLink size={13} strokeWidth={2} />
           </a>
         </div>
 
-        {/* Navigation Links (Scrollable if viewport height is compact) */}
-        <nav className="ft-admin-sidebar-nav">
-          <div
-            style={{
-              fontSize: 11,
-              fontWeight: 700,
-              letterSpacing: 1.2,
-              color: "#94A3B8",
-              textTransform: "uppercase",
-              padding: "8px 12px 6px",
-            }}
-          >
-            Management
-          </div>
-
-          {NAV.map((item) => {
-            const ItemIcon = item.Icon;
-            return (
-              <NavLink
-                key={item.to}
-                to={item.to}
-                end={item.end}
-                onClick={() => setMobileMenuOpen(false)}
-                style={({ isActive }) => ({
-                  display: "flex",
-                  alignItems: "center",
-                  gap: 12,
-                  padding: "11px 14px",
-                  borderRadius: 10,
-                  fontSize: 14,
-                  fontWeight: 600,
-                  textDecoration: "none",
-                  color: isActive ? "#1B3B22" : "#475569",
-                  background: isActive ? "#E7EFE8" : "transparent",
-                  borderLeft: isActive ? "3px solid #1B3B22" : "3px solid transparent",
-                  transition: "all 0.15s ease",
-                })}
+        {/* Navigation Links (Scrollable) */}
+        <nav className="ft-admin-sidebar-nav" style={{ padding: "10px 10px" }}>
+          {NAV_SECTIONS.map((sec, secIdx) => (
+            <div key={sec.title} style={{ marginBottom: 12 }}>
+              <div
+                style={{
+                  fontSize: 10.5,
+                  fontWeight: 700,
+                  letterSpacing: 1.1,
+                  color: "#94A3B8",
+                  textTransform: "uppercase",
+                  padding: "6px 10px 4px",
+                }}
               >
-                {ItemIcon && <ItemIcon size={18} strokeWidth={2.2} />}
-                <span>{item.label}</span>
-              </NavLink>
-            );
-          })}
+                {sec.title}
+              </div>
+
+              {sec.items.map((item) => {
+                const ItemIcon = item.Icon;
+                return (
+                  <NavLink
+                    key={item.to}
+                    to={item.to}
+                    end={item.end}
+                    onClick={() => setMobileMenuOpen(false)}
+                    style={({ isActive }) => ({
+                      display: "flex",
+                      alignItems: "center",
+                      gap: 10,
+                      padding: "9px 12px",
+                      borderRadius: 8,
+                      fontSize: 13.5,
+                      fontWeight: isActive ? 700 : 500,
+                      textDecoration: "none",
+                      color: isActive ? "#1B3B22" : "#475569",
+                      background: isActive ? "#EAF2EC" : "transparent",
+                      borderLeft: isActive ? "3px solid #1B3B22" : "3px solid transparent",
+                      transition: "all 0.15s ease",
+                      marginBottom: 2,
+                    })}
+                  >
+                    {ItemIcon && <ItemIcon size={17} strokeWidth={2.2} />}
+                    <span>{item.label}</span>
+                  </NavLink>
+                );
+              })}
+            </div>
+          ))}
         </nav>
 
         {/* User Footer Profile */}
         <div
           style={{
-            padding: "16px",
+            padding: "14px 16px",
             borderTop: "1px solid #E2E8F0",
-            background: "#F8FAFC",
+            background: "#FAF8F5",
             flexShrink: 0,
           }}
         >
-          <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 12 }}>
+          <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 10 }}>
             <div
               style={{
-                width: 36,
-                height: 36,
+                width: 34,
+                height: 34,
                 borderRadius: "50%",
                 background: "#1B3B22",
                 color: "#FFFFFF",
                 fontWeight: 700,
-                fontSize: 14,
+                fontSize: 13.5,
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",
@@ -227,10 +287,19 @@ export default function AdminLayout() {
               {admin?.username ? admin.username[0].toUpperCase() : "A"}
             </div>
             <div style={{ overflow: "hidden" }}>
-              <div style={{ fontSize: 13.5, fontWeight: 700, color: "#0F172A", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
+              <div
+                style={{
+                  fontSize: 13,
+                  fontWeight: 700,
+                  color: "#0F172A",
+                  whiteSpace: "nowrap",
+                  overflow: "hidden",
+                  textOverflow: "ellipsis",
+                }}
+              >
                 {admin?.username || "Admin"}
               </div>
-              <div style={{ fontSize: 11, color: "#64748B" }}>Authorized Superuser</div>
+              <div style={{ fontSize: 10.5, color: "#64748B" }}>Authorized Superuser</div>
             </div>
           </div>
 
@@ -238,12 +307,12 @@ export default function AdminLayout() {
             onClick={handleLogout}
             style={{
               width: "100%",
-              padding: "9px 12px",
-              borderRadius: 8,
+              padding: "8px 12px",
+              borderRadius: 7,
               border: "1px solid #FEE2E2",
               background: "#FEF2F2",
               color: "#DC2626",
-              fontSize: 12.5,
+              fontSize: 12,
               fontWeight: 600,
               cursor: "pointer",
               display: "flex",
@@ -253,17 +322,17 @@ export default function AdminLayout() {
               transition: "background 0.2s",
             }}
           >
-            <LogOut size={16} strokeWidth={2.2} />
+            <LogOut size={15} strokeWidth={2.2} />
             <span>Sign Out</span>
           </button>
         </div>
       </aside>
 
-      {/* Main Content Area - Shifted on desktop to prevent any overlap */}
+      {/* Main Content Area */}
       <div className="ft-admin-content-area">
         {/* Top Header Bar */}
         <header className="ft-admin-header">
-          <div style={{ display: "flex", alignItems: "center", gap: 14 }}>
+          <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
             <button
               onClick={() => setMobileMenuOpen(true)}
               aria-label="Open navigation menu"
@@ -284,16 +353,16 @@ export default function AdminLayout() {
             </button>
 
             <div>
-              <div style={{ fontSize: 11, color: "#64748B", textTransform: "uppercase", letterSpacing: 1 }}>
+              <div style={{ fontSize: 10.5, color: "#64748B", textTransform: "uppercase", letterSpacing: 1 }}>
                 FeatherTown Control
               </div>
               <div style={{ fontSize: 16, fontWeight: 700, color: "#0F172A" }}>
-                {currentNav ? currentNav.label : "Admin"}
+                {currentLabel}
               </div>
             </div>
           </div>
 
-          <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+          <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
             <span
               style={{
                 display: "inline-flex",
@@ -301,18 +370,38 @@ export default function AdminLayout() {
                 gap: 6,
                 padding: "4px 10px",
                 borderRadius: 99,
-                background: "#E7EFE8",
-                border: "1px solid #B8D4BA",
+                background: "#EAF2EC",
+                border: "1px solid #CCE0D0",
                 color: "#1B3B22",
-                fontSize: 12,
+                fontSize: 11.5,
                 fontWeight: 600,
               }}
             >
               <span style={{ width: 6, height: 6, borderRadius: "50%", background: "#1B3B22" }} />
-              Live Online
+              Production DB Connected
             </span>
           </div>
         </header>
+
+        {/* Quick Navigation Pills Bar - Matching Reference Screenshot */}
+        <div className="ft-admin-top-pills-bar">
+          {TOP_PILLS.map((pill) => (
+            <NavLink
+              key={pill.to}
+              to={pill.to}
+              end={pill.end}
+              className={({ isActive }) => `ft-admin-pill-btn ${isActive ? "active" : ""}`}
+            >
+              {pill.label}
+            </NavLink>
+          ))}
+          <NavLink
+            to={`${ADMIN_BASE}/invoices`}
+            className={({ isActive }) => `ft-admin-pill-btn ${isActive ? "active" : ""}`}
+          >
+            Invoices
+          </NavLink>
+        </div>
 
         {/* Route Outlet */}
         <main className="ft-admin-main">

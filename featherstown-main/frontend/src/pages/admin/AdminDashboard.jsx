@@ -1,12 +1,24 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo } from "react";
 import { Link } from "react-router-dom";
 import {
-  Package,
-  ShoppingBag,
-  Mail,
   TrendingUp,
+  TrendingDown,
+  CreditCard,
+  Package,
   Feather,
-  Settings,
+  ShoppingBag,
+  Users,
+  AlertTriangle,
+  ArrowUpRight,
+  Receipt,
+  Calendar,
+  RefreshCw,
+  Plus,
+  CheckCircle2,
+  Clock,
+  Truck,
+  Wallet,
+  ExternalLink,
 } from "lucide-react";
 import { adminFetch } from "../../utils/adminApi";
 import { ADMIN_BASE } from "../../config/adminConfig";
@@ -14,50 +26,30 @@ import { toast } from "../../components/ui/Toast";
 import { resolveBirdImage } from "../../context/BirdsContext";
 
 export default function AdminDashboard() {
-  const [stats, setStats] = useState(null);
-  const [recentOrders, setRecentOrders] = useState([]);
+  const [data, setData] = useState(null);
   const [birds, setBirds] = useState([]);
+  const [recentOrders, setRecentOrders] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const [hoveredTrendIdx, setHoveredTrendIdx] = useState(null);
 
   const loadDashboard = async () => {
     try {
       setLoading(true);
-      const [accessories, orders, reviews, subscribers, birdsData] = await Promise.all([
-        adminFetch("/api/admin/accessories"),
-        adminFetch("/api/admin/orders"),
-        adminFetch("/api/admin/reviews"),
-        adminFetch("/api/admin/subscribers"),
+      setError("");
+
+      const [analyticsData, birdsData, ordersData] = await Promise.all([
+        adminFetch("/api/admin/analytics"),
         adminFetch("/api/admin/birds"),
+        adminFetch("/api/admin/orders"),
       ]);
 
-      const pendingOrders = orders.filter(
-        (o) => o.orderStatus === "pending" || o.orderStatus === "confirmed"
-      ).length;
-
-      const revenue = orders
-        .filter((o) => o.paymentStatus === "paid" || o.paymentStatus === "cod")
-        .reduce((sum, o) => sum + (o.amount || 0), 0);
-
-      const lowStockAccessories = accessories.filter((a) => (a.stock || 0) <= 5).length;
-      const availableBirds = birdsData.filter((b) => b.status === "available").length;
-
-      setStats({
-        accessories: accessories.length,
-        lowStockAccessories,
-        orders: orders.length,
-        pendingOrders,
-        revenue,
-        reviews: reviews.length,
-        subscribers: subscribers.length,
-        birds: birdsData.length,
-        availableBirds,
-      });
-
-      setRecentOrders(orders.slice(0, 5));
-      setBirds(birdsData.slice(0, 6));
+      setData(analyticsData);
+      setBirds(birdsData.slice(0, 8));
+      setRecentOrders(ordersData.slice(0, 6));
     } catch (err) {
-      setError(err.message || "Failed to load dashboard statistics");
+      console.error("Dashboard error:", err);
+      setError(err.message || "Failed to load business analytics");
     } finally {
       setLoading(false);
     }
@@ -76,9 +68,9 @@ export default function AdminDashboard() {
       setBirds((prev) =>
         prev.map((b) => (b._id === birdId ? { ...b, status: newStatus } : b))
       );
-      toast.success(`Bird status changed to "${newStatus}"`);
+      toast.success(`Bird status updated to "${newStatus}"`);
     } catch (err) {
-      toast.error(err.message || "Could not update status");
+      toast.error(err.message || "Failed to update bird status");
     }
   };
 
@@ -97,340 +89,980 @@ export default function AdminDashboard() {
     }
   };
 
+  // Compute 30-Day Trend Chart SVG Points
+  const trendPoints = useMemo(() => {
+    if (!data?.trend30Days || data.trend30Days.length === 0) return null;
+    const days = data.trend30Days;
+    const maxRev = Math.max(...days.map((d) => Math.max(d.revenue, d.expenses, 1000)));
+
+    const width = 800;
+    const height = 220;
+    const padX = 20;
+    const padY = 24;
+    const chartW = width - padX * 2;
+    const chartH = height - padY * 2;
+
+    const revCoords = days.map((d, i) => {
+      const x = padX + (i / (days.length - 1)) * chartW;
+      const y = height - padY - (d.revenue / maxRev) * chartH;
+      return { x, y, ...d };
+    });
+
+    const expCoords = days.map((d, i) => {
+      const x = padX + (i / (days.length - 1)) * chartW;
+      const y = height - padY - (d.expenses / maxRev) * chartH;
+      return { x, y, ...d };
+    });
+
+    const revPath = revCoords.reduce(
+      (acc, p, i) => (i === 0 ? `M ${p.x} ${p.y}` : `${acc} L ${p.x} ${p.y}`),
+      ""
+    );
+    const expPath = expCoords.reduce(
+      (acc, p, i) => (i === 0 ? `M ${p.x} ${p.y}` : `${acc} L ${p.x} ${p.y}`),
+      ""
+    );
+
+    const revArea = `${revPath} L ${padX + chartW} ${height - padY} L ${padX} ${height - padY} Z`;
+
+    return {
+      width,
+      height,
+      maxRev,
+      revCoords,
+      expCoords,
+      revPath,
+      expPath,
+      revArea,
+    };
+  }, [data?.trend30Days]);
+
+  if (loading && !data) {
+    return (
+      <div style={{ padding: "60px 20px", textAlign: "center" }}>
+        <RefreshCw
+          size={32}
+          className="animate-spin"
+          style={{ color: "#1B3B22", margin: "0 auto 16px" }}
+        />
+        <div style={{ fontSize: 16, fontWeight: 600, color: "#1B3B22" }}>
+          Aggregating Real-Time Enterprise Analytics...
+        </div>
+        <div style={{ fontSize: 13, color: "#64748B", marginTop: 4 }}>
+          Querying MongoDB Atlas invoices, transactions, orders, and ledger
+        </div>
+      </div>
+    );
+  }
+
+  if (error && !data) {
+    return (
+      <div
+        style={{
+          background: "#FEF2F2",
+          border: "1px solid #FEE2E2",
+          borderRadius: 12,
+          padding: 24,
+          textAlign: "center",
+          maxWidth: 600,
+          margin: "40px auto",
+        }}
+      >
+        <AlertTriangle size={32} style={{ color: "#DC2626", margin: "0 auto 12px" }} />
+        <h3 style={{ fontSize: 16, fontWeight: 700, color: "#991B1B", marginBottom: 6 }}>
+          Could Not Load Business Analytics
+        </h3>
+        <p style={{ fontSize: 13, color: "#7F1D1D", marginBottom: 16 }}>{error}</p>
+        <button
+          onClick={loadDashboard}
+          style={{
+            padding: "8px 18px",
+            background: "#1B3B22",
+            color: "#FFF",
+            border: "none",
+            borderRadius: 8,
+            cursor: "pointer",
+            fontWeight: 600,
+          }}
+        >
+          Retry Connection
+        </button>
+      </div>
+    );
+  }
+
+  const {
+    grossRevenue = 0,
+    totalExpenses = 0,
+    netProfit = 0,
+    profitMargin = 0,
+    totalOrders = 0,
+    pendingBookings = 0,
+    totalCustomers = 0,
+    averageOrderValue = 0,
+    totalBirds = 0,
+    availableBirds = 0,
+    totalAccessories = 0,
+    lowStockCount = 0,
+    categoryBreakdown = [],
+    paymentMethodBreakdown = [],
+    orderStatusFunnel = {},
+    lowStockAlerts = [],
+    recentTransactions = [],
+    recentInvoices = [],
+  } = data || {};
+
   return (
     <div style={{ maxWidth: 1400, margin: "0 auto" }}>
-      {/* Welcome Banner */}
+      {/* Top Banner / Welcome Bar */}
       <div
-        className="rv"
         style={{
-          background: "linear-gradient(135deg, #ECFDF5 0%, #F0FDF4 50%, #EFF6FF 100%)",
-          border: "1px solid #A7F3D0",
-          borderRadius: 20,
-          padding: "clamp(20px, 3vw, 32px)",
-          marginBottom: 28,
           display: "flex",
-          justifyContent: "space-between",
-          alignItems: "center",
           flexWrap: "wrap",
+          alignItems: "center",
+          justifyContent: "space-between",
           gap: 16,
-          boxShadow: "0 1px 3px rgba(0, 0, 0, 0.05)",
+          marginBottom: 24,
         }}
       >
         <div>
-          <div style={{ display: "inline-flex", alignItems: "center", gap: 8, padding: "4px 10px", borderRadius: 99, background: "#DCFCE7", color: "#15803D", fontSize: 12, fontWeight: 700, marginBottom: 10, border: "1px solid #BBF7D0" }}>
-            <span style={{ width: 6, height: 6, borderRadius: "50%", background: "#10B981" }} />
-            FeatherTown Control Center
-          </div>
-          <h1 style={{ fontSize: "clamp(22px, 3vw, 30px)", fontWeight: 800, color: "#0F172A", marginBottom: 6 }}>
-            Welcome back to Admin Console
+          <h1
+            style={{
+              fontFamily: "Cormorant Garamond, serif",
+              fontSize: 32,
+              fontWeight: 700,
+              color: "#1B3B22",
+              margin: 0,
+              lineHeight: 1.2,
+            }}
+          >
+            Executive Analytics & Operations
           </h1>
-          <p style={{ color: "#475569", fontSize: 14, maxWidth: 640 }}>
-            Here is your live summary of companion bird listings, customer orders, inventory levels, and store performance.
+          <p style={{ margin: "4px 0 0", fontSize: 13.5, color: "#64748B" }}>
+            Live financial ledger, companion bird reservations, and omnichannel sales metrics.
           </p>
         </div>
 
-        {/* Action Shortcuts */}
-        <div style={{ display: "flex", gap: 10, flexWrap: "wrap" }}>
-          <Link
-            to={`${ADMIN_BASE}/birds`}
-            className="ft-btn-hover"
+        {/* Quick Action Shortcuts */}
+        <div style={{ display: "flex", flexWrap: "wrap", gap: 10 }}>
+          <button
+            onClick={loadDashboard}
+            title="Refresh Live Data"
             style={{
-              padding: "10px 18px",
-              borderRadius: 10,
-              background: "linear-gradient(135deg, #10B981, #059669)",
+              display: "inline-flex",
+              alignItems: "center",
+              gap: 6,
+              padding: "9px 14px",
+              background: "#FFFFFF",
+              border: "1px solid #D6DFD8",
+              borderRadius: 8,
+              color: "#1B3B22",
+              fontSize: 13,
+              fontWeight: 600,
+              cursor: "pointer",
+            }}
+          >
+            <RefreshCw size={14} className={loading ? "animate-spin" : ""} />
+            Refresh
+          </button>
+
+          <Link
+            to={`${ADMIN_BASE}/create-bill`}
+            style={{
+              display: "inline-flex",
+              alignItems: "center",
+              gap: 8,
+              padding: "9px 18px",
+              background: "#D9381E",
               color: "#FFFFFF",
-              textDecoration: "none",
+              borderRadius: 8,
               fontSize: 13,
               fontWeight: 700,
-              display: "inline-flex",
-              alignItems: "center",
-              gap: 6,
-              boxShadow: "0 2px 8px rgba(16, 185, 129, 0.25)",
+              textDecoration: "none",
+              boxShadow: "0 2px 6px rgba(217, 56, 30, 0.25)",
             }}
           >
-            <span style={{ display: "inline-flex", alignItems: "center", gap: 6 }}><Feather size={16} /> <span>Manage Birds</span></span>
+            <Receipt size={16} />
+            Create Bill / Invoice
           </Link>
+
           <Link
-            to={`${ADMIN_BASE}/accessories`}
-            className="ft-btn-hover"
+            to={`${ADMIN_BASE}/transactions`}
             style={{
-              padding: "10px 18px",
-              borderRadius: 10,
-              background: "#FFFFFF",
-              border: "1px solid #CBD5E1",
-              color: "#0F172A",
-              textDecoration: "none",
+              display: "inline-flex",
+              alignItems: "center",
+              gap: 7,
+              padding: "9px 16px",
+              background: "#1B3B22",
+              color: "#FFFFFF",
+              borderRadius: 8,
               fontSize: 13,
               fontWeight: 600,
-              display: "inline-flex",
-              alignItems: "center",
-              gap: 6,
-              boxShadow: "0 1px 2px rgba(0,0,0,0.04)",
-            }}
-          >
-            <span style={{ display: "inline-flex", alignItems: "center", gap: 6 }}><ShoppingBag size={16} /> <span>Accessories</span></span>
-          </Link>
-          <Link
-            to={`${ADMIN_BASE}/settings`}
-            className="ft-btn-hover"
-            style={{
-              padding: "10px 18px",
-              borderRadius: 10,
-              background: "#FFFFFF",
-              border: "1px solid #CBD5E1",
-              color: "#475569",
               textDecoration: "none",
-              fontSize: 13,
-              fontWeight: 600,
-              display: "inline-flex",
-              alignItems: "center",
-              gap: 6,
-              boxShadow: "0 1px 2px rgba(0,0,0,0.04)",
             }}
           >
-            <span style={{ display: "inline-flex", alignItems: "center", gap: 6 }}><Settings size={16} /> <span>Settings</span></span>
+            <Plus size={15} />
+            Record Transaction
           </Link>
         </div>
       </div>
 
-      {error && (
+      {/* KPI Stats 5-Column Grid */}
+      <div
+        style={{
+          display: "grid",
+          gridTemplateColumns: "repeat(auto-fit, minmax(230px, 1fr))",
+          gap: 16,
+          marginBottom: 24,
+        }}
+      >
+        {/* Card 1: Gross Revenue */}
         <div
           style={{
-            background: "#FEF2F2",
-            border: "1px solid #FEE2E2",
-            padding: "14px 18px",
+            background: "#FFFFFF",
+            border: "1px solid #E2E8F0",
             borderRadius: 12,
-            color: "#DC2626",
-            fontSize: 14,
+            padding: "20px 18px",
+            boxShadow: "0 1px 3px rgba(0,0,0,0.03)",
+          }}
+        >
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 12 }}>
+            <span style={{ fontSize: 12.5, fontWeight: 600, color: "#64748B", textTransform: "uppercase", letterSpacing: 0.5 }}>
+              Gross Revenue
+            </span>
+            <div style={{ width: 34, height: 34, borderRadius: 8, background: "#EAF2EC", color: "#1B3B22", display: "flex", alignItems: "center", justifyContent: "center" }}>
+              <TrendingUp size={18} />
+            </div>
+          </div>
+          <div style={{ fontSize: 26, fontWeight: 800, color: "#1B3B22", lineHeight: 1.1 }}>
+            ₹{grossRevenue.toLocaleString()}
+          </div>
+          <div style={{ marginTop: 8, fontSize: 12, color: "#64748B", display: "flex", alignItems: "center", gap: 6 }}>
+            <span style={{ color: "#166534", fontWeight: 700 }}>Real Invoices & Orders</span>
+            <span>across all channels</span>
+          </div>
+        </div>
+
+        {/* Card 2: Net Profit */}
+        <div
+          style={{
+            background: "#FFFFFF",
+            border: "1px solid #E2E8F0",
+            borderRadius: 12,
+            padding: "20px 18px",
+            boxShadow: "0 1px 3px rgba(0,0,0,0.03)",
+          }}
+        >
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 12 }}>
+            <span style={{ fontSize: 12.5, fontWeight: 600, color: "#64748B", textTransform: "uppercase", letterSpacing: 0.5 }}>
+              Net Profit
+            </span>
+            <div style={{ width: 34, height: 34, borderRadius: 8, background: netProfit >= 0 ? "#EAF2EC" : "#FEF2F2", color: netProfit >= 0 ? "#166534" : "#DC2626", display: "flex", alignItems: "center", justifyContent: "center" }}>
+              <Wallet size={18} />
+            </div>
+          </div>
+          <div style={{ fontSize: 26, fontWeight: 800, color: netProfit >= 0 ? "#166534" : "#DC2626", lineHeight: 1.1 }}>
+            ₹{netProfit.toLocaleString()}
+          </div>
+          <div style={{ marginTop: 8, fontSize: 12, color: "#64748B" }}>
+            Margin: <strong style={{ color: "#0F172A" }}>{profitMargin}%</strong> (Expenses: ₹{totalExpenses.toLocaleString()})
+          </div>
+        </div>
+
+        {/* Card 3: Orders & AOV */}
+        <div
+          style={{
+            background: "#FFFFFF",
+            border: "1px solid #E2E8F0",
+            borderRadius: 12,
+            padding: "20px 18px",
+            boxShadow: "0 1px 3px rgba(0,0,0,0.03)",
+          }}
+        >
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 12 }}>
+            <span style={{ fontSize: 12.5, fontWeight: 600, color: "#64748B", textTransform: "uppercase", letterSpacing: 0.5 }}>
+              Orders & AOV
+            </span>
+            <div style={{ width: 34, height: 34, borderRadius: 8, background: "#EFF6FF", color: "#1D4ED8", display: "flex", alignItems: "center", justifyContent: "center" }}>
+              <Package size={18} />
+            </div>
+          </div>
+          <div style={{ fontSize: 26, fontWeight: 800, color: "#0F172A", lineHeight: 1.1 }}>
+            {totalOrders}
+          </div>
+          <div style={{ marginTop: 8, fontSize: 12, color: "#64748B" }}>
+            Avg Order: <strong style={{ color: "#0F172A" }}>₹{averageOrderValue.toLocaleString()}</strong>
+          </div>
+        </div>
+
+        {/* Card 4: Companion Birds */}
+        <div
+          style={{
+            background: "#FFFFFF",
+            border: "1px solid #E2E8F0",
+            borderRadius: 12,
+            padding: "20px 18px",
+            boxShadow: "0 1px 3px rgba(0,0,0,0.03)",
+          }}
+        >
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 12 }}>
+            <span style={{ fontSize: 12.5, fontWeight: 600, color: "#64748B", textTransform: "uppercase", letterSpacing: 0.5 }}>
+              Companion Birds
+            </span>
+            <div style={{ width: 34, height: 34, borderRadius: 8, background: "#FAF5FF", color: "#7E22CE", display: "flex", alignItems: "center", justifyContent: "center" }}>
+              <Feather size={18} />
+            </div>
+          </div>
+          <div style={{ fontSize: 26, fontWeight: 800, color: "#1B3B22", lineHeight: 1.1 }}>
+            {availableBirds} <span style={{ fontSize: 14, fontWeight: 600, color: "#64748B" }}>avail</span>
+          </div>
+          <div style={{ marginTop: 8, fontSize: 12, color: "#64748B" }}>
+            <strong style={{ color: "#D97706" }}>{pendingBookings}</strong> reserved • {totalBirds} total in aviary
+          </div>
+        </div>
+
+        {/* Card 5: Inventory & Customers */}
+        <div
+          style={{
+            background: "#FFFFFF",
+            border: "1px solid #E2E8F0",
+            borderRadius: 12,
+            padding: "20px 18px",
+            boxShadow: "0 1px 3px rgba(0,0,0,0.03)",
+          }}
+        >
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 12 }}>
+            <span style={{ fontSize: 12.5, fontWeight: 600, color: "#64748B", textTransform: "uppercase", letterSpacing: 0.5 }}>
+              Customer Base
+            </span>
+            <div style={{ width: 34, height: 34, borderRadius: 8, background: "#FFF7ED", color: "#C2410C", display: "flex", alignItems: "center", justifyContent: "center" }}>
+              <Users size={18} />
+            </div>
+          </div>
+          <div style={{ fontSize: 26, fontWeight: 800, color: "#0F172A", lineHeight: 1.1 }}>
+            {totalCustomers}
+          </div>
+          <div style={{ marginTop: 8, fontSize: 12, color: lowStockCount > 0 ? "#DC2626" : "#64748B" }}>
+            {lowStockCount > 0 ? (
+              <span style={{ fontWeight: 700 }}>{lowStockCount} items low in stock!</span>
+            ) : (
+              <span>Inventory stock healthy</span>
+            )}
+          </div>
+        </div>
+      </div>
+
+      {/* 30-Day Revenue & Profit Interactive Area Chart */}
+      <div
+        style={{
+          background: "#FFFFFF",
+          border: "1px solid #E2E8F0",
+          borderRadius: 12,
+          padding: 22,
+          marginBottom: 24,
+          boxShadow: "0 1px 3px rgba(0,0,0,0.03)",
+        }}
+      >
+        <div
+          style={{
+            display: "flex",
+            flexWrap: "wrap",
+            justifyContent: "space-between",
+            alignItems: "center",
+            gap: 12,
+            marginBottom: 16,
+          }}
+        >
+          <div>
+            <h2 style={{ fontSize: 17, fontWeight: 700, color: "#0F172A", margin: 0 }}>
+              30-Day Revenue & Operating Expenses Trend
+            </h2>
+            <p style={{ margin: "3px 0 0", fontSize: 12.5, color: "#64748B" }}>
+              Chronological daily income from orders and invoices vs expenses. Hover on points for details.
+            </p>
+          </div>
+
+          <div style={{ display: "flex", alignItems: "center", gap: 16, fontSize: 12.5, fontWeight: 600 }}>
+            <span style={{ display: "flex", alignItems: "center", gap: 6 }}>
+              <span style={{ width: 12, height: 3, background: "#1B3B22", borderRadius: 2 }} />
+              Revenue (₹)
+            </span>
+            <span style={{ display: "flex", alignItems: "center", gap: 6 }}>
+              <span style={{ width: 12, height: 3, background: "#DC2626", borderRadius: 2 }} />
+              Expenses (₹)
+            </span>
+          </div>
+        </div>
+
+        {trendPoints ? (
+          <div style={{ width: "100%", overflowX: "auto", position: "relative" }}>
+            <svg
+              viewBox={`0 0 ${trendPoints.width} ${trendPoints.height}`}
+              style={{ width: "100%", height: "auto", display: "block", minWidth: 640 }}
+            >
+              <defs>
+                <linearGradient id="revGrad" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0%" stopColor="#1B3B22" stopOpacity="0.22" />
+                  <stop offset="100%" stopColor="#1B3B22" stopOpacity="0.0" />
+                </linearGradient>
+              </defs>
+
+              {/* Grid Lines */}
+              <line x1="20" y1="24" x2="780" y2="24" stroke="#F1F5F9" strokeDasharray="4 4" />
+              <line x1="20" y1="110" x2="780" y2="110" stroke="#F1F5F9" strokeDasharray="4 4" />
+              <line x1="20" y1="196" x2="780" y2="196" stroke="#E2E8F0" />
+
+              {/* Revenue Area Fill */}
+              <path d={trendPoints.revArea} fill="url(#revGrad)" />
+
+              {/* Expense Line */}
+              <path
+                d={trendPoints.expPath}
+                fill="none"
+                stroke="#DC2626"
+                strokeWidth="2"
+                strokeDasharray="4 3"
+              />
+
+              {/* Revenue Line */}
+              <path
+                d={trendPoints.revPath}
+                fill="none"
+                stroke="#1B3B22"
+                strokeWidth="2.5"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              />
+
+              {/* Interactive Circles */}
+              {trendPoints.revCoords.map((p, idx) => (
+                <g key={idx}>
+                  <circle
+                    cx={p.x}
+                    cy={p.y}
+                    r={hoveredTrendIdx === idx ? 6 : 3.5}
+                    fill="#1B3B22"
+                    stroke="#FFFFFF"
+                    strokeWidth="2"
+                    style={{ cursor: "pointer", transition: "all 0.15s" }}
+                    onMouseEnter={() => setHoveredTrendIdx(idx)}
+                    onMouseLeave={() => setHoveredTrendIdx(null)}
+                  />
+                  {/* Date labels on bottom for every 5th item */}
+                  {idx % 5 === 0 && (
+                    <text
+                      x={p.x}
+                      y={trendPoints.height - 4}
+                      fontSize="10"
+                      fill="#94A3B8"
+                      textAnchor="middle"
+                    >
+                      {p.label}
+                    </text>
+                  )}
+                </g>
+              ))}
+            </svg>
+
+            {/* Hover Tooltip Card */}
+            {hoveredTrendIdx !== null && trendPoints.revCoords[hoveredTrendIdx] && (
+              <div
+                style={{
+                  position: "absolute",
+                  top: 10,
+                  right: 20,
+                  background: "#1E293B",
+                  color: "#FFFFFF",
+                  padding: "8px 14px",
+                  borderRadius: 8,
+                  fontSize: 12,
+                  boxShadow: "0 4px 12px rgba(0,0,0,0.15)",
+                  pointerEvents: "none",
+                  zIndex: 10,
+                }}
+              >
+                <div style={{ fontWeight: 700, marginBottom: 4, color: "#93C5FD" }}>
+                  {trendPoints.revCoords[hoveredTrendIdx].date} ({trendPoints.revCoords[hoveredTrendIdx].label})
+                </div>
+                <div>Revenue: <strong style={{ color: "#4ADE80" }}>₹{trendPoints.revCoords[hoveredTrendIdx].revenue.toLocaleString()}</strong></div>
+                <div>Expenses: <strong style={{ color: "#F87171" }}>₹{trendPoints.revCoords[hoveredTrendIdx].expenses.toLocaleString()}</strong></div>
+                <div>Orders/Bills: <strong>{trendPoints.revCoords[hoveredTrendIdx].orders}</strong></div>
+              </div>
+            )}
+          </div>
+        ) : (
+          <div style={{ padding: 40, textAlign: "center", color: "#94A3B8", fontSize: 13 }}>
+            No sales or transactions recorded in the past 30 days yet.
+          </div>
+        )}
+      </div>
+
+      {/* Two Columns: Category Breakdown & Payment Methods & Funnel */}
+      <div
+        style={{
+          display: "grid",
+          gridTemplateColumns: "repeat(auto-fit, minmax(360px, 1fr))",
+          gap: 20,
+          marginBottom: 24,
+        }}
+      >
+        {/* Category Breakdown */}
+        <div
+          style={{
+            background: "#FFFFFF",
+            border: "1px solid #E2E8F0",
+            borderRadius: 12,
+            padding: 22,
+            boxShadow: "0 1px 3px rgba(0,0,0,0.03)",
+          }}
+        >
+          <h2 style={{ fontSize: 16, fontWeight: 700, color: "#0F172A", margin: "0 0 14px" }}>
+            Revenue by Product Category
+          </h2>
+          {categoryBreakdown.length > 0 ? (
+            <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
+              {categoryBreakdown.map((cat) => {
+                const pct = grossRevenue > 0 ? Math.round((cat.revenue / grossRevenue) * 100) : 0;
+                return (
+                  <div key={cat.name}>
+                    <div style={{ display: "flex", justifyContent: "space-between", fontSize: 13, marginBottom: 5 }}>
+                      <span style={{ fontWeight: 600, color: "#1B3B22" }}>{cat.name}</span>
+                      <span style={{ color: "#64748B" }}>
+                        ₹{cat.revenue.toLocaleString()} ({pct}%)
+                      </span>
+                    </div>
+                    <div style={{ height: 8, background: "#F1F5F9", borderRadius: 99, overflow: "hidden" }}>
+                      <div
+                        style={{
+                          height: "100%",
+                          width: `${Math.min(pct, 100)}%`,
+                          background: "#1B3B22",
+                          borderRadius: 99,
+                        }}
+                      />
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          ) : (
+            <div style={{ padding: "30px 0", textAlign: "center", color: "#94A3B8", fontSize: 13 }}>
+              No categorized order data available yet.
+            </div>
+          )}
+        </div>
+
+        {/* Payment Methods & Funnel */}
+        <div
+          style={{
+            background: "#FFFFFF",
+            border: "1px solid #E2E8F0",
+            borderRadius: 12,
+            padding: 22,
+            boxShadow: "0 1px 3px rgba(0,0,0,0.03)",
+          }}
+        >
+          <h2 style={{ fontSize: 16, fontWeight: 700, color: "#0F172A", margin: "0 0 14px" }}>
+            Payment Method Split & Fulfillment Funnel
+          </h2>
+
+          {/* Payment Badges */}
+          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10, marginBottom: 20 }}>
+            {paymentMethodBreakdown.map((pm) => (
+              <div
+                key={pm.method}
+                style={{
+                  background: "#F8FAFC",
+                  border: "1px solid #E2E8F0",
+                  borderRadius: 8,
+                  padding: "10px 12px",
+                }}
+              >
+                <div style={{ fontSize: 11, textTransform: "uppercase", color: "#64748B", fontWeight: 700 }}>
+                  {pm.method}
+                </div>
+                <div style={{ fontSize: 16, fontWeight: 700, color: "#1B3B22", marginTop: 2 }}>
+                  ₹{pm.amount.toLocaleString()}
+                </div>
+                <div style={{ fontSize: 11, color: "#94A3B8" }}>{pm.count} transactions</div>
+              </div>
+            ))}
+          </div>
+
+          {/* Fulfillment Status Funnel */}
+          <div style={{ borderTop: "1px solid #F1F5F9", paddingTop: 14 }}>
+            <div style={{ fontSize: 12, fontWeight: 700, textTransform: "uppercase", color: "#64748B", marginBottom: 10 }}>
+              Order Fulfillment Funnel
+            </div>
+            <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
+              <span style={{ padding: "5px 12px", borderRadius: 99, fontSize: 12, fontWeight: 600, background: "#FEF3C7", color: "#92400E" }}>
+                Pending: {orderStatusFunnel.pending || 0}
+              </span>
+              <span style={{ padding: "5px 12px", borderRadius: 99, fontSize: 12, fontWeight: 600, background: "#DBEAFE", color: "#1E40AF" }}>
+                Confirmed: {orderStatusFunnel.confirmed || 0}
+              </span>
+              <span style={{ padding: "5px 12px", borderRadius: 99, fontSize: 12, fontWeight: 600, background: "#E0E7FF", color: "#3730A3" }}>
+                Shipped: {orderStatusFunnel.shipped || 0}
+              </span>
+              <span style={{ padding: "5px 12px", borderRadius: 99, fontSize: 12, fontWeight: 600, background: "#D1FAE5", color: "#065F46" }}>
+                Delivered: {orderStatusFunnel.delivered || 0}
+              </span>
+              <span style={{ padding: "5px 12px", borderRadius: 99, fontSize: 12, fontWeight: 600, background: "#FEE2E2", color: "#991B1B" }}>
+                Cancelled: {orderStatusFunnel.cancelled || 0}
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Low Stock Alerts (if any) */}
+      {lowStockAlerts.length > 0 && (
+        <div
+          style={{
+            background: "#FFFBEB",
+            border: "1px solid #FDE68A",
+            borderRadius: 12,
+            padding: "16px 20px",
             marginBottom: 24,
           }}
         >
-          {error}
+          <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 10 }}>
+            <AlertTriangle size={18} style={{ color: "#D97706" }} />
+            <span style={{ fontSize: 14, fontWeight: 700, color: "#92400E" }}>
+              Low Stock Alert ({lowStockAlerts.length} items require reordering)
+            </span>
+            <Link
+              to={`${ADMIN_BASE}/accessories`}
+              style={{ marginLeft: "auto", fontSize: 12, fontWeight: 600, color: "#92400E", textDecoration: "underline" }}
+            >
+              Manage Inventory →
+            </Link>
+          </div>
+          <div style={{ display: "flex", flexWrap: "wrap", gap: 10 }}>
+            {lowStockAlerts.map((item) => (
+              <div
+                key={item.id}
+                style={{
+                  background: "#FFFFFF",
+                  border: "1px solid #FCD34D",
+                  borderRadius: 6,
+                  padding: "6px 12px",
+                  fontSize: 12,
+                  display: "flex",
+                  alignItems: "center",
+                  gap: 8,
+                }}
+              >
+                <span style={{ fontWeight: 600, color: "#0F172A" }}>{item.name}</span>
+                <span style={{ color: "#DC2626", fontWeight: 700 }}>Stock: {item.stock} left</span>
+              </div>
+            ))}
+          </div>
         </div>
       )}
 
-      {/* 6 Metric KPI Cards */}
+      {/* Live Companion Birds Quick Status Manager */}
       <div
-        className="rv-stagger"
         style={{
-          display: "grid",
-          gridTemplateColumns: "repeat(auto-fill, minmax(210px, 1fr))",
-          gap: 16,
-          marginBottom: 32,
+          background: "#FFFFFF",
+          border: "1px solid #E2E8F0",
+          borderRadius: 12,
+          padding: 22,
+          marginBottom: 24,
+          boxShadow: "0 1px 3px rgba(0,0,0,0.03)",
         }}
       >
-        <Link to={`${ADMIN_BASE}/birds`} className="ft-card-lift" style={kpiCardStyle}>
-          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 12 }}>
-            <Feather size={24} color="#1B3B22" />
-            <span style={pillStyle("#22C55E")}>{stats ? `${stats.availableBirds} Available` : "..."}</span>
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+            marginBottom: 16,
+          }}
+        >
+          <div>
+            <h2 style={{ fontSize: 16, fontWeight: 700, color: "#0F172A", margin: 0 }}>
+              Live Aviary Companion Birds
+            </h2>
+            <p style={{ margin: "2px 0 0", fontSize: 12.5, color: "#64748B" }}>
+              Quick status toggles directly sync with public customer storefront.
+            </p>
           </div>
-          <div style={{ fontSize: 12.5, color: "#64748B", fontWeight: 600 }}>Birds &amp; Breeds</div>
-          <div style={{ fontSize: 28, fontWeight: 800, color: "#0F172A", marginTop: 4 }}>
-            {stats ? stats.birds : "..."}
-          </div>
-        </Link>
-
-        <Link to={`${ADMIN_BASE}/accessories`} className="ft-card-lift" style={kpiCardStyle}>
-          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 12 }}>
-            <ShoppingBag size={24} color="#1B3B22" />
-            {stats && stats.lowStockAccessories > 0 && (
-              <span style={pillStyle("#F59E0B")}>{stats.lowStockAccessories} Low Stock</span>
-            )}
-          </div>
-          <div style={{ fontSize: 12.5, color: "#64748B", fontWeight: 600 }}>Accessories Catalog</div>
-          <div style={{ fontSize: 28, fontWeight: 800, color: "#0F172A", marginTop: 4 }}>
-            {stats ? stats.accessories : "..."}
-          </div>
-        </Link>
-
-        <Link to={`${ADMIN_BASE}/orders`} className="ft-card-lift" style={kpiCardStyle}>
-          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 12 }}>
-            <Package size={24} color="#1B3B22" />
-            <span style={pillStyle(stats?.pendingOrders > 0 ? "#F59E0B" : "#22C55E")}>
-              {stats ? `${stats.pendingOrders} To Action` : "..."}
-            </span>
-          </div>
-          <div style={{ fontSize: 12.5, color: "#64748B", fontWeight: 600 }}>Total Customer Orders</div>
-          <div style={{ fontSize: 28, fontWeight: 800, color: "#0F172A", marginTop: 4 }}>
-            {stats ? stats.orders : "..."}
-          </div>
-        </Link>
-
-        <Link to={`${ADMIN_BASE}/orders`} className="ft-card-lift" style={kpiCardStyle}>
-          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 12 }}>
-            <TrendingUp size={24} color="#1B3B22" />
-            <span style={pillStyle("#38BDF8")}>Paid + COD</span>
-          </div>
-          <div style={{ fontSize: 12.5, color: "#64748B", fontWeight: 600 }}>Gross Shop Revenue</div>
-          <div style={{ fontSize: 28, fontWeight: 800, color: "#0284C7", marginTop: 4 }}>
-            {stats ? `₹${stats.revenue.toLocaleString("en-IN")}` : "..."}
-          </div>
-        </Link>
-
-        <Link to={`${ADMIN_BASE}/reviews`} className="ft-card-lift" style={kpiCardStyle}>
-          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 12 }}>
-            <span style={{ fontSize: 24 }}>⭐</span>
-            <span style={pillStyle("#F59E0B")}>Verified</span>
-          </div>
-          <div style={{ fontSize: 12.5, color: "#64748B", fontWeight: 600 }}>Customer Reviews</div>
-          <div style={{ fontSize: 28, fontWeight: 800, color: "#0F172A", marginTop: 4 }}>
-            {stats ? stats.reviews : "..."}
-          </div>
-        </Link>
-
-        <Link to={`${ADMIN_BASE}/subscribers`} className="ft-card-lift" style={kpiCardStyle}>
-          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 12 }}>
-            <Mail size={24} color="#1B3B22" />
-            <span style={pillStyle("#A855F7")}>Audience</span>
-          </div>
-          <div style={{ fontSize: 12.5, color: "#64748B", fontWeight: 600 }}>Email Subscribers</div>
-          <div style={{ fontSize: 28, fontWeight: 800, color: "#0F172A", marginTop: 4 }}>
-            {stats ? stats.subscribers : "..."}
-          </div>
-        </Link>
-      </div>
-
-      {/* Two Column Grid: Quick Birds Availability & Recent Orders */}
-      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(420px, 1fr))", gap: 24 }}>
-        {/* QUICK BIRD AVAILABILITY */}
-        <div style={sectionCardStyle}>
-          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 16 }}>
-            <div>
-              <h2 style={{ fontSize: 17, fontWeight: 700, color: "#0F172A" }}>Quick Bird Availability</h2>
-              <p style={{ fontSize: 12, color: "#64748B" }}>Change breed availability directly in 1 click.</p>
-            </div>
-            <Link to={`${ADMIN_BASE}/birds`} style={{ fontSize: 12.5, color: "#059669", textDecoration: "none", fontWeight: 600 }}>
-              View All ({birds.length}) →
-            </Link>
-          </div>
-
-          <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
-            {birds.map((bird) => {
-              const imgSrc = resolveBirdImage(bird.image);
-              return (
-                <div
-                  key={bird._id}
-                  style={{
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "space-between",
-                    padding: "10px 14px",
-                    borderRadius: 10,
-                    background: "#F8FAFC",
-                    border: "1px solid #E2E8F0",
-                  }}
-                >
-                  <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
-                    <img
-                      src={imgSrc}
-                      alt={bird.name}
-                      style={{ width: 38, height: 38, borderRadius: 8, objectFit: "cover" }}
-                    />
-                    <div>
-                      <div style={{ fontSize: 13.5, fontWeight: 700, color: "#0F172A" }}>{bird.name}</div>
-                      <div style={{ fontSize: 11, color: "#D97706", fontWeight: 600 }}>{bird.price}</div>
-                    </div>
-                  </div>
-
-                  <select
-                    value={bird.status}
-                    onChange={(e) => handleQuickBirdStatus(bird._id, e.target.value)}
-                    style={{
-                      padding: "5px 10px",
-                      borderRadius: 6,
-                      fontSize: 12,
-                      fontWeight: 700,
-                      cursor: "pointer",
-                      border: "none",
-                      background:
-                        bird.status === "available"
-                          ? "#16A34A"
-                          : bird.status === "sold out"
-                          ? "#EF4444"
-                          : "#F59E0B",
-                      color: "#FFFFFF",
-                    }}
-                  >
-                    <option value="available">Available</option>
-                    <option value="reserved">Reserved</option>
-                    <option value="sold out">Sold Out</option>
-                    <option value="coming soon">Coming Soon</option>
-                  </select>
-                </div>
-              );
-            })}
-          </div>
+          <Link
+            to={`${ADMIN_BASE}/birds`}
+            style={{ fontSize: 13, fontWeight: 600, color: "#1B3B22", textDecoration: "none" }}
+          >
+            All Birds ({totalBirds}) →
+          </Link>
         </div>
 
-        {/* RECENT ORDERS STREAM */}
-        <div style={sectionCardStyle}>
-          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 16 }}>
-            <div>
-              <h2 style={{ fontSize: 17, fontWeight: 700, color: "#0F172A" }}>Recent Customer Orders</h2>
-              <p style={{ fontSize: 12, color: "#64748B" }}>Latest orders placed on storefront.</p>
-            </div>
-            <Link to={`${ADMIN_BASE}/orders`} style={{ fontSize: 12.5, color: "#059669", textDecoration: "none", fontWeight: 600 }}>
-              View All →
+        <div
+          style={{
+            display: "grid",
+            gridTemplateColumns: "repeat(auto-fill, minmax(260px, 1fr))",
+            gap: 14,
+          }}
+        >
+          {birds.map((bird) => {
+            const img = resolveBirdImage(bird.id, bird.image);
+            return (
+              <div
+                key={bird._id || bird.id}
+                style={{
+                  border: "1px solid #E2E8F0",
+                  borderRadius: 10,
+                  padding: 12,
+                  display: "flex",
+                  gap: 12,
+                  alignItems: "center",
+                  background: "#FAF8F5",
+                }}
+              >
+                <img
+                  src={img}
+                  alt={bird.name}
+                  style={{
+                    width: 54,
+                    height: 54,
+                    borderRadius: 8,
+                    objectFit: "cover",
+                    background: "#E2DDD3",
+                  }}
+                />
+                <div style={{ flex: 1, minWidth: 0 }}>
+                  <div
+                    style={{
+                      fontSize: 13.5,
+                      fontWeight: 700,
+                      color: "#1B3B22",
+                      whiteSpace: "nowrap",
+                      overflow: "hidden",
+                      textOverflow: "ellipsis",
+                    }}
+                  >
+                    {bird.name}
+                  </div>
+                  <div style={{ fontSize: 12, color: "#D9381E", fontWeight: 700 }}>
+                    ₹{bird.price?.toLocaleString()}
+                  </div>
+                  <div style={{ display: "flex", gap: 4, marginTop: 4 }}>
+                    <button
+                      onClick={() => handleQuickBirdStatus(bird._id, "available")}
+                      style={{
+                        padding: "2px 6px",
+                        borderRadius: 4,
+                        fontSize: 10,
+                        fontWeight: 700,
+                        cursor: "pointer",
+                        border: "1px solid #B8D4BA",
+                        background: bird.status === "available" ? "#1B3B22" : "#FFFFFF",
+                        color: bird.status === "available" ? "#FFFFFF" : "#1B3B22",
+                      }}
+                    >
+                      Available
+                    </button>
+                    <button
+                      onClick={() => handleQuickBirdStatus(bird._id, "reserved")}
+                      style={{
+                        padding: "2px 6px",
+                        borderRadius: 4,
+                        fontSize: 10,
+                        fontWeight: 700,
+                        cursor: "pointer",
+                        border: "1px solid #FDE68A",
+                        background: bird.status === "reserved" ? "#D97706" : "#FFFFFF",
+                        color: bird.status === "reserved" ? "#FFFFFF" : "#D97706",
+                      }}
+                    >
+                      Reserved
+                    </button>
+                    <button
+                      onClick={() => handleQuickBirdStatus(bird._id, "sold out")}
+                      style={{
+                        padding: "2px 6px",
+                        borderRadius: 4,
+                        fontSize: 10,
+                        fontWeight: 700,
+                        cursor: "pointer",
+                        border: "1px solid #FEE2E2",
+                        background: bird.status === "sold out" ? "#DC2626" : "#FFFFFF",
+                        color: bird.status === "sold out" ? "#FFFFFF" : "#DC2626",
+                      }}
+                    >
+                      Sold
+                    </button>
+                  </div>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      </div>
+
+      {/* Recent Invoices & Store Orders Split */}
+      <div
+        style={{
+          display: "grid",
+          gridTemplateColumns: "repeat(auto-fit, minmax(420px, 1fr))",
+          gap: 20,
+        }}
+      >
+        {/* Recent Invoices */}
+        <div
+          style={{
+            background: "#FFFFFF",
+            border: "1px solid #E2E8F0",
+            borderRadius: 12,
+            padding: 22,
+            boxShadow: "0 1px 3px rgba(0,0,0,0.03)",
+          }}
+        >
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 14 }}>
+            <h2 style={{ fontSize: 16, fontWeight: 700, color: "#0F172A", margin: 0 }}>
+              Recent Tax Invoices
+            </h2>
+            <Link
+              to={`${ADMIN_BASE}/invoices`}
+              style={{ fontSize: 13, fontWeight: 600, color: "#1B3B22", textDecoration: "none" }}
+            >
+              All Invoices →
             </Link>
           </div>
 
-          {recentOrders.length === 0 ? (
-            <div style={{ textAlign: "center", padding: "40px 16px", color: "#94A3B8", fontSize: 13.5 }}>
-              No orders placed yet. Orders will appear here live when customers purchase accessories.
-            </div>
-          ) : (
+          {recentInvoices.length > 0 ? (
             <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
-              {recentOrders.map((order) => (
+              {recentInvoices.map((inv) => (
                 <div
-                  key={order._id}
+                  key={inv.invoiceNumber}
                   style={{
                     display: "flex",
-                    alignItems: "center",
                     justifyContent: "space-between",
-                    padding: "12px 14px",
-                    borderRadius: 10,
-                    background: "#F8FAFC",
-                    border: "1px solid #E2E8F0",
+                    alignItems: "center",
+                    padding: "10px 12px",
+                    border: "1px solid #F1F5F9",
+                    borderRadius: 8,
+                    background: "#FAF8F5",
                   }}
                 >
                   <div>
-                    <div style={{ fontSize: 13.5, fontWeight: 700, color: "#0F172A" }}>
-                      {order.shippingAddress?.fullName || "Customer"}
+                    <div style={{ fontSize: 13, fontWeight: 700, color: "#1B3B22" }}>
+                      {inv.invoiceNumber}
                     </div>
                     <div style={{ fontSize: 11.5, color: "#64748B" }}>
-                      ₹{order.amount} • {order.items?.length || 0} item(s) • {order.paymentMethod?.toUpperCase()}
+                      {inv.customer?.name} • {new Date(inv.createdAt).toLocaleDateString()}
                     </div>
                   </div>
-
-                  <select
-                    value={order.orderStatus}
-                    onChange={(e) => handleQuickOrderStatus(order._id, e.target.value)}
-                    style={{
-                      padding: "5px 10px",
-                      borderRadius: 6,
-                      fontSize: 12,
-                      fontWeight: 700,
-                      cursor: "pointer",
-                      border: "none",
-                      background:
-                        order.orderStatus === "delivered"
-                          ? "#16A34A"
-                          : order.orderStatus === "shipped"
-                          ? "#0284C7"
-                          : order.orderStatus === "cancelled"
-                          ? "#EF4444"
-                          : "#F59E0B",
-                      color: "#FFFFFF",
-                    }}
-                  >
-                    <option value="pending">Pending</option>
-                    <option value="confirmed">Confirmed</option>
-                    <option value="shipped">Shipped</option>
-                    <option value="delivered">Delivered</option>
-                    <option value="cancelled">Cancelled</option>
-                  </select>
+                  <div style={{ textAlign: "right" }}>
+                    <div style={{ fontSize: 13.5, fontWeight: 700, color: "#0F172A" }}>
+                      ₹{inv.grandTotal?.toLocaleString()}
+                    </div>
+                    <span
+                      style={{
+                        display: "inline-block",
+                        padding: "2px 8px",
+                        borderRadius: 99,
+                        fontSize: 10,
+                        fontWeight: 700,
+                        textTransform: "uppercase",
+                        background:
+                          inv.paymentStatus === "paid"
+                            ? "#D1FAE5"
+                            : inv.paymentStatus === "partial"
+                            ? "#FEF3C7"
+                            : "#FEE2E2",
+                        color:
+                          inv.paymentStatus === "paid"
+                            ? "#065F46"
+                            : inv.paymentStatus === "partial"
+                            ? "#92400E"
+                            : "#991B1B",
+                      }}
+                    >
+                      {inv.paymentStatus}
+                    </span>
+                  </div>
                 </div>
               ))}
+            </div>
+          ) : (
+            <div style={{ padding: "30px 0", textAlign: "center", color: "#94A3B8", fontSize: 13 }}>
+              No invoices generated yet. Click "Create Bill / Invoice" above to issue one.
+            </div>
+          )}
+        </div>
+
+        {/* Recent Web Orders */}
+        <div
+          style={{
+            background: "#FFFFFF",
+            border: "1px solid #E2E8F0",
+            borderRadius: 12,
+            padding: 22,
+            boxShadow: "0 1px 3px rgba(0,0,0,0.03)",
+          }}
+        >
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 14 }}>
+            <h2 style={{ fontSize: 16, fontWeight: 700, color: "#0F172A", margin: 0 }}>
+              Recent Online Store Orders
+            </h2>
+            <Link
+              to={`${ADMIN_BASE}/orders`}
+              style={{ fontSize: 13, fontWeight: 600, color: "#1B3B22", textDecoration: "none" }}
+            >
+              All Orders ({totalOrders}) →
+            </Link>
+          </div>
+
+          {recentOrders.length > 0 ? (
+            <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+              {recentOrders.map((ord) => (
+                <div
+                  key={ord._id}
+                  style={{
+                    display: "flex",
+                    justifyContent: "space-between",
+                    alignItems: "center",
+                    padding: "10px 12px",
+                    border: "1px solid #F1F5F9",
+                    borderRadius: 8,
+                    background: "#FAF8F5",
+                  }}
+                >
+                  <div>
+                    <div style={{ fontSize: 13, fontWeight: 700, color: "#0F172A" }}>
+                      Order #{ord.orderId || ord._id.slice(-6).toUpperCase()}
+                    </div>
+                    <div style={{ fontSize: 11.5, color: "#64748B" }}>
+                      {ord.customer?.name} • ₹{(ord.amount || 0).toLocaleString()}
+                    </div>
+                  </div>
+                  <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                    <select
+                      value={ord.orderStatus}
+                      onChange={(e) => handleQuickOrderStatus(ord._id, e.target.value)}
+                      style={{
+                        padding: "3px 8px",
+                        borderRadius: 6,
+                        border: "1px solid #CBD5E1",
+                        fontSize: 11,
+                        fontWeight: 600,
+                        background: "#FFF",
+                        color: "#1B3B22",
+                      }}
+                    >
+                      <option value="pending">Pending</option>
+                      <option value="confirmed">Confirmed</option>
+                      <option value="shipped">Shipped</option>
+                      <option value="delivered">Delivered</option>
+                      <option value="cancelled">Cancelled</option>
+                    </select>
+                  </div>
+                </div>
+              ))}
+            </div>
+          ) : (
+            <div style={{ padding: "30px 0", textAlign: "center", color: "#94A3B8", fontSize: 13 }}>
+              No orders received yet.
             </div>
           )}
         </div>
@@ -438,40 +1070,3 @@ export default function AdminDashboard() {
     </div>
   );
 }
-
-const kpiCardStyle = {
-  background: "#FFFFFF",
-  border: "1px solid #E2E8F0",
-  borderRadius: 16,
-  padding: "20px 22px",
-  textDecoration: "none",
-  display: "block",
-  transition: "transform 0.15s, border-color 0.15s, box-shadow 0.15s",
-  boxShadow: "0 1px 3px rgba(0, 0, 0, 0.05), 0 1px 2px rgba(0, 0, 0, 0.03)",
-};
-
-const sectionCardStyle = {
-  background: "#FFFFFF",
-  border: "1px solid #E2E8F0",
-  borderRadius: 16,
-  padding: "22px 24px",
-  boxShadow: "0 1px 3px rgba(0, 0, 0, 0.05), 0 1px 2px rgba(0, 0, 0, 0.03)",
-};
-
-const pillStyle = (color) => {
-  const isGreen = color === "#22C55E" || color === "#16A34A";
-  const isAmber = color === "#F59E0B" || color === "#D97706";
-  const isBlue = color === "#38BDF8" || color === "#0284C7";
-  const bg = isGreen ? "#ECFDF5" : isAmber ? "#FFFBEB" : isBlue ? "#F0F9FF" : "#FAF5FF";
-  const text = isGreen ? "#059669" : isAmber ? "#D97706" : isBlue ? "#0284C7" : "#7E22CE";
-  const border = isGreen ? "#A7F3D0" : isAmber ? "#FDE68A" : isBlue ? "#BAE6FD" : "#E9D5FF";
-  return {
-    fontSize: 11,
-    fontWeight: 700,
-    padding: "3px 8px",
-    borderRadius: 99,
-    background: bg,
-    color: text,
-    border: `1px solid ${border}`,
-  };
-};

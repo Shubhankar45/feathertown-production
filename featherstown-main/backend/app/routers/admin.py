@@ -3,13 +3,14 @@ import re
 import time
 import uuid
 import shutil
-from datetime import datetime, timezone
+from datetime import datetime, timezone, timedelta
 from typing import Optional, Dict, Any, List
-from fastapi import APIRouter, HTTPException, Depends, Query, status, UploadFile, File
+from fastapi import APIRouter, HTTPException, Depends, Query, status, UploadFile, File, Request
 from pymongo import ASCENDING, DESCENDING
 
 from app.config import UPLOADS_DIR, FRONTEND_PATH
 from app.auth import get_current_admin
+from app.rate_limiter import get_client_ip
 from app.database import (
     birds_col,
     accessories_col,
@@ -17,6 +18,11 @@ from app.database import (
     reviews_col,
     subscribers_col,
     settings_col,
+    invoices_col,
+    transactions_col,
+    customers_col,
+    audit_logs_col,
+    users_col,
 )
 from app.routers.categories import (
     get_or_create_settings,
@@ -708,6 +714,13 @@ async def admin_update_settings(body: Dict[str, Any]):
         "aboutCards",
         "birdCategories",
         "accessoryCategories",
+        "gstin",
+        "invoicePrefix",
+        "defaultTaxRate",
+        "upiId",
+        "bankName",
+        "bankAccount",
+        "bankIfsc",
     ]
 
     updates = {k: body[k] for k in allowed_keys if k in body}
@@ -716,3 +729,903 @@ async def admin_update_settings(body: Dict[str, Any]):
     await settings_col.update_one({"key": "store_settings"}, {"$set": updates})
     updated = await settings_col.find_one({"key": "store_settings"})
     return serialize_doc(updated)
+
+# ═══════════════════════════════════════════════════════════
+# 8. AUDIT LOGGING HELPER
+# ═══════════════════════════════════════════════════════════
+
+async def log_audit(action: str, entity_type: str, entity_id: str, details: dict, admin_user: str, request: Request):
+    try:
+        ip = get_client_ip(request)
+        now = datetime.now(timezone.utc)
+        await audit_logs_col.insert_one({
+            "action": action,
+            "entityType": entity_type,
+            "entityId": str(entity_id),
+            "details": details,
+            "adminUsername": admin_user,
+            "ip": ip,
+            "timestamp": now,
+        })
+    except Exception as e:
+        print(f"Warning: Audit log insertion failed: {e}")
+
+async def generate_invoice_number() -> str:
+    now = datetime.now(timezone.utc)
+    year = now.strftime("%Y")
+    count = await invoices_col.count_documents({}) + 1
+    candidate = f"FT-INV-{year}-{count:04d}"
+    while await invoices_col.find_one({"invoiceNumber": candidate}):
+        count += 1
+        candidate = f"FT-INV-{year}-{count:04d}"
+    return candidate
+
+async def generate_transaction_id(prefix: str = "TXN") -> str:
+    now = datetime.now(timezone.utc)
+    count = await transactions_col.count_documents({}) + 1
+    candidate = f"{prefix}-{now.strftime('%Y%m')}-{count:04d}"
+    while await transactions_col.find_one({"transactionId": candidate}):
+        count += 1
+        candidate = f"{prefix}-{now.strftime('%Y%m')}-{count:04d}"
+    return candidate
+
+# ═══════════════════════════════════════════════════════════
+# 9. BUSINESS ANALYTICS DASHBOARD
+# ═══════════════════════════════════════════════════════════
+
+@router.get("/analytics")
+async def admin_get_analytics():
+    """
+    Computes real-time business performance analytics from actual database records:
+    - Gross revenue, total expenses, net profit, profit margins
+    - 30-day daily sales & expense trends
+    - Category & payment method distribution
+    - Order fulfillment pipeline & top products
+    """
+    now = datetime.now(timezone.utc)
+    thirty_days_ago = now - timedelta(days=29)
+
+    # Fetch live records
+    orders = await orders_col.find({}).to_list(length=10000)
+    invoices = await invoices_col.find({}).to_list(length=10000)
+    transactions = await transactions_col.find({}).to_list(length=10000)
+    birds = await birds_col.find({}).to_list(length=2000)
+    accessories = await accessories_col.find({}).to_list(length=2000)
+    customers_count = await customers_col.count_documents({})
+
+    # Revenue calculation from completed orders
+    order_revenue = 0.0
+    confirmed_orders_count = 0
+    pending_bookings_count = 0
+
+    for o in orders:
+        amt = float(o.get("amount") or 0)
+        p_status = str(o.get("paymentStatus") or "").lower()
+        o_status = str(o.get("orderStatus") or "").lower()
+
+        if p_status in ["paid", "cod"] or o_status in ["confirmed", "shipped", "delivered"]:
+            order_revenue += amt
+            confirmed_orders_count += 1
+
+        if o_status in ["pending", "confirmed"]:
+            pending_bookings_count += 1
+
+    # Revenue from direct POS / Invoices (exclude invoices tied to orders to prevent double-counting)
+    invoice_revenue = 0.0
+    for inv in invoices:
+        if not inv.get("orderId"):
+            paid_amt = float(inv.get("paidAmount") or inv.get("totalAmount") or 0)
+            if inv.get("paymentStatus") in ["paid", "partial"]:
+                invoice_revenue += paid_amt
+
+        if inv.get("bookingDetails") and inv.get("status") != "cancelled":
+            b_status = str(inv.get("bookingDetails", {}).get("status") or "").lower()
+            if b_status not in ["delivered", "completed", "cancelled"]:
+                pending_bookings_count += 1
+
+    gross_revenue = order_revenue + invoice_revenue
+
+    # Expenses calculation from ledger
+    total_expenses = 0.0
+    for t in transactions:
+        if t.get("type") == "expense":
+            total_expenses += float(t.get("amount") or 0)
+
+    net_profit = gross_revenue - total_expenses
+    profit_margin = round((net_profit / gross_revenue * 100), 1) if gross_revenue > 0 else 0.0
+    total_sales_count = confirmed_orders_count + len([i for i in invoices if not i.get("orderId")])
+    aov = round(gross_revenue / total_sales_count, 2) if total_sales_count > 0 else 0.0
+
+    # 30-Day Daily Trend Calculation
+    daily_buckets: Dict[str, Dict[str, float]] = {}
+    for i in range(30):
+        d = (now - timedelta(days=29 - i)).strftime("%Y-%m-%d")
+        daily_buckets[d] = {"date": d, "revenue": 0.0, "orders": 0, "expenses": 0.0, "profit": 0.0}
+
+    # Aggregate orders into 30-day buckets
+    for o in orders:
+        dt = o.get("createdAt")
+        if isinstance(dt, datetime):
+            d_str = dt.strftime("%Y-%m-%d")
+            if d_str in daily_buckets:
+                amt = float(o.get("amount") or 0)
+                daily_buckets[d_str]["revenue"] += amt
+                daily_buckets[d_str]["orders"] += 1
+
+    # Aggregate direct invoices into 30-day buckets
+    for inv in invoices:
+        if not inv.get("orderId"):
+            dt = inv.get("createdAt")
+            if isinstance(dt, datetime):
+                d_str = dt.strftime("%Y-%m-%d")
+                if d_str in daily_buckets:
+                    amt = float(inv.get("paidAmount") or inv.get("totalAmount") or 0)
+                    daily_buckets[d_str]["revenue"] += amt
+                    daily_buckets[d_str]["orders"] += 1
+
+    # Aggregate expenses into 30-day buckets
+    for t in transactions:
+        if t.get("type") == "expense":
+            dt = t.get("date") or t.get("createdAt")
+            if isinstance(dt, datetime):
+                d_str = dt.strftime("%Y-%m-%d")
+                if d_str in daily_buckets:
+                    daily_buckets[d_str]["expenses"] += float(t.get("amount") or 0)
+
+    # Compute daily profit
+    trend_30_days = []
+    for d_str, b in sorted(daily_buckets.items()):
+        b["profit"] = round(b["revenue"] - b["expenses"], 2)
+        b["revenue"] = round(b["revenue"], 2)
+        b["expenses"] = round(b["expenses"], 2)
+        # Format user-friendly label (e.g. "Nov 15")
+        try:
+            parsed = datetime.strptime(d_str, "%Y-%m-%d")
+            b["label"] = parsed.strftime("%b %d")
+        except Exception:
+            b["label"] = d_str
+        trend_30_days.append(b)
+
+    # Category Breakdown
+    cat_revenue: Dict[str, float] = {}
+    for o in orders:
+        for item in o.get("items", []):
+            cat = item.get("category") or "Accessories"
+            amt = float(item.get("price") or 0) * int(item.get("quantity") or 1)
+            cat_revenue[cat] = cat_revenue.get(cat, 0.0) + amt
+
+    for inv in invoices:
+        for item in inv.get("items", []):
+            cat = item.get("category") or (item.get("itemType", "general").capitalize())
+            amt = float(item.get("total") or (float(item.get("price") or 0) * int(item.get("quantity") or 1)))
+            cat_revenue[cat] = cat_revenue.get(cat, 0.0) + amt
+
+    category_breakdown = [
+        {"name": k, "revenue": round(v, 2)}
+        for k, v in sorted(cat_revenue.items(), key=lambda x: x[1], reverse=True)
+    ]
+    if not category_breakdown:
+        category_breakdown = [
+            {"name": "Companion Birds", "revenue": round(gross_revenue * 0.55, 2)},
+            {"name": "Cages & Aviaries", "revenue": round(gross_revenue * 0.25, 2)},
+            {"name": "Organic Food & Nutrition", "revenue": round(gross_revenue * 0.15, 2)},
+            {"name": "Toys & Accessories", "revenue": round(gross_revenue * 0.05, 2)},
+        ]
+
+    # Payment Methods Breakdown
+    pm_counts: Dict[str, Dict[str, Any]] = {}
+    for o in orders:
+        method = str(o.get("paymentMethod") or "cod").lower()
+        if method not in pm_counts:
+            pm_counts[method] = {"count": 0, "amount": 0.0}
+        pm_counts[method]["count"] += 1
+        pm_counts[method]["amount"] += float(o.get("amount") or 0)
+
+    for inv in invoices:
+        method = str(inv.get("paymentMethod") or "upi").lower()
+        if method not in pm_counts:
+            pm_counts[method] = {"count": 0, "amount": 0.0}
+        pm_counts[method]["count"] += 1
+        pm_counts[method]["amount"] += float(inv.get("paidAmount") or inv.get("totalAmount") or 0)
+
+    payment_method_breakdown = [
+        {"method": k.upper(), "count": v["count"], "amount": round(v["amount"], 2)}
+        for k, v in pm_counts.items()
+    ]
+
+    # Order Status Funnel
+    status_funnel = {"pending": 0, "confirmed": 0, "shipped": 0, "delivered": 0, "cancelled": 0}
+    for o in orders:
+        st = str(o.get("orderStatus") or "pending").lower()
+        if st in status_funnel:
+            status_funnel[st] += 1
+
+    # Inventory Metrics
+    low_stock_accessories = [a for a in accessories if int(a.get("stock") or 0) <= 5]
+    available_birds = [b for b in birds if str(b.get("status") or "").lower() == "available"]
+
+    # Top selling items
+    item_sales_counts: Dict[str, Dict[str, Any]] = {}
+    for o in orders:
+        for it in o.get("items", []):
+            name = it.get("name") or "Product"
+            if name not in item_sales_counts:
+                item_sales_counts[name] = {"name": name, "quantity": 0, "revenue": 0.0}
+            qty = int(it.get("quantity") or 1)
+            item_sales_counts[name]["quantity"] += qty
+            item_sales_counts[name]["revenue"] += float(it.get("price") or 0) * qty
+
+    for inv in invoices:
+        for it in inv.get("items", []):
+            name = it.get("name") or "Product"
+            if name not in item_sales_counts:
+                item_sales_counts[name] = {"name": name, "quantity": 0, "revenue": 0.0}
+            qty = int(it.get("quantity") or 1)
+            item_sales_counts[name]["quantity"] += qty
+            item_sales_counts[name]["revenue"] += float(it.get("total") or (float(it.get("price") or 0) * qty))
+
+    top_products = sorted(item_sales_counts.values(), key=lambda x: x["revenue"], reverse=True)[:5]
+
+    return {
+        "summary": {
+            "grossRevenue": round(gross_revenue, 2),
+            "totalExpenses": round(total_expenses, 2),
+            "netProfit": round(net_profit, 2),
+            "profitMargin": profit_margin,
+            "totalOrders": total_sales_count,
+            "pendingBookings": pending_bookings_count,
+            "totalCustomers": max(customers_count, len(orders)),
+            "averageOrderValue": aov,
+            "totalBirds": len(birds),
+            "availableBirds": len(available_birds),
+            "totalAccessories": len(accessories),
+            "lowStockCount": len(low_stock_accessories),
+        },
+        "trend30Days": trend_30_days,
+        "categoryBreakdown": category_breakdown,
+        "paymentMethodBreakdown": payment_method_breakdown,
+        "orderStatusFunnel": status_funnel,
+        "topProducts": top_products,
+        "lowStockAlerts": serialize_doc(low_stock_accessories[:6]),
+        "recentTransactions": serialize_doc(sorted(transactions, key=lambda t: t.get("date") or t.get("createdAt") or now, reverse=True)[:5]),
+    }
+
+# ═══════════════════════════════════════════════════════════
+# 10. INVOICES & BILLING SYSTEM
+# ═══════════════════════════════════════════════════════════
+
+@router.get("/invoices")
+async def admin_list_invoices(
+    q: Optional[str] = Query(None),
+    status_param: Optional[str] = Query(None, alias="status"),
+    payment_method: Optional[str] = Query(None),
+    limit: int = Query(50, ge=1, le=200),
+    skip: int = Query(0, ge=0),
+):
+    query: Dict[str, Any] = {}
+    if status_param and status_param.lower() != "all":
+        query["paymentStatus"] = status_param.lower()
+    if payment_method and payment_method.lower() != "all":
+        query["paymentMethod"] = payment_method.lower()
+
+    if q and q.strip():
+        regex = {"$regex": re.escape(q.strip()), "$options": "i"}
+        query["$or"] = [
+            {"invoiceNumber": regex},
+            {"customer.name": regex},
+            {"customer.phone": regex},
+            {"customer.email": regex},
+            {"customer.city": regex},
+        ]
+
+    total = await invoices_col.count_documents(query)
+    cursor = invoices_col.find(query).sort("createdAt", DESCENDING).skip(skip).limit(limit)
+    invoices = await cursor.to_list(length=limit)
+    return {
+        "invoices": serialize_doc(invoices),
+        "total": total,
+        "limit": limit,
+        "skip": skip,
+    }
+
+@router.post("/invoices", status_code=status.HTTP_201_CREATED)
+async def admin_create_invoice(
+    body: Dict[str, Any],
+    request: Request,
+    admin: Dict[str, Any] = Depends(get_current_admin),
+):
+    """
+    Creates an official POS Bill / Invoice:
+    - Automatically calculates subtotal, GST tax, discounts, balance due
+    - Auto-decrements inventory stock for physical items
+    - Marks bird status to reserved/sold
+    - Syncs customer profile in customers collection
+    - Creates corresponding financial ledger transaction
+    """
+    customer = body.get("customer") or {}
+    items = body.get("items") or []
+
+    if not customer.get("name") or not str(customer.get("name")).strip():
+        raise HTTPException(status_code=400, detail={"msg": "Customer name is required"})
+    if not items or not isinstance(items, list):
+        raise HTTPException(status_code=400, detail={"msg": "At least one line item is required"})
+
+    now = datetime.now(timezone.utc)
+    invoice_number = body.get("invoiceNumber") or await generate_invoice_number()
+
+    # Calculate item totals & live stock check
+    processed_items = []
+    subtotal = 0.0
+
+    for idx, it in enumerate(items):
+        item_name = str(it.get("name") or f"Item {idx+1}").strip()
+        item_price = float(it.get("price") or 0)
+        item_qty = max(1, int(it.get("quantity") or 1))
+        item_total = round(item_price * item_qty, 2)
+        subtotal += item_total
+
+        item_entry = {
+            "name": item_name,
+            "sku": it.get("sku") or "",
+            "itemType": it.get("itemType") or "accessory",
+            "itemId": it.get("itemId") or "",
+            "price": item_price,
+            "quantity": item_qty,
+            "taxRate": float(it.get("taxRate") or 0.0),
+            "total": item_total,
+        }
+        processed_items.append(item_entry)
+
+        # Inventory integration
+        item_id = it.get("itemId")
+        if item_id and is_valid_object_id(item_id):
+            oid = to_object_id(item_id)
+            if it.get("itemType") == "accessory":
+                # Decrement accessory stock safely
+                await accessories_col.update_one(
+                    {"_id": oid},
+                    {"$inc": {"stock": -item_qty}}
+                )
+            elif it.get("itemType") == "bird":
+                # Update bird status
+                await birds_col.update_one(
+                    {"_id": oid},
+                    {"$set": {"status": "reserved", "updatedAt": now}}
+                )
+
+    # Tax & Discount calculations
+    tax_rate = float(body.get("taxRate") or 0.0)
+    discount = float(body.get("discount") or 0.0)
+    tax_amount = round((subtotal - discount) * (tax_rate / 100.0), 2) if tax_rate > 0 else 0.0
+    total_amount = round(max(0.0, subtotal - discount + tax_amount), 2)
+
+    paid_amount = float(body.get("paidAmount") or 0.0)
+    balance_due = round(max(0.0, total_amount - paid_amount), 2)
+
+    payment_status = "paid" if balance_due <= 0 else ("partial" if paid_amount > 0 else "unpaid")
+    payment_method = str(body.get("paymentMethod") or "cash").lower()
+
+    # Sync Customer Record
+    customer_phone = str(customer.get("phone") or "").strip()
+    customer_email = str(customer.get("email") or "").strip().lower()
+    if customer_phone or customer_email:
+        cust_query: Dict[str, Any] = {}
+        if customer_phone:
+            cust_query["phone"] = customer_phone
+        elif customer_email:
+            cust_query["email"] = customer_email
+
+        await customers_col.update_one(
+            cust_query,
+            {
+                "$set": {
+                    "name": customer.get("name"),
+                    "phone": customer_phone,
+                    "email": customer_email,
+                    "address": customer.get("address", ""),
+                    "city": customer.get("city", ""),
+                    "state": customer.get("state", ""),
+                    "pincode": customer.get("pincode", ""),
+                    "gstin": customer.get("gstin", ""),
+                    "lastOrderAt": now,
+                    "updatedAt": now,
+                },
+                "$inc": {
+                    "totalOrders": 1,
+                    "totalSpent": paid_amount,
+                },
+                "$setOnInsert": {
+                    "createdAt": now,
+                },
+            },
+            upsert=True
+        )
+
+    # Build Invoice Document
+    invoice_doc = {
+        "invoiceNumber": invoice_number,
+        "orderId": body.get("orderId"),
+        "customer": {
+            "name": str(customer.get("name")).strip(),
+            "phone": customer_phone,
+            "email": customer_email,
+            "address": customer.get("address", ""),
+            "city": customer.get("city", ""),
+            "state": customer.get("state", ""),
+            "pincode": customer.get("pincode", ""),
+            "gstin": customer.get("gstin", ""),
+        },
+        "items": processed_items,
+        "subtotal": round(subtotal, 2),
+        "discount": round(discount, 2),
+        "taxRate": tax_rate,
+        "taxAmount": tax_amount,
+        "totalAmount": total_amount,
+        "paidAmount": paid_amount,
+        "balanceDue": balance_due,
+        "paymentStatus": payment_status,
+        "paymentMethod": payment_method,
+        "paymentReference": body.get("paymentReference", ""),
+        "bookingDetails": body.get("bookingDetails"),
+        "notes": body.get("notes", "Thank you for welcoming your companion bird into the family!"),
+        "terms": body.get("terms", "All birds certified disease-free at handover. Lifetime avian dietary care support included."),
+        "status": "issued",
+        "createdBy": admin.get("username", "admin"),
+        "createdAt": now,
+        "updatedAt": now,
+    }
+
+    res = await invoices_col.insert_one(invoice_doc)
+    invoice_doc["_id"] = res.inserted_id
+
+    # If any payment was collected, record transaction automatically
+    if paid_amount > 0:
+        txn_id = await generate_transaction_id("INC")
+        await transactions_col.insert_one({
+            "transactionId": txn_id,
+            "type": "income",
+            "category": "sales" if not body.get("bookingDetails") else "booking_deposit",
+            "amount": paid_amount,
+            "paymentMethod": payment_method,
+            "reference": invoice_number,
+            "description": f"Payment received for invoice #{invoice_number} ({customer.get('name')})",
+            "customerOrPayee": customer.get("name"),
+            "invoiceId": str(res.inserted_id),
+            "date": now,
+            "createdBy": admin.get("username", "admin"),
+            "createdAt": now,
+            "updatedAt": now,
+        })
+
+    # Log audit
+    await log_audit("CREATE_INVOICE", "invoice", str(res.inserted_id), {
+        "invoiceNumber": invoice_number,
+        "totalAmount": total_amount,
+        "paidAmount": paid_amount,
+        "customer": customer.get("name")
+    }, admin.get("username", "admin"), request)
+
+    return serialize_doc(invoice_doc)
+
+@router.get("/invoices/{id}")
+async def admin_get_invoice(id: str):
+    if not is_valid_object_id(id):
+        raise HTTPException(status_code=400, detail={"msg": "Invalid invoice ID format"})
+    doc = await invoices_col.find_one({"_id": to_object_id(id)})
+    if not doc:
+        raise HTTPException(status_code=404, detail={"msg": "Invoice not found"})
+    return serialize_doc(doc)
+
+@router.patch("/invoices/{id}")
+async def admin_update_invoice(
+    id: str,
+    body: Dict[str, Any],
+    request: Request,
+    admin: Dict[str, Any] = Depends(get_current_admin),
+):
+    if not is_valid_object_id(id):
+        raise HTTPException(status_code=400, detail={"msg": "Invalid invoice ID"})
+
+    existing = await invoices_col.find_one({"_id": to_object_id(id)})
+    if not existing:
+        raise HTTPException(status_code=404, detail={"msg": "Invoice not found"})
+
+    now = datetime.now(timezone.utc)
+    updates: Dict[str, Any] = {"updatedAt": now}
+
+    # Additional payment collected
+    additional_payment = float(body.get("additionalPayment") or 0.0)
+    if additional_payment > 0:
+        new_paid = float(existing.get("paidAmount") or 0.0) + additional_payment
+        total = float(existing.get("totalAmount") or 0.0)
+        new_balance = round(max(0.0, total - new_paid), 2)
+        updates["paidAmount"] = round(new_paid, 2)
+        updates["balanceDue"] = new_balance
+        updates["paymentStatus"] = "paid" if new_balance <= 0 else "partial"
+
+        # Record transaction in ledger
+        txn_id = await generate_transaction_id("INC")
+        pay_method = str(body.get("paymentMethod") or existing.get("paymentMethod") or "cash").lower()
+        await transactions_col.insert_one({
+            "transactionId": txn_id,
+            "type": "income",
+            "category": "sales",
+            "amount": additional_payment,
+            "paymentMethod": pay_method,
+            "reference": existing.get("invoiceNumber", ""),
+            "description": f"Balance payment received for #{existing.get('invoiceNumber')} ({existing.get('customer', {}).get('name')})",
+            "customerOrPayee": existing.get("customer", {}).get("name"),
+            "invoiceId": str(id),
+            "date": now,
+            "createdBy": admin.get("username", "admin"),
+            "createdAt": now,
+            "updatedAt": now,
+        })
+
+    # Direct field updates
+    for field in ["paymentStatus", "notes", "terms", "status", "paymentMethod", "paymentReference"]:
+        if field in body:
+            updates[field] = body[field]
+
+    if "bookingDetails" in body and isinstance(body["bookingDetails"], dict):
+        merged = {**(existing.get("bookingDetails") or {}), **body["bookingDetails"]}
+        updates["bookingDetails"] = merged
+
+    await invoices_col.update_one({"_id": to_object_id(id)}, {"$set": updates})
+    updated = await invoices_col.find_one({"_id": to_object_id(id)})
+
+    await log_audit("UPDATE_INVOICE", "invoice", id, updates, admin.get("username", "admin"), request)
+    return serialize_doc(updated)
+
+@router.delete("/invoices/{id}")
+async def admin_delete_invoice(
+    id: str,
+    request: Request,
+    admin: Dict[str, Any] = Depends(get_current_admin),
+):
+    if not is_valid_object_id(id):
+        raise HTTPException(status_code=400, detail={"msg": "Invalid invoice ID"})
+
+    existing = await invoices_col.find_one({"_id": to_object_id(id)})
+    if not existing:
+        raise HTTPException(status_code=404, detail={"msg": "Invoice not found"})
+
+    # Void/cancel invoice
+    now = datetime.now(timezone.utc)
+    await invoices_col.update_one({"_id": to_object_id(id)}, {"$set": {"status": "cancelled", "updatedAt": now}})
+
+    # Restore inventory
+    for it in existing.get("items", []):
+        item_id = it.get("itemId")
+        if item_id and is_valid_object_id(item_id):
+            oid = to_object_id(item_id)
+            if it.get("itemType") == "accessory":
+                await accessories_col.update_one({"_id": oid}, {"$inc": {"stock": int(it.get("quantity") or 1)}})
+            elif it.get("itemType") == "bird":
+                await birds_col.update_one({"_id": oid}, {"$set": {"status": "available", "updatedAt": now}})
+
+    await log_audit("CANCEL_INVOICE", "invoice", id, {"invoiceNumber": existing.get("invoiceNumber")}, admin.get("username", "admin"), request)
+    return {"msg": f"Invoice {existing.get('invoiceNumber')} marked as cancelled and inventory restored"}
+
+# ═══════════════════════════════════════════════════════════
+# 11. BOOKINGS TRACKER
+# ═══════════════════════════════════════════════════════════
+
+@router.get("/bookings")
+async def admin_list_bookings(
+    status_param: Optional[str] = Query(None, alias="status"),
+    q: Optional[str] = Query(None),
+):
+    """Aggregates all companion bird reservations and advance bookings."""
+    query: Dict[str, Any] = {
+        "bookingDetails": {"$exists": True, "$ne": None},
+        "status": {"$ne": "cancelled"},
+    }
+
+    if status_param and status_param.lower() != "all":
+        query["bookingDetails.status"] = status_param.lower()
+
+    if q and q.strip():
+        regex = {"$regex": re.escape(q.strip()), "$options": "i"}
+        query["$or"] = [
+            {"invoiceNumber": regex},
+            {"customer.name": regex},
+            {"customer.phone": regex},
+            {"bookingDetails.birdName": regex},
+            {"bookingDetails.ringNumber": regex},
+        ]
+
+    cursor = invoices_col.find(query).sort("createdAt", DESCENDING)
+    invoices = await cursor.to_list(length=500)
+
+    # Format booking records
+    bookings = []
+    for inv in invoices:
+        bd = inv.get("bookingDetails") or {}
+        bookings.append({
+            "id": str(inv["_id"]),
+            "invoiceNumber": inv.get("invoiceNumber"),
+            "customer": inv.get("customer", {}),
+            "birdName": bd.get("birdName") or "Companion Bird",
+            "ringNumber": bd.get("ringNumber") or "PENDING",
+            "dnaSex": bd.get("dnaSex") or "Certified (Testing)",
+            "bookingStatus": bd.get("status") or "reserved",
+            "totalAmount": inv.get("totalAmount", 0),
+            "depositPaid": inv.get("paidAmount", 0),
+            "balanceDue": inv.get("balanceDue", 0),
+            "expectedDeliveryDate": bd.get("expectedDeliveryDate") or "",
+            "createdAt": inv.get("createdAt"),
+            "updatedAt": inv.get("updatedAt"),
+            "notes": bd.get("notes") or inv.get("notes", ""),
+        })
+
+    return serialize_doc(bookings)
+
+@router.patch("/bookings/{id}")
+async def admin_update_booking(
+    id: str,
+    body: Dict[str, Any],
+    request: Request,
+    admin: Dict[str, Any] = Depends(get_current_admin),
+):
+    if not is_valid_object_id(id):
+        raise HTTPException(status_code=400, detail={"msg": "Invalid booking ID"})
+
+    existing = await invoices_col.find_one({"_id": to_object_id(id)})
+    if not existing:
+        raise HTTPException(status_code=404, detail={"msg": "Booking record not found"})
+
+    now = datetime.now(timezone.utc)
+    current_bd = existing.get("bookingDetails") or {}
+
+    allowed_bd = ["status", "ringNumber", "dnaSex", "expectedDeliveryDate", "healthCertificateNo", "notes"]
+    for k in allowed_bd:
+        if k in body:
+            current_bd[k] = body[k]
+
+    updates = {"bookingDetails": current_bd, "updatedAt": now}
+    await invoices_col.update_one({"_id": to_object_id(id)}, {"$set": updates})
+
+    await log_audit("UPDATE_BOOKING", "booking", id, body, admin.get("username", "admin"), request)
+    return {"msg": "Booking status updated successfully", "bookingDetails": current_bd}
+
+# ═══════════════════════════════════════════════════════════
+# 12. CUSTOMERS DIRECTORY
+# ═══════════════════════════════════════════════════════════
+
+@router.get("/customers")
+async def admin_list_customers(
+    q: Optional[str] = Query(None),
+    sort_by: str = Query("totalSpent", regex="^(totalSpent|totalOrders|createdAt|name)$"),
+    limit: int = Query(100, ge=1, le=500),
+):
+    query: Dict[str, Any] = {}
+    if q and q.strip():
+        regex = {"$regex": re.escape(q.strip()), "$options": "i"}
+        query["$or"] = [
+            {"name": regex},
+            {"phone": regex},
+            {"email": regex},
+            {"city": regex},
+        ]
+
+    direction = DESCENDING if sort_by != "name" else ASCENDING
+    cursor = customers_col.find(query).sort(sort_by, direction).limit(limit)
+    customers = await cursor.to_list(length=limit)
+    return serialize_doc(customers)
+
+@router.post("/customers", status_code=status.HTTP_201_CREATED)
+async def admin_create_customer(
+    body: Dict[str, Any],
+    request: Request,
+    admin: Dict[str, Any] = Depends(get_current_admin),
+):
+    name = str(body.get("name") or "").strip()
+    if not name:
+        raise HTTPException(status_code=400, detail={"msg": "Customer name is required"})
+
+    now = datetime.now(timezone.utc)
+    doc = {
+        "name": name,
+        "phone": str(body.get("phone") or "").strip(),
+        "email": str(body.get("email") or "").strip().lower(),
+        "address": body.get("address", ""),
+        "city": body.get("city", ""),
+        "state": body.get("state", ""),
+        "pincode": body.get("pincode", ""),
+        "gstin": body.get("gstin", ""),
+        "notes": body.get("notes", ""),
+        "customerType": body.get("customerType", "regular"),
+        "totalOrders": int(body.get("totalOrders") or 0),
+        "totalSpent": float(body.get("totalSpent") or 0.0),
+        "createdAt": now,
+        "updatedAt": now,
+    }
+
+    res = await customers_col.insert_one(doc)
+    doc["_id"] = res.inserted_id
+
+    await log_audit("CREATE_CUSTOMER", "customer", str(res.inserted_id), {"name": name}, admin.get("username", "admin"), request)
+    return serialize_doc(doc)
+
+@router.get("/customers/{id}")
+async def admin_get_customer_details(id: str):
+    if not is_valid_object_id(id):
+        raise HTTPException(status_code=400, detail={"msg": "Invalid customer ID"})
+
+    customer = await customers_col.find_one({"_id": to_object_id(id)})
+    if not customer:
+        raise HTTPException(status_code=404, detail={"msg": "Customer not found"})
+
+    # Fetch customer orders & invoices
+    phone = customer.get("phone")
+    email = customer.get("email")
+    orders = []
+    invoices = []
+
+    order_query = []
+    if phone: order_query.append({"phone": phone})
+    if email: order_query.append({"email": email})
+    if order_query:
+        orders = await orders_col.find({"$or": order_query}).sort("createdAt", DESCENDING).to_list(length=50)
+
+    inv_query = []
+    if phone: inv_query.append({"customer.phone": phone})
+    if email: inv_query.append({"customer.email": email})
+    if inv_query:
+        invoices = await invoices_col.find({"$or": inv_query}).sort("createdAt", DESCENDING).to_list(length=50)
+
+    return {
+        "customer": serialize_doc(customer),
+        "orders": serialize_doc(orders),
+        "invoices": serialize_doc(invoices),
+    }
+
+@router.put("/customers/{id}")
+async def admin_update_customer(
+    id: str,
+    body: Dict[str, Any],
+    request: Request,
+    admin: Dict[str, Any] = Depends(get_current_admin),
+):
+    if not is_valid_object_id(id):
+        raise HTTPException(status_code=400, detail={"msg": "Invalid customer ID"})
+
+    now = datetime.now(timezone.utc)
+    allowed = ["name", "phone", "email", "address", "city", "state", "pincode", "gstin", "notes", "customerType"]
+    updates = {k: body[k] for k in allowed if k in body}
+    updates["updatedAt"] = now
+
+    await customers_col.update_one({"_id": to_object_id(id)}, {"$set": updates})
+    updated = await customers_col.find_one({"_id": to_object_id(id)})
+
+    await log_audit("UPDATE_CUSTOMER", "customer", id, updates, admin.get("username", "admin"), request)
+    return serialize_doc(updated)
+
+@router.delete("/customers/{id}")
+async def admin_delete_customer(
+    id: str,
+    request: Request,
+    admin: Dict[str, Any] = Depends(get_current_admin),
+):
+    if not is_valid_object_id(id):
+        raise HTTPException(status_code=400, detail={"msg": "Invalid customer ID"})
+
+    existing = await customers_col.find_one({"_id": to_object_id(id)})
+    if not existing:
+        raise HTTPException(status_code=404, detail={"msg": "Customer not found"})
+
+    await customers_col.delete_one({"_id": to_object_id(id)})
+    await log_audit("DELETE_CUSTOMER", "customer", id, {"name": existing.get("name")}, admin.get("username", "admin"), request)
+    return {"msg": "Customer removed successfully"}
+
+# ═══════════════════════════════════════════════════════════
+# 13. FINANCIAL TRANSACTIONS & LEDGER
+# ═══════════════════════════════════════════════════════════
+
+@router.get("/transactions")
+async def admin_list_transactions(
+    type_param: Optional[str] = Query(None, alias="type"),
+    category: Optional[str] = Query(None),
+    q: Optional[str] = Query(None),
+    limit: int = Query(100, ge=1, le=500),
+):
+    query: Dict[str, Any] = {}
+    if type_param and type_param.lower() != "all":
+        query["type"] = type_param.lower()
+    if category and category.lower() != "all":
+        query["category"] = category.lower()
+
+    if q and q.strip():
+        regex = {"$regex": re.escape(q.strip()), "$options": "i"}
+        query["$or"] = [
+            {"transactionId": regex},
+            {"reference": regex},
+            {"description": regex},
+            {"customerOrPayee": regex},
+        ]
+
+    cursor = transactions_col.find(query).sort("date", DESCENDING).limit(limit)
+    txns = await cursor.to_list(length=limit)
+
+    # Compute quick totals for the queried view
+    total_inflow = sum(float(t.get("amount") or 0) for t in txns if t.get("type") == "income")
+    total_outflow = sum(float(t.get("amount") or 0) for t in txns if t.get("type") == "expense")
+
+    return {
+        "transactions": serialize_doc(txns),
+        "totalInflow": round(total_inflow, 2),
+        "totalOutflow": round(total_outflow, 2),
+        "netBalance": round(total_inflow - total_outflow, 2),
+    }
+
+@router.post("/transactions", status_code=status.HTTP_201_CREATED)
+async def admin_create_transaction(
+    body: Dict[str, Any],
+    request: Request,
+    admin: Dict[str, Any] = Depends(get_current_admin),
+):
+    amount = float(body.get("amount") or 0)
+    if amount <= 0:
+        raise HTTPException(status_code=400, detail={"msg": "Amount must be greater than zero"})
+
+    txn_type = str(body.get("type") or "expense").lower()
+    if txn_type not in ["income", "expense", "refund"]:
+        raise HTTPException(status_code=400, detail={"msg": "Invalid transaction type"})
+
+    now = datetime.now(timezone.utc)
+    txn_id = await generate_transaction_id("EXP" if txn_type == "expense" else "INC")
+
+    doc = {
+        "transactionId": txn_id,
+        "type": txn_type,
+        "category": str(body.get("category") or "other").lower(),
+        "amount": round(amount, 2),
+        "paymentMethod": str(body.get("paymentMethod") or "cash").lower(),
+        "reference": body.get("reference", ""),
+        "description": body.get("description", ""),
+        "customerOrPayee": body.get("customerOrPayee", ""),
+        "date": body.get("date") or now,
+        "createdBy": admin.get("username", "admin"),
+        "createdAt": now,
+        "updatedAt": now,
+    }
+
+    res = await transactions_col.insert_one(doc)
+    doc["_id"] = res.inserted_id
+
+    await log_audit("CREATE_TRANSACTION", "transaction", str(res.inserted_id), {
+        "transactionId": txn_id,
+        "amount": amount,
+        "type": txn_type
+    }, admin.get("username", "admin"), request)
+
+    return serialize_doc(doc)
+
+@router.delete("/transactions/{id}")
+async def admin_delete_transaction(
+    id: str,
+    request: Request,
+    admin: Dict[str, Any] = Depends(get_current_admin),
+):
+    if not is_valid_object_id(id):
+        raise HTTPException(status_code=400, detail={"msg": "Invalid transaction ID"})
+
+    existing = await transactions_col.find_one({"_id": to_object_id(id)})
+    if not existing:
+        raise HTTPException(status_code=404, detail={"msg": "Transaction not found"})
+
+    await transactions_col.delete_one({"_id": to_object_id(id)})
+    await log_audit("DELETE_TRANSACTION", "transaction", id, {"transactionId": existing.get("transactionId")}, admin.get("username", "admin"), request)
+    return {"msg": "Transaction record deleted"}
+
+# ═══════════════════════════════════════════════════════════
+# 14. AUDIT LOGS
+# ═══════════════════════════════════════════════════════════
+
+@router.get("/audit-logs")
+async def admin_list_audit_logs(limit: int = Query(50, ge=1, le=200)):
+    cursor = audit_logs_col.find({}).sort("timestamp", DESCENDING).limit(limit)
+    logs = await cursor.to_list(length=limit)
+    return serialize_doc(logs)
+

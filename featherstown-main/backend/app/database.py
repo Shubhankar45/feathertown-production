@@ -37,6 +37,10 @@ admins_col = db["admins"]
 refresh_tokens_col = db["refresh_tokens"]
 email_verifications_col = db["email_verifications"]
 login_attempts_col = db["login_attempts"]
+invoices_col = db["invoices"]
+transactions_col = db["transactions"]
+customers_col = db["customers"]
+audit_logs_col = db["audit_logs"]
 
 async def init_db():
     """Initializes indexes and seeds the database if empty."""
@@ -81,6 +85,30 @@ async def init_db():
         # 10. Login Security & Brute-Force Lockouts (Auto-expires on lockedUntil)
         await login_attempts_col.create_index([("key", ASCENDING)], unique=True)
         await login_attempts_col.create_index([("lockedUntil", ASCENDING)], expireAfterSeconds=0)
+
+        # 11. Invoices & Billing Indexes
+        await invoices_col.create_index([("invoiceNumber", ASCENDING)], unique=True)
+        await invoices_col.create_index([("orderId", ASCENDING)], sparse=True)
+        await invoices_col.create_index([("paymentStatus", ASCENDING)])
+        await invoices_col.create_index([("createdAt", DESCENDING)])
+        await invoices_col.create_index([("customer.phone", ASCENDING)])
+
+        # 12. Financial Transactions Ledger Indexes
+        await transactions_col.create_index([("transactionId", ASCENDING)], unique=True)
+        await transactions_col.create_index([("type", ASCENDING)])
+        await transactions_col.create_index([("category", ASCENDING)])
+        await transactions_col.create_index([("date", DESCENDING)])
+
+        # 13. Customers Directory Indexes
+        await customers_col.create_index([("phone", ASCENDING)], sparse=True)
+        await customers_col.create_index([("email", ASCENDING)], sparse=True)
+        await customers_col.create_index([("createdAt", DESCENDING)])
+        await customers_col.create_index([("totalSpent", DESCENDING)])
+
+        # 14. Audit Logs Indexes
+        await audit_logs_col.create_index([("timestamp", DESCENDING)])
+        await audit_logs_col.create_index([("entityType", ASCENDING)])
+        await audit_logs_col.create_index([("adminUsername", ASCENDING)])
 
         # Auto-seed Birds
         bird_count = await birds_col.count_documents({})
