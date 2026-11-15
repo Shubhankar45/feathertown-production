@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
+import { Edit3, User, Package } from "lucide-react";
 import PageBanner from "../components/PageBanner";
 import SEOHead from "../components/SEOHead";
 import { useUserAuth } from "../context/UserAuthContext";

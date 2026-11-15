@@ -1,4 +1,5 @@
 import { useState, useMemo } from "react";
+import { HelpCircle, X } from "lucide-react";
 import { useBirds } from "../context/BirdsContext";
 import { useSettings } from "../context/SettingsContext";
 import BreedCard from "../components/BreedCard";

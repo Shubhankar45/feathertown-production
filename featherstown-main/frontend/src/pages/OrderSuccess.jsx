@@ -1,4 +1,5 @@
 import { Link, useSearchParams } from "react-router-dom";
+import { Phone, Truck } from "lucide-react";
 import PageBanner from "../components/PageBanner";
 import SEOHead from "../components/SEOHead";
 

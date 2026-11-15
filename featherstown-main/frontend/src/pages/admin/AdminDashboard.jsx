@@ -1,5 +1,13 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+import {
+  Package,
+  ShoppingBag,
+  Mail,
+  TrendingUp,
+  Feather,
+  Settings,
+} from "lucide-react";
 import { adminFetch } from "../../utils/adminApi";
 import { ADMIN_BASE } from "../../config/adminConfig";
 import { toast } from "../../components/ui/Toast";
@@ -81,7 +89,7 @@ export default function AdminDashboard() {
         body: JSON.stringify({ orderStatus: newStatus }),
       });
       setRecentOrders((prev) =>
-        prev.map((o) => (o._id === orderId ? { ...o, orderStatus: newStatus } : b))
+        prev.map((o) => (o._id === orderId ? { ...o, orderStatus: newStatus } : o))
       );
       toast.success(`Order marked as "${newStatus}"`);
     } catch (err) {

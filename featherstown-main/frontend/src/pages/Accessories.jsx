@@ -1,5 +1,6 @@
 import { useEffect, useState, useMemo } from "react";
 import { Link, useSearchParams } from "react-router-dom";
+import { ShoppingBag, Search, Star } from "lucide-react";
 import PageBanner from "../components/PageBanner";
 import SEOHead from "../components/SEOHead";
 import { useCart } from "../context/CartContext";

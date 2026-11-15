@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { LayoutDashboard, Feather, ShoppingBag, Tag, Package, Mail, Settings, LogOut, Menu, X } from "lucide-react";
+import { LayoutDashboard, Feather, ShoppingBag, Tag, Package, Mail, Settings, LogOut, Menu, X, Star } from "lucide-react";
 import { NavLink, Outlet, useNavigate, useLocation } from "react-router-dom";
 import { useAdminAuth } from "../../context/AdminAuthContext";
 import { ADMIN_BASE } from "../../config/adminConfig";
@@ -12,7 +12,7 @@ const NAV = [
   { to: `${ADMIN_BASE}/accessories`, label: "Accessories", Icon: ShoppingBag },
   { to: `${ADMIN_BASE}/categories`, label: "Categories", Icon: Tag },
   { to: `${ADMIN_BASE}/orders`, label: "Orders", Icon: Package },
-  { to: `${ADMIN_BASE}/reviews`, label: "Reviews", icon: "⭐" },
+  { to: `${ADMIN_BASE}/reviews`, label: "Reviews", Icon: Star },
   { to: `${ADMIN_BASE}/subscribers`, label: "Subscribers", Icon: Mail },
   { to: `${ADMIN_BASE}/settings`, label: "Store Settings", Icon: Settings },
 ];
@@ -170,31 +170,34 @@ export default function AdminLayout() {
             Management
           </div>
 
-          {NAV.map((item) => (
-            <NavLink
-              key={item.to}
-              to={item.to}
-              end={item.end}
-              onClick={() => setMobileMenuOpen(false)}
-              style={({ isActive }) => ({
-                display: "flex",
-                alignItems: "center",
-                gap: 12,
-                padding: "11px 14px",
-                borderRadius: 10,
-                fontSize: 14,
-                fontWeight: 600,
-                textDecoration: "none",
-                color: isActive ? "#1B3B22" : "#475569",
-                background: isActive ? "#E7EFE8" : "transparent",
-                borderLeft: isActive ? "3px solid #1B3B22" : "3px solid transparent",
-                transition: "all 0.15s ease",
-              })}
-            >
-              <span style={{ fontSize: 18 }}>{item.icon}</span>
-              <span>{item.label}</span>
-            </NavLink>
-          ))}
+          {NAV.map((item) => {
+            const ItemIcon = item.Icon;
+            return (
+              <NavLink
+                key={item.to}
+                to={item.to}
+                end={item.end}
+                onClick={() => setMobileMenuOpen(false)}
+                style={({ isActive }) => ({
+                  display: "flex",
+                  alignItems: "center",
+                  gap: 12,
+                  padding: "11px 14px",
+                  borderRadius: 10,
+                  fontSize: 14,
+                  fontWeight: 600,
+                  textDecoration: "none",
+                  color: isActive ? "#1B3B22" : "#475569",
+                  background: isActive ? "#E7EFE8" : "transparent",
+                  borderLeft: isActive ? "3px solid #1B3B22" : "3px solid transparent",
+                  transition: "all 0.15s ease",
+                })}
+              >
+                {ItemIcon && <ItemIcon size={18} strokeWidth={2.2} />}
+                <span>{item.label}</span>
+              </NavLink>
+            );
+          })}
         </nav>
 
         {/* User Footer Profile */}

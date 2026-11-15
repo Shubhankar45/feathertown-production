@@ -1,5 +1,5 @@
 import { useEffect, useState, useMemo } from "react";
-import { Upload } from "lucide-react";
+import { Upload, ShoppingBag, X } from "lucide-react";
 import { adminFetch, adminUpload } from "../../utils/adminApi";
 import { toast } from "../../components/ui/Toast";
 import { useSettings } from "../../context/SettingsContext";

@@ -1,4 +1,5 @@
 import { useState, useRef } from "react";
+import { CheckCircle2, MessageCircle, MapPin, Mail, Phone } from "lucide-react";
 import PageBanner from "../components/PageBanner";
 import SEOHead from "../components/SEOHead";
 import { toast } from "../components/ui/Toast";
