@@ -2,9 +2,13 @@
    Feathers Town — Modern Editorial E-Commerce Footer
    /components/Footer.jsx
 
-   Directly modeled on the reference design:
-   - Full-width Deep Forest Green background (#1B3B22)
-   - Left: Typographic logo, mission statement, clean social icons
+   Exact Theme Matching:
+   - Clean white background (#FFFFFF) with warm subtle border (#E2DDD3)
+   - Brand logo EXACTLY identical to Navbar:
+     * "Feather" in Forest Green (#1B3B22)
+     * "Town" in Tomato Red (#D9381E)
+     * Dot "." in Tomato Red (#D9381E)
+   - High-contrast, elegant typography and accessible navigation links
    - 3 clean columns: Shop, Customer Care, About Us
    - Right: "A Kinder World for Birds ❤️" stylized script graphic
    - Bottom Bar: Copyright 2026, Privacy Policy, Terms of Service, Sitemap
@@ -16,9 +20,6 @@ import {
   Mail,
   Feather,
   Heart,
-  HelpCircle,
-  Truck,
-  ShieldCheck,
 } from "lucide-react";
 import { useSettings } from "../context/SettingsContext";
 
@@ -57,12 +58,12 @@ export default function Footer() {
   return (
     <footer
       style={{
-        background: "#1B3B22",
-        color: "#FAF8F5",
+        background: "#FFFFFF",
+        color: "#152B17",
         fontFamily: "Outfit, system-ui, sans-serif",
         paddingTop: "clamp(48px, 6vw, 72px)",
         paddingBottom: "calc(24px + env(safe-area-inset-bottom, 0px))",
-        borderTop: "1px solid rgba(255, 255, 255, 0.12)",
+        borderTop: "1px solid #E2DDD3",
       }}
     >
       <div
@@ -97,9 +98,10 @@ export default function Footer() {
             >
               <span
                 style={{
+                  fontFamily: "Outfit, system-ui, sans-serif",
                   fontSize: 26,
                   fontWeight: 900,
-                  color: "#FAF8F5",
+                  color: "#1B3B22",
                   letterSpacing: "-0.025em",
                 }}
               >
@@ -107,6 +109,7 @@ export default function Footer() {
               </span>
               <span
                 style={{
+                  fontFamily: "Outfit, system-ui, sans-serif",
                   fontSize: 26,
                   fontWeight: 900,
                   color: "#D9381E",
@@ -130,8 +133,8 @@ export default function Footer() {
             <p
               style={{
                 fontSize: 13.5,
-                lineHeight: 1.6,
-                color: "#CCD8CE",
+                lineHeight: 1.65,
+                color: "#64748B",
                 margin: "0 0 20px 0",
               }}
             >
@@ -145,18 +148,19 @@ export default function Footer() {
                 target="_blank"
                 rel="noreferrer"
                 style={{
-                  width: 36,
-                  height: 36,
+                  width: 38,
+                  height: 38,
                   borderRadius: "50%",
-                  background: "rgba(255, 255, 255, 0.1)",
-                  color: "#FAF8F5",
+                  background: "#FAF8F5",
+                  border: "1px solid #E2DDD3",
+                  color: "#1B3B22",
                   display: "flex",
                   alignItems: "center",
                   justifyContent: "center",
                   textDecoration: "none",
-                  transition: "background 0.15s ease",
+                  transition: "all 0.2s ease",
                 }}
-                className="t-hover-lift"
+                className="t-hover-lift hover:bg-[#EAF2EC] hover:border-[#CCE0D0]"
                 aria-label="Instagram"
               >
                 <InstagramIcon size={17} strokeWidth={2.2} />
@@ -167,18 +171,19 @@ export default function Footer() {
                 target="_blank"
                 rel="noreferrer"
                 style={{
-                  width: 36,
-                  height: 36,
+                  width: 38,
+                  height: 38,
                   borderRadius: "50%",
-                  background: "rgba(255, 255, 255, 0.1)",
-                  color: "#FAF8F5",
+                  background: "#FAF8F5",
+                  border: "1px solid #E2DDD3",
+                  color: "#1B3B22",
                   display: "flex",
                   alignItems: "center",
                   justifyContent: "center",
                   textDecoration: "none",
-                  transition: "background 0.15s ease",
+                  transition: "all 0.2s ease",
                 }}
-                className="t-hover-lift"
+                className="t-hover-lift hover:bg-[#EAF2EC] hover:border-[#CCE0D0]"
                 aria-label="WhatsApp"
               >
                 <MessageCircle size={17} strokeWidth={2.2} />
@@ -187,18 +192,19 @@ export default function Footer() {
               <a
                 href={`mailto:${supportEmail}`}
                 style={{
-                  width: 36,
-                  height: 36,
+                  width: 38,
+                  height: 38,
                   borderRadius: "50%",
-                  background: "rgba(255, 255, 255, 0.1)",
-                  color: "#FAF8F5",
+                  background: "#FAF8F5",
+                  border: "1px solid #E2DDD3",
+                  color: "#1B3B22",
                   display: "flex",
                   alignItems: "center",
                   justifyContent: "center",
                   textDecoration: "none",
-                  transition: "background 0.15s ease",
+                  transition: "all 0.2s ease",
                 }}
-                className="t-hover-lift"
+                className="t-hover-lift hover:bg-[#EAF2EC] hover:border-[#CCE0D0]"
                 aria-label="Email"
               >
                 <Mail size={17} strokeWidth={2.2} />
@@ -210,49 +216,49 @@ export default function Footer() {
           <div>
             <h4
               style={{
-                fontSize: 14,
+                fontSize: 13,
                 fontWeight: 800,
-                color: "#FAF8F5",
-                letterSpacing: 0.8,
+                color: "#1B3B22",
+                letterSpacing: "0.08em",
                 textTransform: "uppercase",
                 margin: "0 0 16px 0",
               }}
             >
               Shop
             </h4>
-            <ul style={{ listStyle: "none", padding: 0, margin: 0, display: "flex", flexDirection: "column", gap: 10 }}>
+            <ul style={{ listStyle: "none", padding: 0, margin: 0, display: "flex", flexDirection: "column", gap: 11 }}>
               <li>
-                <Link to="/accessories?category=food" style={{ color: "#CCD8CE", fontSize: 13.5, textDecoration: "none" }} className="hover:text-white transition-colors">
+                <Link to="/accessories?category=food" style={{ color: "#475569", fontSize: 13.5, textDecoration: "none" }} className="hover:text-[#1B3B22] transition-colors">
                   Bird Food &amp; Seeds
                 </Link>
               </li>
               <li>
-                <Link to="/birds" style={{ color: "#CCD8CE", fontSize: 13.5, textDecoration: "none" }} className="hover:text-white transition-colors">
+                <Link to="/birds" style={{ color: "#475569", fontSize: 13.5, textDecoration: "none" }} className="hover:text-[#1B3B22] transition-colors">
                   Companion Birds
                 </Link>
               </li>
               <li>
-                <Link to="/accessories?category=toys" style={{ color: "#CCD8CE", fontSize: 13.5, textDecoration: "none" }} className="hover:text-white transition-colors">
+                <Link to="/accessories?category=toys" style={{ color: "#475569", fontSize: 13.5, textDecoration: "none" }} className="hover:text-[#1B3B22] transition-colors">
                   Foraging &amp; Toys
                 </Link>
               </li>
               <li>
-                <Link to="/accessories?category=cages" style={{ color: "#CCD8CE", fontSize: 13.5, textDecoration: "none" }} className="hover:text-white transition-colors">
+                <Link to="/accessories?category=cages" style={{ color: "#475569", fontSize: 13.5, textDecoration: "none" }} className="hover:text-[#1B3B22] transition-colors">
                   Cages &amp; Aviaries
                 </Link>
               </li>
               <li>
-                <Link to="/accessories?category=grooming" style={{ color: "#CCD8CE", fontSize: 13.5, textDecoration: "none" }} className="hover:text-white transition-colors">
+                <Link to="/accessories?category=grooming" style={{ color: "#475569", fontSize: 13.5, textDecoration: "none" }} className="hover:text-[#1B3B22] transition-colors">
                   Grooming &amp; Hygiene
                 </Link>
               </li>
               <li>
-                <Link to="/accessories?category=health" style={{ color: "#CCD8CE", fontSize: 13.5, textDecoration: "none" }} className="hover:text-white transition-colors">
+                <Link to="/accessories?category=health" style={{ color: "#475569", fontSize: 13.5, textDecoration: "none" }} className="hover:text-[#1B3B22] transition-colors">
                   Health &amp; Wellness
                 </Link>
               </li>
               <li>
-                <Link to="/accessories?badge=Sale" style={{ color: "#F5A396", fontSize: 13.5, textDecoration: "none", fontWeight: 700 }} className="hover:text-white transition-colors">
+                <Link to="/accessories?badge=Sale" style={{ color: "#D9381E", fontSize: 13.5, textDecoration: "none", fontWeight: 700 }} className="hover:text-[#B32B14] transition-colors">
                   Special Deals
                 </Link>
               </li>
@@ -263,39 +269,39 @@ export default function Footer() {
           <div>
             <h4
               style={{
-                fontSize: 14,
+                fontSize: 13,
                 fontWeight: 800,
-                color: "#FAF8F5",
-                letterSpacing: 0.8,
+                color: "#1B3B22",
+                letterSpacing: "0.08em",
                 textTransform: "uppercase",
                 margin: "0 0 16px 0",
               }}
             >
               Customer Care
             </h4>
-            <ul style={{ listStyle: "none", padding: 0, margin: 0, display: "flex", flexDirection: "column", gap: 10 }}>
+            <ul style={{ listStyle: "none", padding: 0, margin: 0, display: "flex", flexDirection: "column", gap: 11 }}>
               <li>
-                <Link to="/my-orders" style={{ color: "#CCD8CE", fontSize: 13.5, textDecoration: "none" }} className="hover:text-white transition-colors">
+                <Link to="/my-orders" style={{ color: "#475569", fontSize: 13.5, textDecoration: "none" }} className="hover:text-[#1B3B22] transition-colors">
                   Track Your Order
                 </Link>
               </li>
               <li>
-                <Link to="/contact" style={{ color: "#CCD8CE", fontSize: 13.5, textDecoration: "none" }} className="hover:text-white transition-colors">
+                <Link to="/contact" style={{ color: "#475569", fontSize: 13.5, textDecoration: "none" }} className="hover:text-[#1B3B22] transition-colors">
                   Returns &amp; Exchanges
                 </Link>
               </li>
               <li>
-                <Link to="/contact" style={{ color: "#CCD8CE", fontSize: 13.5, textDecoration: "none" }} className="hover:text-white transition-colors">
+                <Link to="/contact" style={{ color: "#475569", fontSize: 13.5, textDecoration: "none" }} className="hover:text-[#1B3B22] transition-colors">
                   Shipping Information
                 </Link>
               </li>
               <li>
-                <Link to="/contact" style={{ color: "#CCD8CE", fontSize: 13.5, textDecoration: "none" }} className="hover:text-white transition-colors">
+                <Link to="/contact" style={{ color: "#475569", fontSize: 13.5, textDecoration: "none" }} className="hover:text-[#1B3B22] transition-colors">
                   Help &amp; FAQs
                 </Link>
               </li>
               <li>
-                <Link to="/contact" style={{ color: "#CCD8CE", fontSize: 13.5, textDecoration: "none" }} className="hover:text-white transition-colors">
+                <Link to="/contact" style={{ color: "#475569", fontSize: 13.5, textDecoration: "none" }} className="hover:text-[#1B3B22] transition-colors">
                   Contact Us
                 </Link>
               </li>
@@ -306,39 +312,39 @@ export default function Footer() {
           <div>
             <h4
               style={{
-                fontSize: 14,
+                fontSize: 13,
                 fontWeight: 800,
-                color: "#FAF8F5",
-                letterSpacing: 0.8,
+                color: "#1B3B22",
+                letterSpacing: "0.08em",
                 textTransform: "uppercase",
                 margin: "0 0 16px 0",
               }}
             >
               About Us
             </h4>
-            <ul style={{ listStyle: "none", padding: 0, margin: 0, display: "flex", flexDirection: "column", gap: 10 }}>
+            <ul style={{ listStyle: "none", padding: 0, margin: 0, display: "flex", flexDirection: "column", gap: 11 }}>
               <li>
-                <Link to="/about" style={{ color: "#CCD8CE", fontSize: 13.5, textDecoration: "none" }} className="hover:text-white transition-colors">
+                <Link to="/about" style={{ color: "#475569", fontSize: 13.5, textDecoration: "none" }} className="hover:text-[#1B3B22] transition-colors">
                   Our Aviary Story
                 </Link>
               </li>
               <li>
-                <Link to="/about" style={{ color: "#CCD8CE", fontSize: 13.5, textDecoration: "none" }} className="hover:text-white transition-colors">
+                <Link to="/about" style={{ color: "#475569", fontSize: 13.5, textDecoration: "none" }} className="hover:text-[#1B3B22] transition-colors">
                   Health &amp; Breeding Standards
                 </Link>
               </li>
               <li>
-                <Link to="/compare" style={{ color: "#CCD8CE", fontSize: 13.5, textDecoration: "none" }} className="hover:text-white transition-colors">
+                <Link to="/compare" style={{ color: "#475569", fontSize: 13.5, textDecoration: "none" }} className="hover:text-[#1B3B22] transition-colors">
                   Compare Parrot Breeds
                 </Link>
               </li>
               <li>
-                <Link to="/quiz" style={{ color: "#CCD8CE", fontSize: 13.5, textDecoration: "none" }} className="hover:text-white transition-colors">
+                <Link to="/quiz" style={{ color: "#475569", fontSize: 13.5, textDecoration: "none" }} className="hover:text-[#1B3B22] transition-colors">
                   Which Bird Suits You? Quiz
                 </Link>
               </li>
               <li>
-                <Link to="/reviews" style={{ color: "#CCD8CE", fontSize: 13.5, textDecoration: "none" }} className="hover:text-white transition-colors">
+                <Link to="/reviews" style={{ color: "#475569", fontSize: 13.5, textDecoration: "none" }} className="hover:text-[#1B3B22] transition-colors">
                   Customer Reviews
                 </Link>
               </li>
@@ -360,11 +366,12 @@ export default function Footer() {
                 width: 44,
                 height: 44,
                 borderRadius: "50%",
-                background: "rgba(255, 255, 255, 0.1)",
+                background: "#EAF2EC",
+                border: "1px solid #CCE0D0",
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",
-                color: "#FAF8F5",
+                color: "#1B3B22",
                 marginBottom: 14,
               }}
             >
@@ -375,9 +382,9 @@ export default function Footer() {
               style={{
                 fontFamily: "Outfit, system-ui, sans-serif",
                 fontSize: "clamp(22px, 2.2vw, 28px)",
-                fontWeight: 800,
+                fontWeight: 900,
                 lineHeight: 1.25,
-                color: "#FAF8F5",
+                color: "#1B3B22",
                 letterSpacing: "-0.015em",
               }}
             >
@@ -394,14 +401,14 @@ export default function Footer() {
         <div
           style={{
             paddingTop: 24,
-            borderTop: "1px solid rgba(255, 255, 255, 0.1)",
+            borderTop: "1px solid #E2DDD3",
             display: "flex",
             alignItems: "center",
             justifyContent: "space-between",
             flexWrap: "wrap",
             gap: 16,
             fontSize: 12.5,
-            color: "#A2B4A5",
+            color: "#64748B",
           }}
         >
           <div>
@@ -409,29 +416,29 @@ export default function Footer() {
           </div>
 
           <div style={{ display: "flex", alignItems: "center", gap: 18, flexWrap: "wrap" }}>
-            <Link to="/privacy-policy" style={{ color: "#A2B4A5", textDecoration: "none" }} className="hover:text-white transition-colors">
+            <Link to="/privacy-policy" style={{ color: "#64748B", textDecoration: "none" }} className="hover:text-[#1B3B22] transition-colors">
               Privacy Policy
             </Link>
-            <span>•</span>
-            <Link to="/terms-conditions" style={{ color: "#A2B4A5", textDecoration: "none" }} className="hover:text-white transition-colors">
+            <span style={{ color: "#CBD5E1" }}>•</span>
+            <Link to="/terms-conditions" style={{ color: "#64748B", textDecoration: "none" }} className="hover:text-[#1B3B22] transition-colors">
               Terms of Service
             </Link>
-            <span>•</span>
-            <a href="/sitemap.xml" style={{ color: "#A2B4A5", textDecoration: "none" }} className="hover:text-white transition-colors">
+            <span style={{ color: "#CBD5E1" }}>•</span>
+            <a href="/sitemap.xml" style={{ color: "#64748B", textDecoration: "none" }} className="hover:text-[#1B3B22] transition-colors">
               Sitemap
             </a>
-            <span>•</span>
+            <span style={{ color: "#CBD5E1" }}>•</span>
             <button
               onClick={openCookiePreferences}
               style={{
                 background: "none",
                 border: "none",
-                color: "#A2B4A5",
+                color: "#64748B",
                 fontSize: 12.5,
                 cursor: "pointer",
                 padding: 0,
               }}
-              className="hover:text-white transition-colors"
+              className="hover:text-[#1B3B22] transition-colors"
             >
               Cookie Preferences
             </button>
