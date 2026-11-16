@@ -8,7 +8,7 @@ import { useUserAuth } from "../context/UserAuthContext";
 import { toast } from "./ui/Toast";
 
 const APPLE_CLIENT_ID = import.meta.env.VITE_APPLE_CLIENT_ID || "";
-const REDIRECT_URI = import.meta.env.VITE_APPLE_REDIRECT_URI || window.location.origin;
+const REDIRECT_URI = import.meta.env.VITE_APPLE_REDIRECT_URI || (typeof window !== "undefined" ? window.location.origin : "");
 
 function loadAppleSdk() {
   return new Promise((resolve) => {

@@ -987,7 +987,13 @@ async def admin_get_analytics():
         "orderStatusFunnel": status_funnel,
         "topProducts": top_products,
         "lowStockAlerts": serialize_doc(low_stock_accessories[:6]),
-        "recentTransactions": serialize_doc(sorted(transactions, key=lambda t: t.get("date") or t.get("createdAt") or now, reverse=True)[:5]),
+        "recentTransactions": serialize_doc(
+            sorted(
+                transactions,
+                key=lambda t: str(t.get("date") or t.get("createdAt") or ""),
+                reverse=True,
+            )[:5]
+        ),
     }
 
 # ═══════════════════════════════════════════════════════════

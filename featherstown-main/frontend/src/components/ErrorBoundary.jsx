@@ -80,11 +80,45 @@ export default class ErrorBoundary extends React.Component {
                 fontSize: 14,
                 color: "#736B5E",
                 lineHeight: 1.6,
-                marginBottom: 28,
+                marginBottom: 20,
               }}
             >
               We encountered an unexpected display hiccup, but don't worry — your cart and data are safe.
             </p>
+
+            {this.state.error && (
+              <details
+                style={{
+                  marginBottom: 24,
+                  textAlign: "left",
+                  background: "#F8FAFC",
+                  border: "1px solid #E2E8F0",
+                  borderRadius: 10,
+                  padding: "10px 14px",
+                  fontSize: 12,
+                  color: "#991B1B",
+                }}
+              >
+                <summary style={{ cursor: "pointer", fontWeight: 700, color: "#DC2626" }}>
+                  View technical error details ({this.state.error?.name || "Error"})
+                </summary>
+                <pre
+                  style={{
+                    whiteSpace: "pre-wrap",
+                    wordBreak: "break-all",
+                    marginTop: 8,
+                    fontSize: 11,
+                    fontFamily: "monospace",
+                    color: "#B91C1C",
+                    maxHeight: 160,
+                    overflowY: "auto",
+                  }}
+                >
+                  {this.state.error?.stack || this.state.error?.message || String(this.state.error)}
+                </pre>
+              </details>
+            )}
+
             <div
               style={{
                 display: "flex",

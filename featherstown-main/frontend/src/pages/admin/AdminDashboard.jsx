@@ -91,9 +91,9 @@ export default function AdminDashboard() {
 
   // Compute 30-Day Trend Chart SVG Points
   const trendPoints = useMemo(() => {
-    if (!data?.trend30Days || data.trend30Days.length === 0) return null;
+    if (!data?.trend30Days || !Array.isArray(data.trend30Days) || data.trend30Days.length < 2) return null;
     const days = data.trend30Days;
-    const maxRev = Math.max(...days.map((d) => Math.max(d.revenue, d.expenses, 1000)));
+    const maxRev = Math.max(...days.map((d) => Math.max(Number(d.revenue) || 0, Number(d.expenses) || 0, 1000)));
 
     const width = 800;
     const height = 220;
@@ -101,16 +101,17 @@ export default function AdminDashboard() {
     const padY = 24;
     const chartW = width - padX * 2;
     const chartH = height - padY * 2;
+    const divisor = Math.max(days.length - 1, 1);
 
     const revCoords = days.map((d, i) => {
-      const x = padX + (i / (days.length - 1)) * chartW;
-      const y = height - padY - (d.revenue / maxRev) * chartH;
+      const x = padX + (i / divisor) * chartW;
+      const y = height - padY - ((Number(d.revenue) || 0) / (maxRev || 1)) * chartH;
       return { x, y, ...d };
     });
 
     const expCoords = days.map((d, i) => {
-      const x = padX + (i / (days.length - 1)) * chartW;
-      const y = height - padY - (d.expenses / maxRev) * chartH;
+      const x = padX + (i / divisor) * chartW;
+      const y = height - padY - ((Number(d.expenses) || 0) / (maxRev || 1)) * chartH;
       return { x, y, ...d };
     });
 
@@ -191,6 +192,7 @@ export default function AdminDashboard() {
     );
   }
 
+  const summary = data?.summary || data || {};
   const {
     grossRevenue = 0,
     totalExpenses = 0,
@@ -204,13 +206,14 @@ export default function AdminDashboard() {
     availableBirds = 0,
     totalAccessories = 0,
     lowStockCount = 0,
-    categoryBreakdown = [],
-    paymentMethodBreakdown = [],
-    orderStatusFunnel = {},
-    lowStockAlerts = [],
-    recentTransactions = [],
-    recentInvoices = [],
-  } = data || {};
+  } = summary;
+
+  const categoryBreakdown = Array.isArray(data?.categoryBreakdown) ? data.categoryBreakdown : [];
+  const paymentMethodBreakdown = Array.isArray(data?.paymentMethodBreakdown) ? data.paymentMethodBreakdown : [];
+  const orderStatusFunnel = data?.orderStatusFunnel || {};
+  const lowStockAlerts = Array.isArray(data?.lowStockAlerts) ? data.lowStockAlerts : [];
+  const recentTransactions = Array.isArray(data?.recentTransactions) ? data.recentTransactions : [];
+  const recentInvoices = Array.isArray(data?.recentInvoices) ? data.recentInvoices : [];
 
   return (
     <div style={{ maxWidth: 1400, margin: "0 auto" }}>

@@ -509,3 +509,4 @@ export default function PrintableInvoice({ invoice, settings, onClose }) {
     </div>
   );
 }
+

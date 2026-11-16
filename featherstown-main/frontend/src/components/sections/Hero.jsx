@@ -947,7 +947,7 @@ export default function Hero() {
               animation: "fadeIn .7s ease .6s both, floatY2 6s ease-in-out 0s infinite",
             }}>
               <div style={{ position:"relative", display:"flex" }}>
-                ["A","B","C"].map((e, i) => (
+                {["A","B","C"].map((e, i) => (
                   <div key={i} style={{
                     width: 30,
                     height: 30,
