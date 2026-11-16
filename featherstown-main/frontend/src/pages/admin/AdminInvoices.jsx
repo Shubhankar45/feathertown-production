@@ -40,7 +40,8 @@ export default function AdminInvoices() {
     try {
       setLoading(true);
       const res = await adminFetch("/api/admin/invoices");
-      setInvoices(res || []);
+      const list = Array.isArray(res) ? res : (Array.isArray(res?.invoices) ? res.invoices : []);
+      setInvoices(list);
     } catch (err) {
       console.error("Failed to load invoices:", err);
       toast.error("Could not fetch invoices: " + err.message);
@@ -54,7 +55,8 @@ export default function AdminInvoices() {
   }, []);
 
   const filteredInvoices = useMemo(() => {
-    return invoices.filter((inv) => {
+    const list = Array.isArray(invoices) ? invoices : [];
+    return list.filter((inv) => {
       if (statusFilter !== "all" && inv.paymentStatus !== statusFilter) return false;
       if (!search.trim()) return true;
       const q = search.toLowerCase();
@@ -97,7 +99,7 @@ export default function AdminInvoices() {
       setPaymentModalInvoice(null);
       // Update in state
       setInvoices((prev) =>
-        prev.map((i) => ((i._id || i.id) === (res._id || res.id) ? res : i))
+        (Array.isArray(prev) ? prev : []).map((i) => ((i._id || i.id) === (res._id || res.id) ? res : i))
       );
     } catch (err) {
       toast.error(err.message || "Failed to record payment");

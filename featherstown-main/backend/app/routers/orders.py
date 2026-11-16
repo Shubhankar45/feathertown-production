@@ -108,7 +108,12 @@ async def create_razorpay_order(
     body: Dict[str, Any],
     user: Optional[Dict[str, Any]] = Depends(get_optional_user),
 ):
-    if user and not user.get("emailVerified"):
+    if not user:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail={"msg": "Please sign in or create an account to complete your purchase."},
+        )
+    if not user.get("emailVerified"):
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
             detail={
@@ -228,7 +233,12 @@ async def create_cod_order(
     body: Dict[str, Any],
     user: Optional[Dict[str, Any]] = Depends(get_optional_user),
 ):
-    if user and not user.get("emailVerified"):
+    if not user:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail={"msg": "Please sign in or create an account to complete your purchase."},
+        )
+    if not user.get("emailVerified"):
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
             detail={

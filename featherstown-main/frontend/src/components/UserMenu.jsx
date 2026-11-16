@@ -29,40 +29,113 @@ export default function UserMenu() {
 
   if (!user) {
     return (
-      <Link
-        to="/login"
-        state={{ from: location }}
-        className="t-btn-press"
-        style={{
-          display: "flex",
-          flexDirection: "column",
-          alignItems: "center",
-          textDecoration: "none",
-          color: "#1B3B22",
-          fontSize: 11,
-          fontWeight: 700,
-          position: "relative",
-        }}
-        aria-label="Account Login"
-      >
-        <div
+      <div ref={ref} style={{ position: "relative" }}>
+        <button
+          onClick={() => setOpen((o) => !o)}
+          className="t-btn-press"
           style={{
-            width: 38,
-            height: 38,
-            borderRadius: "50%",
-            background: "#FAF8F5",
-            border: "1px solid #E2DDD3",
             display: "flex",
+            flexDirection: "column",
             alignItems: "center",
-            justifyContent: "center",
+            background: "none",
+            border: "none",
+            cursor: "pointer",
             color: "#1B3B22",
-            marginBottom: 1,
+            fontSize: 11,
+            fontWeight: 700,
+            padding: 0,
           }}
+          aria-label="Account / Guest"
         >
-          <User size={19} strokeWidth={2.2} />
-        </div>
-        <span className="ft-icon-label" style={{ color: "#1B3B22" }}>Account</span>
-      </Link>
+          <div
+            style={{
+              width: 38,
+              height: 38,
+              borderRadius: "50%",
+              background: open ? "#E7EFE8" : "#FAF8F5",
+              border: "1px solid #E2DDD3",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              color: "#1B3B22",
+              marginBottom: 1,
+              transition: "background 0.15s ease",
+            }}
+          >
+            <User size={19} strokeWidth={2.2} />
+          </div>
+          <span className="ft-icon-label" style={{ color: "#1B3B22" }}>Account</span>
+        </button>
+
+        {open && (
+          <div
+            style={{
+              position: "absolute",
+              top: "calc(100% + 10px)",
+              right: 0,
+              background: "#FFFFFF",
+              borderRadius: 18,
+              boxShadow: "0 20px 40px -10px rgba(0, 0, 0, 0.14), 0 0 0 1px #E2DDD3",
+              minWidth: 240,
+              padding: "16px",
+              zIndex: 300,
+            }}
+          >
+            <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 8 }}>
+              <div style={{ width: 8, height: 8, borderRadius: "50%", background: "#166534" }} />
+              <span style={{ fontSize: 11.5, fontWeight: 700, color: "#1B3B22", textTransform: "uppercase", letterSpacing: 0.5 }}>
+                Guest Mode Active
+              </span>
+            </div>
+            <p style={{ fontSize: 12, color: "#64748B", margin: "0 0 14px", lineHeight: 1.4 }}>
+              You're exploring as a guest. Sign in or create an account to place orders and track birds.
+            </p>
+            <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+              <Link
+                to="/login"
+                state={{ from: location }}
+                onClick={() => setOpen(false)}
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  gap: 6,
+                  padding: "9px 14px",
+                  borderRadius: 10,
+                  background: "#1B3B22",
+                  color: "#FFFFFF",
+                  fontSize: 13,
+                  fontWeight: 700,
+                  textDecoration: "none",
+                }}
+              >
+                Sign In
+              </Link>
+              <Link
+                to="/register"
+                state={{ from: location }}
+                onClick={() => setOpen(false)}
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  gap: 6,
+                  padding: "9px 14px",
+                  borderRadius: 10,
+                  background: "#FAF8F5",
+                  border: "1px solid #1B3B22",
+                  color: "#1B3B22",
+                  fontSize: 13,
+                  fontWeight: 700,
+                  textDecoration: "none",
+                }}
+              >
+                Create Account
+              </Link>
+            </div>
+          </div>
+        )}
+      </div>
     );
   }
 

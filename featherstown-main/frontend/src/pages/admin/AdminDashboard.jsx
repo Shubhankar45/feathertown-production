@@ -45,8 +45,8 @@ export default function AdminDashboard() {
       ]);
 
       setData(analyticsData);
-      setBirds(birdsData.slice(0, 8));
-      setRecentOrders(ordersData.slice(0, 6));
+      setBirds(Array.isArray(birdsData) ? birdsData.slice(0, 8) : []);
+      setRecentOrders(Array.isArray(ordersData) ? ordersData.slice(0, 6) : []);
     } catch (err) {
       console.error("Dashboard error:", err);
       setError(err.message || "Failed to load business analytics");

@@ -55,7 +55,8 @@ export default function AdminTransactions() {
     try {
       setLoading(true);
       const res = await adminFetch("/api/admin/transactions");
-      setTransactions(res || []);
+      const list = Array.isArray(res) ? res : (Array.isArray(res?.transactions) ? res.transactions : []);
+      setTransactions(list);
     } catch (err) {
       console.error("Failed to load transactions:", err);
       toast.error("Could not fetch financial ledger: " + err.message);
@@ -69,7 +70,8 @@ export default function AdminTransactions() {
   }, []);
 
   const filteredTransactions = useMemo(() => {
-    return transactions.filter((t) => {
+    const list = Array.isArray(transactions) ? transactions : [];
+    return list.filter((t) => {
       if (typeFilter !== "all" && t.type !== typeFilter) return false;
       if (categoryFilter !== "all" && t.category !== categoryFilter) return false;
       if (!search.trim()) return true;
@@ -86,7 +88,8 @@ export default function AdminTransactions() {
   const { totalInflow, totalOutflow, netCashFlow } = useMemo(() => {
     let inflow = 0;
     let outflow = 0;
-    transactions.forEach((t) => {
+    const list = Array.isArray(transactions) ? transactions : [];
+    list.forEach((t) => {
       const amt = Number(t.amount) || 0;
       if (t.type === "income") inflow += amt;
       else if (t.type === "expense") outflow += amt;

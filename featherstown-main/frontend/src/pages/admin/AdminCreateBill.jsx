@@ -97,9 +97,9 @@ export default function AdminCreateBill() {
           adminFetch("/api/admin/accessories"),
           adminFetch("/api/admin/customers"),
         ]);
-        setBirds(birdsRes || []);
-        setAccessories(accRes || []);
-        setCustomers(custRes || []);
+        setBirds(Array.isArray(birdsRes) ? birdsRes : (Array.isArray(birdsRes?.birds) ? birdsRes.birds : []));
+        setAccessories(Array.isArray(accRes) ? accRes : (Array.isArray(accRes?.accessories) ? accRes.accessories : []));
+        setCustomers(Array.isArray(custRes) ? custRes : (Array.isArray(custRes?.customers) ? custRes.customers : []));
       } catch (err) {
         console.error("Failed to load catalog data:", err);
         toast.error("Could not fetch stock catalogs: " + err.message);
@@ -112,9 +112,10 @@ export default function AdminCreateBill() {
 
   // Filtered customer search
   const filteredCustomers = useMemo(() => {
+    const list = Array.isArray(customers) ? customers : [];
     if (!customerSearch.trim()) return [];
     const q = customerSearch.toLowerCase();
-    return customers.filter(
+    return list.filter(
       (c) =>
         c.name?.toLowerCase().includes(q) ||
         c.phone?.toLowerCase().includes(q) ||

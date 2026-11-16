@@ -209,3 +209,106 @@ def send_verification_otp_email(email_to: str, otp: str, user_name: str = "Bird 
     except Exception as e:
         print(f"❌ Failed to dispatch verification email to {email_to}: {e}")
         return False
+
+def send_password_reset_otp_email(email_to: str, otp: str, user_name: str = "Customer"):
+    """Sends 6-digit password reset code to customer."""
+    print(f"🔑 [PASSWORD RESET OTP] To: {email_to} | Code: {otp} | User: {user_name}")
+
+    if not mail_enabled:
+        print(f"⚠️ SMTP not configured. Reset OTP logged above for development/testing.")
+        return True
+
+    try:
+        msg = MIMEMultipart("alternative")
+        msg["From"] = f'"{MAIL_FROM_NAME}" <{MAIL_FROM_ADDRESS}>'
+        msg["To"] = email_to
+        msg["Reply-To"] = MAIL_FROM_ADDRESS
+        msg["Subject"] = f"{otp} is your FeatherTown Password Reset Code"
+
+        text_content = (
+            f"Hello {user_name},\n\n"
+            f"We received a request to reset the password for your FeatherTown account.\n\n"
+            f"Your 6-digit verification code is: {otp}\n\n"
+            "This code is valid for 15 minutes. For your security, never share this code with anyone.\n\n"
+            "If you did not request a password reset, you can safely ignore this email — your account remains secure.\n\n"
+            "— The FeatherTown Aviary Team\n"
+            "support@feathertown.online · https://www.feathertown.online"
+        )
+
+        html_content = f"""
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <style>
+    body {{ font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; background-color: #FAF8F5; margin: 0; padding: 24px; color: #152B17; }}
+    .container {{ max-width: 540px; margin: 0 auto; background: #FFFFFF; border-radius: 20px; border: 1px solid #E2DDD3; overflow: hidden; box-shadow: 0 4px 20px rgba(27, 59, 34, 0.06); }}
+    .header {{ background: #1B3B22; padding: 28px 24px; text-align: center; color: #FAF8F5; }}
+    .brand {{ font-size: 24px; font-weight: 900; letter-spacing: -0.02em; }}
+    .brand-red {{ color: #D9381E; }}
+    .body {{ padding: 32px 28px; }}
+    .otp-box {{ background: #FAF8F5; border: 2px dashed #D9381E; border-radius: 14px; padding: 18px; text-align: center; margin: 24px 0; }}
+    .otp-code {{ font-size: 34px; font-weight: 900; letter-spacing: 8px; color: #D9381E; font-family: monospace, monospace; }}
+    .notice {{ font-size: 13px; color: #736B5E; line-height: 1.5; margin-top: 20px; border-top: 1px solid #E2DDD3; padding-top: 16px; }}
+    .footer {{ background: #FAF8F5; padding: 18px 24px; text-align: center; font-size: 12px; color: #736B5E; border-top: 1px solid #E2DDD3; }}
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <div class="brand">Feather<span class="brand-red">Town</span>.</div>
+      <div style="font-size: 12px; opacity: 0.85; margin-top: 4px; text-transform: uppercase; letter-spacing: 1px;">Account Security</div>
+    </div>
+    <div class="body">
+      <h2 style="margin: 0 0 12px 0; font-size: 20px; color: #152B17;">Password Reset Request</h2>
+      <p style="font-size: 14.5px; line-height: 1.6; color: #4B463E; margin: 0 0 16px 0;">
+        Hello <strong>{user_name}</strong>, we received a request to reset your FeatherTown password. Use the code below to complete the reset:
+      </p>
+
+      <div class="otp-box">
+        <div style="font-size: 11px; text-transform: uppercase; letter-spacing: 1.5px; color: #736B5E; margin-bottom: 6px;">Password Reset Code</div>
+        <div class="otp-code">{otp}</div>
+      </div>
+
+      <p style="font-size: 13px; color: #736B5E; text-align: center; margin: 0 0 16px 0;">
+        ⏱️ This code expires in <strong>15 minutes</strong>. Single use only.
+      </p>
+
+      <div class="notice">
+        <strong>Security Notice:</strong> If you did not request this password reset, your account is still secure. Please do not share this code with anyone.
+      </div>
+    </div>
+    <div class="footer">
+      FeatherTown Aviary · Certified Ethical Companion Birds &amp; Supplies<br>
+      Sundargarh, Odisha, India · <a href="https://www.feathertown.online" style="color: #1B3B22;">feathertown.online</a>
+    </div>
+  </div>
+</body>
+</html>
+"""
+
+        part_text = MIMEText(text_content, "plain", "utf-8")
+        part_html = MIMEText(html_content, "html", "utf-8")
+        msg.attach(part_text)
+        msg.attach(part_html)
+
+        context = ssl.create_default_context()
+        context.check_hostname = False
+        context.verify_mode = ssl.CERT_NONE
+
+        if MAIL_PORT == 465 or MAIL_SECURE:
+            with smtplib.SMTP_SSL(resolved_mail_host, MAIL_PORT, context=context, timeout=15) as server:
+                server.login(MAIL_USER, MAIL_PASS)
+                server.sendmail(MAIL_FROM_ADDRESS, [email_to], msg.as_string())
+        else:
+            with smtplib.SMTP(resolved_mail_host, MAIL_PORT, timeout=15) as server:
+                if MAIL_SECURE:
+                    server.starttls(context=context)
+                server.login(MAIL_USER, MAIL_PASS)
+                server.sendmail(MAIL_FROM_ADDRESS, [email_to], msg.as_string())
+
+        print(f"✅ Password reset OTP email dispatched to: {email_to}")
+        return True
+    except Exception as e:
+        print(f"❌ Failed to dispatch password reset email to {email_to}: {e}")
+        return False

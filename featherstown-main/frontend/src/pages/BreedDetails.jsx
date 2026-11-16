@@ -21,6 +21,7 @@ const T = {
   leafHover: "#2D5A37",
   amber: "#D9381E",
   amberLight: "#FDECE8",
+  accent: "#D9381E",
   dark: "#152B17",
   text: "#152B17",
   muted: "#736B5E",

@@ -52,7 +52,8 @@ export default function AdminCustomers() {
     try {
       setLoading(true);
       const res = await adminFetch("/api/admin/customers");
-      setCustomers(res || []);
+      const list = Array.isArray(res) ? res : (Array.isArray(res?.customers) ? res.customers : []);
+      setCustomers(list);
     } catch (err) {
       console.error("Failed to load customers:", err);
       toast.error("Could not fetch customer database: " + err.message);
@@ -66,9 +67,10 @@ export default function AdminCustomers() {
   }, []);
 
   const filteredCustomers = useMemo(() => {
-    if (!search.trim()) return customers;
+    const list = Array.isArray(customers) ? customers : [];
+    if (!search.trim()) return list;
     const q = search.toLowerCase();
-    return customers.filter(
+    return list.filter(
       (c) =>
         c.name?.toLowerCase().includes(q) ||
         c.phone?.toLowerCase().includes(q) ||
@@ -83,7 +85,7 @@ export default function AdminCustomers() {
     try {
       setLoadingHistory(true);
       const res = await adminFetch(`/api/admin/customers/${cust._id || cust.id}`);
-      setCustomerInvoices(res.invoices || []);
+      setCustomerInvoices(Array.isArray(res?.invoices) ? res.invoices : []);
     } catch (err) {
       console.error("Failed to fetch customer history:", err);
     } finally {
@@ -650,7 +652,7 @@ export default function AdminCustomers() {
                   </div>
                 ) : (
                   <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
-                    {customerInvoices.map((inv) => (
+                    {(Array.isArray(customerInvoices) ? customerInvoices : []).map((inv) => (
                       <div
                         key={inv._id || inv.id}
                         style={{

@@ -43,7 +43,8 @@ export default function AdminBookingTracker() {
     try {
       setLoading(true);
       const res = await adminFetch("/api/admin/bookings");
-      setBookings(res || []);
+      const list = Array.isArray(res) ? res : (Array.isArray(res?.bookings) ? res.bookings : []);
+      setBookings(list);
     } catch (err) {
       console.error("Failed to load bookings:", err);
       toast.error("Could not fetch bird bookings: " + err.message);
@@ -57,7 +58,8 @@ export default function AdminBookingTracker() {
   }, []);
 
   const filteredBookings = useMemo(() => {
-    return bookings.filter((b) => {
+    const list = Array.isArray(bookings) ? bookings : [];
+    return list.filter((b) => {
       if (activeTab !== "all" && b.status !== activeTab) return false;
       if (!search.trim()) return true;
       const q = search.toLowerCase();

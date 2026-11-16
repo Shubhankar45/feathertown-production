@@ -25,6 +25,8 @@ import Avatar from "../ui/Avatar";
 import AvatarPicker from "../ui/AvatarPicker";
 import { toast } from "../ui/Toast";
 import { sanitizeText } from "../../utils/security";
+import { useUserAuth } from "../../context/UserAuthContext";
+import AuthPromptModal from "../ui/AuthPromptModal";
 
 const CATEGORY_TABS = [
   { id: "all", label: "All Reviews" },
@@ -43,9 +45,11 @@ export default function Reviews({ standalone = false }) {
     recommendationRate: 98,
     verifiedCount: 124,
   });
+  const { user } = useUserAuth();
   const [activeCategory, setActiveCategory] = useState("all");
   const [helpfulVoted, setHelpfulVoted] = useState({});
   const [modalOpen, setModalOpen] = useState(false);
+  const [authPromptOpen, setAuthPromptOpen] = useState(false);
 
   // Form states
   const [rating, setRating] = useState(5);
@@ -364,7 +368,7 @@ export default function Reviews({ standalone = false }) {
             </p>
 
             <button
-              onClick={() => setModalOpen(true)}
+              onClick={() => (user ? setModalOpen(true) : setAuthPromptOpen(true))}
               className="t-btn-press"
               style={{
                 background: "#D9381E",
@@ -842,6 +846,13 @@ export default function Reviews({ standalone = false }) {
           </div>
         </div>
       )}
+      {/* Guest Sign In Prompt Modal */}
+      <AuthPromptModal
+        isOpen={authPromptOpen}
+        onClose={() => setAuthPromptOpen(false)}
+        title="Sign In to Share a Review"
+        description="To keep our community authentic and prevent spam, verified customer reviews require a signed-in account."
+      />
     </section>
   );
 }

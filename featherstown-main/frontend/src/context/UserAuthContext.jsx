@@ -139,6 +139,14 @@ export function UserAuthProvider({ children }) {
     return data.user;
   }, []);
 
+  const forgotPassword = useCallback(async (email) => {
+    return await postJson("/api/auth/user/forgot-password", { email });
+  }, []);
+
+  const resetPassword = useCallback(async (email, otp, newPassword) => {
+    return await postJson("/api/auth/user/reset-password", { email, otp, newPassword });
+  }, []);
+
   const logout = useCallback(async () => {
     try {
       await fetch("/api/auth/user/logout", { method: "POST", credentials: "include" });
@@ -152,6 +160,8 @@ export function UserAuthProvider({ children }) {
     <UserAuthContext.Provider
       value={{
         user,
+        isGuest: !user,
+        role: user?.role || "guest",
         loading,
         googleAuthEnabled,
         googleClientId,
@@ -165,6 +175,8 @@ export function UserAuthProvider({ children }) {
         loginWithPassword,
         loginWithGoogle,
         loginWithApple,
+        forgotPassword,
+        resetPassword,
         refreshToken,
         logout,
         refresh,

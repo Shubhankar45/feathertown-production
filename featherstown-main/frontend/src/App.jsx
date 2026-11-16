@@ -25,6 +25,8 @@ import Checkout from "./pages/Checkout";
 import OrderSuccess from "./pages/OrderSuccess";
 import MyOrders from "./pages/MyOrders";
 import Login from "./pages/Login";
+import Signup from "./pages/Signup";
+import ProtectedUserRoute from "./components/ProtectedUserRoute";
 import { CartProvider } from "./context/CartContext";
 import { UserAuthProvider } from "./context/UserAuthContext";
 
@@ -152,11 +154,25 @@ function App() {
                           <Route path="/accessories" element={<Accessories />} />
                           <Route path="/accessories/:idOrSlug" element={<AccessoryDetails />} />
                           <Route path="/cart" element={<Cart />} />
-                          <Route path="/checkout" element={<Checkout />} />
+                          <Route
+                            path="/checkout"
+                            element={
+                              <ProtectedUserRoute requiredAction="complete checkout and track your delivery">
+                                <Checkout />
+                              </ProtectedUserRoute>
+                            }
+                          />
                           <Route path="/order-success" element={<OrderSuccess />} />
-                          <Route path="/my-orders" element={<MyOrders />} />
+                          <Route
+                            path="/my-orders"
+                            element={
+                              <ProtectedUserRoute requiredAction="view your companion bird bookings and orders">
+                                <MyOrders />
+                              </ProtectedUserRoute>
+                            }
+                          />
                           <Route path="/login" element={<Login />} />
-                          <Route path="/register" element={<Login />} />
+                          <Route path="/register" element={<Signup />} />
                           <Route path="/privacy-policy" element={<PrivacyPolicy />} />
                           <Route path="/terms" element={<TermsConditions />} />
                           <Route path="/terms-conditions" element={<TermsConditions />} />

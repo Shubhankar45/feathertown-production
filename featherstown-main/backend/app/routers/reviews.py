@@ -1,11 +1,12 @@
 from datetime import datetime, timezone
 from typing import Dict, Any, Optional
-from fastapi import APIRouter, HTTPException, Query, status
+from fastapi import APIRouter, HTTPException, Query, status, Depends
 from pymongo import DESCENDING
 from bson import ObjectId
 
 from app.database import reviews_col
 from app.utils import serialize_doc, is_valid_object_id, to_object_id
+from app.auth import get_optional_user
 
 router = APIRouter(prefix="/api/reviews", tags=["Reviews"])
 
@@ -175,8 +176,17 @@ async def get_review_stats():
 
 @router.post("", status_code=status.HTTP_201_CREATED)
 @router.post("/", status_code=status.HTTP_201_CREATED)
-async def add_review(body: Dict[str, Any]):
-    name = body.get("name")
+async def add_review(
+    body: Dict[str, Any],
+    user: Optional[Dict[str, Any]] = Depends(get_optional_user),
+):
+    if not user:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail={"msg": "Please sign in or create an account to share a verified customer review."},
+        )
+
+    name = body.get("name") or user.get("name")
     title = body.get("title")
     comment = body.get("comment")
     rating = body.get("rating")

@@ -47,7 +47,8 @@ export default function MyOrders() {
     }
     fetch("/api/orders/mine", { credentials: "include" })
       .then((r) => (r.ok ? r.json() : []))
-      .then(setOrders)
+      .then((data) => setOrders(Array.isArray(data) ? data : (Array.isArray(data?.orders) ? data.orders : [])))
+      .catch(() => setOrders([]))
       .finally(() => setLoading(false));
   }, [user]);
 

@@ -11,7 +11,8 @@ import useSavedQuizAnswers from "../../hooks/useSavedQuizAnswers";
 import { useSettings } from "../../context/SettingsContext";
 import SpotlightCard from "../react-bits/SpotlightCard";
 
-export default function BirdsShowcase({ parrots, standalone = false }) {
+export default function BirdsShowcase({ parrots = [], standalone = false }) {
+  const safeParrots = Array.isArray(parrots) ? parrots : [];
   const { settings } = useSettings();
   const waNum = (settings?.whatsapp || "919556747518").replace(/\D/g, "");
   const WA = (n) =>
@@ -35,16 +36,16 @@ export default function BirdsShowcase({ parrots, standalone = false }) {
 
   const cats = [
     "All",
-    ...new Set([...(settings?.birdCategories || []), ...parrots.map((p) => p.category)].filter(Boolean)),
+    ...new Set([...(settings?.birdCategories || []), ...safeParrots.map((p) => p.category)].filter(Boolean)),
   ];
-  const cntFor = (c) => (c === "All" ? parrots.length : parrots.filter((p) => p.category === c).length);
+  const cntFor = (c) => (c === "All" ? safeParrots.length : safeParrots.filter((p) => p.category === c).length);
 
-  const filtered = parrots
+  const filtered = safeParrots
     .filter((p) => cat === "All" || p.category === cat)
     .filter(
       (p) =>
         !query ||
-        p.name.toLowerCase().includes(query.toLowerCase()) ||
+        p.name?.toLowerCase().includes(query.toLowerCase()) ||
         (p.description || "").toLowerCase().includes(query.toLowerCase()) ||
         (p.category || "").toLowerCase().includes(query.toLowerCase())
     );

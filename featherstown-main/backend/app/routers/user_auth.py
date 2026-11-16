@@ -42,7 +42,7 @@ from app.rate_limiter import (
     login_security,
     get_client_ip,
 )
-from app.mailer import send_verification_otp_email
+from app.mailer import send_verification_otp_email, send_password_reset_otp_email
 from app.utils import to_object_id
 
 router = APIRouter(prefix="/api/auth/user", tags=["Customer Auth"])
@@ -121,6 +121,7 @@ def public_user(user: Dict[str, Any]) -> Dict[str, Any]:
         "name": user.get("name", ""),
         "email": user.get("email", ""),
         "avatar": user.get("avatar", ""),
+        "role": user.get("role", "customer"),
         "emailVerified": bool(user.get("emailVerified", False)),
         "authProvider": "google" if user.get("googleId") else ("apple" if user.get("appleId") else "local"),
     }
@@ -740,4 +741,126 @@ async def user_auth_status():
         "googleClientId": GOOGLE_CLIENT_ID if GOOGLE_AUTH_ENABLED else "",
         "appleAuthEnabled": APPLE_AUTH_ENABLED,
         "appleClientId": APPLE_CLIENT_ID if APPLE_AUTH_ENABLED else "",
+    }
+
+@router.post("/forgot-password", dependencies=[Depends(otp_resend_limiter)])
+async def forgot_password(body: Dict[str, Any]):
+    """
+    Initiates password reset flow by sending a 6-digit OTP to the registered email.
+    Uses timing-safe generic response to prevent email enumeration attacks.
+    """
+    email_raw = str(body.get("email") or "").strip().lower()
+    if not is_valid_email_syntax(email_raw):
+        raise HTTPException(status_code=400, detail={"msg": "Please enter a valid email address"})
+
+    user = await users_col.find_one({"email": email_raw})
+    if user:
+        # Generate 6-digit OTP code
+        otp = f"{secrets.randbelow(900000) + 100000}"
+        code_hash = hashlib.sha256(f"{otp}:{email_raw}".encode()).hexdigest()
+        now = datetime.now(timezone.utc)
+        expires_at = now + timedelta(minutes=15)
+
+        await users_col.update_one(
+            {"_id": user["_id"]},
+            {
+                "$set": {
+                    "resetOtp": {
+                        "codeHash": code_hash,
+                        "expiresAt": expires_at,
+                        "attempts": 0,
+                        "createdAt": now,
+                    }
+                }
+            },
+        )
+        send_password_reset_otp_email(email_raw, otp, user.get("name", "Customer"))
+
+    return {
+        "msg": "If an account exists with this email address, a 6-digit password reset code has been sent.",
+        "email": email_raw,
+    }
+
+@router.post("/reset-password", dependencies=[Depends(otp_verify_limiter)])
+async def reset_password(body: Dict[str, Any]):
+    """
+    Validates reset OTP and updates customer account password.
+    Revokes previous refresh tokens for security.
+    """
+    email_raw = str(body.get("email") or "").strip().lower()
+    otp_code = str(body.get("otp") or "").strip()
+    new_password = str(body.get("newPassword") or "")
+
+    if not is_valid_email_syntax(email_raw):
+        raise HTTPException(status_code=400, detail={"msg": "Invalid email address format"})
+
+    if not re.match(r"^\d{6}$", otp_code):
+        raise HTTPException(status_code=400, detail={"msg": "Verification code must be exactly 6 digits"})
+
+    validate_password_strength(new_password)
+
+    user = await users_col.find_one({"email": email_raw})
+    if not user or not user.get("resetOtp"):
+        raise HTTPException(
+            status_code=400,
+            detail={"msg": "Invalid or expired password reset request. Please request a new code."},
+        )
+
+    reset_state = user["resetOtp"]
+    now = datetime.now(timezone.utc)
+
+    # Check expiration
+    expires_at = reset_state.get("expiresAt")
+    if isinstance(expires_at, datetime):
+        if expires_at.tzinfo is None:
+            expires_at = expires_at.replace(tzinfo=timezone.utc)
+        if now > expires_at:
+            await users_col.update_one({"_id": user["_id"]}, {"$unset": {"resetOtp": ""}})
+            raise HTTPException(
+                status_code=400,
+                detail={"msg": "Password reset code has expired. Please request a new code."},
+            )
+
+    # Check attempt limit
+    attempts = int(reset_state.get("attempts") or 0)
+    if attempts >= 5:
+        await users_col.update_one({"_id": user["_id"]}, {"$unset": {"resetOtp": ""}})
+        raise HTTPException(
+            status_code=429,
+            detail={"msg": "Too many failed attempts. Code has been invalidated. Please request a new code."},
+        )
+
+    # Verify code hash
+    expected_hash = hashlib.sha256(f"{otp_code}:{email_raw}".encode()).hexdigest()
+    if not secrets.compare_digest(reset_state.get("codeHash", ""), expected_hash):
+        await users_col.update_one(
+            {"_id": user["_id"]},
+            {"$inc": {"resetOtp.attempts": 1}},
+        )
+        remaining = max(0, 5 - (attempts + 1))
+        raise HTTPException(
+            status_code=400,
+            detail={"msg": f"Incorrect 6-digit code. {remaining} attempt(s) remaining."},
+        )
+
+    # Update password and clear reset state
+    new_hash = hash_password(new_password)
+    await users_col.update_one(
+        {"_id": user["_id"]},
+        {
+            "$set": {
+                "passwordHash": new_hash,
+                "emailVerified": True,  # successful reset proves ownership of email
+                "updatedAt": now,
+            },
+            "$unset": {"resetOtp": ""},
+        },
+    )
+
+    # Revoke all existing sessions in refresh_tokens_col
+    await refresh_tokens_col.delete_many({"userId": str(user["_id"])})
+
+    return {
+        "msg": "Password has been successfully updated. You can now log in with your new password.",
+        "success": True,
     }
