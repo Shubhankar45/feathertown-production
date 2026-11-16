@@ -84,6 +84,30 @@ function ScrollManager() {
   return null;
 }
 
+/* Gateway for root '/' — by default when opening the website, show Login unless authenticated or guest mode chosen */
+function RootGateway() {
+  const { user, loading, guestModeActivated } = useUserAuth();
+
+  if (loading) {
+    return (
+      <div style={{ minHeight: "60vh", display: "flex", alignItems: "center", justifyContent: "center", background: "#FAF8F5" }}>
+        <div style={{ textAlign: "center" }}>
+          <div style={{ width: 40, height: 40, border: "3px solid #E2DDD3", borderTopColor: "#1B3B22", borderRadius: "50%", animation: "spin 0.8s linear infinite", margin: "0 auto 16px" }} />
+          <div style={{ fontSize: 13, fontWeight: 700, color: "#1B3B22", fontFamily: "Outfit, system-ui, sans-serif" }}>Opening FeatherTown...</div>
+        </div>
+      </div>
+    );
+  }
+
+  // If already authenticated or if visitor activated guest mode during this session
+  if ((user && user.emailVerified) || guestModeActivated) {
+    return <Home />;
+  }
+
+  // Default to standalone Login page on first opening the website
+  return <Navigate to="/login" replace />;
+}
+
 /* Public site — normal chrome (navbar/footer/cookies/sticky mobile CTA). */
 function SiteLayout({ children }) {
   return (
@@ -135,13 +159,18 @@ function App() {
                     <Route path="settings" element={<AdminSettings />} />
                   </Route>
 
-                  {/* ── Public site ── */}
+                  {/* ── Standalone Customer Auth routes (NO Navbar, NO Footer, NO PageChrome) ── */}
+                  <Route path="/login" element={<Login defaultTab="login" />} />
+                  <Route path="/register" element={<Login defaultTab="register" />} />
+
+                  {/* ── Public site with standard chrome ── */}
                   <Route
                     path="/*"
                     element={
                       <SiteLayout>
                         <Routes>
-                          <Route path="/" element={<Home />} />
+                          <Route path="/" element={<RootGateway />} />
+                          <Route path="/home" element={<Home />} />
                           <Route path="/quiz" element={<Home />} />
                           <Route path="/find-your-bird" element={<Home />} />
                           <Route path="/about" element={<About />} />
@@ -171,8 +200,6 @@ function App() {
                               </ProtectedUserRoute>
                             }
                           />
-                          <Route path="/login" element={<Login />} />
-                          <Route path="/register" element={<Signup />} />
                           <Route path="/privacy-policy" element={<PrivacyPolicy />} />
                           <Route path="/terms" element={<TermsConditions />} />
                           <Route path="/terms-conditions" element={<TermsConditions />} />

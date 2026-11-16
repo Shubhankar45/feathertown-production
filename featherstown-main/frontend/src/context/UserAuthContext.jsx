@@ -28,6 +28,22 @@ export function UserAuthProvider({ children }) {
   const [verificationPending, setVerificationPending] = useState(null);
   const [loading, setLoading] = useState(true);
 
+  // Guest Mode state (persisted across sessions/refreshes within browser session)
+  const [guestModeActivated, setGuestModeActivated] = useState(() => {
+    try {
+      return sessionStorage.getItem("ft_guest_mode") === "1";
+    } catch {
+      return false;
+    }
+  });
+
+  const activateGuestMode = useCallback(() => {
+    try {
+      sessionStorage.setItem("ft_guest_mode", "1");
+    } catch {}
+    setGuestModeActivated(true);
+  }, []);
+
   const refresh = useCallback(async () => {
     try {
       const res = await fetch("/api/auth/user/me", { credentials: "include" });
@@ -153,6 +169,10 @@ export function UserAuthProvider({ children }) {
     } finally {
       setUser(null);
       setVerificationPending(null);
+      try {
+        sessionStorage.removeItem("ft_guest_mode");
+      } catch {}
+      setGuestModeActivated(false);
     }
   }, []);
 
@@ -162,6 +182,8 @@ export function UserAuthProvider({ children }) {
         user,
         isGuest: !user,
         role: user?.role || "guest",
+        guestModeActivated,
+        activateGuestMode,
         loading,
         googleAuthEnabled,
         googleClientId,

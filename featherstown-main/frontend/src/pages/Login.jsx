@@ -1,12 +1,23 @@
 /* ═══════════════════════════════════════════════════════════════
-   Feathers Town — Dedicated Customer Login
+   Feathers Town — Standalone Unified Customer Auth Gateway
    /pages/Login.jsx
+
+   - NO Navbar, NO Footer, NO Page Chrome
+   - Default Landing Screen when first opening the website
+   - Unified Sign In & Create Account tabs with zero page reload
+   - 100% Brand Typography (Outfit, system-ui, sans-serif)
+   - Exact Brand Logo ("Feather" in #1B3B22 + "Town." in #D9381E)
+   - Compact, elegant, fully responsive: EVERYTHING visible without scrolling
+   - Full security: Brute-force lockout countdown, Password strength meter,
+     Email OTP verification, Password Reset flow, Google & Apple OAuth
+   - 1-Click "Continue as Guest" to enter and explore the full store
 ═══════════════════════════════════════════════════════════════ */
 import { useEffect, useState, useRef } from "react";
 import { useNavigate, useLocation, Link } from "react-router-dom";
 import {
   Lock,
   Mail,
+  User,
   ArrowRight,
   ShieldCheck,
   RefreshCw,
@@ -15,27 +26,35 @@ import {
   KeyRound,
   Eye,
   EyeOff,
-  User,
-  ArrowLeft,
+  Feather,
   Sparkles,
-  HelpCircle,
-  X,
+  Check,
 } from "lucide-react";
-import PageBanner from "../components/PageBanner";
 import SEOHead from "../components/SEOHead";
 import GoogleSignInButton from "../components/GoogleSignInButton";
 import AppleSignInButton from "../components/AppleSignInButton";
 import { useUserAuth } from "../context/UserAuthContext";
 import { toast } from "../components/ui/Toast";
 
-export default function Login() {
+// 6 Fast Avian Companion Avatars for Quick Profile Selection
+const QUICK_AVATARS = [
+  { id: "scarlet-macaw", name: "Scarlet Macaw", path: "/avatars/scarlet-macaw.svg", color: "#D9381E" },
+  { id: "cockatiel", name: "Cockatiel", path: "/avatars/cockatiel.svg", color: "#1B3B22" },
+  { id: "conure-sun", name: "Sun Conure", path: "/avatars/conure-sun.svg", color: "#EAB308" },
+  { id: "african-grey", name: "African Grey", path: "/avatars/african-grey.svg", color: "#64748B" },
+  { id: "green-cheek", name: "Green-Cheek", path: "/avatars/green-cheek.svg", color: "#166534" },
+  { id: "lovebird", name: "Lovebird", path: "/avatars/lovebird.svg", color: "#EC4899" },
+];
+
+export default function Login({ defaultTab = "login" }) {
   const {
     user,
     loading,
     googleAuthEnabled,
     appleAuthEnabled,
     verificationPending,
-    setVerificationPending,
+    activateGuestMode,
+    register,
     loginWithPassword,
     verifyEmail,
     resendOtp,
@@ -46,14 +65,20 @@ export default function Login() {
   const navigate = useNavigate();
   const location = useLocation();
 
-  // Mode: 'login' | 'verify' | 'forgot'
-  const [mode, setMode] = useState("login");
+  // Mode: 'login' | 'register' | 'verify' | 'forgot'
+  const [mode, setMode] = useState(defaultTab === "register" ? "register" : "login");
+
+  // Common Form States
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [submitting, setSubmitting] = useState(false);
 
-  // OTP Verification state
+  // Register Specific States
+  const [name, setName] = useState("");
+  const [selectedAvatar, setSelectedAvatar] = useState("/avatars/scarlet-macaw.svg");
+
+  // OTP Verification States
   const [otpDigits, setOtpDigits] = useState(["", "", "", "", "", ""]);
   const [verifyEmailAddress, setVerifyEmailAddress] = useState("");
   const [resendCooldown, setResendCooldown] = useState(60);
@@ -61,11 +86,10 @@ export default function Login() {
   const [resending, setResending] = useState(false);
   const otpInputRefs = useRef([]);
 
-  // Lockout & Brute-force state
+  // Lockout & Brute-force States
   const [lockoutTimer, setLockoutTimer] = useState(0);
-  const [remainingAttempts, setRemainingAttempts] = useState(null);
 
-  // Forgot Password state
+  // Forgot Password States
   const [forgotEmail, setForgotEmail] = useState("");
   const [forgotStep, setForgotStep] = useState(1); // 1 = enter email, 2 = enter otp + new pass
   const [resetOtp, setResetOtp] = useState("");
@@ -73,7 +97,7 @@ export default function Login() {
   const [showNewPassword, setShowNewPassword] = useState(false);
   const [resetting, setResetting] = useState(false);
 
-  const from = location.state?.from?.pathname || "/my-orders";
+  const from = location.state?.from?.pathname || "/";
 
   // Redirect if logged in and verified
   useEffect(() => {
@@ -92,6 +116,11 @@ export default function Login() {
       setMode("verify");
     }
   }, [verificationPending]);
+
+  // Update mode if defaultTab prop changes
+  useEffect(() => {
+    if (defaultTab === "register") setMode("register");
+  }, [defaultTab]);
 
   // Lockout countdown timer
   useEffect(() => {
@@ -121,71 +150,111 @@ export default function Login() {
     return () => clearInterval(t);
   }, [mode, resendCooldown]);
 
-  // Submit Password Login
+  // Password Strength Calculation (Register mode)
+  const passwordCriteria = {
+    length: password.length >= 8,
+    mixed: /[a-z]/.test(password) && /[A-Z]/.test(password),
+    numberOrSymbol: /[0-9!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?]/.test(password),
+  };
+  const strengthScore = Object.values(passwordCriteria).filter(Boolean).length;
+
+  // 1-Click Continue as Guest handler
+  const handleContinueAsGuest = () => {
+    activateGuestMode();
+    navigate(from === "/login" || from === "/register" ? "/" : from, { replace: true });
+  };
+
+  // Sign In submit handler
   const handleLoginSubmit = async (e) => {
     e.preventDefault();
-    if (!email.trim() || !password) {
-      toast.error("Please enter both email and password.");
+    if (lockoutTimer > 0) {
+      toast.error(`Account temporarily locked. Please wait ${lockoutTimer}s.`);
       return;
     }
-    if (lockoutTimer > 0) {
-      toast.error(`Account temporarily locked for security. Try again in ${lockoutTimer}s.`);
+    if (!email.trim() || !password) {
+      toast.warn("Please enter both your email and password.");
       return;
     }
 
     try {
       setSubmitting(true);
-      const loggedUser = await loginWithPassword(email.trim(), password);
+      const loggedUser = await loginWithPassword(email.trim().toLowerCase(), password);
 
       if (loggedUser && !loggedUser.emailVerified) {
-        setVerifyEmailAddress(loggedUser.email);
+        toast.info("Please enter the verification code sent to your email.");
+        setVerifyEmailAddress(email.trim().toLowerCase());
         setMode("verify");
-        toast.info("Please verify your email address to complete sign in.");
-      } else {
-        toast.success(`Welcome back, ${loggedUser?.name || "Member"}!`);
-        navigate(from, { replace: true });
+        return;
       }
+
+      toast.success(`Welcome back to FeatherTown, ${loggedUser.name}!`);
+      navigate(from === "/login" || from === "/register" ? "/" : from, { replace: true });
     } catch (err) {
-      console.error("Login failure:", err);
-      if (err.status === 429) {
-        const lockout = err.data?.lockoutRemaining || 300;
-        setLockoutTimer(lockout);
-        toast.error(`Too many failed attempts. Temporary lockout for ${Math.ceil(lockout / 60)} minutes.`);
+      if (err.data?.locked) {
+        setLockoutTimer(err.data.lockoutSeconds || 900);
+        toast.error(`Too many failed attempts. Locked for ${Math.ceil((err.data.lockoutSeconds || 900) / 60)} mins.`);
+      } else if (err.status === 429) {
+        setLockoutTimer(60);
+        toast.error("Too many attempts. Please pause for 60 seconds.");
       } else {
-        if (err.data?.remainingAttempts !== undefined) {
-          setRemainingAttempts(err.data.remainingAttempts);
-        }
-        toast.error(err.message || "Invalid credentials. Please verify your details.");
+        toast.error(err.message || "Invalid email or password.");
       }
     } finally {
       setSubmitting(false);
     }
   };
 
-  // OTP Input handlers
-  const handleOtpChange = (index, value) => {
-    const clean = value.replace(/[^0-9]/g, "");
-    if (!clean) {
-      const next = [...otpDigits];
-      next[index] = "";
-      setOtpDigits(next);
+  // Register submit handler
+  const handleRegisterSubmit = async (e) => {
+    e.preventDefault();
+    if (!name.trim() || name.trim().length < 2) {
+      toast.warn("Please enter your full name.");
       return;
     }
+    if (!email.trim() || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      toast.warn("Please enter a valid email address.");
+      return;
+    }
+    if (password.length < 8) {
+      toast.warn("Password must be at least 8 characters long.");
+      return;
+    }
+
+    try {
+      setSubmitting(true);
+      const res = await register(name.trim(), email.trim().toLowerCase(), password, selectedAvatar);
+      toast.success("Account created! We've sent a 6-digit verification code to your email.");
+      setVerifyEmailAddress(email.trim().toLowerCase());
+      setMode("verify");
+      setResendCooldown(60);
+      setCanResend(false);
+    } catch (err) {
+      toast.error(err.message || "Registration failed. Please try again.");
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
+  // OTP digit input handlers
+  const handleOtpChange = (index, val) => {
+    const clean = val.replace(/\D/g, "");
+    const updated = [...otpDigits];
+
     if (clean.length > 1) {
-      const pasted = clean.slice(0, 6).split("");
-      const next = [...otpDigits];
-      pasted.forEach((ch, i) => {
-        if (i < 6) next[i] = ch;
+      const chars = clean.slice(0, 6).split("");
+      chars.forEach((c, i) => {
+        if (i < 6) updated[i] = c;
       });
-      setOtpDigits(next);
-      const focusIdx = Math.min(pasted.length, 5);
-      otpInputRefs.current[focusIdx]?.focus();
+      setOtpDigits(updated);
+      const nextIdx = Math.min(chars.length, 5);
+      otpInputRefs.current[nextIdx]?.focus();
       return;
     }
-    const next = [...otpDigits];
-    next[index] = clean;
-    setOtpDigits(next);
-    if (index < 5 && clean) {
+
+    updated[index] = clean ? clean[clean.length - 1] : "";
+    setOtpDigits(updated);
+
+    if (clean && index < 5) {
       otpInputRefs.current[index + 1]?.focus();
     }
   };
@@ -196,7 +265,7 @@ export default function Login() {
     }
   };
 
-  // Submit OTP Verification
+  // Verify email submit
   const handleVerifySubmit = async (e) => {
     e.preventDefault();
     const code = otpDigits.join("");
@@ -208,7 +277,7 @@ export default function Login() {
       setSubmitting(true);
       await verifyEmail(verifyEmailAddress, code);
       toast.success("Email verified successfully! Welcome to FeatherTown.");
-      navigate(from, { replace: true });
+      navigate(from === "/login" || from === "/register" ? "/" : from, { replace: true });
     } catch (err) {
       toast.error(err.message || "Incorrect verification code.");
     } finally {
@@ -232,7 +301,7 @@ export default function Login() {
     }
   };
 
-  // Forgot Password Handlers
+  // Request password reset OTP
   const handleRequestResetOtp = async (e) => {
     e.preventDefault();
     if (!forgotEmail.trim()) {
@@ -242,7 +311,7 @@ export default function Login() {
     try {
       setResetting(true);
       await forgotPassword(forgotEmail.trim());
-      toast.success("If an account exists, a 6-digit code has been sent!");
+      toast.success("If an account exists, a 6-digit reset code has been sent!");
       setForgotStep(2);
     } catch (err) {
       toast.error(err.message || "Failed to request password reset code.");
@@ -251,6 +320,7 @@ export default function Login() {
     }
   };
 
+  // Confirm password reset
   const handleConfirmReset = async (e) => {
     e.preventDefault();
     if (!resetOtp.trim() || resetOtp.trim().length !== 6) {
@@ -264,179 +334,253 @@ export default function Login() {
     try {
       setResetting(true);
       await resetPassword(forgotEmail.trim(), resetOtp.trim(), newPassword);
-      toast.success("Password reset successfully! Please log in.");
+      toast.success("Password reset successfully! Please sign in with your new password.");
       setEmail(forgotEmail.trim());
       setMode("login");
       setForgotStep(1);
       setResetOtp("");
       setNewPassword("");
     } catch (err) {
-      toast.error(err.message || "Could not reset password. Please verify code.");
+      toast.error(err.message || "Could not reset password. Please check your code.");
     } finally {
       setResetting(false);
     }
   };
 
   return (
-    <>
+    <div
+      style={{
+        minHeight: "100dvh",
+        width: "100%",
+        background: "#FAF8F5",
+        fontFamily: "Outfit, system-ui, sans-serif",
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
+        justifyContent: "center",
+        padding: "clamp(16px, 3vh, 32px) clamp(16px, 4vw, 24px)",
+        boxSizing: "border-box",
+        position: "relative",
+      }}
+    >
       <SEOHead
-        title="Sign In | FeatherTown Companion Aviary"
-        description="Log in to your FeatherTown customer account to track orders, manage companion bird bookings, and access exclusive flock benefits."
+        title={mode === "register" ? "Create Account | FeatherTown" : "Sign In | FeatherTown"}
+        description="Access India's premier companion bird aviary, track orders, and connect with healthy hand-tamed birds."
       />
 
-      <PageBanner
-        tag="CUSTOMER PORTAL"
-        title="Sign In to FeatherTown"
-        description="Access your companion bird records, order history, and seamless aviary services."
-        breadcrumbs={[
-          { label: "Home", to: "/" },
-          { label: "Customer Sign In" },
-        ]}
-      />
+      {/* Floating Top-Left "Continue as Guest" pill */}
+      <button
+        type="button"
+        onClick={handleContinueAsGuest}
+        style={{
+          position: "absolute",
+          top: "clamp(12px, 2vh, 24px)",
+          left: "clamp(12px, 2vw, 28px)",
+          background: "#FFFFFF",
+          border: "1px solid #E2DDD3",
+          borderRadius: 99,
+          padding: "7px 14px",
+          color: "#1B3B22",
+          fontSize: 12.5,
+          fontWeight: 700,
+          display: "inline-flex",
+          alignItems: "center",
+          gap: 6,
+          cursor: "pointer",
+          boxShadow: "0 2px 8px rgba(27, 59, 34, 0.04)",
+          fontFamily: "inherit",
+          transition: "all 0.15s ease",
+        }}
+      >
+        <Feather size={14} color="#166534" />
+        <span>Explore Store as Guest</span>
+        <ArrowRight size={13} />
+      </button>
 
-      <div style={{ background: "#FAF8F5", minHeight: "70vh", padding: "48px 16px 80px" }}>
-        <div style={{ maxWidth: 460, margin: "0 auto" }}>
-          {/* Guest Browsing Shortcut Card */}
-          <div
-            style={{
-              background: "#FFFFFF",
-              border: "1px solid #E2DDD3",
-              borderRadius: 14,
-              padding: "12px 18px",
-              marginBottom: 20,
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "space-between",
-              boxShadow: "0 1px 3px rgba(0,0,0,0.03)",
-            }}
-          >
-            <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-              <span style={{ width: 8, height: 8, borderRadius: "50%", background: "#166534" }} />
-              <span style={{ fontSize: 13, color: "#475569" }}>
-                Just looking around?
-              </span>
-            </div>
-            <Link
-              to="/accessories"
+      {/* Central Auth Card */}
+      <div
+        style={{
+          width: "100%",
+          maxWidth: 440,
+          background: "#FFFFFF",
+          borderRadius: 22,
+          border: "1px solid #E2DDD3",
+          boxShadow: "0 12px 36px rgba(27, 59, 34, 0.06), 0 1px 3px rgba(0,0,0,0.02)",
+          padding: "clamp(22px, 3vh, 32px) clamp(20px, 4vw, 32px)",
+          boxSizing: "border-box",
+          position: "relative",
+        }}
+      >
+        {/* Brand Header */}
+        <div style={{ textAlign: "center", marginBottom: 18 }}>
+          <div style={{ display: "inline-flex", alignItems: "baseline", lineHeight: 1, marginBottom: 6 }}>
+            <span
               style={{
-                fontSize: 13,
-                fontWeight: 700,
+                fontFamily: "Outfit, system-ui, sans-serif",
+                fontSize: 27,
+                fontWeight: 900,
                 color: "#1B3B22",
-                textDecoration: "none",
-                display: "inline-flex",
-                alignItems: "center",
-                gap: 4,
+                letterSpacing: "-0.025em",
               }}
             >
-              Browse as Guest <ArrowRight size={14} />
-            </Link>
+              Feather
+            </span>
+            <span
+              style={{
+                fontFamily: "Outfit, system-ui, sans-serif",
+                fontSize: 27,
+                fontWeight: 900,
+                color: "#D9381E",
+                letterSpacing: "-0.025em",
+              }}
+            >
+              Town
+            </span>
+            <span
+              style={{
+                fontFamily: "Outfit, system-ui, sans-serif",
+                fontSize: 27,
+                fontWeight: 900,
+                color: "#D9381E",
+              }}
+            >
+              .
+            </span>
           </div>
-
-          {/* Main Auth Card */}
-          <div
+          <p
             style={{
-              background: "#FFFFFF",
-              borderRadius: 24,
-              border: "1px solid #E2DDD3",
-              padding: "36px 32px",
-              boxShadow: "0 12px 36px rgba(27, 59, 34, 0.05)",
+              fontSize: 12.5,
+              color: "#64748B",
+              margin: 0,
+              lineHeight: 1.4,
+              fontWeight: 500,
             }}
           >
-            {/* Mode 1: Standard Login */}
-            {mode === "login" && (
-              <>
-                <div style={{ textAlign: "center", marginBottom: 26 }}>
-                  <div
-                    style={{
-                      display: "inline-flex",
-                      alignItems: "center",
-                      justifyContent: "center",
-                      width: 52,
-                      height: 52,
-                      borderRadius: "50%",
-                      background: "#EAF2EC",
-                      color: "#1B3B22",
-                      marginBottom: 12,
-                    }}
-                  >
-                    <Lock size={24} />
-                  </div>
-                  <h1
-                    style={{
-                      fontFamily: "Cormorant Garamond, serif",
-                      fontSize: 28,
-                      fontWeight: 700,
-                      color: "#1B3B22",
-                      margin: 0,
-                    }}
-                  >
-                    Welcome Back
-                  </h1>
-                  <p style={{ margin: "4px 0 0", fontSize: 13.5, color: "#64748B" }}>
-                    Sign in with your email and password to continue.
-                  </p>
-                </div>
+            {mode === "login" && "Sign in to manage companion bird bookings & orders"}
+            {mode === "register" && "Join FeatherTown for certified aviary care & member perks"}
+            {mode === "verify" && "Enter the 6-digit verification code sent to your inbox"}
+            {mode === "forgot" && "Reset your password with secure email verification"}
+          </p>
+        </div>
 
-                {/* Brute force lockout warning */}
-                {lockoutTimer > 0 && (
-                  <div
-                    style={{
-                      background: "#FEF2F2",
-                      border: "1px solid #FEE2E2",
-                      borderRadius: 12,
-                      padding: "12px 16px",
-                      marginBottom: 20,
-                      display: "flex",
-                      alignItems: "center",
-                      gap: 10,
-                      color: "#DC2626",
-                    }}
-                  >
-                    <AlertTriangle size={18} />
-                    <div style={{ fontSize: 12.5, fontWeight: 600 }}>
-                      Account locked for security. Please wait {lockoutTimer}s before retrying.
+        {/* ── MODE: SIGN IN or CREATE ACCOUNT ── */}
+        {(mode === "login" || mode === "register") && (
+          <>
+            {/* Quick Segmented Tabs: Sign In | Create Account */}
+            <div
+              style={{
+                display: "grid",
+                gridTemplateColumns: "1fr 1fr",
+                background: "#FAF8F5",
+                borderRadius: 12,
+                padding: 4,
+                border: "1px solid #E2DDD3",
+                marginBottom: 16,
+              }}
+            >
+              <button
+                type="button"
+                onClick={() => setMode("login")}
+                style={{
+                  padding: "8px 12px",
+                  borderRadius: 9,
+                  border: "none",
+                  background: mode === "login" ? "#1B3B22" : "transparent",
+                  color: mode === "login" ? "#FFFFFF" : "#64748B",
+                  fontWeight: 700,
+                  fontSize: 13,
+                  cursor: "pointer",
+                  transition: "all 0.15s ease",
+                  fontFamily: "inherit",
+                }}
+              >
+                Sign In
+              </button>
+              <button
+                type="button"
+                onClick={() => setMode("register")}
+                style={{
+                  padding: "8px 12px",
+                  borderRadius: 9,
+                  border: "none",
+                  background: mode === "register" ? "#1B3B22" : "transparent",
+                  color: mode === "register" ? "#FFFFFF" : "#64748B",
+                  fontWeight: 700,
+                  fontSize: 13,
+                  cursor: "pointer",
+                  transition: "all 0.15s ease",
+                  fontFamily: "inherit",
+                }}
+              >
+                Create Account
+              </button>
+            </div>
+
+            {/* Lockout Warning Banner */}
+            {lockoutTimer > 0 && (
+              <div
+                style={{
+                  background: "#FEF2F2",
+                  border: "1px solid #FCA5A5",
+                  borderRadius: 10,
+                  padding: "10px 12px",
+                  marginBottom: 14,
+                  display: "flex",
+                  alignItems: "center",
+                  gap: 8,
+                  fontSize: 12.5,
+                  color: "#991B1B",
+                  fontWeight: 600,
+                }}
+              >
+                <AlertTriangle size={16} />
+                <span>Locked for brute-force protection ({lockoutTimer}s remaining)</span>
+              </div>
+            )}
+
+            {/* Form */}
+            <form onSubmit={mode === "login" ? handleLoginSubmit : handleRegisterSubmit}>
+              <div style={{ display: "flex", flexDirection: "column", gap: 11 }}>
+                {/* Full Name (Register only) */}
+                {mode === "register" && (
+                  <div>
+                    <label style={labelStyle}>Full Name</label>
+                    <div style={{ position: "relative" }}>
+                      <User size={16} color="#64748B" style={iconLeftStyle} />
+                      <input
+                        type="text"
+                        required
+                        value={name}
+                        onChange={(e) => setName(e.target.value)}
+                        placeholder="Aditi Sharma"
+                        style={inputStyle}
+                      />
                     </div>
                   </div>
                 )}
 
-                <form onSubmit={handleLoginSubmit} style={{ display: "flex", flexDirection: "column", gap: 16 }}>
-                  {/* Email */}
-                  <div>
-                    <label style={{ display: "block", fontSize: 12.5, fontWeight: 700, color: "#334155", marginBottom: 6 }}>
-                      Email Address
-                    </label>
-                    <div style={{ position: "relative" }}>
-                      <Mail
-                        size={17}
-                        style={{ position: "absolute", left: 14, top: "50%", transform: "translateY(-50%)", color: "#94A3B8" }}
-                      />
-                      <input
-                        type="email"
-                        required
-                        autoComplete="email"
-                        placeholder="you@example.com"
-                        value={email}
-                        onChange={(e) => setEmail(e.target.value)}
-                        style={{
-                          width: "100%",
-                          padding: "11px 14px 11px 40px",
-                          borderRadius: 12,
-                          border: "1.5px solid #CBD5E1",
-                          fontSize: 14,
-                          outline: "none",
-                          background: "#FAF8F5",
-                          transition: "all 0.15s",
-                        }}
-                      />
-                    </div>
+                {/* Email Address */}
+                <div>
+                  <label style={labelStyle}>Email Address</label>
+                  <div style={{ position: "relative" }}>
+                    <Mail size={16} color="#64748B" style={iconLeftStyle} />
+                    <input
+                      type="email"
+                      required
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
+                      placeholder="name@example.com"
+                      autoComplete="email"
+                      style={inputStyle}
+                    />
                   </div>
+                </div>
 
-                  {/* Password */}
-                  <div>
-                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 6 }}>
-                      <label style={{ fontSize: 12.5, fontWeight: 700, color: "#334155" }}>
-                        Password
-                      </label>
+                {/* Password */}
+                <div>
+                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 4 }}>
+                    <label style={{ ...labelStyle, marginBottom: 0 }}>Password</label>
+                    {mode === "login" && (
                       <button
                         type="button"
                         onClick={() => {
@@ -444,402 +588,539 @@ export default function Login() {
                           setMode("forgot");
                         }}
                         style={{
-                          background: "transparent",
+                          background: "none",
                           border: "none",
-                          fontSize: 12,
-                          color: "#1B3B22",
+                          color: "#166534",
+                          fontSize: 11.5,
                           fontWeight: 700,
                           cursor: "pointer",
-                          textDecoration: "underline",
+                          padding: 0,
+                          fontFamily: "inherit",
                         }}
                       >
                         Forgot password?
                       </button>
-                    </div>
+                    )}
+                  </div>
+                  <div style={{ position: "relative" }}>
+                    <Lock size={16} color="#64748B" style={iconLeftStyle} />
+                    <input
+                      type={showPassword ? "text" : "password"}
+                      required
+                      value={password}
+                      onChange={(e) => setPassword(e.target.value)}
+                      placeholder="••••••••"
+                      autoComplete={mode === "login" ? "current-password" : "new-password"}
+                      style={{ ...inputStyle, paddingRight: 38 }}
+                    />
+                    <button
+                      type="button"
+                      onClick={() => setShowPassword(!showPassword)}
+                      style={iconRightBtnStyle}
+                      aria-label={showPassword ? "Hide password" : "Show password"}
+                    >
+                      {showPassword ? <EyeOff size={16} color="#64748B" /> : <Eye size={16} color="#64748B" />}
+                    </button>
+                  </div>
 
+                  {/* Password strength bar (Register only) */}
+                  {mode === "register" && password && (
+                    <div style={{ marginTop: 6 }}>
+                      <div style={{ display: "flex", gap: 4, height: 4, borderRadius: 2, overflow: "hidden", marginBottom: 4 }}>
+                        <div style={{ flex: 1, background: strengthScore >= 1 ? (strengthScore === 1 ? "#DC2626" : strengthScore === 2 ? "#D97706" : "#166534") : "#E2E8F0" }} />
+                        <div style={{ flex: 1, background: strengthScore >= 2 ? (strengthScore === 2 ? "#D97706" : "#166534") : "#E2E8F0" }} />
+                        <div style={{ flex: 1, background: strengthScore === 3 ? "#166534" : "#E2E8F0" }} />
+                      </div>
+                      <div style={{ fontSize: 11, color: strengthScore === 3 ? "#166534" : strengthScore === 2 ? "#D97706" : "#DC2626", fontWeight: 600 }}>
+                        {strengthScore === 3 ? "Strong password" : strengthScore === 2 ? "Moderate password" : "Weak (include upper, lower & numbers)"}
+                      </div>
+                    </div>
+                  )}
+                </div>
+
+                {/* Quick Avatar Row (Register only) */}
+                {mode === "register" && (
+                  <div>
+                    <label style={labelStyle}>Choose Avian Avatar</label>
+                    <div style={{ display: "flex", gap: 8, alignItems: "center", justifyContent: "space-between" }}>
+                      {QUICK_AVATARS.map((av) => {
+                        const isSelected = selectedAvatar === av.path;
+                        return (
+                          <button
+                            key={av.id}
+                            type="button"
+                            onClick={() => setSelectedAvatar(av.path)}
+                            title={av.name}
+                            style={{
+                              width: 38,
+                              height: 38,
+                              borderRadius: "50%",
+                              border: isSelected ? "2.5px solid #1B3B22" : "1.5px solid #E2DDD3",
+                              background: "#FAF8F5",
+                              padding: 3,
+                              cursor: "pointer",
+                              display: "flex",
+                              alignItems: "center",
+                              justifyContent: "center",
+                              position: "relative",
+                              transition: "all 0.15s ease",
+                            }}
+                          >
+                            <img src={av.path} alt={av.name} style={{ width: "100%", height: "100%", borderRadius: "50%" }} />
+                            {isSelected && (
+                              <div
+                                style={{
+                                  position: "absolute",
+                                  bottom: -2,
+                                  right: -2,
+                                  width: 14,
+                                  height: 14,
+                                  borderRadius: "50%",
+                                  background: "#1B3B22",
+                                  color: "#FFFFFF",
+                                  display: "flex",
+                                  alignItems: "center",
+                                  justifyContent: "center",
+                                }}
+                              >
+                                <Check size={9} strokeWidth={3} />
+                              </div>
+                            )}
+                          </button>
+                        );
+                      })}
+                    </div>
+                  </div>
+                )}
+
+                {/* Submit Button */}
+                <button
+                  type="submit"
+                  disabled={submitting || lockoutTimer > 0}
+                  style={{
+                    marginTop: 4,
+                    width: "100%",
+                    height: 42,
+                    borderRadius: 11,
+                    background: lockoutTimer > 0 ? "#94A3B8" : "#1B3B22",
+                    color: "#FFFFFF",
+                    border: "none",
+                    fontWeight: 700,
+                    fontSize: 14,
+                    cursor: lockoutTimer > 0 ? "not-allowed" : "pointer",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    gap: 8,
+                    fontFamily: "inherit",
+                    boxShadow: "0 4px 14px rgba(27, 59, 34, 0.2)",
+                    transition: "all 0.15s ease",
+                  }}
+                >
+                  {submitting ? (
+                    <>
+                      <div
+                        style={{
+                          width: 16,
+                          height: 16,
+                          border: "2px solid #FFFFFF",
+                          borderTopColor: "transparent",
+                          borderRadius: "50%",
+                          animation: "spin 0.8s linear infinite",
+                        }}
+                      />
+                      <span>Processing...</span>
+                    </>
+                  ) : (
+                    <>
+                      <span>{mode === "login" ? "Sign In to FeatherTown" : "Create My Account"}</span>
+                      <ArrowRight size={15} />
+                    </>
+                  )}
+                </button>
+              </div>
+            </form>
+
+            {/* Divider */}
+            {(googleAuthEnabled || appleAuthEnabled) && (
+              <div
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  gap: 10,
+                  margin: "14px 0 10px",
+                }}
+              >
+                <div style={{ flex: 1, height: 1, background: "#E2DDD3" }} />
+                <span style={{ fontSize: 11, color: "#94A3B8", fontWeight: 600, textTransform: "uppercase", letterSpacing: 0.5 }}>
+                  or continue with
+                </span>
+                <div style={{ flex: 1, height: 1, background: "#E2DDD3" }} />
+              </div>
+            )}
+
+            {/* OAuth Buttons Row */}
+            <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+              {googleAuthEnabled && (
+                <div style={{ display: "flex", justifyContent: "center" }}>
+                  <GoogleSignInButton
+                    size="large"
+                    onSuccess={() => navigate(from === "/login" || from === "/register" ? "/" : from, { replace: true })}
+                  />
+                </div>
+              )}
+              {appleAuthEnabled && (
+                <div style={{ display: "flex", justifyContent: "center" }}>
+                  <AppleSignInButton
+                    onSuccess={() => navigate(from === "/login" || from === "/register" ? "/" : from, { replace: true })}
+                  />
+                </div>
+              )}
+            </div>
+
+            {/* Prominent Continue as Guest Button */}
+            <div
+              style={{
+                marginTop: 14,
+                paddingTop: 12,
+                borderTop: "1px solid #E2DDD3",
+                textAlign: "center",
+              }}
+            >
+              <button
+                type="button"
+                onClick={handleContinueAsGuest}
+                style={{
+                  background: "#FAF8F5",
+                  border: "1px solid #E2DDD3",
+                  borderRadius: 10,
+                  padding: "8px 16px",
+                  color: "#1B3B22",
+                  fontSize: 13,
+                  fontWeight: 700,
+                  cursor: "pointer",
+                  display: "inline-flex",
+                  alignItems: "center",
+                  gap: 6,
+                  fontFamily: "inherit",
+                  width: "100%",
+                  justifyContent: "center",
+                  transition: "background 0.15s ease",
+                }}
+              >
+                <Feather size={14} color="#166534" />
+                <span>Continue as Guest · Explore Store</span>
+                <ArrowRight size={13} />
+              </button>
+            </div>
+          </>
+        )}
+
+        {/* ── MODE: EMAIL VERIFICATION (OTP) ── */}
+        {mode === "verify" && (
+          <form onSubmit={handleVerifySubmit}>
+            <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
+              <div style={{ textAlign: "center", margin: "6px 0 10px" }}>
+                <span style={{ fontSize: 13, color: "#1B3B22", fontWeight: 700 }}>
+                  {verifyEmailAddress}
+                </span>
+              </div>
+
+              {/* 6 Digit Input Boxes */}
+              <div style={{ display: "flex", justifyContent: "center", gap: 8 }}>
+                {otpDigits.map((d, i) => (
+                  <input
+                    key={i}
+                    ref={(el) => (otpInputRefs.current[i] = el)}
+                    type="text"
+                    inputMode="numeric"
+                    maxLength={1}
+                    value={d}
+                    onChange={(e) => handleOtpChange(i, e.target.value)}
+                    onKeyDown={(e) => handleOtpKeyDown(i, e)}
+                    style={{
+                      width: 44,
+                      height: 50,
+                      borderRadius: 10,
+                      border: d ? "2px solid #1B3B22" : "1.5px solid #E2DDD3",
+                      background: d ? "#FFFFFF" : "#FAF8F5",
+                      fontSize: 22,
+                      fontWeight: 800,
+                      textAlign: "center",
+                      color: "#1B3B22",
+                      outline: "none",
+                      fontFamily: "inherit",
+                    }}
+                  />
+                ))}
+              </div>
+
+              {/* Verify Button */}
+              <button
+                type="submit"
+                disabled={submitting}
+                style={{
+                  marginTop: 6,
+                  width: "100%",
+                  height: 42,
+                  borderRadius: 11,
+                  background: "#1B3B22",
+                  color: "#FFFFFF",
+                  border: "none",
+                  fontWeight: 700,
+                  fontSize: 14,
+                  cursor: "pointer",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  gap: 8,
+                  fontFamily: "inherit",
+                }}
+              >
+                {submitting ? "Verifying..." : "Verify & Complete"}
+              </button>
+
+              {/* Resend OTP */}
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", fontSize: 12.5, color: "#64748B" }}>
+                <button
+                  type="button"
+                  onClick={handleResendOtp}
+                  disabled={!canResend || resending}
+                  style={{
+                    background: "none",
+                    border: "none",
+                    color: canResend ? "#166534" : "#94A3B8",
+                    fontWeight: 700,
+                    cursor: canResend ? "pointer" : "default",
+                    padding: 0,
+                    fontFamily: "inherit",
+                  }}
+                >
+                  {resending ? "Sending code..." : canResend ? "Resend 6-Digit Code" : `Resend in ${resendCooldown}s`}
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() => setMode("login")}
+                  style={{
+                    background: "none",
+                    border: "none",
+                    color: "#64748B",
+                    cursor: "pointer",
+                    padding: 0,
+                    fontFamily: "inherit",
+                    fontWeight: 600,
+                  }}
+                >
+                  Back to Sign In
+                </button>
+              </div>
+            </div>
+          </form>
+        )}
+
+        {/* ── MODE: FORGOT PASSWORD ── */}
+        {mode === "forgot" && (
+          <div>
+            {forgotStep === 1 ? (
+              <form onSubmit={handleRequestResetOtp}>
+                <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
+                  <div>
+                    <label style={labelStyle}>Registered Email</label>
                     <div style={{ position: "relative" }}>
-                      <Lock
-                        size={17}
-                        style={{ position: "absolute", left: 14, top: "50%", transform: "translateY(-50%)", color: "#94A3B8" }}
-                      />
-                      <input
-                        type={showPassword ? "text" : "password"}
-                        required
-                        autoComplete="current-password"
-                        placeholder="••••••••••••"
-                        value={password}
-                        onChange={(e) => setPassword(e.target.value)}
-                        style={{
-                          width: "100%",
-                          padding: "11px 40px 11px 40px",
-                          borderRadius: 12,
-                          border: "1.5px solid #CBD5E1",
-                          fontSize: 14,
-                          outline: "none",
-                          background: "#FAF8F5",
-                        }}
-                      />
-                      <button
-                        type="button"
-                        onClick={() => setShowPassword(!showPassword)}
-                        style={{
-                          position: "absolute",
-                          right: 12,
-                          top: "50%",
-                          transform: "translateY(-50%)",
-                          background: "transparent",
-                          border: "none",
-                          color: "#94A3B8",
-                          cursor: "pointer",
-                        }}
-                      >
-                        {showPassword ? <EyeOff size={17} /> : <Eye size={17} />}
-                      </button>
-                    </div>
-                  </div>
-
-                  {/* Submit Button */}
-                  <button
-                    type="submit"
-                    disabled={submitting || lockoutTimer > 0}
-                    style={{
-                      width: "100%",
-                      padding: "13px",
-                      borderRadius: 12,
-                      background: "#1B3B22",
-                      color: "#FFFFFF",
-                      border: "none",
-                      fontSize: 14.5,
-                      fontWeight: 700,
-                      cursor: submitting || lockoutTimer > 0 ? "not-allowed" : "pointer",
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "center",
-                      gap: 8,
-                      boxShadow: "0 4px 14px rgba(27, 59, 34, 0.22)",
-                      marginTop: 4,
-                    }}
-                  >
-                    {submitting ? (
-                      <>
-                        <RefreshCw size={17} className="animate-spin" />
-                        Authenticating...
-                      </>
-                    ) : (
-                      <>
-                        Sign In <ArrowRight size={17} />
-                      </>
-                    )}
-                  </button>
-                </form>
-
-                {/* OAuth Divider */}
-                <div style={{ display: "flex", alignItems: "center", gap: 12, margin: "24px 0" }}>
-                  <div style={{ flex: 1, height: 1, background: "#E2E8F0" }} />
-                  <span style={{ fontSize: 11.5, color: "#94A3B8", textTransform: "uppercase", letterSpacing: 0.8 }}>
-                    Or continue with
-                  </span>
-                  <div style={{ flex: 1, height: 1, background: "#E2E8F0" }} />
-                </div>
-
-                {/* 1-Click Social Sign-in */}
-                <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
-                  {googleAuthEnabled && <GoogleSignInButton onSuccess={() => navigate(from, { replace: true })} />}
-                  {appleAuthEnabled && <AppleSignInButton onSuccess={() => navigate(from, { replace: true })} />}
-                </div>
-
-                {/* Switch to Register */}
-                <div style={{ marginTop: 24, textAlign: "center", fontSize: 13.5, color: "#64748B" }}>
-                  Don't have an account yet?{" "}
-                  <Link
-                    to="/register"
-                    state={{ from: location.state?.from }}
-                    style={{ fontWeight: 700, color: "#1B3B22", textDecoration: "underline" }}
-                  >
-                    Create Account
-                  </Link>
-                </div>
-              </>
-            )}
-
-            {/* Mode 2: Email OTP Verification */}
-            {mode === "verify" && (
-              <>
-                <div style={{ textAlign: "center", marginBottom: 24 }}>
-                  <div
-                    style={{
-                      display: "inline-flex",
-                      alignItems: "center",
-                      justifyContent: "center",
-                      width: 52,
-                      height: 52,
-                      borderRadius: "50%",
-                      background: "#EAF2EC",
-                      color: "#166534",
-                      marginBottom: 12,
-                    }}
-                  >
-                    <Mail size={24} />
-                  </div>
-                  <h2 style={{ fontFamily: "Cormorant Garamond, serif", fontSize: 26, fontWeight: 700, color: "#1B3B22", margin: 0 }}>
-                    Verify Your Email
-                  </h2>
-                  <p style={{ margin: "6px 0 0", fontSize: 13, color: "#64748B" }}>
-                    We sent a 6-digit verification code to:
-                  </p>
-                  <div style={{ fontWeight: 700, color: "#0F172A", fontSize: 13.5, marginTop: 2 }}>
-                    {verifyEmailAddress}
-                  </div>
-                </div>
-
-                <form onSubmit={handleVerifySubmit} style={{ display: "flex", flexDirection: "column", gap: 20 }}>
-                  <div style={{ display: "flex", justifyContent: "center", gap: 8 }}>
-                    {otpDigits.map((digit, idx) => (
-                      <input
-                        key={idx}
-                        ref={(el) => (otpInputRefs.current[idx] = el)}
-                        type="text"
-                        inputMode="numeric"
-                        maxLength={1}
-                        value={digit}
-                        onChange={(e) => handleOtpChange(idx, e.target.value)}
-                        onKeyDown={(e) => handleOtpKeyDown(idx, e)}
-                        style={{
-                          width: 46,
-                          height: 52,
-                          textAlign: "center",
-                          fontSize: 22,
-                          fontWeight: 700,
-                          borderRadius: 10,
-                          border: digit ? "2px solid #1B3B22" : "1.5px solid #CBD5E1",
-                          background: digit ? "#EAF2EC" : "#FAF8F5",
-                          color: "#1B3B22",
-                          outline: "none",
-                        }}
-                      />
-                    ))}
-                  </div>
-
-                  <button
-                    type="submit"
-                    disabled={submitting}
-                    style={{
-                      width: "100%",
-                      padding: "13px",
-                      borderRadius: 12,
-                      background: "#1B3B22",
-                      color: "#FFFFFF",
-                      border: "none",
-                      fontSize: 14.5,
-                      fontWeight: 700,
-                      cursor: submitting ? "not-allowed" : "pointer",
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "center",
-                      gap: 8,
-                    }}
-                  >
-                    {submitting ? (
-                      <>
-                        <RefreshCw size={17} className="animate-spin" />
-                        Verifying Code...
-                      </>
-                    ) : (
-                      <>
-                        Confirm &amp; Activate Account <CheckCircle2 size={17} />
-                      </>
-                    )}
-                  </button>
-
-                  {/* Resend Cooldown */}
-                  <div style={{ textAlign: "center", fontSize: 13, color: "#64748B" }}>
-                    Didn't receive the email?{" "}
-                    {canResend ? (
-                      <button
-                        type="button"
-                        onClick={handleResendOtp}
-                        disabled={resending}
-                        style={{
-                          background: "transparent",
-                          border: "none",
-                          color: "#1B3B22",
-                          fontWeight: 700,
-                          cursor: "pointer",
-                          textDecoration: "underline",
-                        }}
-                      >
-                        {resending ? "Sending..." : "Resend Code"}
-                      </button>
-                    ) : (
-                      <span style={{ color: "#94A3B8" }}>Resend in {resendCooldown}s</span>
-                    )}
-                  </div>
-                </form>
-              </>
-            )}
-
-            {/* Mode 3: Forgot Password Flow */}
-            {mode === "forgot" && (
-              <>
-                <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 20 }}>
-                  <button
-                    type="button"
-                    onClick={() => setMode("login")}
-                    style={{
-                      background: "#F1F5F9",
-                      border: "none",
-                      borderRadius: 8,
-                      padding: "6px 8px",
-                      cursor: "pointer",
-                      color: "#475569",
-                      display: "flex",
-                      alignItems: "center",
-                    }}
-                  >
-                    <ArrowLeft size={16} />
-                  </button>
-                  <h2 style={{ fontFamily: "Cormorant Garamond, serif", fontSize: 24, fontWeight: 700, color: "#1B3B22", margin: 0 }}>
-                    Reset Password
-                  </h2>
-                </div>
-
-                {forgotStep === 1 ? (
-                  <form onSubmit={handleRequestResetOtp} style={{ display: "flex", flexDirection: "column", gap: 16 }}>
-                    <p style={{ fontSize: 13, color: "#64748B", margin: 0, lineHeight: 1.5 }}>
-                      Enter your account's email address. We'll send you a 6-digit verification code to reset your password.
-                    </p>
-                    <div>
-                      <label style={{ display: "block", fontSize: 12.5, fontWeight: 700, color: "#334155", marginBottom: 6 }}>
-                        Email Address
-                      </label>
+                      <Mail size={16} color="#64748B" style={iconLeftStyle} />
                       <input
                         type="email"
                         required
-                        placeholder="you@example.com"
                         value={forgotEmail}
                         onChange={(e) => setForgotEmail(e.target.value)}
-                        style={{
-                          width: "100%",
-                          padding: "11px 14px",
-                          borderRadius: 12,
-                          border: "1.5px solid #CBD5E1",
-                          fontSize: 14,
-                          background: "#FAF8F5",
-                          outline: "none",
-                        }}
+                        placeholder="name@example.com"
+                        style={inputStyle}
                       />
                     </div>
+                  </div>
+
+                  <button
+                    type="submit"
+                    disabled={resetting}
+                    style={{
+                      marginTop: 4,
+                      width: "100%",
+                      height: 42,
+                      borderRadius: 11,
+                      background: "#1B3B22",
+                      color: "#FFFFFF",
+                      border: "none",
+                      fontWeight: 700,
+                      fontSize: 14,
+                      cursor: "pointer",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      gap: 8,
+                      fontFamily: "inherit",
+                    }}
+                  >
+                    {resetting ? "Dispatching Code..." : "Send Reset Code →"}
+                  </button>
+
+                  <div style={{ textAlign: "center", marginTop: 4 }}>
                     <button
-                      type="submit"
-                      disabled={resetting}
+                      type="button"
+                      onClick={() => setMode("login")}
                       style={{
-                        padding: "12px",
-                        borderRadius: 12,
-                        background: "#1B3B22",
-                        color: "#FFFFFF",
+                        background: "none",
                         border: "none",
-                        fontSize: 14,
+                        color: "#166534",
+                        fontSize: 12.5,
                         fontWeight: 700,
-                        cursor: resetting ? "not-allowed" : "pointer",
+                        cursor: "pointer",
+                        fontFamily: "inherit",
                       }}
                     >
-                      {resetting ? "Sending Code..." : "Send Verification Code"}
+                      ← Back to Sign In
                     </button>
-                  </form>
-                ) : (
-                  <form onSubmit={handleConfirmReset} style={{ display: "flex", flexDirection: "column", gap: 16 }}>
-                    <p style={{ fontSize: 13, color: "#64748B", margin: 0, lineHeight: 1.5 }}>
-                      Enter the 6-digit code sent to <strong>{forgotEmail}</strong> and choose a new password.
-                    </p>
-                    <div>
-                      <label style={{ display: "block", fontSize: 12.5, fontWeight: 700, color: "#334155", marginBottom: 6 }}>
-                        6-Digit Reset Code
-                      </label>
+                  </div>
+                </div>
+              </form>
+            ) : (
+              <form onSubmit={handleConfirmReset}>
+                <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
+                  <div>
+                    <label style={labelStyle}>6-Digit Reset Code</label>
+                    <div style={{ position: "relative" }}>
+                      <KeyRound size={16} color="#64748B" style={iconLeftStyle} />
                       <input
                         type="text"
                         required
                         maxLength={6}
-                        placeholder="123456"
                         value={resetOtp}
-                        onChange={(e) => setResetOtp(e.target.value.replace(/[^0-9]/g, ""))}
-                        style={{
-                          width: "100%",
-                          padding: "11px 14px",
-                          borderRadius: 12,
-                          border: "1.5px solid #CBD5E1",
-                          fontSize: 18,
-                          letterSpacing: 4,
-                          textAlign: "center",
-                          fontWeight: 700,
-                          background: "#FAF8F5",
-                          outline: "none",
-                        }}
+                        onChange={(e) => setResetOtp(e.target.value.replace(/\D/g, ""))}
+                        placeholder="123456"
+                        style={{ ...inputStyle, letterSpacing: 3, fontWeight: 700 }}
                       />
                     </div>
+                  </div>
 
-                    <div>
-                      <label style={{ display: "block", fontSize: 12.5, fontWeight: 700, color: "#334155", marginBottom: 6 }}>
-                        New Password (min 8 characters)
-                      </label>
-                      <div style={{ position: "relative" }}>
-                        <input
-                          type={showNewPassword ? "text" : "password"}
-                          required
-                          placeholder="••••••••••••"
-                          value={newPassword}
-                          onChange={(e) => setNewPassword(e.target.value)}
-                          style={{
-                            width: "100%",
-                            padding: "11px 40px 11px 14px",
-                            borderRadius: 12,
-                            border: "1.5px solid #CBD5E1",
-                            fontSize: 14,
-                            background: "#FAF8F5",
-                            outline: "none",
-                          }}
-                        />
-                        <button
-                          type="button"
-                          onClick={() => setShowNewPassword(!showNewPassword)}
-                          style={{
-                            position: "absolute",
-                            right: 12,
-                            top: "50%",
-                            transform: "translateY(-50%)",
-                            background: "transparent",
-                            border: "none",
-                            color: "#94A3B8",
-                            cursor: "pointer",
-                          }}
-                        >
-                          {showNewPassword ? <EyeOff size={17} /> : <Eye size={17} />}
-                        </button>
-                      </div>
+                  <div>
+                    <label style={labelStyle}>New Password</label>
+                    <div style={{ position: "relative" }}>
+                      <Lock size={16} color="#64748B" style={iconLeftStyle} />
+                      <input
+                        type={showNewPassword ? "text" : "password"}
+                        required
+                        value={newPassword}
+                        onChange={(e) => setNewPassword(e.target.value)}
+                        placeholder="At least 8 characters"
+                        style={{ ...inputStyle, paddingRight: 38 }}
+                      />
+                      <button
+                        type="button"
+                        onClick={() => setShowNewPassword(!showNewPassword)}
+                        style={iconRightBtnStyle}
+                      >
+                        {showNewPassword ? <EyeOff size={16} color="#64748B" /> : <Eye size={16} color="#64748B" />}
+                      </button>
                     </div>
+                  </div>
 
+                  <button
+                    type="submit"
+                    disabled={resetting}
+                    style={{
+                      marginTop: 4,
+                      width: "100%",
+                      height: 42,
+                      borderRadius: 11,
+                      background: "#1B3B22",
+                      color: "#FFFFFF",
+                      border: "none",
+                      fontWeight: 700,
+                      fontSize: 14,
+                      cursor: "pointer",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      gap: 8,
+                      fontFamily: "inherit",
+                    }}
+                  >
+                    {resetting ? "Resetting Password..." : "Update Password & Sign In →"}
+                  </button>
+
+                  <div style={{ textAlign: "center", marginTop: 4 }}>
                     <button
-                      type="submit"
-                      disabled={resetting}
+                      type="button"
+                      onClick={() => {
+                        setForgotStep(1);
+                        setMode("login");
+                      }}
                       style={{
-                        padding: "12px",
-                        borderRadius: 12,
-                        background: "#1B3B22",
-                        color: "#FFFFFF",
+                        background: "none",
                         border: "none",
-                        fontSize: 14,
+                        color: "#166534",
+                        fontSize: 12.5,
                         fontWeight: 700,
-                        cursor: resetting ? "not-allowed" : "pointer",
+                        cursor: "pointer",
+                        fontFamily: "inherit",
                       }}
                     >
-                      {resetting ? "Updating Password..." : "Update Password & Sign In"}
+                      ← Back to Sign In
                     </button>
-                  </form>
-                )}
-              </>
+                  </div>
+                </div>
+              </form>
             )}
           </div>
-        </div>
+        )}
       </div>
-    </>
+    </div>
   );
 }
+
+// ── Shared Compact Input Styles ──
+const labelStyle = {
+  display: "block",
+  fontSize: 12,
+  fontWeight: 700,
+  color: "#152B17",
+  marginBottom: 4,
+  fontFamily: "Outfit, system-ui, sans-serif",
+};
+
+const inputStyle = {
+  width: "100%",
+  height: 40,
+  padding: "0 12px 0 36px",
+  borderRadius: 10,
+  border: "1px solid #E2DDD3",
+  background: "#FAF8F5",
+  color: "#152B17",
+  fontSize: 13.5,
+  fontFamily: "Outfit, system-ui, sans-serif",
+  outline: "none",
+  boxSizing: "border-box",
+  transition: "border-color 0.15s ease, background 0.15s ease",
+};
+
+const iconLeftStyle = {
+  position: "absolute",
+  left: 12,
+  top: "50%",
+  transform: "translateY(-50%)",
+  pointerEvents: "none",
+};
+
+const iconRightBtnStyle = {
+  position: "absolute",
+  right: 10,
+  top: "50%",
+  transform: "translateY(-50%)",
+  background: "none",
+  border: "none",
+  cursor: "pointer",
+  padding: 0,
+  display: "flex",
+  alignItems: "center",
+  justifyContent: "center",
+};
