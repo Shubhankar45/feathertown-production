@@ -2,7 +2,7 @@ import { useEffect, useState, useMemo } from "react";
 import { Download, X, Package } from "lucide-react";
 import { adminFetch } from "../../utils/adminApi";
 import { toast } from "../../components/ui/Toast";
-import { safeFormatDate, safeLower } from "../../utils/formatters";
+import { safeFormatDate, safeFormatDateTime, safeFormatCurrency, safeLower } from "../../utils/formatters";
 
 const STATUSES = ["all", "pending", "confirmed", "shipped", "delivered", "cancelled"];
 
@@ -155,7 +155,7 @@ export default function AdminOrders() {
         <div style={metricCardStyle}>
           <div style={{ fontSize: 12, color: "#059669", fontWeight: 600 }}>Total Volume</div>
           <div style={{ fontSize: 24, fontWeight: 800, color: "#059669", marginTop: 4 }}>
-            ₹{totalRevenue.toLocaleString("en-IN")}
+            {safeFormatCurrency(totalRevenue)}
           </div>
         </div>
       </div>
@@ -397,7 +397,7 @@ export default function AdminOrders() {
                   Order #{selectedOrder._id}
                 </h2>
                 <div style={{ fontSize: 12, color: "#64748B", marginTop: 2 }}>
-                  Placed on {new Date(selectedOrder.createdAt).toLocaleString("en-IN")}
+                  Placed on {safeFormatDateTime(selectedOrder.createdAt)}
                 </div>
               </div>
               <button

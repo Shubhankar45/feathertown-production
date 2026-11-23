@@ -53,6 +53,16 @@ export function safeFormatCurrency(amount, fallback = "₹0") {
 }
 
 /**
+ * Safely format numeric value with commas.
+ */
+export function safeFormatNumber(val, fallback = "0") {
+  if (val === null || val === undefined || val === "") return fallback;
+  const num = Number(val);
+  if (isNaN(num)) return fallback;
+  return num.toLocaleString("en-IN");
+}
+
+/**
  * Safely convert any value to lowercased string for search/filter operations.
  */
 export function safeLower(val) {

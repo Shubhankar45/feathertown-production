@@ -30,6 +30,7 @@ import logoImg from "../../assets/logo-optimized.png";
 const TOP_PILLS = [
   { to: `${ADMIN_BASE}`, label: "Dashboard", end: true },
   { to: `${ADMIN_BASE}/create-bill`, label: "Create Bill" },
+  { to: `${ADMIN_BASE}/invoices`, label: "Invoices" },
   { to: `${ADMIN_BASE}/bookings`, label: "Booking Tracker" },
   { to: `${ADMIN_BASE}/customers`, label: "Customers" },
   { to: `${ADMIN_BASE}/transactions`, label: "Transactions" },
@@ -490,12 +491,6 @@ export default function AdminLayout() {
               {pill.label}
             </NavLink>
           ))}
-          <NavLink
-            to={`${ADMIN_BASE}/invoices`}
-            className={({ isActive }) => `ft-admin-pill-btn ${isActive ? "active" : ""}`}
-          >
-            Invoices
-          </NavLink>
         </div>
 
         {/* Route Outlet */}

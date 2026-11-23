@@ -2,6 +2,7 @@ import { useEffect, useState, useMemo } from "react";
 import { Download, Mail } from "lucide-react";
 import { adminFetch } from "../../utils/adminApi";
 import { toast } from "../../components/ui/Toast";
+import { safeFormatDate, safeLower } from "../../utils/formatters";
 
 export default function AdminSubscribers() {
   const [subscribers, setSubscribers] = useState([]);
@@ -61,7 +62,7 @@ export default function AdminSubscribers() {
 
   const filtered = useMemo(() => {
     return subscribers.filter((s) =>
-      search === "" || s.email?.toLowerCase().includes(search.toLowerCase())
+      search === "" || safeLower(s?.email).includes(safeLower(search))
     );
   }, [subscribers, search]);
 
@@ -174,11 +175,7 @@ export default function AdminSubscribers() {
                     {s.email}
                   </td>
                   <td style={{ padding: "14px 16px", color: "#64748B", fontSize: 12.5 }}>
-                    {s.createdAt ? new Date(s.createdAt).toLocaleDateString("en-IN", {
-                      day: "numeric",
-                      month: "short",
-                      year: "numeric",
-                    }) : "—"}
+                    {safeFormatDate(s.createdAt)}
                   </td>
                   <td style={{ padding: "14px 16px", textAlign: "right" }}>
                     <div style={{ display: "inline-flex", gap: 8 }}>

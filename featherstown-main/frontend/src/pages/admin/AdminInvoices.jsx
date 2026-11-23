@@ -97,7 +97,7 @@ export default function AdminInvoices() {
         }),
       });
 
-      toast.success(`Payment of ₹${amount.toLocaleString()} recorded!`);
+      toast.success(`Payment of ${safeFormatCurrency(amount)} recorded!`);
       setPaymentModalInvoice(null);
       // Update in state
       setInvoices((prev) =>
@@ -611,7 +611,7 @@ export default function AdminInvoices() {
 
             <p style={{ fontSize: 13, color: "#64748B", marginBottom: 16 }}>
               Invoice <strong>{paymentModalInvoice.invoiceNumber}</strong> • Current Balance:{" "}
-              <strong style={{ color: "#DC2626" }}>₹{paymentModalInvoice.balanceDue?.toLocaleString()}</strong>
+              <strong style={{ color: "#DC2626" }}>{safeFormatCurrency(paymentModalInvoice.balanceDue)}</strong>
             </p>
 
             <form onSubmit={handleRecordPayment} style={{ display: "flex", flexDirection: "column", gap: 14 }}>

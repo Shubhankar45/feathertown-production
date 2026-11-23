@@ -11,6 +11,7 @@
 import { useRef } from "react";
 import { Printer, Download, Share2, X, CheckCircle2, AlertCircle, Feather } from "lucide-react";
 import { toast } from "../ui/Toast";
+import { safeFormatCurrency, safeFormatDate } from "../../utils/formatters";
 
 export default function PrintableInvoice({ invoice, settings, onClose }) {
   const printRef = useRef(null);
@@ -28,7 +29,7 @@ export default function PrintableInvoice({ invoice, settings, onClose }) {
       return;
     }
     const message = encodeURIComponent(
-      `Hello ${invoice.customer?.name || "Customer"},\n\nYour official FeatherTown Tax Invoice (#${invoice.invoiceNumber}) has been generated.\n\nTotal Amount: ₹${invoice.totalAmount?.toLocaleString("en-IN")}\nAmount Paid: ₹${invoice.paidAmount?.toLocaleString("en-IN")}\nBalance Due: ₹${invoice.balanceDue?.toLocaleString("en-IN")}\n\nThank you for choosing FeatherTown Aviary!`
+      `Hello ${invoice.customer?.name || "Customer"},\n\nYour official FeatherTown Tax Invoice (#${invoice.invoiceNumber}) has been generated.\n\nTotal Amount: ${safeFormatCurrency(invoice.totalAmount)}\nAmount Paid: ${safeFormatCurrency(invoice.paidAmount)}\nBalance Due: ${safeFormatCurrency(invoice.balanceDue)}\n\nThank you for choosing FeatherTown Aviary!`
     );
     window.open(`https://wa.me/${phone}?text=${message}`, "_blank");
   };
@@ -227,7 +228,7 @@ export default function PrintableInvoice({ invoice, settings, onClose }) {
                 #{invoice.invoiceNumber}
               </div>
               <div style={{ fontSize: 12, color: "#64748B", marginTop: 2 }}>
-                Date: {new Date(invoice.createdAt || Date.now()).toLocaleDateString("en-IN", { day: "2-digit", month: "short", year: "numeric" })}
+                Date: {safeFormatDate(invoice.createdAt || Date.now())}
               </div>
               <div style={{ fontSize: 12, color: "#64748B", marginTop: 2 }}>
                 Payment Method: <strong style={{ textTransform: "uppercase" }}>{invoice.paymentMethod || "CASH"}</strong>
@@ -308,13 +309,13 @@ export default function PrintableInvoice({ invoice, settings, onClose }) {
                       {it.itemType || "Accessory"}
                     </td>
                     <td style={{ padding: "12px", fontSize: 13.5, textAlign: "right", color: "#334155" }}>
-                      ₹{Number(it.price || 0).toLocaleString("en-IN")}
+                      {safeFormatCurrency(it.price)}
                     </td>
                     <td style={{ padding: "12px", fontSize: 13.5, textAlign: "center", color: "#334155" }}>
                       {it.quantity || 1}
                     </td>
                     <td style={{ padding: "12px", fontSize: 13.5, fontWeight: 700, textAlign: "right", color: "#1B3B22" }}>
-                      ₹{Number(it.total || (it.price * it.quantity)).toLocaleString("en-IN")}
+                      {safeFormatCurrency(it.total || (it.price * it.quantity))}
                     </td>
                   </tr>
                 ))}
@@ -389,7 +390,7 @@ export default function PrintableInvoice({ invoice, settings, onClose }) {
               {invoice.balanceDue > 0 && (
                 <div style={{ marginTop: 12, paddingTop: 10, borderTop: "1px dashed #CBD5E1" }}>
                   <span style={{ fontSize: 12, color: "#D9381E", fontWeight: 700 }}>
-                    Scan UPI QR or pay via ID to clear balance of ₹{invoice.balanceDue.toLocaleString("en-IN")}.
+                    Scan UPI QR or pay via ID to clear balance of {safeFormatCurrency(invoice.balanceDue)}.
                   </span>
                 </div>
               )}
@@ -399,20 +400,20 @@ export default function PrintableInvoice({ invoice, settings, onClose }) {
             <div style={{ display: "flex", flexDirection: "column", gap: 8, fontSize: 13.5 }}>
               <div style={{ display: "flex", justifyContent: "space-between", color: "#475569" }}>
                 <span>Subtotal:</span>
-                <span>₹{Number(invoice.subtotal || 0).toLocaleString("en-IN")}</span>
+                <span>{safeFormatCurrency(invoice.subtotal)}</span>
               </div>
 
               {invoice.discount > 0 && (
                 <div style={{ display: "flex", justifyContent: "space-between", color: "#15803D" }}>
                   <span>Discount:</span>
-                  <span>- ₹{Number(invoice.discount).toLocaleString("en-IN")}</span>
+                  <span>- {safeFormatCurrency(invoice.discount)}</span>
                 </div>
               )}
 
               {invoice.taxRate > 0 && (
                 <div style={{ display: "flex", justifyContent: "space-between", color: "#475569" }}>
                   <span>GST ({invoice.taxRate}%):</span>
-                  <span>₹{Number(invoice.taxAmount || 0).toLocaleString("en-IN")}</span>
+                  <span>{safeFormatCurrency(invoice.taxAmount)}</span>
                 </div>
               )}
 
@@ -429,12 +430,12 @@ export default function PrintableInvoice({ invoice, settings, onClose }) {
                 }}
               >
                 <span>Total Amount:</span>
-                <span>₹{Number(invoice.totalAmount || 0).toLocaleString("en-IN")}</span>
+                <span>{safeFormatCurrency(invoice.totalAmount)}</span>
               </div>
 
               <div style={{ display: "flex", justifyContent: "space-between", color: "#15803D", fontWeight: 700 }}>
                 <span>Amount Paid:</span>
-                <span>₹{Number(invoice.paidAmount || 0).toLocaleString("en-IN")}</span>
+                <span>{safeFormatCurrency(invoice.paidAmount)}</span>
               </div>
 
               <div
@@ -450,7 +451,7 @@ export default function PrintableInvoice({ invoice, settings, onClose }) {
                 }}
               >
                 <span>Balance Due:</span>
-                <span>₹{Number(invoice.balanceDue || 0).toLocaleString("en-IN")}</span>
+                <span>{safeFormatCurrency(invoice.balanceDue)}</span>
               </div>
             </div>
           </div>

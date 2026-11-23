@@ -19,7 +19,7 @@ import {
 import { adminFetch } from "../../utils/adminApi";
 import { ADMIN_BASE } from "../../config/adminConfig";
 import { toast } from "../../components/ui/Toast";
-import { safeFormatDate, safeLower } from "../../utils/formatters";
+import { safeFormatDate, safeFormatCurrency, safeLower } from "../../utils/formatters";
 
 export default function AdminBookingTracker() {
   const [bookings, setBookings] = useState([]);
@@ -491,7 +491,7 @@ export default function AdminBookingTracker() {
                   <div style={{ fontSize: 12 }}>
                     <span style={{ color: "#64748B" }}>Balance: </span>
                     <strong style={{ color: b.balanceDue > 0 ? "#DC2626" : "#166534" }}>
-                      ₹{(b.balanceDue || 0).toLocaleString()}
+                      {safeFormatCurrency(b.balanceDue || 0)}
                     </strong>
                   </div>
 

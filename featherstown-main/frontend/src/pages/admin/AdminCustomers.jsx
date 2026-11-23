@@ -310,7 +310,7 @@ export default function AdminCustomers() {
             Total Customer LTV
           </div>
           <div style={{ fontSize: 24, fontWeight: 800, color: "#166534", marginTop: 4 }}>
-            ₹{totalSpentAll.toLocaleString()}
+            {safeFormatCurrency(totalSpentAll)}
           </div>
           <div style={{ fontSize: 11, color: "#94A3B8" }}>Cumulative lifetime purchases</div>
         </div>
@@ -320,7 +320,7 @@ export default function AdminCustomers() {
             Average Spend Per Client
           </div>
           <div style={{ fontSize: 24, fontWeight: 800, color: "#0F172A", marginTop: 4 }}>
-            ₹{avgSpend.toLocaleString()}
+            {safeFormatCurrency(avgSpend)}
           </div>
           <div style={{ fontSize: 11, color: "#94A3B8" }}>Average order volume</div>
         </div>
@@ -604,7 +604,7 @@ export default function AdminCustomers() {
                     Lifetime Purchases
                   </div>
                   <div style={{ fontSize: 20, fontWeight: 800, color: "#1B3B22", marginTop: 2 }}>
-                    ₹{(activeCustomer.totalSpent || 0).toLocaleString()}
+                    {safeFormatCurrency(activeCustomer.totalSpent || 0)}
                   </div>
                 </div>
 

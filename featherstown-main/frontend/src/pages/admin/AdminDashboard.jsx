@@ -340,7 +340,7 @@ export default function AdminDashboard() {
             </div>
           </div>
           <div style={{ fontSize: 26, fontWeight: 800, color: "#1B3B22", lineHeight: 1.1 }}>
-            ₹{grossRevenue.toLocaleString()}
+            {safeFormatCurrency(grossRevenue)}
           </div>
           <div style={{ marginTop: 8, fontSize: 12, color: "#64748B", display: "flex", alignItems: "center", gap: 6 }}>
             <span style={{ color: "#166534", fontWeight: 700 }}>Real Invoices & Orders</span>
@@ -367,10 +367,10 @@ export default function AdminDashboard() {
             </div>
           </div>
           <div style={{ fontSize: 26, fontWeight: 800, color: netProfit >= 0 ? "#166534" : "#DC2626", lineHeight: 1.1 }}>
-            ₹{netProfit.toLocaleString()}
+            {safeFormatCurrency(netProfit)}
           </div>
           <div style={{ marginTop: 8, fontSize: 12, color: "#64748B" }}>
-            Margin: <strong style={{ color: "#0F172A" }}>{profitMargin}%</strong> (Expenses: ₹{totalExpenses.toLocaleString()})
+            Margin: <strong style={{ color: "#0F172A" }}>{profitMargin}%</strong> (Expenses: {safeFormatCurrency(totalExpenses)})
           </div>
         </div>
 
@@ -396,7 +396,7 @@ export default function AdminDashboard() {
             {totalOrders}
           </div>
           <div style={{ marginTop: 8, fontSize: 12, color: "#64748B" }}>
-            Avg Order: <strong style={{ color: "#0F172A" }}>₹{averageOrderValue.toLocaleString()}</strong>
+            Avg Order: <strong style={{ color: "#0F172A" }}>{safeFormatCurrency(averageOrderValue)}</strong>
           </div>
         </div>
 
@@ -589,8 +589,8 @@ export default function AdminDashboard() {
                 <div style={{ fontWeight: 700, marginBottom: 4, color: "#93C5FD" }}>
                   {trendPoints.revCoords[hoveredTrendIdx].date} ({trendPoints.revCoords[hoveredTrendIdx].label})
                 </div>
-                <div>Revenue: <strong style={{ color: "#4ADE80" }}>₹{trendPoints.revCoords[hoveredTrendIdx].revenue.toLocaleString()}</strong></div>
-                <div>Expenses: <strong style={{ color: "#F87171" }}>₹{trendPoints.revCoords[hoveredTrendIdx].expenses.toLocaleString()}</strong></div>
+                <div>Revenue: <strong style={{ color: "#4ADE80" }}>{safeFormatCurrency(trendPoints.revCoords[hoveredTrendIdx].revenue)}</strong></div>
+                <div>Expenses: <strong style={{ color: "#F87171" }}>{safeFormatCurrency(trendPoints.revCoords[hoveredTrendIdx].expenses)}</strong></div>
                 <div>Orders/Bills: <strong>{trendPoints.revCoords[hoveredTrendIdx].orders}</strong></div>
               </div>
             )}
@@ -633,7 +633,7 @@ export default function AdminDashboard() {
                     <div style={{ display: "flex", justifyContent: "space-between", fontSize: 13, marginBottom: 5 }}>
                       <span style={{ fontWeight: 600, color: "#1B3B22" }}>{cat.name}</span>
                       <span style={{ color: "#64748B" }}>
-                        ₹{cat.revenue.toLocaleString()} ({pct}%)
+                        {safeFormatCurrency(cat.revenue)} ({pct}%)
                       </span>
                     </div>
                     <div style={{ height: 8, background: "#F1F5F9", borderRadius: 99, overflow: "hidden" }}>
@@ -687,7 +687,7 @@ export default function AdminDashboard() {
                   {pm.method}
                 </div>
                 <div style={{ fontSize: 16, fontWeight: 700, color: "#1B3B22", marginTop: 2 }}>
-                  ₹{pm.amount.toLocaleString()}
+                  {safeFormatCurrency(pm.amount)}
                 </div>
                 <div style={{ fontSize: 11, color: "#94A3B8" }}>{pm.count} transactions</div>
               </div>
@@ -848,7 +848,7 @@ export default function AdminDashboard() {
                     {bird.name}
                   </div>
                   <div style={{ fontSize: 12, color: "#D9381E", fontWeight: 700 }}>
-                    ₹{bird.price?.toLocaleString()}
+                    {safeFormatCurrency(bird.price)}
                   </div>
                   <div style={{ display: "flex", gap: 4, marginTop: 4 }}>
                     <button
@@ -959,7 +959,7 @@ export default function AdminDashboard() {
                   </div>
                   <div style={{ textAlign: "right" }}>
                     <div style={{ fontSize: 13.5, fontWeight: 700, color: "#0F172A" }}>
-                      ₹{inv.grandTotal?.toLocaleString()}
+                      {safeFormatCurrency(inv.grandTotal)}
                     </div>
                     <span
                       style={{
@@ -1038,7 +1038,7 @@ export default function AdminDashboard() {
                       Order #{ord.orderId || ord._id.slice(-6).toUpperCase()}
                     </div>
                     <div style={{ fontSize: 11.5, color: "#64748B" }}>
-                      {ord.customer?.name} • ₹{(ord.amount || 0).toLocaleString()}
+                      {ord.customer?.name} • {safeFormatCurrency(ord.amount)}
                     </div>
                   </div>
                   <div style={{ display: "flex", alignItems: "center", gap: 8 }}>

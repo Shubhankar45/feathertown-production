@@ -3,6 +3,7 @@ import { Upload, ShoppingBag, X } from "lucide-react";
 import { adminFetch, adminUpload } from "../../utils/adminApi";
 import { toast } from "../../components/ui/Toast";
 import { useSettings } from "../../context/SettingsContext";
+import { safeLower } from "../../utils/formatters";
 
 const EMPTY_FORM = {
   name: "",
@@ -155,16 +156,17 @@ export default function AdminAccessories() {
 
   const filteredItems = useMemo(() => {
     return items.filter((item) => {
+      const q = safeLower(search);
       const matchSearch =
-        search === "" ||
-        item.name?.toLowerCase().includes(search.toLowerCase()) ||
-        item.category?.toLowerCase().includes(search.toLowerCase()) ||
-        item.description?.toLowerCase().includes(search.toLowerCase());
-      const matchCat = selectedCat === "All" || item.category === selectedCat;
+        q === "" ||
+        safeLower(item?.name).includes(q) ||
+        safeLower(item?.category).includes(q) ||
+        safeLower(item?.description).includes(q);
+      const matchCat = selectedCat === "All" || item?.category === selectedCat;
       const matchStock =
         stockFilter === "all" ||
-        (stockFilter === "low" && item.stock > 0 && item.stock <= 5) ||
-        (stockFilter === "out" && item.stock === 0);
+        (stockFilter === "low" && item?.stock > 0 && item?.stock <= 5) ||
+        (stockFilter === "out" && item?.stock === 0);
       return matchSearch && matchCat && matchStock;
     });
   }, [items, search, selectedCat, stockFilter]);

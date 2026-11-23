@@ -23,6 +23,7 @@ import { adminFetch } from "../../utils/adminApi";
 import { ADMIN_BASE } from "../../config/adminConfig";
 import { toast } from "../../components/ui/Toast";
 import PrintableInvoice from "../../components/admin/PrintableInvoice";
+import { safeFormatCurrency, safeLower } from "../../utils/formatters";
 
 export default function AdminCreateBill() {
   const navigate = useNavigate();
@@ -117,9 +118,9 @@ export default function AdminCreateBill() {
     const q = customerSearch.toLowerCase();
     return list.filter(
       (c) =>
-        c.name?.toLowerCase().includes(q) ||
-        c.phone?.toLowerCase().includes(q) ||
-        c.email?.toLowerCase().includes(q)
+        safeLower(c?.name).includes(q) ||
+        safeLower(c?.phone).includes(q) ||
+        safeLower(c?.email).includes(q)
     );
   }, [customers, customerSearch]);
 
@@ -794,7 +795,7 @@ export default function AdminCreateBill() {
                             <option value="">-- Select Available Aviary Bird --</option>
                             {birds.map((b) => (
                               <option key={b.id || b._id} value={b.id || b._id}>
-                                {b.name} ({b.breed}) - ₹{b.price?.toLocaleString()} [{b.status}]
+                                {b.name} ({b.breed}) - {safeFormatCurrency(b.price)} [{b.status}]
                               </option>
                             ))}
                           </select>
@@ -939,7 +940,7 @@ export default function AdminCreateBill() {
 
                     {/* Line Total */}
                     <td style={{ padding: "10px 12px", textAlign: "right", fontWeight: 700, color: "#1B3B22" }}>
-                      ₹{item.total.toLocaleString()}
+                      {safeFormatCurrency(item.total)}
                     </td>
 
                     {/* Delete */}
@@ -1243,7 +1244,7 @@ export default function AdminCreateBill() {
             <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
               <div style={{ display: "flex", justifyContent: "space-between", fontSize: 13.5 }}>
                 <span style={{ color: "#475569" }}>Subtotal:</span>
-                <span style={{ fontWeight: 700, color: "#0F172A" }}>₹{subtotal.toLocaleString()}</span>
+                <span style={{ fontWeight: 700, color: "#0F172A" }}>{safeFormatCurrency(subtotal)}</span>
               </div>
 
               {/* GST Tax Selector */}
@@ -1266,7 +1267,7 @@ export default function AdminCreateBill() {
                     <option value="12">12% (Standard Supplies)</option>
                     <option value="18">18% (Accessories / Cages)</option>
                   </select>
-                  <span style={{ fontWeight: 700, color: "#0F172A" }}>+₹{taxAmount.toLocaleString()}</span>
+                  <span style={{ fontWeight: 700, color: "#0F172A" }}>+{safeFormatCurrency(taxAmount)}</span>
                 </div>
               </div>
 
@@ -1302,7 +1303,7 @@ export default function AdminCreateBill() {
                 }}
               >
                 <span>Grand Total:</span>
-                <span>₹{grandTotal.toLocaleString()}</span>
+                <span>{safeFormatCurrency(grandTotal)}</span>
               </div>
 
               {/* Paid vs Due */}
@@ -1335,7 +1336,7 @@ export default function AdminCreateBill() {
                   />
                 ) : (
                   <span style={{ fontWeight: 700, color: "#166534" }}>
-                    ₹{(paymentStatus === "paid" ? grandTotal : 0).toLocaleString()}
+                    {safeFormatCurrency(paymentStatus === "paid" ? grandTotal : 0)}
                   </span>
                 )}
               </div>
@@ -1352,7 +1353,7 @@ export default function AdminCreateBill() {
                 }}
               >
                 <span>Balance Due:</span>
-                <span>₹{balanceDue.toLocaleString()}</span>
+                <span>{safeFormatCurrency(balanceDue)}</span>
               </div>
             </div>
 

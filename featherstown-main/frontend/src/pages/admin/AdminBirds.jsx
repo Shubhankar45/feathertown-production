@@ -4,6 +4,7 @@ import { adminFetch, adminUpload } from "../../utils/adminApi";
 import { toast } from "../../components/ui/Toast";
 import { resolveBirdImage } from "../../context/BirdsContext";
 import { useSettings } from "../../context/SettingsContext";
+import { safeLower } from "../../utils/formatters";
 
 const STATUSES = ["available", "reserved", "sold out", "coming soon"];
 
@@ -194,13 +195,14 @@ export default function AdminBirds() {
 
   const filteredBirds = useMemo(() => {
     return birds.filter((b) => {
+      const q = safeLower(search);
       const matchSearch =
-        search === "" ||
-        b.name?.toLowerCase().includes(search.toLowerCase()) ||
-        b.category?.toLowerCase().includes(search.toLowerCase()) ||
-        b.description?.toLowerCase().includes(search.toLowerCase());
-      const matchCat = selectedCat === "All" || b.category === selectedCat;
-      const matchStatus = selectedStatus === "All" || b.status === selectedStatus;
+        q === "" ||
+        safeLower(b?.name).includes(q) ||
+        safeLower(b?.category).includes(q) ||
+        safeLower(b?.description).includes(q);
+      const matchCat = selectedCat === "All" || b?.category === selectedCat;
+      const matchStatus = selectedStatus === "All" || b?.status === selectedStatus;
       return matchSearch && matchCat && matchStatus;
     });
   }, [birds, search, selectedCat, selectedStatus]);
