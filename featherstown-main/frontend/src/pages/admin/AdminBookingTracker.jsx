@@ -19,7 +19,7 @@ import {
 import { adminFetch } from "../../utils/adminApi";
 import { ADMIN_BASE } from "../../config/adminConfig";
 import { toast } from "../../components/ui/Toast";
-import { resolveBirdImage } from "../../context/BirdsContext";
+import { safeFormatDate, safeLower } from "../../utils/formatters";
 
 export default function AdminBookingTracker() {
   const [bookings, setBookings] = useState([]);
@@ -60,19 +60,21 @@ export default function AdminBookingTracker() {
   const filteredBookings = useMemo(() => {
     const list = Array.isArray(bookings) ? bookings : [];
     return list.filter((b) => {
+      if (!b || typeof b !== "object") return false;
       if (activeTab !== "all" && b.status !== activeTab) return false;
       if (!search.trim()) return true;
       const q = search.toLowerCase();
-      const ring = b.birdBooking?.ringNumber?.toLowerCase() || "";
-      const custName = b.customer?.name?.toLowerCase() || "";
-      const custPhone = b.customer?.phone?.toLowerCase() || "";
-      const birdName = b.birdName?.toLowerCase() || "";
+      const ring = safeLower(b.birdBooking?.ringNumber);
+      const custName = safeLower(b.customer?.name);
+      const custPhone = safeLower(b.customer?.phone);
+      const birdName = safeLower(b.birdName);
       return ring.includes(q) || custName.includes(q) || custPhone.includes(q) || birdName.includes(q);
     });
   }, [bookings, activeTab, search]);
 
   // Open Edit Modal
   const handleOpenEdit = (b) => {
+    if (!b) return;
     setSelectedBooking(b);
     setEditForm({
       status: b.status || "reserved",
@@ -90,7 +92,7 @@ export default function AdminBookingTracker() {
 
     try {
       setSaving(true);
-      const res = await adminFetch(`/api/admin/bookings/${selectedBooking.invoiceId}`, {
+      await adminFetch(`/api/admin/bookings/${selectedBooking.invoiceId}`, {
         method: "PATCH",
         body: JSON.stringify({
           status: editForm.status,
@@ -113,10 +115,10 @@ export default function AdminBookingTracker() {
   };
 
   // Stats
-  const totalReserved = bookings.filter((b) => b.status === "reserved").length;
-  const totalCertified = bookings.filter((b) => b.status === "health_certified").length;
-  const totalReady = bookings.filter((b) => b.status === "ready_for_handover").length;
-  const totalHandedOver = bookings.filter((b) => b.status === "completed").length;
+  const totalReserved = bookings.filter((b) => b?.status === "reserved").length;
+  const totalCertified = bookings.filter((b) => b?.status === "health_certified").length;
+  const totalReady = bookings.filter((b) => b?.status === "ready_for_handover").length;
+  const totalHandedOver = bookings.filter((b) => b?.status === "completed").length;
 
   return (
     <div style={{ maxWidth: 1300, margin: "0 auto", paddingBottom: 60 }}>
@@ -470,7 +472,7 @@ export default function AdminBookingTracker() {
                     <div>Phone: {b.customer?.phone} • {b.customer?.city || "Bangalore"}</div>
                     {b.birdBooking?.handoverDate && (
                       <div style={{ color: "#1B3B22", fontWeight: 600, marginTop: 2 }}>
-                        Target Handover: {new Date(b.birdBooking.handoverDate).toLocaleDateString()}
+                        Target Handover: {safeFormatDate(b.birdBooking.handoverDate)}
                       </div>
                     )}
                   </div>

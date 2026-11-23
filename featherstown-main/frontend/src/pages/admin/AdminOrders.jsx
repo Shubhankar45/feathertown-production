@@ -2,6 +2,7 @@ import { useEffect, useState, useMemo } from "react";
 import { Download, X, Package } from "lucide-react";
 import { adminFetch } from "../../utils/adminApi";
 import { toast } from "../../components/ui/Toast";
+import { safeFormatDate, safeLower } from "../../utils/formatters";
 
 const STATUSES = ["all", "pending", "confirmed", "shipped", "delivered", "cancelled"];
 
@@ -48,15 +49,15 @@ export default function AdminOrders() {
     if (!orders.length) return toast.warn("No orders to export");
     const headers = ["Order ID", "Date", "Customer", "Email", "Phone", "Amount", "Payment", "Status", "Items"];
     const rows = orders.map((o) => [
-      o._id,
-      new Date(o.createdAt).toLocaleDateString(),
-      `"${o.shippingAddress?.fullName || ""}"`,
-      o.userEmail || o.shippingAddress?.email || "",
-      o.shippingAddress?.phone || "",
-      o.amount,
-      o.paymentMethod || "COD",
-      o.orderStatus,
-      o.items?.length || 0,
+      `"${o?._id || ""}"`,
+      `"${safeFormatDate(o?.createdAt)}"`,
+      `"${o?.shippingAddress?.fullName || ""}"`,
+      `"${o?.userEmail || o?.shippingAddress?.email || ""}"`,
+      `"${o?.shippingAddress?.phone || ""}"`,
+      Number(o?.amount) || 0,
+      `"${o?.paymentMethod || "COD"}"`,
+      `"${o?.orderStatus || ""}"`,
+      o?.items?.length || 0,
     ]);
 
     const csvContent = "data:text/csv;charset=utf-8," + [headers.join(","), ...rows.map((r) => r.join(","))].join("\n");
@@ -72,14 +73,15 @@ export default function AdminOrders() {
 
   const filteredOrders = useMemo(() => {
     return orders.filter((o) => {
+      if (!o || typeof o !== "object") return false;
       const matchStatus = selectedStatus === "all" || o.orderStatus === selectedStatus;
       const s = search.toLowerCase();
       const matchSearch =
         search === "" ||
-        o._id.toLowerCase().includes(s) ||
-        o.shippingAddress?.fullName?.toLowerCase().includes(s) ||
-        o.shippingAddress?.email?.toLowerCase().includes(s) ||
-        o.shippingAddress?.phone?.includes(s);
+        safeLower(o._id).includes(s) ||
+        safeLower(o.shippingAddress?.fullName).includes(s) ||
+        safeLower(o.userEmail || o.shippingAddress?.email).includes(s) ||
+        safeLower(o.shippingAddress?.phone).includes(s);
       return matchStatus && matchSearch;
     });
   }, [orders, selectedStatus, search]);
@@ -274,11 +276,7 @@ export default function AdminOrders() {
                       #{order._id.slice(-8).toUpperCase()}
                     </div>
                     <div style={{ fontSize: 11, color: "#64748B", marginTop: 2 }}>
-                      {new Date(order.createdAt).toLocaleDateString("en-IN", {
-                        day: "numeric",
-                        month: "short",
-                        year: "numeric",
-                      })}
+                      {safeFormatDate(order.createdAt)}
                     </div>
                   </td>
                   <td style={{ padding: "14px 16px" }}>

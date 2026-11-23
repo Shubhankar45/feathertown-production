@@ -1,4 +1,4 @@
-import { useState } from "react";
+import React, { useState } from "react";
 import {
   LayoutDashboard,
   Receipt,
@@ -17,6 +17,8 @@ import {
   X,
   Star,
   ExternalLink,
+  AlertTriangle,
+  RotateCcw,
 } from "lucide-react";
 import { NavLink, Outlet, useNavigate, useLocation } from "react-router-dom";
 import { useAdminAuth } from "../../context/AdminAuthContext";
@@ -64,6 +66,99 @@ const NAV_SECTIONS = [
     ],
   },
 ];
+
+class AdminContentBoundary extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = { hasError: false, error: null };
+  }
+  static getDerivedStateFromError(error) {
+    return { hasError: true, error };
+  }
+  componentDidCatch(error, errorInfo) {
+    console.error("🚨 Admin section caught UI error:", error, errorInfo);
+  }
+  handleReset = () => {
+    this.setState({ hasError: false, error: null });
+  };
+  render() {
+    if (this.state.hasError) {
+      return (
+        <div
+          style={{
+            maxWidth: 600,
+            margin: "40px auto",
+            padding: "36px 28px",
+            background: "#FFFFFF",
+            borderRadius: 16,
+            border: "1px solid #E2DDD3",
+            textAlign: "center",
+            boxShadow: "0 10px 30px rgba(0,0,0,0.05)",
+          }}
+        >
+          <div
+            style={{
+              width: 56,
+              height: 56,
+              borderRadius: "50%",
+              background: "#FDECE8",
+              color: "#D9381E",
+              display: "inline-flex",
+              alignItems: "center",
+              justifyContent: "center",
+              marginBottom: 16,
+            }}
+          >
+            <AlertTriangle size={28} />
+          </div>
+          <h2 style={{ fontSize: 18, fontWeight: 700, color: "#1B3B22", marginBottom: 8 }}>
+            Section Rendering Hiccup
+          </h2>
+          <p style={{ fontSize: 13.5, color: "#64748B", marginBottom: 20, lineHeight: 1.5 }}>
+            We encountered a temporary display issue in this admin module. All database records remain safe and untouched.
+          </p>
+          <div style={{ display: "flex", gap: 10, justifyContent: "center", flexWrap: "wrap" }}>
+            <button
+              onClick={this.handleReset}
+              style={{
+                display: "inline-flex",
+                alignItems: "center",
+                gap: 6,
+                padding: "9px 18px",
+                background: "#1B3B22",
+                color: "#FFFFFF",
+                borderRadius: 8,
+                fontSize: 13,
+                fontWeight: 700,
+                border: "none",
+                cursor: "pointer",
+              }}
+            >
+              <RotateCcw size={14} />
+              Retry Module
+            </button>
+            <button
+              onClick={() => window.location.reload()}
+              style={{
+                padding: "9px 18px",
+                background: "#FAF8F5",
+                color: "#1B3B22",
+                borderRadius: 8,
+                fontSize: 13,
+                fontWeight: 600,
+                border: "1px solid #CBD5E1",
+                cursor: "pointer",
+              }}
+            >
+              Reload Page
+            </button>
+          </div>
+        </div>
+      );
+    }
+    return this.props.children;
+  }
+}
 
 export default function AdminLayout() {
   const { admin, logout } = useAdminAuth();
@@ -212,7 +307,7 @@ export default function AdminLayout() {
 
         {/* Navigation Links (Scrollable) */}
         <nav className="ft-admin-sidebar-nav" style={{ padding: "10px 10px" }}>
-          {NAV_SECTIONS.map((sec, secIdx) => (
+          {NAV_SECTIONS.map((sec) => (
             <div key={sec.title} style={{ marginBottom: 12 }}>
               <div
                 style={{
@@ -405,7 +500,9 @@ export default function AdminLayout() {
 
         {/* Route Outlet */}
         <main className="ft-admin-main">
-          <Outlet />
+          <AdminContentBoundary key={location.pathname}>
+            <Outlet />
+          </AdminContentBoundary>
         </main>
       </div>
     </div>

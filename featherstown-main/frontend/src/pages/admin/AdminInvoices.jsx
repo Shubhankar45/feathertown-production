@@ -19,6 +19,7 @@ import { adminFetch } from "../../utils/adminApi";
 import { ADMIN_BASE } from "../../config/adminConfig";
 import { toast } from "../../components/ui/Toast";
 import PrintableInvoice from "../../components/admin/PrintableInvoice";
+import { safeFormatDate, safeFormatCurrency, safeLower } from "../../utils/formatters";
 
 export default function AdminInvoices() {
   const [invoices, setInvoices] = useState([]);
@@ -57,12 +58,13 @@ export default function AdminInvoices() {
   const filteredInvoices = useMemo(() => {
     const list = Array.isArray(invoices) ? invoices : [];
     return list.filter((inv) => {
+      if (!inv || typeof inv !== "object") return false;
       if (statusFilter !== "all" && inv.paymentStatus !== statusFilter) return false;
       if (!search.trim()) return true;
       const q = search.toLowerCase();
-      const num = inv.invoiceNumber?.toLowerCase() || "";
-      const custName = inv.customer?.name?.toLowerCase() || "";
-      const custPhone = inv.customer?.phone?.toLowerCase() || "";
+      const num = safeLower(inv.invoiceNumber);
+      const custName = safeLower(inv.customer?.name);
+      const custPhone = safeLower(inv.customer?.phone);
       return num.includes(q) || custName.includes(q) || custPhone.includes(q);
     });
   }, [invoices, statusFilter, search]);
@@ -147,15 +149,15 @@ export default function AdminInvoices() {
       "Payment Method",
     ];
     const rows = filteredInvoices.map((inv) => [
-      inv.invoiceNumber,
-      new Date(inv.createdAt).toLocaleDateString(),
-      `"${inv.customer?.name || ""}"`,
-      `"${inv.customer?.phone || ""}"`,
-      inv.grandTotal,
-      inv.paidAmount,
-      inv.balanceDue,
-      inv.paymentStatus,
-      inv.paymentMethod,
+      `"${inv?.invoiceNumber || ""}"`,
+      `"${safeFormatDate(inv?.createdAt)}"`,
+      `"${inv?.customer?.name || ""}"`,
+      `"${inv?.customer?.phone || ""}"`,
+      Number(inv?.grandTotal) || 0,
+      Number(inv?.paidAmount) || 0,
+      Number(inv?.balanceDue) || 0,
+      `"${inv?.paymentStatus || ""}"`,
+      `"${inv?.paymentMethod || ""}"`,
     ]);
 
     const csvContent =
@@ -372,34 +374,30 @@ export default function AdminInvoices() {
                 </tr>
               </thead>
               <tbody>
-                {filteredInvoices.map((inv) => (
-                  <tr key={inv._id || inv.id} style={{ borderBottom: "1px solid #F1F5F9" }}>
+                {filteredInvoices.map((inv, idx) => (
+                  <tr key={inv?._id || inv?.id || inv?.invoiceNumber || idx} style={{ borderBottom: "1px solid #F1F5F9" }}>
                     <td style={{ padding: "14px 16px", fontWeight: 700, color: "#1B3B22" }}>
-                      {inv.invoiceNumber}
+                      {inv?.invoiceNumber || "—"}
                     </td>
                     <td style={{ padding: "14px 16px", fontSize: 12.5, color: "#475569" }}>
-                      {new Date(inv.createdAt).toLocaleDateString("en-IN", {
-                        day: "2-digit",
-                        month: "short",
-                        year: "numeric",
-                      })}
+                      {safeFormatDate(inv?.createdAt)}
                     </td>
                     <td style={{ padding: "14px 16px" }}>
                       <div style={{ fontWeight: 700, color: "#0F172A", fontSize: 13 }}>
-                        {inv.customer?.name}
+                        {inv?.customer?.name || "Anonymous Customer"}
                       </div>
                       <div style={{ fontSize: 11.5, color: "#64748B" }}>
-                        {inv.customer?.phone}
+                        {inv?.customer?.phone || "—"}
                       </div>
                     </td>
                     <td style={{ padding: "14px 16px", fontSize: 12.5, color: "#334155" }}>
-                      {inv.items?.map((it) => `${it.name} (x${it.quantity})`).join(", ") || "—"}
+                      {inv?.items?.map((it) => `${it?.name || "Item"} (x${it?.quantity || 1})`).join(", ") || "—"}
                     </td>
                     <td style={{ padding: "14px 16px", textAlign: "right", fontWeight: 800, color: "#0F172A" }}>
-                      ₹{inv.grandTotal?.toLocaleString()}
+                      {safeFormatCurrency(inv?.grandTotal)}
                     </td>
-                    <td style={{ padding: "14px 16px", textAlign: "right", fontWeight: 700, color: inv.balanceDue > 0 ? "#DC2626" : "#166534" }}>
-                      ₹{inv.balanceDue?.toLocaleString()}
+                    <td style={{ padding: "14px 16px", textAlign: "right", fontWeight: 700, color: (Number(inv?.balanceDue) || 0) > 0 ? "#DC2626" : "#166534" }}>
+                      {safeFormatCurrency(inv?.balanceDue)}
                     </td>
                     <td style={{ padding: "14px 16px" }}>
                       <span

@@ -1,5 +1,5 @@
 import { useState, useEffect, useMemo } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import {
   Users,
   Search,
@@ -21,9 +21,9 @@ import {
 import { adminFetch } from "../../utils/adminApi";
 import { ADMIN_BASE } from "../../config/adminConfig";
 import { toast } from "../../components/ui/Toast";
+import { safeFormatDate, safeFormatCurrency, safeLower } from "../../utils/formatters";
 
 export default function AdminCustomers() {
-  const navigate = useNavigate();
   const [customers, setCustomers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState("");
@@ -70,13 +70,15 @@ export default function AdminCustomers() {
     const list = Array.isArray(customers) ? customers : [];
     if (!search.trim()) return list;
     const q = search.toLowerCase();
-    return list.filter(
-      (c) =>
-        c.name?.toLowerCase().includes(q) ||
-        c.phone?.toLowerCase().includes(q) ||
-        c.email?.toLowerCase().includes(q) ||
-        c.city?.toLowerCase().includes(q)
-    );
+    return list.filter((c) => {
+      if (!c || typeof c !== "object") return false;
+      return (
+        safeLower(c.name).includes(q) ||
+        safeLower(c.phone).includes(q) ||
+        safeLower(c.email).includes(q) ||
+        safeLower(c.city).includes(q)
+      );
+    });
   }, [customers, search]);
 
   // Open Customer Profile & Fetch Invoices
@@ -183,13 +185,13 @@ export default function AdminCustomers() {
     }
     const headers = ["Name", "Phone", "Email", "City", "Total Orders", "Total Spent (₹)", "Joined Date"];
     const rows = filteredCustomers.map((c) => [
-      `"${c.name}"`,
-      `"${c.phone}"`,
-      `"${c.email || ""}"`,
-      `"${c.city || ""}"`,
-      c.totalOrders || 0,
-      c.totalSpent || 0,
-      new Date(c.createdAt || Date.now()).toLocaleDateString(),
+      `"${c?.name || ""}"`,
+      `"${c?.phone || ""}"`,
+      `"${c?.email || ""}"`,
+      `"${c?.city || ""}"`,
+      Number(c?.totalOrders) || 0,
+      Number(c?.totalSpent) || 0,
+      `"${safeFormatDate(c?.createdAt)}"`,
     ]);
 
     const csvContent =
@@ -206,9 +208,9 @@ export default function AdminCustomers() {
   };
 
   // Summary Metrics
-  const totalSpentAll = customers.reduce((acc, c) => acc + (c.totalSpent || 0), 0);
+  const totalSpentAll = customers.reduce((acc, c) => acc + (Number(c?.totalSpent) || 0), 0);
   const avgSpend = customers.length > 0 ? Math.round(totalSpentAll / customers.length) : 0;
-  const vipCount = customers.filter((c) => (c.totalSpent || 0) >= 10000).length;
+  const vipCount = customers.filter((c) => (Number(c?.totalSpent) || 0) >= 10000).length;
 
   return (
     <div style={{ maxWidth: 1300, margin: "0 auto", paddingBottom: 60 }}>
@@ -433,34 +435,34 @@ export default function AdminCustomers() {
                 </tr>
               </thead>
               <tbody>
-                {filteredCustomers.map((c) => (
+                {filteredCustomers.map((c, idx) => (
                   <tr
-                    key={c._id || c.id}
+                    key={c?._id || c?.id || idx}
                     onClick={() => handleOpenCustomer(c)}
                     style={{ borderBottom: "1px solid #F1F5F9", cursor: "pointer", transition: "background 0.15s" }}
                     onMouseEnter={(e) => (e.currentTarget.style.background = "#FAF8F5")}
                     onMouseLeave={(e) => (e.currentTarget.style.background = "transparent")}
                   >
                     <td style={{ padding: "14px 16px" }}>
-                      <div style={{ fontWeight: 700, color: "#1B3B22", fontSize: 13.5 }}>{c.name}</div>
-                      {(c.totalSpent || 0) >= 10000 && (
+                      <div style={{ fontWeight: 700, color: "#1B3B22", fontSize: 13.5 }}>{c?.name || "Customer"}</div>
+                      {(Number(c?.totalSpent) || 0) >= 10000 && (
                         <span style={{ fontSize: 10, fontWeight: 700, color: "#D97706", background: "#FEF3C7", padding: "2px 6px", borderRadius: 4 }}>
                           VIP Patron
                         </span>
                       )}
                     </td>
                     <td style={{ padding: "14px 16px", fontSize: 12.5 }}>
-                      <div style={{ color: "#0F172A", fontWeight: 600 }}>{c.phone}</div>
-                      <div style={{ color: "#64748B" }}>{c.email || "No email"}</div>
+                      <div style={{ color: "#0F172A", fontWeight: 600 }}>{c?.phone || "—"}</div>
+                      <div style={{ color: "#64748B" }}>{c?.email || "No email"}</div>
                     </td>
                     <td style={{ padding: "14px 16px", fontSize: 12.5, color: "#475569" }}>
-                      {c.city || "Bangalore"}, {c.state || "Karnataka"}
+                      {c?.city || "Bangalore"}, {c?.state || "Karnataka"}
                     </td>
                     <td style={{ padding: "14px 16px", textAlign: "center", fontWeight: 700, color: "#0F172A" }}>
-                      {c.totalOrders || 0}
+                      {Number(c?.totalOrders) || 0}
                     </td>
                     <td style={{ padding: "14px 16px", textAlign: "right", fontWeight: 800, color: "#166534" }}>
-                      ₹{(c.totalSpent || 0).toLocaleString()}
+                      {safeFormatCurrency(c?.totalSpent)}
                     </td>
                     <td style={{ padding: "14px 16px", textAlign: "center" }}>
                       <div style={{ display: "flex", justifyContent: "center", gap: 8 }}>
@@ -667,15 +669,15 @@ export default function AdminCustomers() {
                       >
                         <div>
                           <div style={{ fontWeight: 700, color: "#1B3B22", fontSize: 13 }}>
-                            {inv.invoiceNumber}
+                            {inv?.invoiceNumber || "Invoice"}
                           </div>
                           <div style={{ fontSize: 11, color: "#64748B" }}>
-                            {new Date(inv.createdAt).toLocaleDateString()} • {inv.paymentStatus}
+                            {safeFormatDate(inv?.createdAt)} • {inv?.paymentStatus || "unpaid"}
                           </div>
                         </div>
                         <div style={{ textAlign: "right" }}>
                           <div style={{ fontWeight: 800, color: "#0F172A", fontSize: 14 }}>
-                            ₹{inv.grandTotal?.toLocaleString()}
+                            {safeFormatCurrency(inv?.grandTotal)}
                           </div>
                           <Link
                             to={`${ADMIN_BASE}/invoices`}

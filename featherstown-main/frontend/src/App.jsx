@@ -28,7 +28,7 @@ import Login from "./pages/Login";
 import Signup from "./pages/Signup";
 import ProtectedUserRoute from "./components/ProtectedUserRoute";
 import { CartProvider } from "./context/CartContext";
-import { UserAuthProvider } from "./context/UserAuthContext";
+import { UserAuthProvider, useUserAuth } from "./context/UserAuthContext";
 
 import { AdminAuthProvider } from "./context/AdminAuthContext";
 import ProtectedAdminRoute from "./components/admin/ProtectedAdminRoute";

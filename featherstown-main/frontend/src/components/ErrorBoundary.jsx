@@ -16,11 +16,23 @@ export default class ErrorBoundary extends React.Component {
   }
 
   handleReload = () => {
+    this.setState({ hasError: false, error: null });
     window.location.reload();
   };
 
   handleGoHome = () => {
-    window.location.href = "/";
+    this.setState({ hasError: false, error: null });
+    window.location.href = "/home";
+  };
+
+  handleGoLogin = () => {
+    this.setState({ hasError: false, error: null });
+    window.location.href = "/login";
+  };
+
+  handleGoAdmin = () => {
+    this.setState({ hasError: false, error: null });
+    window.location.href = "/ft-console-7k2m/login";
   };
 
   render() {
@@ -122,7 +134,7 @@ export default class ErrorBoundary extends React.Component {
             <div
               style={{
                 display: "flex",
-                gap: 12,
+                gap: 10,
                 justifyContent: "center",
                 flexWrap: "wrap",
               }}
@@ -133,10 +145,10 @@ export default class ErrorBoundary extends React.Component {
                   background: "#1B3B22",
                   color: "#FFFFFF",
                   border: "none",
-                  padding: "12px 24px",
+                  padding: "11px 22px",
                   borderRadius: 999,
                   fontWeight: 800,
-                  fontSize: 14,
+                  fontSize: 13.5,
                   cursor: "pointer",
                 }}
               >
@@ -148,15 +160,33 @@ export default class ErrorBoundary extends React.Component {
                   background: "#FAF8F5",
                   color: "#152B17",
                   border: "1.5px solid #E2DDD3",
-                  padding: "12px 24px",
+                  padding: "11px 22px",
                   borderRadius: 999,
                   fontWeight: 700,
-                  fontSize: 14,
+                  fontSize: 13.5,
                   cursor: "pointer",
                 }}
               >
                 Return Home
               </button>
+              {typeof window !== "undefined" &&
+                (window.location.pathname.includes("console") || window.location.pathname.includes("admin")) && (
+                  <button
+                    onClick={this.handleGoAdmin}
+                    style={{
+                      background: "#FFFFFF",
+                      color: "#D9381E",
+                      border: "1.5px solid #F4B8AC",
+                      padding: "11px 22px",
+                      borderRadius: 999,
+                      fontWeight: 700,
+                      fontSize: 13.5,
+                      cursor: "pointer",
+                    }}
+                  >
+                    Admin Console
+                  </button>
+                )}
             </div>
           </div>
         </div>

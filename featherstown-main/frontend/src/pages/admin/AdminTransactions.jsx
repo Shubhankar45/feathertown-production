@@ -17,6 +17,7 @@ import {
 } from "lucide-react";
 import { adminFetch } from "../../utils/adminApi";
 import { toast } from "../../components/ui/Toast";
+import { safeFormatDate, safeFormatCurrency, safeLower } from "../../utils/formatters";
 
 const CATEGORIES = [
   "Sales",
@@ -72,14 +73,15 @@ export default function AdminTransactions() {
   const filteredTransactions = useMemo(() => {
     const list = Array.isArray(transactions) ? transactions : [];
     return list.filter((t) => {
+      if (!t || typeof t !== "object") return false;
       if (typeFilter !== "all" && t.type !== typeFilter) return false;
       if (categoryFilter !== "all" && t.category !== categoryFilter) return false;
       if (!search.trim()) return true;
       const q = search.toLowerCase();
-      const id = t.transactionId?.toLowerCase() || "";
-      const desc = t.description?.toLowerCase() || "";
-      const cat = t.category?.toLowerCase() || "";
-      const ref = t.reference?.toLowerCase() || "";
+      const id = safeLower(t.transactionId);
+      const desc = safeLower(t.description);
+      const cat = safeLower(t.category);
+      const ref = safeLower(t.reference);
       return id.includes(q) || desc.includes(q) || cat.includes(q) || ref.includes(q);
     });
   }, [transactions, typeFilter, categoryFilter, search]);
@@ -90,6 +92,7 @@ export default function AdminTransactions() {
     let outflow = 0;
     const list = Array.isArray(transactions) ? transactions : [];
     list.forEach((t) => {
+      if (!t) return;
       const amt = Number(t.amount) || 0;
       if (t.type === "income") inflow += amt;
       else if (t.type === "expense") outflow += amt;
@@ -150,11 +153,14 @@ export default function AdminTransactions() {
 
   // Delete transaction
   const handleDeleteTransaction = async (t) => {
-    if (!window.confirm(`Delete transaction ${t.transactionId} (${t.description})?`)) {
+    if (!t) return;
+    const id = t._id || t.id;
+    if (!id) return;
+    if (!window.confirm(`Delete transaction ${t.transactionId || id} (${t.description || ""})?`)) {
       return;
     }
     try {
-      await adminFetch(`/api/admin/transactions/${t._id || t.id}`, {
+      await adminFetch(`/api/admin/transactions/${id}`, {
         method: "DELETE",
       });
       toast.success("Transaction entry deleted");
@@ -172,14 +178,14 @@ export default function AdminTransactions() {
     }
     const headers = ["Transaction ID", "Date", "Type", "Category", "Amount (₹)", "Payment Method", "Description", "Reference"];
     const rows = filteredTransactions.map((t) => [
-      t.transactionId,
-      new Date(t.date || t.createdAt).toLocaleDateString(),
-      t.type,
-      `"${t.category || ""}"`,
-      t.amount,
-      t.paymentMethod || "",
-      `"${(t.description || "").replace(/"/g, '""')}"`,
-      `"${t.reference || ""}"`,
+      `"${t?.transactionId || ""}"`,
+      `"${safeFormatDate(t?.date || t?.createdAt)}"`,
+      `"${t?.type || ""}"`,
+      `"${t?.category || ""}"`,
+      Number(t?.amount) || 0,
+      `"${t?.paymentMethod || ""}"`,
+      `"${String(t?.description || "").replace(/"/g, '""')}"`,
+      `"${String(t?.reference || "").replace(/"/g, '""')}"`,
     ]);
 
     const csvContent =
@@ -289,7 +295,7 @@ export default function AdminTransactions() {
             </div>
           </div>
           <div style={{ fontSize: 26, fontWeight: 800, color: "#166534", lineHeight: 1.1 }}>
-            ₹{totalInflow.toLocaleString()}
+            {safeFormatCurrency(totalInflow)}
           </div>
           <div style={{ fontSize: 11.5, color: "#64748B", marginTop: 6 }}>
             Direct invoice payments & web orders
@@ -307,7 +313,7 @@ export default function AdminTransactions() {
             </div>
           </div>
           <div style={{ fontSize: 26, fontWeight: 800, color: "#DC2626", lineHeight: 1.1 }}>
-            ₹{totalOutflow.toLocaleString()}
+            {safeFormatCurrency(totalOutflow)}
           </div>
           <div style={{ fontSize: 11.5, color: "#64748B", marginTop: 6 }}>
             Aviary maintenance, feeds & operations
@@ -325,7 +331,7 @@ export default function AdminTransactions() {
             </div>
           </div>
           <div style={{ fontSize: 26, fontWeight: 800, color: netCashFlow >= 0 ? "#1B3B22" : "#DC2626", lineHeight: 1.1 }}>
-            ₹{netCashFlow.toLocaleString()}
+            {safeFormatCurrency(netCashFlow)}
           </div>
           <div style={{ fontSize: 11.5, color: "#64748B", marginTop: 6 }}>
             {netCashFlow >= 0 ? "Operating with positive cash flow" : "Operating deficit"}
@@ -483,17 +489,13 @@ export default function AdminTransactions() {
                 </tr>
               </thead>
               <tbody>
-                {filteredTransactions.map((t) => (
-                  <tr key={t._id || t.id} style={{ borderBottom: "1px solid #F1F5F9" }}>
+                {filteredTransactions.map((t, idx) => (
+                  <tr key={t?._id || t?.id || t?.transactionId || idx} style={{ borderBottom: "1px solid #F1F5F9" }}>
                     <td style={{ padding: "14px 16px", fontWeight: 700, color: "#1B3B22", fontSize: 12.5 }}>
-                      {t.transactionId}
+                      {t?.transactionId || "—"}
                     </td>
                     <td style={{ padding: "14px 16px", fontSize: 12.5, color: "#475569" }}>
-                      {new Date(t.date || t.createdAt).toLocaleDateString("en-IN", {
-                        day: "2-digit",
-                        month: "short",
-                        year: "numeric",
-                      })}
+                      {safeFormatDate(t?.date || t?.createdAt)}
                     </td>
                     <td style={{ padding: "14px 16px" }}>
                       <span
@@ -503,20 +505,20 @@ export default function AdminTransactions() {
                           borderRadius: 6,
                           fontSize: 10.5,
                           fontWeight: 700,
-                          background: t.type === "income" ? "#EAF2EC" : "#F8FAFC",
-                          color: t.type === "income" ? "#1B3B22" : "#475569",
+                          background: t?.type === "income" ? "#EAF2EC" : "#F8FAFC",
+                          color: t?.type === "income" ? "#1B3B22" : "#475569",
                           border: "1px solid #E2E8F0",
                         }}
                       >
-                        {t.category || (t.type === "income" ? "Sales" : "Expense")}
+                        {t?.category || (t?.type === "income" ? "Sales" : "Expense")}
                       </span>
                     </td>
                     <td style={{ padding: "14px 16px", fontSize: 13, color: "#0F172A", fontWeight: 600 }}>
-                      {t.description}
+                      {t?.description || "—"}
                     </td>
                     <td style={{ padding: "14px 16px", fontSize: 12, color: "#64748B" }}>
-                      <div>{t.paymentMethod || "UPI"}</div>
-                      {t.reference && <div style={{ fontSize: 10.5, color: "#94A3B8" }}>Ref: {t.reference}</div>}
+                      <div>{t?.paymentMethod || "UPI"}</div>
+                      {t?.reference && <div style={{ fontSize: 10.5, color: "#94A3B8" }}>Ref: {String(t.reference)}</div>}
                     </td>
                     <td
                       style={{
@@ -524,10 +526,10 @@ export default function AdminTransactions() {
                         textAlign: "right",
                         fontWeight: 800,
                         fontSize: 14,
-                        color: t.type === "income" ? "#166534" : "#DC2626",
+                        color: t?.type === "income" ? "#166534" : "#DC2626",
                       }}
                     >
-                      {t.type === "income" ? "+" : "-"}₹{(t.amount || 0).toLocaleString()}
+                      {t?.type === "income" ? "+" : "-"}{safeFormatCurrency(t?.amount)}
                     </td>
                     <td style={{ padding: "14px 16px", textAlign: "center" }}>
                       <button

@@ -41,6 +41,8 @@ invoices_col = db["invoices"]
 transactions_col = db["transactions"]
 customers_col = db["customers"]
 audit_logs_col = db["audit_logs"]
+notifications_col = db["notifications"]
+fcm_tokens_col = db["fcm_tokens"]
 
 async def init_db():
     """Initializes indexes and seeds the database if empty."""
@@ -109,6 +111,12 @@ async def init_db():
         await audit_logs_col.create_index([("timestamp", DESCENDING)])
         await audit_logs_col.create_index([("entityType", ASCENDING)])
         await audit_logs_col.create_index([("adminUsername", ASCENDING)])
+
+        # 15. Notifications Indexes
+        await notifications_col.create_index([("createdAt", DESCENDING)])
+        await notifications_col.create_index([("isRead", ASCENDING)])
+        await notifications_col.create_index([("category", ASCENDING)])
+        await fcm_tokens_col.create_index([("token", ASCENDING)], unique=True)
 
         # Auto-seed Birds
         bird_count = await birds_col.count_documents({})

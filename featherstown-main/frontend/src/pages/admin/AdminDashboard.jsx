@@ -24,6 +24,7 @@ import { adminFetch } from "../../utils/adminApi";
 import { ADMIN_BASE } from "../../config/adminConfig";
 import { toast } from "../../components/ui/Toast";
 import { resolveBirdImage } from "../../context/BirdsContext";
+import { safeFormatDate, safeFormatCurrency } from "../../utils/formatters";
 
 export default function AdminDashboard() {
   const [data, setData] = useState(null);
@@ -92,8 +93,9 @@ export default function AdminDashboard() {
   // Compute 30-Day Trend Chart SVG Points
   const trendPoints = useMemo(() => {
     if (!data?.trend30Days || !Array.isArray(data.trend30Days) || data.trend30Days.length < 2) return null;
-    const days = data.trend30Days;
-    const maxRev = Math.max(...days.map((d) => Math.max(Number(d.revenue) || 0, Number(d.expenses) || 0, 1000)));
+    const days = data.trend30Days.filter((d) => d && typeof d === "object");
+    if (days.length < 2) return null;
+    const maxRev = Math.max(...days.map((d) => Math.max(Number(d?.revenue) || 0, Number(d?.expenses) || 0, 1000)));
 
     const width = 800;
     const height = 220;
@@ -105,13 +107,13 @@ export default function AdminDashboard() {
 
     const revCoords = days.map((d, i) => {
       const x = padX + (i / divisor) * chartW;
-      const y = height - padY - ((Number(d.revenue) || 0) / (maxRev || 1)) * chartH;
+      const y = height - padY - ((Number(d?.revenue) || 0) / (maxRev || 1)) * chartH;
       return { x, y, ...d };
     });
 
     const expCoords = days.map((d, i) => {
       const x = padX + (i / divisor) * chartW;
-      const y = height - padY - ((Number(d.expenses) || 0) / (maxRev || 1)) * chartH;
+      const y = height - padY - ((Number(d?.expenses) || 0) / (maxRev || 1)) * chartH;
       return { x, y, ...d };
     });
 
@@ -952,7 +954,7 @@ export default function AdminDashboard() {
                       {inv.invoiceNumber}
                     </div>
                     <div style={{ fontSize: 11.5, color: "#64748B" }}>
-                      {inv.customer?.name} • {new Date(inv.createdAt).toLocaleDateString()}
+                      {inv.customer?.name || "Customer"} • {safeFormatDate(inv.createdAt)}
                     </div>
                   </div>
                   <div style={{ textAlign: "right" }}>

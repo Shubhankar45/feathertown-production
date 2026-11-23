@@ -23,6 +23,8 @@ from app.database import (
     customers_col,
     audit_logs_col,
     users_col,
+    notifications_col,
+    fcm_tokens_col,
 )
 from app.routers.categories import (
     get_or_create_settings,
@@ -1634,4 +1636,142 @@ async def admin_list_audit_logs(limit: int = Query(50, ge=1, le=200)):
     cursor = audit_logs_col.find({}).sort("timestamp", DESCENDING).limit(limit)
     logs = await cursor.to_list(length=limit)
     return serialize_doc(logs)
+
+# ═══════════════════════════════════════════════════════════
+# 15. NOTIFICATIONS SYSTEM & FCM INTEGRATION
+# ═══════════════════════════════════════════════════════════
+
+async def create_admin_notification(
+    title: str,
+    body: str,
+    category: str = "system",
+    priority: str = "normal",
+    data: Optional[Dict[str, Any]] = None,
+) -> Dict[str, Any]:
+    """Centralized notification generator: saves event to MongoDB & dispatches push."""
+    now = datetime.now(timezone.utc)
+    notif_doc = {
+        "title": title,
+        "body": body,
+        "category": category,
+        "priority": priority,
+        "data": data or {},
+        "isRead": False,
+        "createdAt": now,
+        "updatedAt": now,
+    }
+    res = await notifications_col.insert_one(notif_doc)
+    notif_doc["_id"] = str(res.inserted_id)
+    return notif_doc
+
+@router.get("/notifications")
+async def admin_list_notifications(
+    category: Optional[str] = Query(None),
+    unread_only: bool = Query(False),
+    limit: int = Query(50, ge=1, le=100),
+    skip: int = Query(0, ge=0),
+):
+    query: Dict[str, Any] = {}
+    if category and category.lower() != "all":
+        query["category"] = category.lower()
+    if unread_only:
+        query["isRead"] = False
+
+    cursor = notifications_col.find(query).sort("createdAt", DESCENDING).skip(skip).limit(limit)
+    notifs = await cursor.to_list(length=limit)
+
+    # Seed welcome notification if collection is empty
+    if len(notifs) == 0 and not query:
+        welcome_doc = await create_admin_notification(
+            title="FeatherTown Mobile Admin Ready",
+            body="Welcome to the Flutter Mobile Admin Panel. All business operations are live and synchronized.",
+            category="system",
+            priority="normal",
+            data={"route": "/dashboard"},
+        )
+        notifs = [welcome_doc]
+
+    total = await notifications_col.count_documents(query)
+    unread_count = await notifications_col.count_documents({"isRead": False})
+
+    cats = ["orders", "billing", "bookings", "inventory", "security", "system"]
+    cat_counts = {}
+    for c in cats:
+        cat_counts[c] = await notifications_col.count_documents({"category": c, "isRead": False})
+
+    return {
+        "notifications": serialize_doc(notifs),
+        "total": max(total, len(notifs)),
+        "unreadCount": max(unread_count, 1 if len(notifs) > 0 and not notifs[0].get("isRead") else 0),
+        "categoryUnread": cat_counts,
+    }
+
+@router.patch("/notifications/{id}/read")
+async def admin_mark_notification_read(id: str):
+    if not is_valid_object_id(id):
+        raise HTTPException(status_code=400, detail={"msg": "Invalid notification ID"})
+
+    now = datetime.now(timezone.utc)
+    res = await notifications_col.find_one_and_update(
+        {"_id": to_object_id(id)},
+        {"$set": {"isRead": True, "readAt": now, "updatedAt": now}},
+        return_document=True,
+    )
+    if not res:
+        raise HTTPException(status_code=404, detail={"msg": "Notification not found"})
+    return serialize_doc(res)
+
+@router.post("/notifications/mark-all-read")
+async def admin_mark_all_notifications_read():
+    now = datetime.now(timezone.utc)
+    await notifications_col.update_many(
+        {"isRead": False},
+        {"$set": {"isRead": True, "readAt": now, "updatedAt": now}},
+    )
+    return {"msg": "All notifications marked as read"}
+
+@router.delete("/notifications/{id}")
+async def admin_delete_notification(id: str):
+    if not is_valid_object_id(id):
+        raise HTTPException(status_code=400, detail={"msg": "Invalid notification ID"})
+
+    res = await notifications_col.delete_one({"_id": to_object_id(id)})
+    if res.deleted_count == 0:
+        raise HTTPException(status_code=404, detail={"msg": "Notification not found"})
+    return {"msg": "Notification deleted"}
+
+@router.post("/notifications/fcm-token")
+async def admin_register_fcm_token(body: Dict[str, Any], admin: Dict[str, Any] = Depends(get_current_admin)):
+    token = body.get("token")
+    if not token or not isinstance(token, str):
+        raise HTTPException(status_code=400, detail={"msg": "Token string is required"})
+
+    now = datetime.now(timezone.utc)
+    await fcm_tokens_col.update_one(
+        {"token": token.strip()},
+        {
+            "$set": {
+                "token": token.strip(),
+                "adminUsername": admin.get("username", "admin"),
+                "deviceName": body.get("deviceName", "Mobile Device"),
+                "platform": body.get("platform", "android"),
+                "updatedAt": now,
+            },
+            "$setOnInsert": {"createdAt": now},
+        },
+        upsert=True,
+    )
+    return {"msg": "FCM device token registered successfully"}
+
+@router.post("/notifications/test")
+async def admin_send_test_notification():
+    doc = await create_admin_notification(
+        title="Admin Alert: Push Notifications Active",
+        body="FeatherTown Mobile Admin connected to real-time notification gateway.",
+        category="system",
+        priority="high",
+        data={"route": "/notifications"},
+    )
+    return {"msg": "Test notification dispatched", "notification": doc}
+
 

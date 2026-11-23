@@ -40,6 +40,7 @@ async def admin_login(body: Dict[str, Any], response: Response):
 
     return {
         "msg": "Logged in",
+        "token": token,
         "admin": {
             "username": admin["username"],
             "role": admin.get("role", "admin"),

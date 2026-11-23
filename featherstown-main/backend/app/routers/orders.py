@@ -12,7 +12,7 @@ from app.config import (
     RAZORPAY_KEY_SECRET,
     PAYMENTS_ENABLED,
 )
-from app.database import accessories_col, orders_col
+from app.database import accessories_col, orders_col, notifications_col
 from app.auth import get_optional_user, get_current_user, get_current_verified_user
 from app.rate_limiter import checkout_limiter
 from app.utils import is_valid_object_id, to_object_id, serialize_doc
@@ -226,6 +226,18 @@ async def verify_razorpay_payment(body: Dict[str, Any]):
                     {"$inc": {"stock": -qty}},
                 )
 
+        # Notify mobile admin
+        await notifications_col.insert_one({
+            "title": f"Payment Verified #{(str(order['_id']))[-6:].upper()}",
+            "body": f"₹{float(order.get('amount') or 0):,.0f} paid via Razorpay by {order.get('customer', {}).get('name', 'Customer')}",
+            "category": "billing",
+            "priority": "high",
+            "data": {"orderId": str(order["_id"]), "type": "payment"},
+            "isRead": False,
+            "createdAt": now,
+            "updatedAt": now,
+        })
+
     return {"msg": "Payment verified", "orderId": str(order["_id"])}
 
 @router.post("/cod", status_code=status.HTTP_201_CREATED, dependencies=[Depends(checkout_limiter)])
@@ -279,6 +291,18 @@ async def create_cod_order(
                     {"_id": acc_id},
                     {"$inc": {"stock": -qty}},
                 )
+
+        # Notify mobile admin
+        await notifications_col.insert_one({
+            "title": f"New COD Order #{(str(result.inserted_id))[-6:].upper()}",
+            "body": f"{customer.get('name', 'Customer')} placed a Cash on Delivery order for ₹{float(amount):,.0f} ({len(order_items)} items)",
+            "category": "orders",
+            "priority": "high",
+            "data": {"orderId": str(result.inserted_id), "type": "order"},
+            "isRead": False,
+            "createdAt": now,
+            "updatedAt": now,
+        })
 
         return {"orderId": str(result.inserted_id)}
     except HTTPException:
