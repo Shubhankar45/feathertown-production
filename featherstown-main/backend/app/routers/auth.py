@@ -25,7 +25,12 @@ async def admin_login(body: Dict[str, Any], response: Response):
         raise HTTPException(status_code=400, detail={"msg": INVALID_MSG})
 
     normalized_username = username.strip().lower()
-    admin = await admins_col.find_one({"username": normalized_username})
+    admin = await admins_col.find_one({
+        "$or": [
+            {"username": normalized_username},
+            {"email": normalized_username},
+        ]
+    })
     if not admin:
         raise HTTPException(status_code=401, detail={"msg": INVALID_MSG})
 
