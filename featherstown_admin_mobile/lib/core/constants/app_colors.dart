@@ -66,4 +66,19 @@ class AppColors {
   static const Color catGrey = Color(0xFF475569);
   static const Color catLovebird = Color(0xFFDB2777);
   static const Color catBudgie = Color(0xFF2563EB);
+
+  // Modern Reference Tokens (Tactile Fintech / Lifestyle Aesthetic)
+  static const Color heroDark = Color(0xFF152B17);
+  static const Color darkPill = Color(0xFF152B17);
+  static const Color softBackground = Color(0xFFFAF8F5);
+  static const Color cardBorder = Color(0xFFEFECE6);
+  static const Color pastelMint = Color(0xFFEBF5ED);
+  static const Color pastelPeach = Color(0xFFFAF0EB);
+  static const Color pastelLavender = Color(0xFFF3EFFB);
+  static const Color pastelBlue = Color(0xFFEDF4FC);
+  static const Color pastelYellow = Color(0xFFFEF9E7);
+  static const Color mintText = Color(0xFF1B6A32);
+  static const Color peachText = Color(0xFFC0441E);
+  static const Color lavenderText = Color(0xFF6B47B8);
+  static const Color blueText = Color(0xFF1E60B8);
 }

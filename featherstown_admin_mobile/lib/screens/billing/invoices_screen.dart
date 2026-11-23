@@ -109,16 +109,26 @@ class _InvoicesScreenState extends State<InvoicesScreen> {
 
   Widget _buildStatusChip(InvoicesProvider prov, String id, String label) {
     final isSelected = prov.statusFilter == id;
-    return ChoiceChip(
-      label: Text(label),
-      selected: isSelected,
-      selectedColor: AppColors.primary,
-      labelStyle: TextStyle(
-        color: isSelected ? Colors.white : AppColors.textPrimary,
-        fontWeight: FontWeight.w600,
-        fontSize: 12,
+    return GestureDetector(
+      onTap: () => prov.setStatusFilter(id),
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 7),
+        decoration: BoxDecoration(
+          color: isSelected ? AppColors.heroDark : AppColors.white,
+          borderRadius: BorderRadius.circular(20),
+          border: Border.all(
+            color: isSelected ? AppColors.heroDark : AppColors.cardBorder,
+          ),
+        ),
+        child: Text(
+          label,
+          style: TextStyle(
+            color: isSelected ? Colors.white : AppColors.textSecondary,
+            fontWeight: isSelected ? FontWeight.w800 : FontWeight.w600,
+            fontSize: 12,
+          ),
+        ),
       ),
-      onSelected: (_) => prov.setStatusFilter(id),
     );
   }
 }
@@ -146,72 +156,104 @@ class _InvoiceCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Card(
       child: Padding(
-        padding: const EdgeInsets.all(14),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+        padding: const EdgeInsets.all(16),
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text(
-                  invoice.invoiceNumber,
-                  style: const TextStyle(fontWeight: FontWeight.w800, fontSize: 14, color: AppColors.primary),
-                ),
-                Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
-                  decoration: BoxDecoration(
-                    color: _getStatusColor().withValues(alpha: 0.12),
-                    borderRadius: BorderRadius.circular(6),
-                  ),
-                  child: Text(
-                    invoice.paymentStatus.toUpperCase(),
-                    style: TextStyle(
-                      color: _getStatusColor(),
-                      fontWeight: FontWeight.w800,
-                      fontSize: 10,
-                    ),
-                  ),
-                ),
-              ],
+            // Soft Tinted Icon Badge (Matching Reference Screenshot)
+            Container(
+              width: 44,
+              height: 44,
+              decoration: BoxDecoration(
+                color: invoice.paymentStatus == 'paid' ? AppColors.pastelMint : AppColors.pastelPeach,
+                borderRadius: BorderRadius.circular(14),
+              ),
+              child: Icon(
+                Icons.receipt_long_rounded,
+                size: 22,
+                color: invoice.paymentStatus == 'paid' ? AppColors.catCockatiel : AppColors.catMacaw,
+              ),
             ),
-            const SizedBox(height: 6),
-            Text(
-              invoice.customer['name']?.toString() ?? 'Customer',
-              style: const TextStyle(fontWeight: FontWeight.w700, fontSize: 14),
-            ),
-            Text(
-              '${invoice.customer['phone'] ?? ''} • ${AppFormatters.date(invoice.createdAt)}',
-              style: const TextStyle(fontSize: 11.5, color: AppColors.textMuted),
-            ),
-            const SizedBox(height: 10),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    const Text('Total Amount', style: TextStyle(fontSize: 11, color: AppColors.textSecondary)),
-                    Text(
-                      AppFormatters.currency(invoice.grandTotal),
-                      style: const TextStyle(fontWeight: FontWeight.w900, fontSize: 16),
-                    ),
-                  ],
-                ),
-                if (invoice.balanceDue > 0)
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.end,
+            const SizedBox(width: 14),
+            // Middle Content
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
                     children: [
-                      const Text('Balance Due', style: TextStyle(fontSize: 11, color: AppColors.danger)),
                       Text(
-                        AppFormatters.currency(invoice.balanceDue),
-                        style: const TextStyle(fontWeight: FontWeight.w800, fontSize: 15, color: AppColors.danger),
+                        invoice.invoiceNumber,
+                        style: const TextStyle(fontWeight: FontWeight.w800, fontSize: 14, color: AppColors.heroDark),
+                      ),
+                      const SizedBox(width: 8),
+                      Container(
+                        padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                        decoration: BoxDecoration(
+                          color: _getStatusColor().withValues(alpha: 0.12),
+                          borderRadius: BorderRadius.circular(6),
+                        ),
+                        child: Text(
+                          invoice.paymentStatus.toUpperCase(),
+                          style: TextStyle(
+                            color: _getStatusColor(),
+                            fontWeight: FontWeight.w800,
+                            fontSize: 9,
+                          ),
+                        ),
                       ),
                     ],
                   ),
-                IconButton.filledTonal(
-                  icon: const Icon(Icons.share_rounded, size: 18),
-                  tooltip: 'WhatsApp Invoice',
-                  onPressed: onWhatsApp,
+                  const SizedBox(height: 3),
+                  Text(
+                    invoice.customer['name']?.toString() ?? 'Aviary Patron',
+                    style: const TextStyle(fontWeight: FontWeight.w700, fontSize: 13.5),
+                  ),
+                  const SizedBox(height: 2),
+                  Text(
+                    '${invoice.customer['phone'] ?? ''} • ${AppFormatters.date(invoice.createdAt)}',
+                    style: const TextStyle(fontSize: 11, color: AppColors.textMuted),
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(width: 10),
+            // Right Side Amount & WhatsApp action
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.end,
+              children: [
+                Text(
+                  AppFormatters.currency(invoice.grandTotal),
+                  style: const TextStyle(fontWeight: FontWeight.w900, fontSize: 14),
+                ),
+                if (invoice.balanceDue > 0) ...[
+                  const SizedBox(height: 2),
+                  Text(
+                    'Due: ${AppFormatters.currency(invoice.balanceDue)}',
+                    style: const TextStyle(fontSize: 11, fontWeight: FontWeight.w700, color: AppColors.danger),
+                  ),
+                ],
+                const SizedBox(height: 4),
+                GestureDetector(
+                  onTap: onWhatsApp,
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                    decoration: BoxDecoration(
+                      color: AppColors.pastelMint,
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: const [
+                        Icon(Icons.share_rounded, size: 12, color: AppColors.mintText),
+                        SizedBox(width: 4),
+                        Text(
+                          'Share',
+                          style: TextStyle(fontSize: 10.5, fontWeight: FontWeight.w700, color: AppColors.mintText),
+                        ),
+                      ],
+                    ),
+                  ),
                 ),
               ],
             ),

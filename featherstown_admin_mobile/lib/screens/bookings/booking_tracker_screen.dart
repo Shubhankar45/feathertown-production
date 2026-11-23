@@ -152,16 +152,26 @@ class _BookingTrackerScreenState extends State<BookingTrackerScreen> {
 
   Widget _buildStatusChip(BookingsProvider prov, String id, String label) {
     final isSelected = prov.statusFilter == id;
-    return ChoiceChip(
-      label: Text(label),
-      selected: isSelected,
-      selectedColor: AppColors.primary,
-      labelStyle: TextStyle(
-        color: isSelected ? Colors.white : AppColors.textPrimary,
-        fontWeight: FontWeight.w600,
-        fontSize: 12,
+    return GestureDetector(
+      onTap: () => prov.setStatusFilter(id),
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 7),
+        decoration: BoxDecoration(
+          color: isSelected ? AppColors.heroDark : AppColors.white,
+          borderRadius: BorderRadius.circular(20),
+          border: Border.all(
+            color: isSelected ? AppColors.heroDark : AppColors.cardBorder,
+          ),
+        ),
+        child: Text(
+          label,
+          style: TextStyle(
+            color: isSelected ? Colors.white : AppColors.textSecondary,
+            fontWeight: isSelected ? FontWeight.w800 : FontWeight.w600,
+            fontSize: 12,
+          ),
+        ),
       ),
-      onSelected: (_) => prov.setStatusFilter(id),
     );
   }
 }
@@ -191,77 +201,84 @@ class _BookingCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Card(
       child: Padding(
-        padding: const EdgeInsets.all(14),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+        padding: const EdgeInsets.all(16),
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Expanded(
-                  child: Text(
-                    booking.birdName,
-                    style: const TextStyle(fontWeight: FontWeight.w800, fontSize: 16, color: AppColors.primary),
-                  ),
-                ),
-                Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
-                  decoration: BoxDecoration(
-                    color: _getStatusColor().withValues(alpha: 0.12),
-                    borderRadius: BorderRadius.circular(6),
-                  ),
-                  child: Text(
-                    booking.status.replaceAll('_', ' ').toUpperCase(),
-                    style: TextStyle(
-                      color: _getStatusColor(),
-                      fontWeight: FontWeight.w800,
-                      fontSize: 10,
-                    ),
-                  ),
-                ),
-              ],
+            // Soft Tinted Icon Badge (Matching Reference Screen 6 "Bill Tracker")
+            Container(
+              width: 44,
+              height: 44,
+              decoration: BoxDecoration(
+                color: booking.status == 'ready_for_handover' ? AppColors.pastelMint : AppColors.pastelPeach,
+                borderRadius: BorderRadius.circular(14),
+              ),
+              child: Icon(
+                Icons.pets_rounded,
+                size: 22,
+                color: booking.status == 'ready_for_handover' ? AppColors.catCockatiel : AppColors.catMacaw,
+              ),
             ),
-            const SizedBox(height: 8),
-            Row(
-              children: [
-                if (booking.birdBooking?.ringNumber != null) ...[
-                  const Icon(Icons.tag_rounded, size: 14, color: AppColors.textMuted),
-                  const SizedBox(width: 4),
+            const SizedBox(width: 14),
+            // Middle Content
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
                   Text(
-                    'Ring: ${booking.birdBooking!.ringNumber}',
-                    style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w700),
+                    booking.birdName,
+                    style: const TextStyle(fontWeight: FontWeight.w800, fontSize: 14.5, color: AppColors.textPrimary),
                   ),
-                  const SizedBox(width: 12),
+                  const SizedBox(height: 2),
+                  Text(
+                    'Ring: ${booking.birdBooking?.ringNumber ?? "Pending"} • ${booking.customer?['name'] ?? "Patron"}',
+                    style: const TextStyle(fontSize: 11.5, color: AppColors.textSecondary),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                  const SizedBox(height: 4),
+                  Text(
+                    'DNA: ${booking.birdBooking?.dnaSex ?? "Pending"} • Stage: ${booking.birdBooking?.weaningStage ?? "Weaning"}',
+                    style: const TextStyle(fontSize: 11, color: AppColors.textMuted),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                  ),
                 ],
-                const Icon(Icons.badge_outlined, size: 14, color: AppColors.textMuted),
-                const SizedBox(width: 4),
-                Text(
-                  'DNA: ${booking.birdBooking?.dnaSex ?? "Pending"}',
-                  style: const TextStyle(fontSize: 12),
-                ),
-              ],
+              ),
             ),
-            const SizedBox(height: 6),
-            Text(
-              'Customer: ${booking.customer?['name'] ?? "—"} (${booking.customer?['phone'] ?? ""})',
-              style: const TextStyle(fontSize: 12, color: AppColors.textSecondary),
-            ),
-            const SizedBox(height: 10),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            const SizedBox(width: 10),
+            // Right Side Amount & Status Pill
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.end,
               children: [
                 Text(
-                  'Deposit: ${AppFormatters.currency(booking.amount)}',
+                  AppFormatters.currency(booking.amount),
                   style: const TextStyle(fontWeight: FontWeight.w800, fontSize: 14),
                 ),
-                OutlinedButton.icon(
-                  onPressed: onTapUpdate,
-                  icon: const Icon(Icons.edit_outlined, size: 14),
-                  label: const Text('Update'),
-                  style: OutlinedButton.styleFrom(
-                    padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-                    minimumSize: Size.zero,
-                    tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                const SizedBox(height: 4),
+                GestureDetector(
+                  onTap: onTapUpdate,
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+                    decoration: BoxDecoration(
+                      color: _getStatusColor().withValues(alpha: 0.12),
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Text(
+                          booking.status.replaceAll('_', ' ').toUpperCase(),
+                          style: TextStyle(
+                            color: _getStatusColor(),
+                            fontWeight: FontWeight.w800,
+                            fontSize: 9.5,
+                          ),
+                        ),
+                        const SizedBox(width: 2),
+                        Icon(Icons.edit, size: 10, color: _getStatusColor()),
+                      ],
+                    ),
                   ),
                 ),
               ],

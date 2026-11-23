@@ -66,17 +66,17 @@ class AppTheme {
         elevation: 0,
         margin: EdgeInsets.zero,
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(16),
-          side: const BorderSide(color: AppColors.borderLight, width: 1),
+          borderRadius: BorderRadius.circular(22),
+          side: const BorderSide(color: AppColors.cardBorder, width: 1.2),
         ),
       ),
       appBarTheme: AppBarTheme(
-        backgroundColor: AppColors.white,
+        backgroundColor: AppColors.canvasLight,
         foregroundColor: AppColors.forestGreen,
         elevation: 0,
         centerTitle: false,
         titleTextStyle: GoogleFonts.outfit(
-          fontSize: 18,
+          fontSize: 19,
           fontWeight: FontWeight.w800,
           color: AppColors.forestGreen,
         ),
@@ -84,15 +84,15 @@ class AppTheme {
       ),
       elevatedButtonTheme: ElevatedButtonThemeData(
         style: ElevatedButton.styleFrom(
-          backgroundColor: AppColors.forestGreen,
+          backgroundColor: AppColors.heroDark,
           foregroundColor: AppColors.white,
           elevation: 0,
-          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 14),
+          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(12),
+            borderRadius: BorderRadius.circular(28),
           ),
           textStyle: GoogleFonts.outfit(
-            fontSize: 14,
+            fontSize: 15,
             fontWeight: FontWeight.w700,
           ),
         ),
@@ -100,17 +100,17 @@ class AppTheme {
       inputDecorationTheme: InputDecorationTheme(
         filled: true,
         fillColor: AppColors.white,
-        contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+        contentPadding: const EdgeInsets.symmetric(horizontal: 18, vertical: 16),
         border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(12),
-          borderSide: const BorderSide(color: AppColors.borderMedium),
+          borderRadius: BorderRadius.circular(16),
+          borderSide: const BorderSide(color: AppColors.cardBorder, width: 1.2),
         ),
         enabledBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(12),
-          borderSide: const BorderSide(color: AppColors.borderMedium),
+          borderRadius: BorderRadius.circular(16),
+          borderSide: const BorderSide(color: AppColors.cardBorder, width: 1.2),
         ),
         focusedBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(12),
+          borderRadius: BorderRadius.circular(16),
           borderSide: const BorderSide(color: AppColors.forestGreen, width: 1.8),
         ),
         errorBorder: OutlineInputBorder(

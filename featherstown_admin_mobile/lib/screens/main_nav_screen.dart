@@ -6,8 +6,10 @@ import '../providers/notifications_provider.dart';
 import 'dashboard/dashboard_screen.dart';
 import 'billing/invoices_screen.dart';
 import 'bookings/booking_tracker_screen.dart';
+import 'analytics/categories_insights_screen.dart';
 import 'customers/customers_screen.dart';
 import 'transactions/transactions_screen.dart';
+import 'transactions/quick_record_modal.dart';
 import 'notifications/notification_center_screen.dart';
 import 'auth/login_screen.dart';
 
@@ -25,8 +27,8 @@ class _MainNavScreenState extends State<MainNavScreen> {
     DashboardScreen(),
     InvoicesScreen(),
     BookingTrackerScreen(),
+    CategoriesInsightsScreen(),
     CustomersScreen(),
-    TransactionsScreen(),
   ];
 
   @override
@@ -47,14 +49,17 @@ class _MainNavScreenState extends State<MainNavScreen> {
     final auth = context.watch<AuthProvider>();
 
     return Scaffold(
+      backgroundColor: AppColors.canvasLight,
       appBar: AppBar(
+        backgroundColor: AppColors.canvasLight,
+        elevation: 0,
         title: Row(
           children: [
             Container(
               padding: const EdgeInsets.all(6),
               decoration: BoxDecoration(
-                color: AppColors.primary,
-                borderRadius: BorderRadius.circular(8),
+                color: AppColors.heroDark,
+                borderRadius: BorderRadius.circular(10),
               ),
               child: const Icon(Icons.pets_rounded, size: 18, color: AppColors.white),
             ),
@@ -63,7 +68,7 @@ class _MainNavScreenState extends State<MainNavScreen> {
               text: TextSpan(
                 style: Theme.of(context).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w900),
                 children: const [
-                  TextSpan(text: 'Feather', style: TextStyle(color: AppColors.primary)),
+                  TextSpan(text: 'Feather', style: TextStyle(color: AppColors.heroDark)),
                   TextSpan(text: 'Town', style: TextStyle(color: AppColors.accent)),
                 ],
               ),
@@ -76,7 +81,7 @@ class _MainNavScreenState extends State<MainNavScreen> {
             alignment: Alignment.center,
             children: [
               IconButton(
-                icon: const Icon(Icons.notifications_outlined),
+                icon: const Icon(Icons.notifications_none_rounded, color: AppColors.textPrimary),
                 onPressed: () {
                   Navigator.push(
                     context,
@@ -116,7 +121,7 @@ class _MainNavScreenState extends State<MainNavScreen> {
           padding: EdgeInsets.zero,
           children: [
             UserAccountsDrawerHeader(
-              decoration: const BoxDecoration(color: AppColors.primary),
+              decoration: const BoxDecoration(color: AppColors.heroDark),
               currentAccountPicture: CircleAvatar(
                 backgroundColor: AppColors.white,
                 child: Text(
@@ -126,17 +131,17 @@ class _MainNavScreenState extends State<MainNavScreen> {
                   style: const TextStyle(
                     fontSize: 22,
                     fontWeight: FontWeight.w800,
-                    color: AppColors.primary,
+                    color: AppColors.heroDark,
                   ),
                 ),
               ),
               accountName: Text(
                 auth.user?.username ?? 'FeatherTown Admin',
-                style: const TextStyle(fontWeight: FontWeight.w700),
+                style: const TextStyle(fontWeight: FontWeight.w800, fontSize: 16),
               ),
               accountEmail: const Text(
-                'Enterprise Console • Live DB Connected',
-                style: TextStyle(fontSize: 12),
+                'Enterprise Aviary Console • Live Sync',
+                style: TextStyle(fontSize: 12, color: Color(0xFFBACEC0)),
               ),
             ),
             ListTile(
@@ -167,8 +172,8 @@ class _MainNavScreenState extends State<MainNavScreen> {
               },
             ),
             ListTile(
-              leading: const Icon(Icons.people_alt_rounded),
-              title: const Text('Customer Directory'),
+              leading: const Icon(Icons.insights_rounded),
+              title: const Text('Categories & Insights'),
               selected: _currentIndex == 3,
               onTap: () {
                 Navigator.pop(context);
@@ -176,38 +181,38 @@ class _MainNavScreenState extends State<MainNavScreen> {
               },
             ),
             ListTile(
-              leading: const Icon(Icons.account_balance_wallet_rounded),
-              title: const Text('Financial Ledger'),
+              leading: const Icon(Icons.people_alt_rounded),
+              title: const Text('Customer Directory'),
               selected: _currentIndex == 4,
               onTap: () {
                 Navigator.pop(context);
                 _onSelectTab(4);
               },
             ),
-            const Divider(),
             ListTile(
-              leading: const Icon(Icons.notifications_active_rounded),
-              title: const Text('Notification Center'),
-              trailing: unread > 0
-                  ? Chip(
-                      label: Text('$unread'),
-                      backgroundColor: AppColors.accent,
-                      labelStyle: const TextStyle(color: Colors.white, fontSize: 11),
-                      padding: EdgeInsets.zero,
-                    )
-                  : null,
+              leading: const Icon(Icons.account_balance_wallet_rounded),
+              title: const Text('Full Financial Ledger'),
               onTap: () {
                 Navigator.pop(context);
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (_) => const NotificationCenterScreen()),
+                  MaterialPageRoute(builder: (_) => const TransactionsScreen()),
                 );
               },
             ),
             const Divider(),
             ListTile(
+              leading: const Icon(Icons.add_circle_outline_rounded, color: AppColors.heroDark),
+              title: const Text('Record Financial Entry', style: TextStyle(fontWeight: FontWeight.w700)),
+              onTap: () {
+                Navigator.pop(context);
+                QuickRecordModal.show(context);
+              },
+            ),
+            const Divider(),
+            ListTile(
               leading: const Icon(Icons.logout_rounded, color: AppColors.danger),
-              title: const Text('Sign Out', style: TextStyle(color: AppColors.danger)),
+              title: const Text('Sign Out', style: TextStyle(color: AppColors.danger, fontWeight: FontWeight.w700)),
               onTap: () async {
                 await auth.logout();
                 if (!context.mounted) return;
@@ -223,36 +228,87 @@ class _MainNavScreenState extends State<MainNavScreen> {
         index: _currentIndex,
         children: _pages,
       ),
-      bottomNavigationBar: NavigationBar(
-        selectedIndex: _currentIndex,
-        onDestinationSelected: _onSelectTab,
-        destinations: const [
-          NavigationDestination(
-            icon: Icon(Icons.dashboard_outlined),
-            selectedIcon: Icon(Icons.dashboard_rounded),
-            label: 'Overview',
+
+      // Custom Floating Bottom Navigation Bar (Matching Reference Screenshot)
+      bottomNavigationBar: Container(
+        decoration: BoxDecoration(
+          color: AppColors.white,
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withValues(alpha: 0.06),
+              blurRadius: 20,
+              offset: const Offset(0, -4),
+            ),
+          ],
+        ),
+        child: SafeArea(
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: [
+                _buildNavItem(0, Icons.home_filled, Icons.home_outlined, 'Home'),
+                _buildNavItem(1, Icons.receipt_long, Icons.receipt_long_outlined, 'Expenses'),
+                // Center Elevated '+' Action Button (Matching Reference Screenshot)
+                GestureDetector(
+                  onTap: () => QuickRecordModal.show(context),
+                  child: Container(
+                    width: 48,
+                    height: 48,
+                    decoration: BoxDecoration(
+                      color: AppColors.heroDark,
+                      shape: BoxShape.circle,
+                      boxShadow: [
+                        BoxShadow(
+                          color: AppColors.heroDark.withValues(alpha: 0.35),
+                          blurRadius: 12,
+                          offset: const Offset(0, 4),
+                        ),
+                      ],
+                    ),
+                    child: const Icon(
+                      Icons.add_rounded,
+                      color: AppColors.white,
+                      size: 26,
+                    ),
+                  ),
+                ),
+                _buildNavItem(2, Icons.calendar_month, Icons.calendar_month_outlined, 'Goals'),
+                _buildNavItem(3, Icons.insights, Icons.insights_outlined, 'Insights'),
+              ],
+            ),
           ),
-          NavigationDestination(
-            icon: Icon(Icons.receipt_outlined),
-            selectedIcon: Icon(Icons.receipt_rounded),
-            label: 'Billing',
-          ),
-          NavigationDestination(
-            icon: Icon(Icons.calendar_today_outlined),
-            selectedIcon: Icon(Icons.calendar_month_rounded),
-            label: 'Bookings',
-          ),
-          NavigationDestination(
-            icon: Icon(Icons.people_outline_rounded),
-            selectedIcon: Icon(Icons.people_alt_rounded),
-            label: 'Customers',
-          ),
-          NavigationDestination(
-            icon: Icon(Icons.wallet_outlined),
-            selectedIcon: Icon(Icons.account_balance_wallet_rounded),
-            label: 'Ledger',
-          ),
-        ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildNavItem(int index, IconData activeIcon, IconData inactiveIcon, String label) {
+    final isSelected = _currentIndex == index;
+    return InkWell(
+      onTap: () => _onSelectTab(index),
+      borderRadius: BorderRadius.circular(16),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(
+              isSelected ? activeIcon : inactiveIcon,
+              size: 22,
+              color: isSelected ? AppColors.heroDark : AppColors.textMuted,
+            ),
+            const SizedBox(height: 3),
+            Text(
+              label,
+              style: TextStyle(
+                fontSize: 10.5,
+                fontWeight: isSelected ? FontWeight.w800 : FontWeight.w500,
+                color: isSelected ? AppColors.heroDark : AppColors.textMuted,
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
