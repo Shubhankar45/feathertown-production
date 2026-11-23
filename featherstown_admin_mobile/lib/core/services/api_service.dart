@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 import 'package:http/http.dart' as http;
@@ -80,12 +81,17 @@ class ApiService {
   static Future<dynamic> get(String path, {Map<String, dynamic>? queryParams}) async {
     try {
       final uri = _buildUri(path, queryParams);
-      final res = await http.get(uri, headers: _buildHeaders()).timeout(const Duration(seconds: 20));
+      final res = await http.get(uri, headers: _buildHeaders()).timeout(const Duration(seconds: 25));
       return _handleResponse(res);
-    } on SocketException {
-      throw ApiException('Cannot reach FeatherTown backend. Please check network connection.');
+    } on SocketException catch (e) {
+      throw ApiException('Cannot reach FeatherTown backend (${e.message}). Please check internet or server status.');
+    } on TimeoutException {
+      throw ApiException('Request timed out. Please check your internet connection.');
     } on http.ClientException catch (e) {
       throw ApiException('Network connection error: ${e.message}');
+    } catch (e) {
+      if (e is ApiException) rethrow;
+      throw ApiException('Error: $e');
     }
   }
 
@@ -101,8 +107,15 @@ class ApiService {
           )
           .timeout(const Duration(seconds: 25));
       return _handleResponse(res);
-    } on SocketException {
-      throw ApiException('Cannot reach FeatherTown backend. Please check network connection.');
+    } on SocketException catch (e) {
+      throw ApiException('Cannot reach FeatherTown backend (${e.message}). Please check internet or server status.');
+    } on TimeoutException {
+      throw ApiException('Request timed out. Please check your internet connection.');
+    } on http.ClientException catch (e) {
+      throw ApiException('Network connection error: ${e.message}');
+    } catch (e) {
+      if (e is ApiException) rethrow;
+      throw ApiException('Error: $e');
     }
   }
 
@@ -118,8 +131,15 @@ class ApiService {
           )
           .timeout(const Duration(seconds: 25));
       return _handleResponse(res);
-    } on SocketException {
-      throw ApiException('Cannot reach FeatherTown backend. Please check network connection.');
+    } on SocketException catch (e) {
+      throw ApiException('Cannot reach FeatherTown backend (${e.message}). Please check internet or server status.');
+    } on TimeoutException {
+      throw ApiException('Request timed out. Please check your internet connection.');
+    } on http.ClientException catch (e) {
+      throw ApiException('Network connection error: ${e.message}');
+    } catch (e) {
+      if (e is ApiException) rethrow;
+      throw ApiException('Error: $e');
     }
   }
 
@@ -135,8 +155,15 @@ class ApiService {
           )
           .timeout(const Duration(seconds: 25));
       return _handleResponse(res);
-    } on SocketException {
-      throw ApiException('Cannot reach FeatherTown backend. Please check network connection.');
+    } on SocketException catch (e) {
+      throw ApiException('Cannot reach FeatherTown backend (${e.message}). Please check internet or server status.');
+    } on TimeoutException {
+      throw ApiException('Request timed out. Please check your internet connection.');
+    } on http.ClientException catch (e) {
+      throw ApiException('Network connection error: ${e.message}');
+    } catch (e) {
+      if (e is ApiException) rethrow;
+      throw ApiException('Error: $e');
     }
   }
 
@@ -144,10 +171,17 @@ class ApiService {
   static Future<dynamic> delete(String path) async {
     try {
       final uri = _buildUri(path);
-      final res = await http.delete(uri, headers: _buildHeaders()).timeout(const Duration(seconds: 20));
+      final res = await http.delete(uri, headers: _buildHeaders()).timeout(const Duration(seconds: 25));
       return _handleResponse(res);
-    } on SocketException {
-      throw ApiException('Cannot reach FeatherTown backend. Please check network connection.');
+    } on SocketException catch (e) {
+      throw ApiException('Cannot reach FeatherTown backend (${e.message}). Please check internet or server status.');
+    } on TimeoutException {
+      throw ApiException('Request timed out. Please check your internet connection.');
+    } on http.ClientException catch (e) {
+      throw ApiException('Network connection error: ${e.message}');
+    } catch (e) {
+      if (e is ApiException) rethrow;
+      throw ApiException('Error: $e');
     }
   }
 
