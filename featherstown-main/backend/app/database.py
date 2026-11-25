@@ -43,6 +43,8 @@ customers_col = db["customers"]
 audit_logs_col = db["audit_logs"]
 notifications_col = db["notifications"]
 fcm_tokens_col = db["fcm_tokens"]
+ad_credentials_col = db["ad_credentials"]
+ad_campaigns_col = db["ad_campaigns"]
 
 async def init_db():
     """Initializes indexes and seeds the database if empty."""

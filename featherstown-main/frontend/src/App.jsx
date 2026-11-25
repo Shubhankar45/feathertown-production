@@ -47,6 +47,7 @@ import AdminInvoices from "./pages/admin/AdminInvoices";
 import AdminBookingTracker from "./pages/admin/AdminBookingTracker";
 import AdminCustomers from "./pages/admin/AdminCustomers";
 import AdminTransactions from "./pages/admin/AdminTransactions";
+import AdminAdsTracker from "./pages/admin/AdminAdsTracker";
 import { BirdsProvider } from "./context/BirdsContext";
 import { SettingsProvider } from "./context/SettingsContext";
 import { ADMIN_BASE } from "./config/adminConfig";
@@ -156,6 +157,7 @@ function App() {
                     <Route path="orders" element={<AdminOrders />} />
                     <Route path="reviews" element={<AdminReviews />} />
                     <Route path="subscribers" element={<AdminSubscribers />} />
+                    <Route path="ads" element={<AdminAdsTracker />} />
                     <Route path="settings" element={<AdminSettings />} />
                   </Route>
 

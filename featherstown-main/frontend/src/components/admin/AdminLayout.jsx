@@ -19,6 +19,7 @@ import {
   ExternalLink,
   AlertTriangle,
   RotateCcw,
+  Megaphone,
 } from "lucide-react";
 import { NavLink, Outlet, useNavigate, useLocation } from "react-router-dom";
 import { useAdminAuth } from "../../context/AdminAuthContext";
@@ -56,6 +57,7 @@ const NAV_SECTIONS = [
       { to: `${ADMIN_BASE}/accessories`, label: "Accessories", Icon: ShoppingBag },
       { to: `${ADMIN_BASE}/categories`, label: "Categories", Icon: Tag },
       { to: `${ADMIN_BASE}/orders`, label: "Store Orders", Icon: Package },
+      { to: `${ADMIN_BASE}/ads`, label: "Ads & Social Tracker", Icon: Megaphone },
       { to: `${ADMIN_BASE}/reviews`, label: "Reviews", Icon: Star },
       { to: `${ADMIN_BASE}/subscribers`, label: "Subscribers", Icon: Mail },
     ],

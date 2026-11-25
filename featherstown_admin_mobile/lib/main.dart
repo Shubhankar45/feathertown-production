@@ -12,6 +12,7 @@ import 'providers/transactions_provider.dart';
 import 'providers/birds_provider.dart';
 import 'providers/accessories_provider.dart';
 import 'providers/orders_provider.dart';
+import 'providers/ads_provider.dart';
 import 'screens/splash_screen.dart';
 
 void main() async {
@@ -31,6 +32,7 @@ void main() async {
         ChangeNotifierProvider(create: (_) => BirdsProvider()),
         ChangeNotifierProvider(create: (_) => AccessoriesProvider()),
         ChangeNotifierProvider(create: (_) => OrdersProvider()),
+        ChangeNotifierProvider(create: (_) => AdsProvider()),
       ],
       child: const FeatherTownAdminApp(),
     ),

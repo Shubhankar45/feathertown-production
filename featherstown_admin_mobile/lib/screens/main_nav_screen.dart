@@ -15,6 +15,10 @@ import 'birds/birds_screen.dart';
 import 'accessories/accessories_screen.dart';
 import 'orders/orders_screen.dart';
 import 'media/media_uploader_sheet.dart';
+import 'ads/ads_tracker_screen.dart';
+import 'website/website_settings_screen.dart';
+import 'reviews/reviews_screen.dart';
+import 'subscribers/subscribers_screen.dart';
 import 'auth/login_screen.dart';
 
 class MainNavScreen extends StatefulWidget {
@@ -223,6 +227,72 @@ class _MainNavScreenState extends State<MainNavScreen> {
               onTap: () {
                 Navigator.pop(context);
                 MediaUploaderSheet.show(context);
+              },
+            ),
+            const Divider(),
+            const Padding(
+              padding: EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+              child: Text(
+                'GROWTH & SOCIAL MARKETING',
+                style: TextStyle(
+                  fontSize: 11,
+                  fontWeight: FontWeight.w800,
+                  color: AppColors.textSecondary,
+                  letterSpacing: 0.5,
+                ),
+              ),
+            ),
+            ListTile(
+              leading: const Icon(Icons.campaign_rounded, color: Color(0xFF1877F2)),
+              title: const Text('Social Media & Ad Tracker', style: TextStyle(fontWeight: FontWeight.w600)),
+              trailing: Container(
+                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+                decoration: BoxDecoration(
+                  color: const Color(0xFFE7F3FF),
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                child: const Text('Meta/Google', style: TextStyle(color: Color(0xFF1877F2), fontSize: 10, fontWeight: FontWeight.bold)),
+              ),
+              onTap: () {
+                Navigator.pop(context);
+                Navigator.push(context, MaterialPageRoute(builder: (_) => const AdsTrackerScreen()));
+              },
+            ),
+            const Divider(),
+            const Padding(
+              padding: EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+              child: Text(
+                'WEBSITE & CONTENT CMS',
+                style: TextStyle(
+                  fontSize: 11,
+                  fontWeight: FontWeight.w800,
+                  color: AppColors.textSecondary,
+                  letterSpacing: 0.5,
+                ),
+              ),
+            ),
+            ListTile(
+              leading: const Icon(Icons.web_rounded, color: AppColors.forestGreen),
+              title: const Text('Website CMS & Helplines', style: TextStyle(fontWeight: FontWeight.w600)),
+              onTap: () {
+                Navigator.pop(context);
+                Navigator.push(context, MaterialPageRoute(builder: (_) => const WebsiteSettingsScreen()));
+              },
+            ),
+            ListTile(
+              leading: const Icon(Icons.star_rounded, color: Color(0xFFF4B400)),
+              title: const Text('Customer Reviews', style: TextStyle(fontWeight: FontWeight.w600)),
+              onTap: () {
+                Navigator.pop(context);
+                Navigator.push(context, MaterialPageRoute(builder: (_) => const ReviewsScreen()));
+              },
+            ),
+            ListTile(
+              leading: const Icon(Icons.mail_rounded, color: AppColors.catConure),
+              title: const Text('Newsletter Subscribers', style: TextStyle(fontWeight: FontWeight.w600)),
+              onTap: () {
+                Navigator.pop(context);
+                Navigator.push(context, MaterialPageRoute(builder: (_) => const SubscribersScreen()));
               },
             ),
             const Divider(),

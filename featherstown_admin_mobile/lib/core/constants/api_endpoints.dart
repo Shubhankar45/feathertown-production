@@ -36,6 +36,14 @@ class ApiEndpoints {
   static const String settings = '/api/admin/settings';
   static const String upload = '/api/admin/upload';
 
+  // Ad Management & Social Expense Tracker
+  static const String adCampaigns = '/api/admin/ads/campaigns';
+  static const String adCredentials = '/api/admin/ads/credentials';
+  static const String adAnalytics = '/api/admin/ads/analytics';
+  static const String adTestConnection = '/api/admin/ads/test-connection';
+  static const String adSync = '/api/admin/ads/sync';
+  static String adCampaignDetail(String id) => '/api/admin/ads/campaigns/$id';
+
   // Real-Time Notification Center
   static const String notifications = '/api/admin/notifications';
   static const String markAllNotificationsRead = '/api/admin/notifications/mark-all-read';

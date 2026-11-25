@@ -53,6 +53,7 @@ from app.routers import (
     user_auth,
     admin,
     common,
+    ads,
 )
 
 @asynccontextmanager
@@ -147,6 +148,7 @@ app.include_router(auth.router)
 app.include_router(user_auth.router)
 app.include_router(admin.router)
 app.include_router(common.router)
+app.include_router(ads.router)
 
 # ───────── STATIC UPLOADS DIRECTORY ─────────
 UPLOADS_DIR.mkdir(parents=True, exist_ok=True)
