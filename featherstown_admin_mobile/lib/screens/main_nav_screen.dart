@@ -11,6 +11,10 @@ import 'customers/customers_screen.dart';
 import 'transactions/transactions_screen.dart';
 import 'transactions/quick_record_modal.dart';
 import 'notifications/notification_center_screen.dart';
+import 'birds/birds_screen.dart';
+import 'accessories/accessories_screen.dart';
+import 'orders/orders_screen.dart';
+import 'media/media_uploader_sheet.dart';
 import 'auth/login_screen.dart';
 
 class MainNavScreen extends StatefulWidget {
@@ -167,6 +171,73 @@ class _MainNavScreenState extends State<MainNavScreen> {
                 _onSelectTab(0);
               },
             ),
+            const Divider(),
+            const Padding(
+              padding: EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+              child: Text(
+                'LIVE INVENTORY & COMMERCE',
+                style: TextStyle(
+                  fontSize: 11,
+                  fontWeight: FontWeight.w800,
+                  color: AppColors.textSecondary,
+                  letterSpacing: 0.5,
+                ),
+              ),
+            ),
+            ListTile(
+              leading: const Icon(Icons.flutter_dash_rounded, color: AppColors.catCockatiel),
+              title: const Text('Avian Stock (Birds)', style: TextStyle(fontWeight: FontWeight.w600)),
+              trailing: Container(
+                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+                decoration: BoxDecoration(
+                  color: AppColors.pastelMint,
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                child: const Text('Live', style: TextStyle(color: AppColors.catCockatiel, fontSize: 11, fontWeight: FontWeight.bold)),
+              ),
+              onTap: () {
+                Navigator.pop(context);
+                Navigator.push(context, MaterialPageRoute(builder: (_) => const BirdsScreen()));
+              },
+            ),
+            ListTile(
+              leading: const Icon(Icons.inventory_2_rounded, color: AppColors.catBudgie),
+              title: const Text('Cages & Feed Stock', style: TextStyle(fontWeight: FontWeight.w600)),
+              onTap: () {
+                Navigator.pop(context);
+                Navigator.push(context, MaterialPageRoute(builder: (_) => const AccessoriesScreen()));
+              },
+            ),
+            ListTile(
+              leading: const Icon(Icons.shopping_bag_rounded, color: AppColors.accent),
+              title: const Text('Store Orders', style: TextStyle(fontWeight: FontWeight.w600)),
+              onTap: () {
+                Navigator.pop(context);
+                Navigator.push(context, MaterialPageRoute(builder: (_) => const OrdersScreen()));
+              },
+            ),
+            ListTile(
+              leading: const Icon(Icons.add_photo_alternate_rounded, color: AppColors.lavenderText),
+              title: const Text('Upload Media / Photos', style: TextStyle(fontWeight: FontWeight.w600)),
+              trailing: const Icon(Icons.upload_file_rounded, size: 18, color: AppColors.textSecondary),
+              onTap: () {
+                Navigator.pop(context);
+                MediaUploaderSheet.show(context);
+              },
+            ),
+            const Divider(),
+            const Padding(
+              padding: EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+              child: Text(
+                'OPERATIONS & FINANCE',
+                style: TextStyle(
+                  fontSize: 11,
+                  fontWeight: FontWeight.w800,
+                  color: AppColors.textSecondary,
+                  letterSpacing: 0.5,
+                ),
+              ),
+            ),
             ListTile(
               leading: const Icon(Icons.receipt_long_rounded),
               title: const Text('Invoices & Billing'),
@@ -228,6 +299,22 @@ class _MainNavScreenState extends State<MainNavScreen> {
               leading: const Icon(Icons.logout_rounded, color: AppColors.danger),
               title: const Text('Sign Out', style: TextStyle(color: AppColors.danger, fontWeight: FontWeight.w700)),
               onTap: () async {
+                final confirm = await showDialog<bool>(
+                  context: context,
+                  builder: (ctx) => AlertDialog(
+                    title: const Text('Sign Out'),
+                    content: const Text('Are you sure you want to log out of FeatherTown Admin?'),
+                    actions: [
+                      TextButton(onPressed: () => Navigator.pop(ctx, false), child: const Text('Cancel')),
+                      ElevatedButton(
+                        style: ElevatedButton.styleFrom(backgroundColor: AppColors.danger),
+                        onPressed: () => Navigator.pop(ctx, true),
+                        child: const Text('Sign Out', style: TextStyle(color: Colors.white)),
+                      ),
+                    ],
+                  ),
+                );
+                if (confirm != true) return;
                 await auth.logout();
                 if (!context.mounted) return;
                 Navigator.of(context).pushReplacement(

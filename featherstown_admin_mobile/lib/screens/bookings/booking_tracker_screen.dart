@@ -214,7 +214,7 @@ class _BookingCard extends StatelessWidget {
                 borderRadius: BorderRadius.circular(14),
               ),
               child: Icon(
-                Icons.pets_rounded,
+                Icons.flutter_dash_rounded,
                 size: 22,
                 color: booking.status == 'ready_for_handover' ? AppColors.catCockatiel : AppColors.catMacaw,
               ),

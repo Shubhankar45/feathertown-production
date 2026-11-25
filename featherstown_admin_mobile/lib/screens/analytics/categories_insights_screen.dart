@@ -37,7 +37,7 @@ class _CategoriesInsightsScreenState extends State<CategoriesInsightsScreen> {
         'subtitle': 'Conures, Macaws, Greys',
         'spent': gross * 0.58,
         'target': gross * 0.70,
-        'icon': Icons.pets_rounded,
+        'icon': Icons.flutter_dash_rounded,
         'color': AppColors.catCockatiel,
         'bg': AppColors.pastelMint,
         'section': 'Livestock',

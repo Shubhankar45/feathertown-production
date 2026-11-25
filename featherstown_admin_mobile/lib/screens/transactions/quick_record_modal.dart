@@ -41,7 +41,7 @@ class _QuickRecordModalState extends State<QuickRecordModal> {
   ];
 
   final List<Map<String, dynamic>> _incomeCategories = [
-    {'name': 'Companion Bird Sale', 'icon': Icons.pets_rounded, 'color': AppColors.primary, 'bg': AppColors.pastelMint},
+    {'name': 'Companion Bird Sale', 'icon': Icons.flutter_dash_rounded, 'color': AppColors.primary, 'bg': AppColors.pastelMint},
     {'name': 'Cage & Housing Sale', 'icon': Icons.home_work_rounded, 'color': AppColors.catBudgie, 'bg': AppColors.pastelBlue},
     {'name': 'Feed & Accessories', 'icon': Icons.shopping_bag_rounded, 'color': AppColors.catConure, 'bg': AppColors.pastelYellow},
     {'name': 'Aviary Consultation', 'icon': Icons.support_agent_rounded, 'color': AppColors.lavenderText, 'bg': AppColors.pastelLavender},
