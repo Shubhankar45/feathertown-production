@@ -91,6 +91,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                 // Hero Dark Card (Matching Reference Screen 1 "Money left this month")
                 Container(
                   padding: const EdgeInsets.all(22),
+                  clipBehavior: Clip.antiAlias,
                   decoration: BoxDecoration(
                     color: AppColors.heroDark,
                     borderRadius: BorderRadius.circular(26),
@@ -102,9 +103,23 @@ class _DashboardScreenState extends State<DashboardScreen> {
                       ),
                     ],
                   ),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
+                  child: Stack(
                     children: [
+                      Positioned(
+                        right: -15,
+                        bottom: -15,
+                        child: Opacity(
+                          opacity: 0.18,
+                          child: Image.asset(
+                            'assets/images/macaw.png',
+                            height: 160,
+                            fit: BoxFit.contain,
+                          ),
+                        ),
+                      ),
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
@@ -185,7 +200,9 @@ class _DashboardScreenState extends State<DashboardScreen> {
                       ),
                     ],
                   ),
-                ),
+                ],
+              ),
+            ),
 
                 const SizedBox(height: 16),
 
@@ -342,7 +359,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                         ),
                         const SizedBox(height: 16),
                         _buildActionRow(
-                          icon: Icons.pets_rounded,
+                          icon: Icons.flutter_dash_rounded,
                           iconBg: AppColors.pastelMint,
                           iconColor: AppColors.catCockatiel,
                           title: 'Sun Conure • Ring #FT-88',
