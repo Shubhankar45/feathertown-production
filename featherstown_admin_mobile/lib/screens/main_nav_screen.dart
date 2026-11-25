@@ -56,12 +56,26 @@ class _MainNavScreenState extends State<MainNavScreen> {
         title: Row(
           children: [
             Container(
-              padding: const EdgeInsets.all(6),
+              width: 32,
+              height: 32,
               decoration: BoxDecoration(
-                color: AppColors.heroDark,
-                borderRadius: BorderRadius.circular(10),
+                color: AppColors.white,
+                shape: BoxShape.circle,
+                boxShadow: [
+                  BoxShadow(
+                    color: AppColors.heroDark.withValues(alpha: 0.1),
+                    blurRadius: 8,
+                    offset: const Offset(0, 2),
+                  ),
+                ],
               ),
-              child: const Icon(Icons.pets_rounded, size: 18, color: AppColors.white),
+              child: ClipOval(
+                child: Image.asset(
+                  'assets/images/logo.png',
+                  fit: BoxFit.contain,
+                  errorBuilder: (_, _, _) => const Icon(Icons.flutter_dash, size: 20, color: AppColors.primary),
+                ),
+              ),
             ),
             const SizedBox(width: 10),
             RichText(

@@ -13,21 +13,52 @@ class LoginScreen extends StatefulWidget {
   State<LoginScreen> createState() => _LoginScreenState();
 }
 
-class _LoginScreenState extends State<LoginScreen> {
-  final _usernameCtrl = TextEditingController(text: 'admin');
-  final _passwordCtrl = TextEditingController();
+class _LoginScreenState extends State<LoginScreen> with SingleTickerProviderStateMixin {
+  late final TextEditingController _usernameCtrl;
+  late final TextEditingController _passwordCtrl;
   bool _obscurePassword = true;
+  late final AnimationController _animCtrl;
+  late final Animation<double> _fadeAnim;
+
+  @override
+  void initState() {
+    super.initState();
+    // Default prefilled so the admin can log in with 1 tap immediately
+    _usernameCtrl = TextEditingController(text: 'admin');
+    _passwordCtrl = TextEditingController(text: 'Admin@FeatherTown2026');
+
+    _animCtrl = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 900),
+    );
+    _fadeAnim = CurvedAnimation(parent: _animCtrl, curve: Curves.easeOutCubic);
+    _animCtrl.forward();
+  }
 
   @override
   void dispose() {
+    _animCtrl.dispose();
     _usernameCtrl.dispose();
     _passwordCtrl.dispose();
     super.dispose();
   }
 
+  void _fillDefaultCredentials() {
+    setState(() {
+      _usernameCtrl.text = 'admin';
+      _passwordCtrl.text = 'Admin@FeatherTown2026';
+    });
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(
+        content: Text('Admin credentials auto-filled! Tap "Authorize & Sign In" to proceed.'),
+        duration: Duration(seconds: 2),
+      ),
+    );
+  }
+
   Future<void> _handleLogin() async {
     final username = _usernameCtrl.text.trim();
-    final password = _passwordCtrl.text;
+    final password = _passwordCtrl.text.trim();
 
     if (username.isEmpty || password.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -48,8 +79,21 @@ class _LoginScreenState extends State<LoginScreen> {
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text(auth.errorMessage ?? 'Invalid credentials. Please try again.'),
+          content: Row(
+            children: [
+              const Icon(Icons.error_outline_rounded, color: Colors.white, size: 20),
+              const SizedBox(width: 10),
+              Expanded(
+                child: Text(
+                  auth.errorMessage ?? 'Invalid credentials. Please verify username and password.',
+                  style: const TextStyle(fontWeight: FontWeight.w600),
+                ),
+              ),
+            ],
+          ),
           backgroundColor: AppColors.danger,
+          behavior: SnackBarBehavior.floating,
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
         ),
       );
     }
@@ -61,7 +105,7 @@ class _LoginScreenState extends State<LoginScreen> {
       context: context,
       isScrollControlled: true,
       shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+        borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
       ),
       builder: (ctx) => Padding(
         padding: EdgeInsets.only(
@@ -74,21 +118,37 @@ class _LoginScreenState extends State<LoginScreen> {
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(
-              'Server Configuration',
-              style: Theme.of(ctx).textTheme.titleLarge,
+            Row(
+              children: [
+                Container(
+                  padding: const EdgeInsets.all(8),
+                  decoration: BoxDecoration(
+                    color: AppColors.pastelMint,
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  child: const Icon(Icons.dns_rounded, color: AppColors.primary, size: 20),
+                ),
+                const SizedBox(width: 12),
+                Text(
+                  'Server Configuration',
+                  style: Theme.of(ctx).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w800),
+                ),
+              ],
             ),
-            const SizedBox(height: 8),
+            const SizedBox(height: 10),
             Text(
-              'Switch between production and local backend IP (e.g. http://10.0.2.2:8000 for Android emulator).',
-              style: Theme.of(ctx).textTheme.bodyMedium,
+              'Switch between production cloud backend and local development IP.',
+              style: Theme.of(ctx).textTheme.bodyMedium?.copyWith(color: AppColors.textSecondary),
             ),
             const SizedBox(height: 16),
             TextField(
               controller: ctrl,
-              decoration: const InputDecoration(
+              decoration: InputDecoration(
                 labelText: 'Backend Base URL',
-                prefixIcon: Icon(Icons.dns_rounded),
+                prefixIcon: const Icon(Icons.link_rounded),
+                filled: true,
+                fillColor: AppColors.canvasLight,
+                border: OutlineInputBorder(borderRadius: BorderRadius.circular(14)),
               ),
             ),
             const SizedBox(height: 20),
@@ -101,7 +161,11 @@ class _LoginScreenState extends State<LoginScreen> {
                       Navigator.pop(ctx);
                       setState(() {});
                     },
-                    child: const Text('Reset to Default'),
+                    style: OutlinedButton.styleFrom(
+                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
+                      padding: const EdgeInsets.symmetric(vertical: 14),
+                    ),
+                    child: const Text('Reset to Live'),
                   ),
                 ),
                 const SizedBox(width: 12),
@@ -112,7 +176,11 @@ class _LoginScreenState extends State<LoginScreen> {
                       Navigator.pop(ctx);
                       setState(() {});
                     },
-                    child: const Text('Save URL'),
+                    style: ElevatedButton.styleFrom(
+                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
+                      padding: const EdgeInsets.symmetric(vertical: 14),
+                    ),
+                    child: const Text('Save & Apply'),
                   ),
                 ),
               ],
@@ -135,7 +203,7 @@ class _LoginScreenState extends State<LoginScreen> {
         actions: [
           IconButton(
             tooltip: 'Server Settings',
-            icon: const Icon(Icons.dns_outlined, color: AppColors.forestGreen),
+            icon: const Icon(Icons.tune_rounded, color: AppColors.heroDark),
             onPressed: _showServerConfigSheet,
           ),
           const SizedBox(width: 8),
@@ -144,108 +212,261 @@ class _LoginScreenState extends State<LoginScreen> {
       body: SafeArea(
         child: Center(
           child: SingleChildScrollView(
-            padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 32),
+            padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
             child: ConstrainedBox(
               constraints: const BoxConstraints(maxWidth: 420),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  Center(
-                    child: Container(
-                      width: 72,
-                      height: 72,
-                      decoration: BoxDecoration(
-                        color: AppColors.primary,
-                        borderRadius: BorderRadius.circular(18),
-                        boxShadow: [
-                          BoxShadow(
-                            color: AppColors.primary.withValues(alpha: 0.2),
-                            blurRadius: 16,
-                            offset: const Offset(0, 8),
+              child: FadeTransition(
+                opacity: _fadeAnim,
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    // Brand Identity Card Header
+                    Center(
+                      child: Stack(
+                        clipBehavior: Clip.none,
+                        alignment: Alignment.center,
+                        children: [
+                          // Outer glow circle
+                          Container(
+                            width: 104,
+                            height: 104,
+                            decoration: BoxDecoration(
+                              shape: BoxShape.circle,
+                              gradient: RadialGradient(
+                                colors: [
+                                  AppColors.primary.withValues(alpha: 0.12),
+                                  Colors.transparent,
+                                ],
+                              ),
+                            ),
+                          ),
+                          // Logo Emblem Container
+                          Container(
+                            width: 86,
+                            height: 86,
+                            padding: const EdgeInsets.all(12),
+                            decoration: BoxDecoration(
+                              color: AppColors.white,
+                              shape: BoxShape.circle,
+                              boxShadow: [
+                                BoxShadow(
+                                  color: AppColors.heroDark.withValues(alpha: 0.12),
+                                  blurRadius: 20,
+                                  offset: const Offset(0, 8),
+                                ),
+                              ],
+                            ),
+                            child: ClipOval(
+                              child: Image.asset(
+                                'assets/images/logo.png',
+                                fit: BoxFit.contain,
+                                errorBuilder: (_, _, _) => Image.asset(
+                                  'assets/images/macaw.png',
+                                  fit: BoxFit.contain,
+                                ),
+                              ),
+                            ),
                           ),
                         ],
                       ),
-                      child: const Icon(Icons.shield_rounded, size: 36, color: AppColors.white),
                     ),
-                  ),
-                  const SizedBox(height: 20),
-                  Text(
-                    'Admin Authentication',
-                    textAlign: TextAlign.center,
-                    style: Theme.of(context).textTheme.headlineMedium,
-                  ),
-                  const SizedBox(height: 6),
-                  Text(
-                    'Sign in to manage FeatherTown orders, aviary stock, and financial invoices.',
-                    textAlign: TextAlign.center,
-                    style: Theme.of(context).textTheme.bodyMedium,
-                  ),
-                  const SizedBox(height: 32),
 
-                  // Login Form Card
-                  Card(
-                    child: Padding(
+                    const SizedBox(height: 18),
+
+                    // Title & Slogan
+                    Text(
+                      'FeatherTown Admin',
+                      textAlign: TextAlign.center,
+                      style: Theme.of(context).textTheme.headlineMedium?.copyWith(
+                            fontWeight: FontWeight.w900,
+                            color: AppColors.heroDark,
+                            fontSize: 24,
+                          ),
+                    ),
+                    const SizedBox(height: 5),
+                    const Text(
+                      'Official Companion Aviary & Stock Control Console',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        fontSize: 12.5,
+                        color: AppColors.textSecondary,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+
+                    const SizedBox(height: 24),
+
+                    // Login Card
+                    Container(
                       padding: const EdgeInsets.all(22),
+                      decoration: BoxDecoration(
+                        color: AppColors.white,
+                        borderRadius: BorderRadius.circular(24),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black.withValues(alpha: 0.05),
+                            blurRadius: 24,
+                            offset: const Offset(0, 10),
+                          ),
+                        ],
+                      ),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.stretch,
                         children: [
                           TextField(
                             controller: _usernameCtrl,
-                            decoration: const InputDecoration(
-                              labelText: 'Admin Username',
-                              prefixIcon: Icon(Icons.person_outline_rounded),
+                            decoration: InputDecoration(
+                              labelText: 'Admin Username / Email',
+                              prefixIcon: const Icon(Icons.person_outline_rounded, color: AppColors.heroDark),
+                              filled: true,
+                              fillColor: AppColors.canvasLight,
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(16),
+                                borderSide: BorderSide.none,
+                              ),
                             ),
                           ),
-                          const SizedBox(height: 16),
+                          const SizedBox(height: 14),
                           TextField(
                             controller: _passwordCtrl,
                             obscureText: _obscurePassword,
                             decoration: InputDecoration(
                               labelText: 'Security Password',
-                              prefixIcon: const Icon(Icons.lock_outline_rounded),
+                              prefixIcon: const Icon(Icons.lock_outline_rounded, color: AppColors.heroDark),
                               suffixIcon: IconButton(
-                                icon: Icon(_obscurePassword
-                                    ? Icons.visibility_off_outlined
-                                    : Icons.visibility_outlined),
+                                icon: Icon(
+                                  _obscurePassword
+                                      ? Icons.visibility_off_outlined
+                                      : Icons.visibility_outlined,
+                                  color: AppColors.textSecondary,
+                                ),
                                 onPressed: () => setState(() => _obscurePassword = !_obscurePassword),
+                              ),
+                              filled: true,
+                              fillColor: AppColors.canvasLight,
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(16),
+                                borderSide: BorderSide.none,
                               ),
                             ),
                             onSubmitted: (_) => _handleLogin(),
                           ),
-                          const SizedBox(height: 24),
-                          ElevatedButton(
-                            onPressed: auth.isLoading ? null : _handleLogin,
-                            child: auth.isLoading
-                                ? const SizedBox(
-                                    width: 20,
-                                    height: 20,
-                                    child: CircularProgressIndicator(
-                                      strokeWidth: 2,
-                                      color: AppColors.white,
+
+                          const SizedBox(height: 12),
+
+                          // Quick Auto-fill Chip
+                          Align(
+                            alignment: Alignment.centerRight,
+                            child: InkWell(
+                              onTap: _fillDefaultCredentials,
+                              borderRadius: BorderRadius.circular(20),
+                              child: Container(
+                                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                                decoration: BoxDecoration(
+                                  color: AppColors.pastelMint,
+                                  borderRadius: BorderRadius.circular(20),
+                                ),
+                                child: const Row(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    Icon(Icons.key_rounded, size: 13, color: AppColors.forestGreen),
+                                    SizedBox(width: 5),
+                                    Text(
+                                      'Auto-fill Admin',
+                                      style: TextStyle(
+                                        fontSize: 11,
+                                        fontWeight: FontWeight.w700,
+                                        color: AppColors.forestGreen,
+                                      ),
                                     ),
-                                  )
-                                : const Text('Authorize & Sign In'),
+                                  ],
+                                ),
+                              ),
+                            ),
+                          ),
+
+                          const SizedBox(height: 20),
+
+                          // Sign In Button
+                          SizedBox(
+                            height: 52,
+                            child: ElevatedButton(
+                              onPressed: auth.isLoading ? null : _handleLogin,
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: AppColors.heroDark,
+                                foregroundColor: Colors.white,
+                                elevation: 0,
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(28),
+                                ),
+                              ),
+                              child: auth.isLoading
+                                  ? const Row(
+                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      children: [
+                                        SizedBox(
+                                          width: 18,
+                                          height: 18,
+                                          child: CircularProgressIndicator(
+                                            strokeWidth: 2,
+                                            color: Colors.white,
+                                          ),
+                                        ),
+                                        SizedBox(width: 12),
+                                        Text('Verifying Session...'),
+                                      ],
+                                    )
+                                  : const Text(
+                                      'Authorize & Sign In',
+                                      style: TextStyle(fontSize: 15, fontWeight: FontWeight.w700),
+                                    ),
+                            ),
                           ),
                         ],
                       ),
                     ),
-                  ),
 
-                  const SizedBox(height: 20),
+                    const SizedBox(height: 20),
 
-                  // Server Info & Switcher
-                  Center(
-                    child: TextButton.icon(
-                      onPressed: _showServerConfigSheet,
-                      icon: const Icon(Icons.settings_ethernet_rounded, size: 16),
-                      label: Text(
-                        'Target: ${ApiService.baseUrl}',
-                        style: const TextStyle(fontSize: 12),
+                    // Target info badge
+                    Center(
+                      child: InkWell(
+                        onTap: _showServerConfigSheet,
+                        borderRadius: BorderRadius.circular(20),
+                        child: Container(
+                          padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 6),
+                          decoration: BoxDecoration(
+                            color: Colors.black.withValues(alpha: 0.04),
+                            borderRadius: BorderRadius.circular(20),
+                          ),
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Container(
+                                width: 7,
+                                height: 7,
+                                decoration: const BoxDecoration(
+                                  color: Color(0xFF4ADE80),
+                                  shape: BoxShape.circle,
+                                ),
+                              ),
+                              const SizedBox(width: 8),
+                              Text(
+                                'Target: ${ApiService.baseUrl}',
+                                style: const TextStyle(
+                                  fontSize: 11.5,
+                                  fontWeight: FontWeight.w600,
+                                  color: AppColors.textSecondary,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
                       ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
             ),
           ),
