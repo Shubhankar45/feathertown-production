@@ -103,23 +103,9 @@ class _DashboardScreenState extends State<DashboardScreen> {
                       ),
                     ],
                   ),
-                  child: Stack(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Positioned(
-                        right: -15,
-                        bottom: -15,
-                        child: Opacity(
-                          opacity: 0.18,
-                          child: Image.asset(
-                            'assets/images/macaw.png',
-                            height: 160,
-                            fit: BoxFit.contain,
-                          ),
-                        ),
-                      ),
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
@@ -200,9 +186,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                       ),
                     ],
                   ),
-                ],
-              ),
-            ),
+                ),
 
                 const SizedBox(height: 16),
 

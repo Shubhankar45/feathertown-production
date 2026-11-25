@@ -1,6 +1,5 @@
 import { useNavigate, useLocation } from "react-router-dom";
 import { Lock, UserPlus, LogIn, ArrowRight, X, ShieldCheck } from "lucide-react";
-import logoImg from "../../assets/logo-optimized.png";
 
 export default function AuthPromptModal({
   isOpen,

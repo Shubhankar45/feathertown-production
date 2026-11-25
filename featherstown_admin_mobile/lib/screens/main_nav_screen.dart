@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../core/constants/app_colors.dart';
+import '../core/widgets/feather_town_logo.dart';
 import '../providers/auth_provider.dart';
 import '../providers/notifications_provider.dart';
 import 'dashboard/dashboard_screen.dart';
@@ -61,42 +62,7 @@ class _MainNavScreenState extends State<MainNavScreen> {
       appBar: AppBar(
         backgroundColor: AppColors.canvasLight,
         elevation: 0,
-        title: Row(
-          children: [
-            Container(
-              width: 32,
-              height: 32,
-              decoration: BoxDecoration(
-                color: AppColors.white,
-                shape: BoxShape.circle,
-                boxShadow: [
-                  BoxShadow(
-                    color: AppColors.heroDark.withValues(alpha: 0.1),
-                    blurRadius: 8,
-                    offset: const Offset(0, 2),
-                  ),
-                ],
-              ),
-              child: ClipOval(
-                child: Image.asset(
-                  'assets/images/macaw.png',
-                  fit: BoxFit.contain,
-                  errorBuilder: (_, _, _) => const Icon(Icons.flutter_dash, size: 20, color: AppColors.primary),
-                ),
-              ),
-            ),
-            const SizedBox(width: 10),
-            RichText(
-              text: TextSpan(
-                style: Theme.of(context).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w900),
-                children: const [
-                  TextSpan(text: 'Feather', style: TextStyle(color: AppColors.heroDark)),
-                  TextSpan(text: 'Town', style: TextStyle(color: AppColors.accent)),
-                ],
-              ),
-            ),
-          ],
-        ),
+        title: const FeatherTownLogo(fontSize: 22),
         actions: [
           // Notification Bell with Badge
           Stack(

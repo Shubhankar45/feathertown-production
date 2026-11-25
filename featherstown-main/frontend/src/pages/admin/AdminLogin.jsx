@@ -2,7 +2,6 @@ import { useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { useAdminAuth } from "../../context/AdminAuthContext";
 import { ADMIN_BASE } from "../../config/adminConfig";
-import logoImg from "../../assets/logo-optimized.png";
 
 export default function AdminLogin() {
   const { login } = useAdminAuth();
@@ -58,22 +57,21 @@ export default function AdminLogin() {
         }}
       >
         <div style={{ textAlign: "center", marginBottom: 28 }}>
-          <img
-            src={logoImg}
-            alt="FeatherTown"
-            style={{
-              height: 54,
-              width: "auto",
-              background: "#F8FAFC",
-              border: "1px solid #E2E8F0",
-              borderRadius: 14,
-              padding: "4px 10px",
-              marginBottom: 16,
-              boxShadow: "0 2px 8px rgba(0, 0, 0, 0.04)",
-            }}
-          />
-          <h1 style={{ color: "#0F172A", fontSize: 22, fontWeight: 800, marginBottom: 4 }}>
-            FeatherTown Admin
+          <div style={{ marginBottom: 16 }}>
+            <span
+              style={{
+                fontFamily: "Outfit, system-ui, sans-serif",
+                fontSize: 34,
+                fontWeight: 900,
+                color: "#1B3B22",
+                letterSpacing: "-0.03em",
+              }}
+            >
+              Feather<span style={{ color: "#D9381E" }}>Town.</span>
+            </span>
+          </div>
+          <h1 style={{ color: "#0F172A", fontSize: 20, fontWeight: 800, marginBottom: 4 }}>
+            Enterprise Admin Console
           </h1>
           <p style={{ color: "#64748B", fontSize: 13 }}>
             Authorized administrator sign in

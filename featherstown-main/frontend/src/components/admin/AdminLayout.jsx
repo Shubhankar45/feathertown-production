@@ -25,7 +25,6 @@ import { NavLink, Outlet, useNavigate, useLocation } from "react-router-dom";
 import { useAdminAuth } from "../../context/AdminAuthContext";
 import { ADMIN_BASE } from "../../config/adminConfig";
 import ToastContainer from "../ui/Toast";
-import logoImg from "../../assets/logo-optimized.png";
 
 // Top horizontal pills matching user screenshot
 const TOP_PILLS = [
@@ -218,43 +217,30 @@ export default function AdminLayout() {
             background: "#FFFFFF",
           }}
         >
-          <div style={{ display: "flex", alignItems: "center", gap: 11 }}>
-            <img
-              src={logoImg}
-              alt="FeatherTown"
+          <div>
+            <div
               style={{
-                height: 36,
-                width: "auto",
-                background: "#FAF8F5",
-                borderRadius: 8,
-                padding: "2px 6px",
-                border: "1px solid #E2DDD3",
+                fontFamily: "Outfit, system-ui, sans-serif",
+                fontSize: 22,
+                fontWeight: 900,
+                lineHeight: 1.1,
+                color: "#1B3B22",
+                letterSpacing: "-0.025em",
               }}
-            />
-            <div>
-              <div
-                style={{
-                  fontFamily: "Cormorant Garamond, serif",
-                  fontSize: 19,
-                  fontWeight: 700,
-                  lineHeight: 1.1,
-                  color: "#1B3B22",
-                }}
-              >
-                Feather<span style={{ color: "#D9381E" }}>Town</span>
-              </div>
-              <div
-                style={{
-                  fontSize: 10,
-                  letterSpacing: 1.4,
-                  textTransform: "uppercase",
-                  color: "#1B3B22",
-                  fontWeight: 700,
-                  marginTop: 2,
-                }}
-              >
-                Enterprise Suite
-              </div>
+            >
+              Feather<span style={{ color: "#D9381E" }}>Town.</span>
+            </div>
+            <div
+              style={{
+                fontSize: 10,
+                letterSpacing: 1.4,
+                textTransform: "uppercase",
+                color: "#736B5E",
+                fontWeight: 700,
+                marginTop: 2,
+              }}
+            >
+              Enterprise Suite
             </div>
           </div>
 

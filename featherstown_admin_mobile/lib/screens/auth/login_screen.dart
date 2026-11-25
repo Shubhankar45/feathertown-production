@@ -5,6 +5,7 @@ import '../../core/constants/api_endpoints.dart';
 import '../../core/constants/app_colors.dart';
 import '../../core/services/api_service.dart';
 import '../../core/services/storage_service.dart';
+import '../../core/widgets/feather_town_logo.dart';
 import '../../providers/auth_provider.dart';
 import '../main_nav_screen.dart';
 
@@ -256,66 +257,14 @@ class _LoginScreenState extends State<LoginScreen> with SingleTickerProviderStat
                   mainAxisAlignment: MainAxisAlignment.center,
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
-                    // Brand Identity Card Header
-                    Center(
-                      child: Stack(
-                        clipBehavior: Clip.none,
-                        alignment: Alignment.center,
-                        children: [
-                          // Outer glow circle
-                          Container(
-                            width: 104,
-                            height: 104,
-                            decoration: BoxDecoration(
-                              shape: BoxShape.circle,
-                              gradient: RadialGradient(
-                                colors: [
-                                  AppColors.primary.withValues(alpha: 0.12),
-                                  Colors.transparent,
-                                ],
-                              ),
-                            ),
-                          ),
-                          // Logo Emblem Container
-                          Container(
-                            width: 86,
-                            height: 86,
-                            padding: const EdgeInsets.all(12),
-                            decoration: BoxDecoration(
-                              color: AppColors.white,
-                              shape: BoxShape.circle,
-                              boxShadow: [
-                                BoxShadow(
-                                  color: AppColors.heroDark.withValues(alpha: 0.12),
-                                  blurRadius: 20,
-                                  offset: const Offset(0, 8),
-                                ),
-                              ],
-                            ),
-                            child: ClipOval(
-                              child: Image.asset(
-                                'assets/images/macaw.png',
-                                fit: BoxFit.contain,
-                              ),
-                            ),
-                          ),
-                        ],
+                    // Pure Brand Typographic Header - No image
+                    const Center(
+                      child: FeatherTownLogo(
+                        fontSize: 34,
+                        textAlign: TextAlign.center,
                       ),
                     ),
-
-                    const SizedBox(height: 18),
-
-                    // Title & Slogan
-                    Text(
-                      'FeatherTown Admin',
-                      textAlign: TextAlign.center,
-                      style: Theme.of(context).textTheme.headlineMedium?.copyWith(
-                            fontWeight: FontWeight.w900,
-                            color: AppColors.heroDark,
-                            fontSize: 24,
-                          ),
-                    ),
-                    const SizedBox(height: 5),
+                    const SizedBox(height: 6),
                     const Text(
                       'Official Companion Aviary & Stock Control Console',
                       textAlign: TextAlign.center,
