@@ -52,4 +52,10 @@ class ApiEndpoints {
   static String notificationDetail(String id) => '/api/admin/notifications/$id';
   static const String registerFcmToken = '/api/admin/notifications/fcm-token';
   static const String testNotification = '/api/admin/notifications/test';
+
+  // AI Tools & Aviary Intelligence
+  static const String aiBirdListing = '/api/admin/ai/bird-listing';
+  static const String aiProductDescription = '/api/admin/ai/product-description';
+  static const String aiAdCopy = '/api/admin/ai/ad-copy';
+  static const String aiChatAdvisor = '/api/admin/ai/chat-advisor';
 }

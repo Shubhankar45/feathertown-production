@@ -1,5 +1,5 @@
 import { useEffect, useState, useMemo } from "react";
-import { Upload, Feather, X, AlertTriangle } from "lucide-react";
+import { Upload, Feather, X, AlertTriangle, Sparkles } from "lucide-react";
 import { adminFetch, adminUpload } from "../../utils/adminApi";
 import { toast } from "../../components/ui/Toast";
 import { resolveBirdImage } from "../../context/BirdsContext";
@@ -54,6 +54,38 @@ export default function AdminBirds() {
   const [editingId, setEditingId] = useState(null);
   const [form, setForm] = useState(EMPTY_FORM);
   const [saving, setSaving] = useState(false);
+  const [aiLoading, setAiLoading] = useState(false);
+
+  const handleAiGenerate = async () => {
+    if (!form.name.trim()) {
+      toast.warn("Please enter bird name/breed first");
+      return;
+    }
+    try {
+      setAiLoading(true);
+      const res = await adminFetch("/api/admin/ai/bird-listing", {
+        method: "POST",
+        body: JSON.stringify({
+          species: form.name.trim(),
+          name: form.name.trim(),
+          price: form.price,
+        }),
+      });
+      if (res?.description) {
+        setForm((prev) => ({
+          ...prev,
+          description: res.description,
+          diet: res.care_guide || prev.diet,
+          behavior: res.health_notes || prev.behavior,
+        }));
+        toast.success("AI generated bird description & care notes!");
+      }
+    } catch (err) {
+      toast.error("AI generation failed: " + err.message);
+    } finally {
+      setAiLoading(false);
+    }
+  };
 
   // Delete Confirmation
   const [deleteId, setDeleteId] = useState(null);
@@ -912,7 +944,30 @@ export default function AdminBirds() {
 
               {/* Overview Description */}
               <div style={{ marginBottom: 16 }}>
-                <label style={labelStyle}>Short Description</label>
+                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 6 }}>
+                  <label style={{ ...labelStyle, margin: 0 }}>Short Description</label>
+                  <button
+                    type="button"
+                    onClick={handleAiGenerate}
+                    disabled={aiLoading}
+                    style={{
+                      background: "#EAF2EC",
+                      color: "#1B3B22",
+                      border: "1px solid #C4D7C8",
+                      borderRadius: 8,
+                      padding: "4px 10px",
+                      fontSize: 12,
+                      fontWeight: 700,
+                      cursor: "pointer",
+                      display: "inline-flex",
+                      alignItems: "center",
+                      gap: 5,
+                    }}
+                  >
+                    <Sparkles size={13} color="#1B3B22" />
+                    {aiLoading ? "Generating..." : "AI Generate"}
+                  </button>
+                </div>
                 <textarea
                   rows={3}
                   placeholder="Overview about this bird's temperament, plumage, and bonding qualities..."

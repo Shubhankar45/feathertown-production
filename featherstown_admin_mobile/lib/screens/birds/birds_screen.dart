@@ -4,6 +4,7 @@ import '../../core/constants/app_colors.dart';
 import '../../core/utils/formatters.dart';
 import '../../models/bird_model.dart';
 import '../../providers/birds_provider.dart';
+import '../../providers/ai_provider.dart';
 import '../media/media_uploader_sheet.dart';
 
 class BirdsScreen extends StatefulWidget {
@@ -35,6 +36,8 @@ class _BirdsScreenState extends State<BirdsScreen> {
     final speciesCtrl = TextEditingController();
     final priceCtrl = TextEditingController();
     final ringCtrl = TextEditingController();
+    final descCtrl = TextEditingController();
+    bool isGeneratingAi = false;
     String selectedStatus = 'available';
     String selectedDna = 'Male';
     String? imageUrl;
@@ -217,6 +220,55 @@ class _BirdsScreenState extends State<BirdsScreen> {
                       ),
                     ],
                   ),
+                  const SizedBox(height: 12),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      const Text('Care & Description Notes', style: TextStyle(fontWeight: FontWeight.w700, fontSize: 13)),
+                      TextButton.icon(
+                        onPressed: isGeneratingAi
+                            ? null
+                            : () async {
+                                final species = speciesCtrl.text.trim();
+                                if (species.isEmpty) {
+                                  ScaffoldMessenger.of(ctx).showSnackBar(const SnackBar(content: Text('Please enter species first')));
+                                  return;
+                                }
+                                setModalState(() => isGeneratingAi = true);
+                                final aiRes = await context.read<AiProvider>().generateBirdListing(
+                                      species: species,
+                                      name: nameCtrl.text.trim(),
+                                      dnaSex: selectedDna,
+                                      price: double.tryParse(priceCtrl.text.trim()),
+                                    );
+                                if (!ctx.mounted) return;
+                                setModalState(() => isGeneratingAi = false);
+                                if (aiRes != null && aiRes['description'] != null) {
+                                  descCtrl.text = aiRes['description'];
+                                  ScaffoldMessenger.of(ctx).showSnackBar(
+                                    const SnackBar(content: Text('AI Generated Bird Description!'), backgroundColor: AppColors.forestGreen),
+                                  );
+                                }
+                              },
+                        icon: const Icon(Icons.auto_awesome_rounded, size: 16, color: AppColors.forestGreen),
+                        label: Text(
+                          isGeneratingAi ? 'Writing...' : 'AI Generate',
+                          style: const TextStyle(fontWeight: FontWeight.w800, color: AppColors.forestGreen, fontSize: 12),
+                        ),
+                      ),
+                    ],
+                  ),
+                  TextField(
+                    controller: descCtrl,
+                    maxLines: 2,
+                    decoration: InputDecoration(
+                      labelText: 'Description / Temperament',
+                      hintText: 'e.g. Hand-fed, very friendly, step-up trained',
+                      filled: true,
+                      fillColor: AppColors.canvasLight,
+                      border: OutlineInputBorder(borderRadius: BorderRadius.circular(14), borderSide: BorderSide.none),
+                    ),
+                  ),
 
                   const SizedBox(height: 24),
                   ElevatedButton(
@@ -237,6 +289,7 @@ class _BirdsScreenState extends State<BirdsScreen> {
                         'status': selectedStatus,
                         'dnaSex': selectedDna,
                         'ringNumber': ringCtrl.text.trim(),
+                        'description': descCtrl.text.trim(),
                         'image': imageUrl ?? 'https://feathertown.online/assets/hero-birds-companion.jpg',
                       });
 
@@ -272,6 +325,7 @@ class _BirdsScreenState extends State<BirdsScreen> {
     final priceCtrl = TextEditingController(text: bird.price.toStringAsFixed(0));
     final ringCtrl = TextEditingController(text: bird.ringNumber ?? '');
     final descCtrl = TextEditingController(text: bird.description ?? '');
+    bool isGeneratingAi = false;
     String selectedStatus = bird.status.toLowerCase();
     if (selectedStatus != 'available' && selectedStatus != 'reserved' && selectedStatus != 'sold') {
       selectedStatus = 'available';
@@ -466,6 +520,43 @@ class _BirdsScreenState extends State<BirdsScreen> {
                     ],
                   ),
                   const SizedBox(height: 12),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      const Text('Description & Care Notes', style: TextStyle(fontWeight: FontWeight.w700, fontSize: 13)),
+                      TextButton.icon(
+                        onPressed: isGeneratingAi
+                            ? null
+                            : () async {
+                                final species = speciesCtrl.text.trim();
+                                if (species.isEmpty) {
+                                  ScaffoldMessenger.of(ctx).showSnackBar(const SnackBar(content: Text('Please enter species first')));
+                                  return;
+                                }
+                                setModalState(() => isGeneratingAi = true);
+                                final aiRes = await context.read<AiProvider>().generateBirdListing(
+                                      species: species,
+                                      name: nameCtrl.text.trim(),
+                                      dnaSex: selectedDna,
+                                      price: double.tryParse(priceCtrl.text.trim()),
+                                    );
+                                if (!ctx.mounted) return;
+                                setModalState(() => isGeneratingAi = false);
+                                if (aiRes != null && aiRes['description'] != null) {
+                                  descCtrl.text = aiRes['description'];
+                                  ScaffoldMessenger.of(ctx).showSnackBar(
+                                    const SnackBar(content: Text('AI Generated Bird Description!'), backgroundColor: AppColors.forestGreen),
+                                  );
+                                }
+                              },
+                        icon: const Icon(Icons.auto_awesome_rounded, size: 16, color: AppColors.forestGreen),
+                        label: Text(
+                          isGeneratingAi ? 'Writing...' : 'AI Generate',
+                          style: const TextStyle(fontWeight: FontWeight.w800, color: AppColors.forestGreen, fontSize: 12),
+                        ),
+                      ),
+                    ],
+                  ),
                   TextField(
                     controller: descCtrl,
                     maxLines: 2,

@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import '../../core/constants/app_colors.dart';
 import '../../providers/ads_provider.dart';
+import '../../providers/ai_provider.dart';
 
 class AdsTrackerScreen extends StatefulWidget {
   const AdsTrackerScreen({super.key});
@@ -17,7 +19,7 @@ class _AdsTrackerScreenState extends State<AdsTrackerScreen> with SingleTickerPr
   @override
   void initState() {
     super.initState();
-    _tabCtrl = TabController(length: 2, vsync: this);
+    _tabCtrl = TabController(length: 3, vsync: this);
     WidgetsBinding.instance.addPostFrameCallback((_) {
       context.read<AdsProvider>().loadAll();
     });
@@ -288,8 +290,9 @@ class _AdsTrackerScreenState extends State<AdsTrackerScreen> with SingleTickerPr
           unselectedLabelColor: AppColors.textSecondary,
           labelStyle: const TextStyle(fontWeight: FontWeight.w700),
           tabs: const [
-            Tab(text: 'Campaigns & Expenses'),
-            Tab(text: 'Direct Credentials'),
+            Tab(text: 'Campaigns'),
+            Tab(text: 'AI Copywriter'),
+            Tab(text: 'Credentials'),
           ],
         ),
       ),
@@ -391,7 +394,10 @@ class _AdsTrackerScreenState extends State<AdsTrackerScreen> with SingleTickerPr
                   ),
                 ),
 
-                // ── TAB 2: DIRECT CREDENTIALS ──
+                // ── TAB 2: AI AD COPYWRITER ──
+                const _AiAdCopywriterTab(),
+
+                // ── TAB 3: DIRECT CREDENTIALS ──
                 ListView(
                   padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
                   children: [
@@ -828,5 +834,338 @@ extension PlatformFilterExt on List<dynamic> {
   List<dynamic> filterByPlatform(String platform) {
     if (platform == 'all') return this;
     return where((c) => (c['platform'] ?? '').toString().toLowerCase() == platform.toLowerCase()).toList();
+  }
+}
+
+// ── AI AD COPYWRITER TAB ──
+class _AiAdCopywriterTab extends StatefulWidget {
+  const _AiAdCopywriterTab();
+
+  @override
+  State<_AiAdCopywriterTab> createState() => _AiAdCopywriterTabState();
+}
+
+class _AiAdCopywriterTabState extends State<_AiAdCopywriterTab> {
+  final _itemCtrl = TextEditingController(text: 'Hand-Tamed Sun Conure');
+  final _offerCtrl = TextEditingController(text: 'Free starter feed kit & care guide');
+  String _platform = 'instagram'; // instagram | facebook | whatsapp | google
+  bool _loading = false;
+  Map<String, dynamic>? _generated;
+
+  @override
+  void dispose() {
+    _itemCtrl.dispose();
+    _offerCtrl.dispose();
+    super.dispose();
+  }
+
+  Future<void> _generate() async {
+    final item = _itemCtrl.text.trim();
+    if (item.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Please enter an item or bird name')));
+      return;
+    }
+
+    setState(() {
+      _loading = true;
+      _generated = null;
+    });
+
+    final ai = context.read<AiProvider>();
+    final res = await ai.generateAdCopy(
+      platform: _platform,
+      itemName: item,
+      category: 'Birds & Accessories',
+      offer: _offerCtrl.text.trim(),
+    );
+
+    if (!mounted) return;
+    setState(() {
+      _loading = false;
+      _generated = res;
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return ListView(
+      padding: const EdgeInsets.all(16),
+      children: [
+        // Header
+        Container(
+          padding: const EdgeInsets.all(18),
+          decoration: BoxDecoration(
+            color: AppColors.white,
+            borderRadius: BorderRadius.circular(22),
+            border: Border.all(color: AppColors.cardBorder),
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                children: [
+                  Container(
+                    padding: const EdgeInsets.all(8),
+                    decoration: BoxDecoration(color: AppColors.pastelMint, borderRadius: BorderRadius.circular(12)),
+                    child: const Icon(Icons.auto_awesome_rounded, color: AppColors.forestGreen, size: 20),
+                  ),
+                  const SizedBox(width: 12),
+                  const Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text('AI Ad Copywriter', style: TextStyle(fontWeight: FontWeight.w800, fontSize: 16)),
+                        Text('Generate high-converting captions & hashtags in seconds', style: TextStyle(fontSize: 11.5, color: AppColors.textSecondary)),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 16),
+
+              // Platform Selector
+              const Text('Target Platform', style: TextStyle(fontWeight: FontWeight.w700, fontSize: 13)),
+              const SizedBox(height: 8),
+              Row(
+                children: [
+                  _platformPill('instagram', 'Instagram', Icons.camera_alt_outlined),
+                  const SizedBox(width: 8),
+                  _platformPill('facebook', 'Facebook', Icons.facebook),
+                  const SizedBox(width: 8),
+                  _platformPill('whatsapp', 'WhatsApp', Icons.chat_bubble_outline),
+                ],
+              ),
+              const SizedBox(height: 16),
+
+              // Item Name Input
+              const Text('Bird / Product Name', style: TextStyle(fontWeight: FontWeight.w700, fontSize: 13)),
+              const SizedBox(height: 8),
+              TextField(
+                controller: _itemCtrl,
+                decoration: InputDecoration(
+                  hintText: 'e.g. Hand-Tamed Sun Conure',
+                  filled: true,
+                  fillColor: AppColors.canvasLight,
+                  border: OutlineInputBorder(borderRadius: BorderRadius.circular(14), borderSide: BorderSide.none),
+                ),
+              ),
+              const SizedBox(height: 8),
+
+              // Quick Preset Chips
+              SingleChildScrollView(
+                scrollDirection: Axis.horizontal,
+                child: Row(
+                  children: [
+                    _presetChip('Sun Conure'),
+                    const SizedBox(width: 6),
+                    _presetChip('African Grey'),
+                    const SizedBox(width: 6),
+                    _presetChip('Cockatiel'),
+                    const SizedBox(width: 6),
+                    _presetChip('Flight Cage'),
+                    const SizedBox(width: 6),
+                    _presetChip('Organic Pellets'),
+                  ],
+                ),
+              ),
+              const SizedBox(height: 14),
+
+              // Special Offer Input
+              const Text('Special Hook / Offer (optional)', style: TextStyle(fontWeight: FontWeight.w700, fontSize: 13)),
+              const SizedBox(height: 8),
+              TextField(
+                controller: _offerCtrl,
+                decoration: InputDecoration(
+                  hintText: 'e.g. 15% off cage + free diet onboarding',
+                  filled: true,
+                  fillColor: AppColors.canvasLight,
+                  border: OutlineInputBorder(borderRadius: BorderRadius.circular(14), borderSide: BorderSide.none),
+                ),
+              ),
+              const SizedBox(height: 18),
+
+              // Submit Button
+              SizedBox(
+                width: double.infinity,
+                child: ElevatedButton.icon(
+                  onPressed: _loading ? null : _generate,
+                  icon: _loading
+                      ? const SizedBox(width: 18, height: 18, child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white))
+                      : const Icon(Icons.auto_awesome_rounded, size: 18, color: Colors.white),
+                  label: Text(_loading ? 'Writing Copy...' : 'Generate AI Ad Copy', style: const TextStyle(fontWeight: FontWeight.w800, color: Colors.white)),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: AppColors.heroDark,
+                    padding: const EdgeInsets.symmetric(vertical: 14),
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+
+        const SizedBox(height: 18),
+
+        // Result Container
+        if (_generated != null)
+          Container(
+            padding: const EdgeInsets.all(18),
+            decoration: BoxDecoration(
+              color: AppColors.white,
+              borderRadius: BorderRadius.circular(22),
+              border: Border.all(color: const Color(0xFFD6EAD9)),
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    const Text('Generated Ad Copy', style: TextStyle(fontWeight: FontWeight.w800, fontSize: 15, color: AppColors.forestGreen)),
+                    TextButton.icon(
+                      onPressed: () {
+                        final fullText = '${_generated!['headline'] ?? ''}\n\n${_generated!['caption'] ?? ''}\n\n${_generated!['hashtags'] ?? ''}';
+                        Clipboard.setData(ClipboardData(text: fullText));
+                        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('All copied to clipboard!')));
+                      },
+                      icon: const Icon(Icons.copy_all_rounded, size: 16, color: AppColors.forestGreen),
+                      label: const Text('Copy All', style: TextStyle(fontWeight: FontWeight.w800, color: AppColors.forestGreen, fontSize: 12)),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 10),
+
+                // Headline
+                if (_generated!['headline'] != null) ...[
+                  const Text('HEADLINE', style: TextStyle(fontSize: 11, fontWeight: FontWeight.w800, color: AppColors.textSecondary)),
+                  const SizedBox(height: 4),
+                  Container(
+                    padding: const EdgeInsets.all(12),
+                    decoration: BoxDecoration(color: AppColors.canvasLight, borderRadius: BorderRadius.circular(12)),
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Expanded(child: Text(_generated!['headline'], style: const TextStyle(fontWeight: FontWeight.w700, fontSize: 13.5))),
+                        IconButton(
+                          icon: const Icon(Icons.copy_rounded, size: 16),
+                          padding: EdgeInsets.zero,
+                          constraints: const BoxConstraints(),
+                          onPressed: () {
+                            Clipboard.setData(ClipboardData(text: _generated!['headline']));
+                            ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Headline copied!')));
+                          },
+                        ),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(height: 12),
+                ],
+
+                // Caption
+                if (_generated!['caption'] != null) ...[
+                  const Text('CAPTION', style: TextStyle(fontSize: 11, fontWeight: FontWeight.w800, color: AppColors.textSecondary)),
+                  const SizedBox(height: 4),
+                  Container(
+                    padding: const EdgeInsets.all(12),
+                    decoration: BoxDecoration(color: AppColors.canvasLight, borderRadius: BorderRadius.circular(12)),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(_generated!['caption'], style: const TextStyle(fontSize: 13, height: 1.4)),
+                        const SizedBox(height: 8),
+                        Align(
+                          alignment: Alignment.centerRight,
+                          child: TextButton.icon(
+                            onPressed: () {
+                              Clipboard.setData(ClipboardData(text: _generated!['caption']));
+                              ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Caption copied!')));
+                            },
+                            icon: const Icon(Icons.copy_rounded, size: 14, color: AppColors.forestGreen),
+                            label: const Text('Copy Caption', style: TextStyle(fontSize: 11.5, fontWeight: FontWeight.w800, color: AppColors.forestGreen)),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(height: 12),
+                ],
+
+                // Hashtags
+                if (_generated!['hashtags'] != null && (_generated!['hashtags'] as String).isNotEmpty) ...[
+                  const Text('HASHTAGS', style: TextStyle(fontSize: 11, fontWeight: FontWeight.w800, color: AppColors.textSecondary)),
+                  const SizedBox(height: 4),
+                  Container(
+                    padding: const EdgeInsets.all(12),
+                    decoration: BoxDecoration(color: AppColors.canvasLight, borderRadius: BorderRadius.circular(12)),
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Expanded(child: Text(_generated!['hashtags'], style: const TextStyle(fontSize: 12, color: Color(0xFF1877F2)))),
+                        IconButton(
+                          icon: const Icon(Icons.copy_rounded, size: 16),
+                          padding: EdgeInsets.zero,
+                          constraints: const BoxConstraints(),
+                          onPressed: () {
+                            Clipboard.setData(ClipboardData(text: _generated!['hashtags']));
+                            ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Hashtags copied!')));
+                          },
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ],
+            ),
+          ),
+      ],
+    );
+  }
+
+  Widget _platformPill(String id, String label, IconData icon) {
+    final active = _platform == id;
+    return Expanded(
+      child: InkWell(
+        onTap: () => setState(() => _platform = id),
+        borderRadius: BorderRadius.circular(12),
+        child: Container(
+          padding: const EdgeInsets.symmetric(vertical: 10),
+          decoration: BoxDecoration(
+            color: active ? AppColors.heroDark : AppColors.canvasLight,
+            borderRadius: BorderRadius.circular(12),
+          ),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Icon(icon, size: 16, color: active ? Colors.white : AppColors.textSecondary),
+              const SizedBox(width: 6),
+              Text(
+                label,
+                style: TextStyle(
+                  fontSize: 11.5,
+                  fontWeight: FontWeight.w700,
+                  color: active ? Colors.white : AppColors.textPrimary,
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _presetChip(String name) {
+    return InkWell(
+      onTap: () => setState(() => _itemCtrl.text = name),
+      borderRadius: BorderRadius.circular(8),
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+        decoration: BoxDecoration(
+          color: AppColors.canvasLight,
+          borderRadius: BorderRadius.circular(8),
+          border: Border.all(color: AppColors.cardBorder),
+        ),
+        child: Text(name, style: const TextStyle(fontSize: 11.5, fontWeight: FontWeight.w600, color: AppColors.textPrimary)),
+      ),
+    );
   }
 }

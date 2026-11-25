@@ -4,6 +4,7 @@ import '../../core/constants/app_colors.dart';
 import '../../core/utils/formatters.dart';
 import '../../models/accessory_model.dart';
 import '../../providers/accessories_provider.dart';
+import '../../providers/ai_provider.dart';
 import '../media/media_uploader_sheet.dart';
 
 class AccessoriesScreen extends StatefulWidget {
@@ -182,6 +183,36 @@ class _AccessoriesScreenState extends State<AccessoriesScreen> {
                     ],
                   ),
                   const SizedBox(height: 12),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      const Text('Description', style: TextStyle(fontWeight: FontWeight.w700, fontSize: 13)),
+                      TextButton.icon(
+                        onPressed: () async {
+                          final name = nameCtrl.text.trim();
+                          if (name.isEmpty) {
+                            ScaffoldMessenger.of(ctx).showSnackBar(const SnackBar(content: Text('Please enter product name first')));
+                            return;
+                          }
+                          final price = double.tryParse(priceCtrl.text.trim());
+                          final res = await context.read<AiProvider>().generateProductDescription(
+                                name: name,
+                                category: selectedCategory,
+                                price: price,
+                              );
+                          if (!ctx.mounted) return;
+                          if (res != null && res['description'] != null) {
+                            descCtrl.text = res['description'];
+                            ScaffoldMessenger.of(ctx).showSnackBar(
+                              const SnackBar(content: Text('AI Generated Product Description!'), backgroundColor: AppColors.forestGreen),
+                            );
+                          }
+                        },
+                        icon: const Icon(Icons.auto_awesome_rounded, size: 16, color: AppColors.forestGreen),
+                        label: const Text('AI Write', style: TextStyle(fontWeight: FontWeight.w800, color: AppColors.forestGreen, fontSize: 12)),
+                      ),
+                    ],
+                  ),
                   TextField(
                     controller: descCtrl,
                     maxLines: 2,
@@ -404,6 +435,36 @@ class _AccessoriesScreenState extends State<AccessoriesScreen> {
                     ],
                   ),
                   const SizedBox(height: 12),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      const Text('Description & Specs', style: TextStyle(fontWeight: FontWeight.w700, fontSize: 13)),
+                      TextButton.icon(
+                        onPressed: () async {
+                          final name = nameCtrl.text.trim();
+                          if (name.isEmpty) {
+                            ScaffoldMessenger.of(ctx).showSnackBar(const SnackBar(content: Text('Please enter product name first')));
+                            return;
+                          }
+                          final price = double.tryParse(priceCtrl.text.trim());
+                          final res = await context.read<AiProvider>().generateProductDescription(
+                                name: name,
+                                category: selectedCategory,
+                                price: price,
+                              );
+                          if (!ctx.mounted) return;
+                          if (res != null && res['description'] != null) {
+                            descCtrl.text = res['description'];
+                            ScaffoldMessenger.of(ctx).showSnackBar(
+                              const SnackBar(content: Text('AI Generated Product Description!'), backgroundColor: AppColors.forestGreen),
+                            );
+                          }
+                        },
+                        icon: const Icon(Icons.auto_awesome_rounded, size: 16, color: AppColors.forestGreen),
+                        label: const Text('AI Write', style: TextStyle(fontWeight: FontWeight.w800, color: AppColors.forestGreen, fontSize: 12)),
+                      ),
+                    ],
+                  ),
                   TextField(
                     controller: descCtrl,
                     maxLines: 2,

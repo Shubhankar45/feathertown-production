@@ -31,7 +31,7 @@ const TOP_PILLS = [
   { to: `${ADMIN_BASE}`, label: "Dashboard", end: true },
   { to: `${ADMIN_BASE}/create-bill`, label: "Create Bill" },
   { to: `${ADMIN_BASE}/invoices`, label: "Invoices" },
-  { to: `${ADMIN_BASE}/bookings`, label: "Booking Tracker" },
+  { to: `${ADMIN_BASE}/bookings`, label: "Bookings" },
   { to: `${ADMIN_BASE}/customers`, label: "Customers" },
   { to: `${ADMIN_BASE}/transactions`, label: "Transactions" },
 ];
@@ -44,7 +44,7 @@ const NAV_SECTIONS = [
       { to: `${ADMIN_BASE}`, label: "Dashboard", Icon: LayoutDashboard, end: true },
       { to: `${ADMIN_BASE}/create-bill`, label: "Create Bill", Icon: Receipt },
       { to: `${ADMIN_BASE}/invoices`, label: "Invoices", Icon: FileText },
-      { to: `${ADMIN_BASE}/bookings`, label: "Booking Tracker", Icon: CalendarCheck },
+      { to: `${ADMIN_BASE}/bookings`, label: "Bookings", Icon: CalendarCheck },
       { to: `${ADMIN_BASE}/customers`, label: "Customers", Icon: Users },
       { to: `${ADMIN_BASE}/transactions`, label: "Transactions", Icon: Wallet },
     ],
@@ -52,11 +52,11 @@ const NAV_SECTIONS = [
   {
     title: "Catalog & Sales",
     items: [
-      { to: `${ADMIN_BASE}/birds`, label: "Birds & Breeds", Icon: Feather },
+      { to: `${ADMIN_BASE}/birds`, label: "Birds", Icon: Feather },
       { to: `${ADMIN_BASE}/accessories`, label: "Accessories", Icon: ShoppingBag },
       { to: `${ADMIN_BASE}/categories`, label: "Categories", Icon: Tag },
-      { to: `${ADMIN_BASE}/orders`, label: "Store Orders", Icon: Package },
-      { to: `${ADMIN_BASE}/ads`, label: "Ads & Social Tracker", Icon: Megaphone },
+      { to: `${ADMIN_BASE}/orders`, label: "Orders", Icon: Package },
+      { to: `${ADMIN_BASE}/ads`, label: "Ads & Marketing", Icon: Megaphone },
       { to: `${ADMIN_BASE}/reviews`, label: "Reviews", Icon: Star },
       { to: `${ADMIN_BASE}/subscribers`, label: "Subscribers", Icon: Mail },
     ],
@@ -64,7 +64,7 @@ const NAV_SECTIONS = [
   {
     title: "Configuration",
     items: [
-      { to: `${ADMIN_BASE}/settings`, label: "Store Settings", Icon: Settings },
+      { to: `${ADMIN_BASE}/settings`, label: "Website Settings", Icon: Settings },
     ],
   },
 ];

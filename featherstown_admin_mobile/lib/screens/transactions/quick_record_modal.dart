@@ -3,16 +3,18 @@ import 'package:provider/provider.dart';
 import '../../core/constants/app_colors.dart';
 import '../../core/utils/formatters.dart';
 import '../../providers/transactions_provider.dart';
+import '../../providers/dashboard_provider.dart';
 
 class QuickRecordModal extends StatefulWidget {
-  const QuickRecordModal({super.key});
+  final String? initialType;
+  const QuickRecordModal({super.key, this.initialType});
 
-  static Future<void> show(BuildContext context) {
+  static Future<void> show(BuildContext context, {String? initialType}) {
     return showModalBottomSheet(
       context: context,
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
-      builder: (_) => const QuickRecordModal(),
+      builder: (_) => QuickRecordModal(initialType: initialType),
     );
   }
 
@@ -25,11 +27,18 @@ class _QuickRecordModalState extends State<QuickRecordModal> {
   final _descCtrl = TextEditingController();
   final _noteCtrl = TextEditingController();
 
-  String _type = 'expense'; // 'expense' | 'income'
-  String _category = 'Feed & Nutrition';
+  late String _type; // 'expense' | 'income'
+  late String _category;
   String _paymentMethod = 'UPI';
   DateTime _date = DateTime.now();
   bool _isSaving = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _type = widget.initialType == 'income' ? 'income' : 'expense';
+    _category = _type == 'income' ? 'Companion Bird Sale' : 'Feed & Nutrition';
+  }
 
   final List<Map<String, dynamic>> _expenseCategories = [
     {'name': 'Feed & Nutrition', 'icon': Icons.grain_rounded, 'color': AppColors.catCockatiel, 'bg': AppColors.pastelMint},
@@ -83,6 +92,9 @@ class _QuickRecordModalState extends State<QuickRecordModal> {
     setState(() => _isSaving = false);
 
     if (ok) {
+      if (context.mounted) {
+        context.read<DashboardProvider>().fetchAnalytics(refresh: true);
+      }
       Navigator.pop(context);
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(

@@ -128,7 +128,7 @@ class _MainNavScreenState extends State<MainNavScreen> {
                 style: const TextStyle(fontWeight: FontWeight.w800, fontSize: 16),
               ),
               accountEmail: const Text(
-                'Enterprise Aviary Console • Live Sync',
+                'Store & Aviary Management • Live Sync',
                 style: TextStyle(fontSize: 12, color: Color(0xFFBACEC0)),
               ),
             ),
@@ -145,7 +145,7 @@ class _MainNavScreenState extends State<MainNavScreen> {
             const Padding(
               padding: EdgeInsets.symmetric(horizontal: 16, vertical: 4),
               child: Text(
-                'LIVE INVENTORY & COMMERCE',
+                'INVENTORY & STORE',
                 style: TextStyle(
                   fontSize: 11,
                   fontWeight: FontWeight.w800,
@@ -156,7 +156,7 @@ class _MainNavScreenState extends State<MainNavScreen> {
             ),
             ListTile(
               leading: const Icon(Icons.flutter_dash_rounded, color: AppColors.catCockatiel),
-              title: const Text('Avian Stock (Birds)', style: TextStyle(fontWeight: FontWeight.w600)),
+              title: const Text('Birds', style: TextStyle(fontWeight: FontWeight.w600)),
               trailing: Container(
                 padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
                 decoration: BoxDecoration(
@@ -172,7 +172,7 @@ class _MainNavScreenState extends State<MainNavScreen> {
             ),
             ListTile(
               leading: const Icon(Icons.inventory_2_rounded, color: AppColors.catBudgie),
-              title: const Text('Cages & Feed Stock', style: TextStyle(fontWeight: FontWeight.w600)),
+              title: const Text('Products & Cages', style: TextStyle(fontWeight: FontWeight.w600)),
               onTap: () {
                 Navigator.pop(context);
                 Navigator.push(context, MaterialPageRoute(builder: (_) => const AccessoriesScreen()));
@@ -180,7 +180,7 @@ class _MainNavScreenState extends State<MainNavScreen> {
             ),
             ListTile(
               leading: const Icon(Icons.shopping_bag_rounded, color: AppColors.accent),
-              title: const Text('Store Orders', style: TextStyle(fontWeight: FontWeight.w600)),
+              title: const Text('Orders', style: TextStyle(fontWeight: FontWeight.w600)),
               onTap: () {
                 Navigator.pop(context);
                 Navigator.push(context, MaterialPageRoute(builder: (_) => const OrdersScreen()));
@@ -188,7 +188,7 @@ class _MainNavScreenState extends State<MainNavScreen> {
             ),
             ListTile(
               leading: const Icon(Icons.add_photo_alternate_rounded, color: AppColors.lavenderText),
-              title: const Text('Upload Media / Photos', style: TextStyle(fontWeight: FontWeight.w600)),
+              title: const Text('Upload Photos', style: TextStyle(fontWeight: FontWeight.w600)),
               trailing: const Icon(Icons.upload_file_rounded, size: 18, color: AppColors.textSecondary),
               onTap: () {
                 Navigator.pop(context);
@@ -199,7 +199,7 @@ class _MainNavScreenState extends State<MainNavScreen> {
             const Padding(
               padding: EdgeInsets.symmetric(horizontal: 16, vertical: 4),
               child: Text(
-                'GROWTH & SOCIAL MARKETING',
+                'MARKETING & ADS',
                 style: TextStyle(
                   fontSize: 11,
                   fontWeight: FontWeight.w800,
@@ -210,7 +210,7 @@ class _MainNavScreenState extends State<MainNavScreen> {
             ),
             ListTile(
               leading: const Icon(Icons.campaign_rounded, color: Color(0xFF1877F2)),
-              title: const Text('Social Media & Ad Tracker', style: TextStyle(fontWeight: FontWeight.w600)),
+              title: const Text('Ads & Marketing', style: TextStyle(fontWeight: FontWeight.w600)),
               trailing: Container(
                 padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
                 decoration: BoxDecoration(
@@ -228,7 +228,7 @@ class _MainNavScreenState extends State<MainNavScreen> {
             const Padding(
               padding: EdgeInsets.symmetric(horizontal: 16, vertical: 4),
               child: Text(
-                'WEBSITE & CONTENT CMS',
+                'WEBSITE & REVIEWS',
                 style: TextStyle(
                   fontSize: 11,
                   fontWeight: FontWeight.w800,
@@ -239,7 +239,7 @@ class _MainNavScreenState extends State<MainNavScreen> {
             ),
             ListTile(
               leading: const Icon(Icons.web_rounded, color: AppColors.forestGreen),
-              title: const Text('Website CMS & Helplines', style: TextStyle(fontWeight: FontWeight.w600)),
+              title: const Text('Website Settings', style: TextStyle(fontWeight: FontWeight.w600)),
               onTap: () {
                 Navigator.pop(context);
                 Navigator.push(context, MaterialPageRoute(builder: (_) => const WebsiteSettingsScreen()));
@@ -247,7 +247,7 @@ class _MainNavScreenState extends State<MainNavScreen> {
             ),
             ListTile(
               leading: const Icon(Icons.star_rounded, color: Color(0xFFF4B400)),
-              title: const Text('Customer Reviews', style: TextStyle(fontWeight: FontWeight.w600)),
+              title: const Text('Reviews', style: TextStyle(fontWeight: FontWeight.w600)),
               onTap: () {
                 Navigator.pop(context);
                 Navigator.push(context, MaterialPageRoute(builder: (_) => const ReviewsScreen()));
@@ -255,7 +255,7 @@ class _MainNavScreenState extends State<MainNavScreen> {
             ),
             ListTile(
               leading: const Icon(Icons.mail_rounded, color: AppColors.catConure),
-              title: const Text('Newsletter Subscribers', style: TextStyle(fontWeight: FontWeight.w600)),
+              title: const Text('Subscribers', style: TextStyle(fontWeight: FontWeight.w600)),
               onTap: () {
                 Navigator.pop(context);
                 Navigator.push(context, MaterialPageRoute(builder: (_) => const SubscribersScreen()));
@@ -265,7 +265,7 @@ class _MainNavScreenState extends State<MainNavScreen> {
             const Padding(
               padding: EdgeInsets.symmetric(horizontal: 16, vertical: 4),
               child: Text(
-                'OPERATIONS & FINANCE',
+                'FINANCE & BILLING',
                 style: TextStyle(
                   fontSize: 11,
                   fontWeight: FontWeight.w800,
@@ -276,7 +276,7 @@ class _MainNavScreenState extends State<MainNavScreen> {
             ),
             ListTile(
               leading: const Icon(Icons.receipt_long_rounded),
-              title: const Text('Invoices & Billing'),
+              title: const Text('Invoices'),
               selected: _currentIndex == 1,
               onTap: () {
                 Navigator.pop(context);
@@ -285,7 +285,7 @@ class _MainNavScreenState extends State<MainNavScreen> {
             ),
             ListTile(
               leading: const Icon(Icons.calendar_month_rounded),
-              title: const Text('Booking Tracker'),
+              title: const Text('Bookings'),
               selected: _currentIndex == 2,
               onTap: () {
                 Navigator.pop(context);
@@ -294,7 +294,7 @@ class _MainNavScreenState extends State<MainNavScreen> {
             ),
             ListTile(
               leading: const Icon(Icons.insights_rounded),
-              title: const Text('Categories & Insights'),
+              title: const Text('Analytics'),
               selected: _currentIndex == 3,
               onTap: () {
                 Navigator.pop(context);
@@ -303,7 +303,7 @@ class _MainNavScreenState extends State<MainNavScreen> {
             ),
             ListTile(
               leading: const Icon(Icons.people_alt_rounded),
-              title: const Text('Customer Directory'),
+              title: const Text('Customers'),
               selected: _currentIndex == 4,
               onTap: () {
                 Navigator.pop(context);
@@ -312,7 +312,7 @@ class _MainNavScreenState extends State<MainNavScreen> {
             ),
             ListTile(
               leading: const Icon(Icons.account_balance_wallet_rounded),
-              title: const Text('Full Financial Ledger'),
+              title: const Text('Transactions'),
               onTap: () {
                 Navigator.pop(context);
                 Navigator.push(
@@ -324,7 +324,7 @@ class _MainNavScreenState extends State<MainNavScreen> {
             const Divider(),
             ListTile(
               leading: const Icon(Icons.add_circle_outline_rounded, color: AppColors.heroDark),
-              title: const Text('Record Financial Entry', style: TextStyle(fontWeight: FontWeight.w700)),
+              title: const Text('+ Record Sale / Expense', style: TextStyle(fontWeight: FontWeight.w700)),
               onTap: () {
                 Navigator.pop(context);
                 QuickRecordModal.show(context);
@@ -410,8 +410,8 @@ class _MainNavScreenState extends State<MainNavScreen> {
                     ),
                   ),
                 ),
-                _buildNavItem(2, Icons.calendar_month, Icons.calendar_month_outlined, 'Goals'),
-                _buildNavItem(3, Icons.insights, Icons.insights_outlined, 'Insights'),
+                _buildNavItem(2, Icons.calendar_month, Icons.calendar_month_outlined, 'Bookings'),
+                _buildNavItem(3, Icons.insights, Icons.insights_outlined, 'Analytics'),
               ],
             ),
           ),

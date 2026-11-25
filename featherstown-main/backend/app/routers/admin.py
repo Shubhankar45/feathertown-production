@@ -925,7 +925,16 @@ async def admin_get_analytics():
             if b_status not in ["delivered", "completed", "cancelled"]:
                 pending_bookings_count += 1
 
-    gross_revenue = order_revenue + invoice_revenue
+    # Income calculation from direct ledger transactions (e.g. Quick Record Modal, store sales)
+    ledger_income = 0.0
+    direct_income_txns = 0
+    for t in transactions:
+        if t.get("type") == "income":
+            if not t.get("invoiceId") and not t.get("orderId"):
+                ledger_income += float(t.get("amount") or 0)
+                direct_income_txns += 1
+
+    gross_revenue = order_revenue + invoice_revenue + ledger_income
 
     # Expenses calculation from ledger
     total_expenses = 0.0
@@ -935,7 +944,7 @@ async def admin_get_analytics():
 
     net_profit = gross_revenue - total_expenses
     profit_margin = round((net_profit / gross_revenue * 100), 1) if gross_revenue > 0 else 0.0
-    total_sales_count = confirmed_orders_count + len([i for i in invoices if not i.get("orderId")])
+    total_sales_count = confirmed_orders_count + len([i for i in invoices if not i.get("orderId")]) + direct_income_txns
     aov = round(gross_revenue / total_sales_count, 2) if total_sales_count > 0 else 0.0
 
     # 30-Day Daily Trend Calculation
@@ -944,10 +953,20 @@ async def admin_get_analytics():
         d = (now - timedelta(days=29 - i)).strftime("%Y-%m-%d")
         daily_buckets[d] = {"date": d, "revenue": 0.0, "orders": 0, "expenses": 0.0, "profit": 0.0}
 
+    def _parse_ts(val):
+        if isinstance(val, datetime):
+            return val
+        if isinstance(val, str) and val:
+            try:
+                return datetime.fromisoformat(val.replace("Z", "+00:00"))
+            except Exception:
+                return None
+        return None
+
     # Aggregate orders into 30-day buckets
     for o in orders:
-        dt = o.get("createdAt")
-        if isinstance(dt, datetime):
+        dt = _parse_ts(o.get("createdAt"))
+        if dt:
             d_str = dt.strftime("%Y-%m-%d")
             if d_str in daily_buckets:
                 amt = float(o.get("amount") or 0)
@@ -957,19 +976,29 @@ async def admin_get_analytics():
     # Aggregate direct invoices into 30-day buckets
     for inv in invoices:
         if not inv.get("orderId"):
-            dt = inv.get("createdAt")
-            if isinstance(dt, datetime):
+            dt = _parse_ts(inv.get("createdAt"))
+            if dt:
                 d_str = dt.strftime("%Y-%m-%d")
                 if d_str in daily_buckets:
                     amt = float(inv.get("paidAmount") or inv.get("totalAmount") or 0)
                     daily_buckets[d_str]["revenue"] += amt
                     daily_buckets[d_str]["orders"] += 1
 
+    # Aggregate direct income transactions into 30-day buckets
+    for t in transactions:
+        if t.get("type") == "income" and not t.get("invoiceId") and not t.get("orderId"):
+            dt = _parse_ts(t.get("date") or t.get("createdAt"))
+            if dt:
+                d_str = dt.strftime("%Y-%m-%d")
+                if d_str in daily_buckets:
+                    daily_buckets[d_str]["revenue"] += float(t.get("amount") or 0)
+                    daily_buckets[d_str]["orders"] += 1
+
     # Aggregate expenses into 30-day buckets
     for t in transactions:
         if t.get("type") == "expense":
-            dt = t.get("date") or t.get("createdAt")
-            if isinstance(dt, datetime):
+            dt = _parse_ts(t.get("date") or t.get("createdAt"))
+            if dt:
                 d_str = dt.strftime("%Y-%m-%d")
                 if d_str in daily_buckets:
                     daily_buckets[d_str]["expenses"] += float(t.get("amount") or 0)
