@@ -79,7 +79,7 @@ class _MainNavScreenState extends State<MainNavScreen> {
               ),
               child: ClipOval(
                 child: Image.asset(
-                  'assets/images/logo.png',
+                  'assets/images/macaw.png',
                   fit: BoxFit.contain,
                   errorBuilder: (_, _, _) => const Icon(Icons.flutter_dash, size: 20, color: AppColors.primary),
                 ),

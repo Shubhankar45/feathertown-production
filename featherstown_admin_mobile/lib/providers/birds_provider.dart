@@ -80,6 +80,37 @@ class BirdsProvider extends ChangeNotifier {
     }
   }
 
+  Future<bool> updateBird(String id, Map<String, dynamic> data) async {
+    try {
+      final res = await ApiService.put('/api/admin/birds/$id', body: data);
+      final idx = _birds.indexWhere((b) => b.id == id);
+      if (idx != -1 && res is Map) {
+        _birds[idx] = BirdModel.fromJson(Map<String, dynamic>.from(res));
+        notifyListeners();
+      } else if (idx != -1) {
+        final old = _birds[idx];
+        _birds[idx] = BirdModel(
+          id: old.id,
+          name: data['name'] ?? old.name,
+          species: data['species'] ?? old.species,
+          category: data['category'] ?? old.category,
+          price: double.tryParse(data['price']?.toString() ?? '') ?? old.price,
+          status: data['status'] ?? old.status,
+          image: data['image'] ?? old.image,
+          description: data['description'] ?? old.description,
+          ringNumber: data['ringNumber'] ?? old.ringNumber,
+          dnaSex: data['dnaSex'] ?? old.dnaSex,
+        );
+        notifyListeners();
+      }
+      return true;
+    } catch (e) {
+      _errorMessage = e.toString();
+      notifyListeners();
+      return false;
+    }
+  }
+
   Future<bool> updateBirdStatus(String id, String newStatus) async {
     try {
       await ApiService.patch('/api/admin/birds/$id/status', body: {'status': newStatus});

@@ -52,21 +52,21 @@ class _WebsiteSettingsScreenState extends State<WebsiteSettingsScreen> {
       if (res is Map) {
         _settings = Map<String, dynamic>.from(res);
         final ann = _settings['announcement'] as Map?;
-        _announcementCtrl.text = ann?['text'] ?? '🚚 Safe nationwide aviary-to-doorstep climate controlled transport across India!';
-        _announcementEnabled = ann?['enabled'] ?? true;
+        _announcementCtrl.text = (_settings['announcementText'] ?? ann?['text'] ?? '').toString();
+        _announcementEnabled = _settings['announcementActive'] == true || ann?['enabled'] == true;
 
         final contact = _settings['contact'] as Map?;
-        _phoneCtrl.text = contact?['phone'] ?? '+91 98765 43210';
-        _whatsappCtrl.text = contact?['whatsapp'] ?? '+91 98765 43210';
-        _emailCtrl.text = contact?['email'] ?? 'support@feathertown.online';
-        _addressCtrl.text = contact?['address'] ?? 'FeatherTown Aviary, Bengaluru, Karnataka';
+        _phoneCtrl.text = (_settings['phone'] ?? contact?['phone'] ?? '').toString();
+        _whatsappCtrl.text = (_settings['whatsapp'] ?? contact?['whatsapp'] ?? '').toString();
+        _emailCtrl.text = (_settings['email'] ?? contact?['email'] ?? '').toString();
+        _addressCtrl.text = (_settings['address'] ?? contact?['address'] ?? '').toString();
 
         final hero = _settings['hero'] as Map?;
-        _heroTitleCtrl.text = hero?['title'] ?? 'India\'s Premier Hand-Reared Exotic Companion Birds';
-        _heroSubCtrl.text = hero?['subtitle'] ?? 'Ethically bred, DNA-sexed, fully weaned parrots, certified nutrition & hand-crafted flight aviaries.';
+        _heroTitleCtrl.text = (_settings['heroTitle'] ?? hero?['title'] ?? '').toString();
+        _heroSubCtrl.text = (_settings['heroSubtitle'] ?? hero?['subtitle'] ?? '').toString();
 
         final shipping = _settings['shipping'] as Map?;
-        _shippingThresholdCtrl.text = (shipping?['freeShippingThreshold'] ?? 2499).toString();
+        _shippingThresholdCtrl.text = (_settings['freeShippingThreshold'] ?? shipping?['freeShippingThreshold'] ?? 999).toString();
       }
     } catch (e) {
       if (mounted) {
@@ -80,8 +80,18 @@ class _WebsiteSettingsScreenState extends State<WebsiteSettingsScreen> {
   Future<void> _saveSettings() async {
     setState(() => _isSaving = true);
     try {
+      final threshold = double.tryParse(_shippingThresholdCtrl.text.trim()) ?? 999.0;
       final payload = {
         ..._settings,
+        'announcementText': _announcementCtrl.text.trim(),
+        'announcementActive': _announcementEnabled,
+        'phone': _phoneCtrl.text.trim(),
+        'whatsapp': _whatsappCtrl.text.trim(),
+        'email': _emailCtrl.text.trim(),
+        'address': _addressCtrl.text.trim(),
+        'heroTitle': _heroTitleCtrl.text.trim(),
+        'heroSubtitle': _heroSubCtrl.text.trim(),
+        'freeShippingThreshold': threshold,
         'announcement': {
           'text': _announcementCtrl.text.trim(),
           'enabled': _announcementEnabled,
@@ -97,7 +107,7 @@ class _WebsiteSettingsScreenState extends State<WebsiteSettingsScreen> {
           'subtitle': _heroSubCtrl.text.trim(),
         },
         'shipping': {
-          'freeShippingThreshold': double.tryParse(_shippingThresholdCtrl.text.trim()) ?? 2499.0,
+          'freeShippingThreshold': threshold,
         },
       };
 

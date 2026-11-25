@@ -52,7 +52,7 @@ class OrdersProvider extends ChangeNotifier {
 
   Future<bool> updateOrderStatus(String id, String newStatus) async {
     try {
-      await ApiService.patch('/api/admin/orders/$id/status', body: {'status': newStatus});
+      await ApiService.patch('/api/admin/orders/$id/status', body: {'orderStatus': newStatus, 'status': newStatus});
       final idx = _orders.indexWhere((o) => o.id == id);
       if (idx != -1) {
         final old = _orders[idx];

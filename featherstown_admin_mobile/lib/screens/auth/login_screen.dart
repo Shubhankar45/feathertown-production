@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
 import 'package:provider/provider.dart';
+import '../../core/constants/api_endpoints.dart';
 import '../../core/constants/app_colors.dart';
 import '../../core/services/api_service.dart';
 import '../../core/services/storage_service.dart';
@@ -151,7 +153,40 @@ class _LoginScreenState extends State<LoginScreen> with SingleTickerProviderStat
                 border: OutlineInputBorder(borderRadius: BorderRadius.circular(14)),
               ),
             ),
-            const SizedBox(height: 20),
+            const SizedBox(height: 12),
+            SizedBox(
+              width: double.infinity,
+              child: OutlinedButton.icon(
+                onPressed: () async {
+                  final messenger = ScaffoldMessenger.of(context);
+                  final testUrl = ctrl.text.trim().isEmpty ? ApiEndpoints.defaultBaseUrl : ctrl.text.trim();
+                  try {
+                    final uri = Uri.parse('$testUrl/api/health');
+                    final res = await http.get(uri).timeout(const Duration(seconds: 8));
+                    if (res.statusCode == 200) {
+                      messenger.showSnackBar(
+                        SnackBar(content: Text('Connected to live backend! (200 OK)'), backgroundColor: AppColors.forestGreen),
+                      );
+                    } else {
+                      messenger.showSnackBar(
+                        SnackBar(content: Text('Server responded with HTTP ${res.statusCode}'), backgroundColor: AppColors.danger),
+                      );
+                    }
+                  } catch (e) {
+                    messenger.showSnackBar(
+                      SnackBar(content: Text('Cannot connect: $e'), backgroundColor: AppColors.danger),
+                    );
+                  }
+                },
+                icon: const Icon(Icons.network_check_rounded, size: 18),
+                label: const Text('Test Connection (Ping)'),
+                style: OutlinedButton.styleFrom(
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
+                  padding: const EdgeInsets.symmetric(vertical: 12),
+                ),
+              ),
+            ),
+            const SizedBox(height: 16),
             Row(
               children: [
                 Expanded(
@@ -259,12 +294,8 @@ class _LoginScreenState extends State<LoginScreen> with SingleTickerProviderStat
                             ),
                             child: ClipOval(
                               child: Image.asset(
-                                'assets/images/logo.png',
+                                'assets/images/macaw.png',
                                 fit: BoxFit.contain,
-                                errorBuilder: (_, _, _) => Image.asset(
-                                  'assets/images/macaw.png',
-                                  fit: BoxFit.contain,
-                                ),
                               ),
                             ),
                           ),

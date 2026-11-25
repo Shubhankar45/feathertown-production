@@ -627,17 +627,11 @@ class GestureCardAvatar extends StatelessWidget {
             ],
           ),
           padding: const EdgeInsets.all(3),
-          child: ClipOval(
-            child: Image.asset(
-              'assets/images/logo.png',
-              fit: BoxFit.contain,
-              errorBuilder: (_, _, _) => CircleAvatar(
-                backgroundColor: AppColors.heroDark,
-                child: Text(
-                  username.isNotEmpty ? username[0].toUpperCase() : 'A',
-                  style: const TextStyle(color: Colors.white, fontWeight: FontWeight.w800, fontSize: 15),
-                ),
-              ),
+          child: CircleAvatar(
+            backgroundColor: AppColors.heroDark,
+            child: Text(
+              username.isNotEmpty ? username[0].toUpperCase() : 'A',
+              style: const TextStyle(color: Colors.white, fontWeight: FontWeight.w800, fontSize: 15),
             ),
           ),
         ),

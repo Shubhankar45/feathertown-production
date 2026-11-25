@@ -80,6 +80,35 @@ class AccessoriesProvider extends ChangeNotifier {
     }
   }
 
+  Future<bool> updateAccessory(String id, Map<String, dynamic> data) async {
+    try {
+      final res = await ApiService.put('/api/admin/accessories/$id', body: data);
+      final idx = _items.indexWhere((i) => i.id == id);
+      if (idx != -1 && res is Map) {
+        _items[idx] = AccessoryModel.fromJson(Map<String, dynamic>.from(res));
+        notifyListeners();
+      } else if (idx != -1) {
+        final old = _items[idx];
+        _items[idx] = AccessoryModel(
+          id: old.id,
+          name: data['name'] ?? old.name,
+          category: data['category'] ?? old.category,
+          price: double.tryParse(data['price']?.toString() ?? '') ?? old.price,
+          stock: int.tryParse(data['stock']?.toString() ?? '') ?? old.stock,
+          image: data['image'] ?? old.image,
+          description: data['description'] ?? old.description,
+          sku: data['sku'] ?? old.sku,
+        );
+        notifyListeners();
+      }
+      return true;
+    } catch (e) {
+      _errorMessage = e.toString();
+      notifyListeners();
+      return false;
+    }
+  }
+
   Future<bool> updateStock(String id, int newStock) async {
     try {
       final idx = _items.indexWhere((i) => i.id == id);

@@ -238,6 +238,263 @@ class _AccessoriesScreenState extends State<AccessoriesScreen> {
     );
   }
 
+  void _showEditAccessoryModal(AccessoryModel item) {
+    final nameCtrl = TextEditingController(text: item.name);
+    final priceCtrl = TextEditingController(text: item.price.toStringAsFixed(0));
+    final stockCtrl = TextEditingController(text: item.stock.toString());
+    final descCtrl = TextEditingController(text: item.description ?? '');
+    String selectedCategory = item.category;
+    final validCategories = ['Cages & Housing', 'Feed & Nutrition', 'Toys & Enrichment', 'Health & Supplements'];
+    if (!validCategories.contains(selectedCategory)) {
+      selectedCategory = 'Cages & Housing';
+    }
+    String? imageUrl = item.image;
+
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (ctx) => StatefulBuilder(
+        builder: (ctx, setModalState) {
+          final bottomInset = MediaQuery.of(ctx).viewInsets.bottom;
+
+          return Container(
+            decoration: const BoxDecoration(
+              color: AppColors.white,
+              borderRadius: BorderRadius.vertical(top: Radius.circular(28)),
+            ),
+            padding: EdgeInsets.only(left: 20, right: 20, top: 16, bottom: bottomInset + 24),
+            child: SingleChildScrollView(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  Center(
+                    child: Container(
+                      width: 44,
+                      height: 4,
+                      margin: const EdgeInsets.only(bottom: 16),
+                      decoration: BoxDecoration(color: Colors.grey.shade300, borderRadius: BorderRadius.circular(99)),
+                    ),
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Expanded(
+                        child: Text(
+                          'Edit ${item.name}',
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          style: const TextStyle(fontSize: 17, fontWeight: FontWeight.w800, color: AppColors.heroDark),
+                        ),
+                      ),
+                      IconButton(icon: const Icon(Icons.close_rounded), onPressed: () => Navigator.pop(ctx)),
+                    ],
+                  ),
+                  const SizedBox(height: 16),
+
+                  // Image Selector
+                  InkWell(
+                    onTap: () async {
+                      final url = await MediaUploaderSheet.show(ctx);
+                      if (url != null) {
+                        setModalState(() => imageUrl = url);
+                      }
+                    },
+                    borderRadius: BorderRadius.circular(16),
+                    child: Container(
+                      height: 120,
+                      decoration: BoxDecoration(
+                        color: AppColors.canvasLight,
+                        borderRadius: BorderRadius.circular(16),
+                        border: Border.all(color: const Color(0xFFE5E2DC)),
+                      ),
+                      clipBehavior: Clip.antiAlias,
+                      child: imageUrl != null && imageUrl!.isNotEmpty
+                          ? Stack(
+                              fit: StackFit.expand,
+                              children: [
+                                Image.network(
+                                  imageUrl!,
+                                  fit: BoxFit.cover,
+                                  errorBuilder: (_, _, _) => const Icon(Icons.inventory_2_outlined, size: 40, color: AppColors.primary),
+                                ),
+                                Positioned(
+                                  right: 8,
+                                  top: 8,
+                                  child: Container(
+                                    padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                                    decoration: BoxDecoration(color: Colors.black.withValues(alpha: 0.65), borderRadius: BorderRadius.circular(12)),
+                                    child: const Row(
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: [
+                                        Icon(Icons.camera_alt_outlined, size: 14, color: Colors.white),
+                                        SizedBox(width: 4),
+                                        Text('Change Photo', style: TextStyle(color: Colors.white, fontSize: 11, fontWeight: FontWeight.w700)),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            )
+                          : const Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Icon(Icons.add_a_photo_outlined, size: 30, color: AppColors.heroDark),
+                                SizedBox(height: 6),
+                                Text('Tap to Upload Product Photo', style: TextStyle(fontSize: 12.5, fontWeight: FontWeight.w600)),
+                              ],
+                            ),
+                    ),
+                  ),
+
+                  const SizedBox(height: 16),
+                  TextField(
+                    controller: nameCtrl,
+                    decoration: InputDecoration(
+                      labelText: 'Product Name',
+                      filled: true,
+                      fillColor: AppColors.canvasLight,
+                      border: OutlineInputBorder(borderRadius: BorderRadius.circular(14), borderSide: BorderSide.none),
+                    ),
+                  ),
+                  const SizedBox(height: 12),
+
+                  DropdownButtonFormField<String>(
+                    initialValue: selectedCategory,
+                    decoration: InputDecoration(
+                      labelText: 'Category',
+                      filled: true,
+                      fillColor: AppColors.canvasLight,
+                      border: OutlineInputBorder(borderRadius: BorderRadius.circular(14), borderSide: BorderSide.none),
+                    ),
+                    items: validCategories.map((c) => DropdownMenuItem(value: c, child: Text(c))).toList(),
+                    onChanged: (val) => setModalState(() => selectedCategory = val ?? 'Cages & Housing'),
+                  ),
+                  const SizedBox(height: 12),
+
+                  Row(
+                    children: [
+                      Expanded(
+                        child: TextField(
+                          controller: priceCtrl,
+                          keyboardType: TextInputType.number,
+                          decoration: InputDecoration(
+                            labelText: 'Price (₹)',
+                            prefixText: '₹ ',
+                            filled: true,
+                            fillColor: AppColors.canvasLight,
+                            border: OutlineInputBorder(borderRadius: BorderRadius.circular(14), borderSide: BorderSide.none),
+                          ),
+                        ),
+                      ),
+                      const SizedBox(width: 12),
+                      Expanded(
+                        child: TextField(
+                          controller: stockCtrl,
+                          keyboardType: TextInputType.number,
+                          decoration: InputDecoration(
+                            labelText: 'Current Stock',
+                            filled: true,
+                            fillColor: AppColors.canvasLight,
+                            border: OutlineInputBorder(borderRadius: BorderRadius.circular(14), borderSide: BorderSide.none),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 12),
+                  TextField(
+                    controller: descCtrl,
+                    maxLines: 2,
+                    decoration: InputDecoration(
+                      labelText: 'Product Description & Specs',
+                      filled: true,
+                      fillColor: AppColors.canvasLight,
+                      border: OutlineInputBorder(borderRadius: BorderRadius.circular(14), borderSide: BorderSide.none),
+                    ),
+                  ),
+
+                  const SizedBox(height: 24),
+                  Row(
+                    children: [
+                      IconButton(
+                        tooltip: 'Delete Product',
+                        icon: const Icon(Icons.delete_outline_rounded, color: AppColors.danger),
+                        onPressed: () async {
+                          final confirm = await showDialog<bool>(
+                            context: ctx,
+                            builder: (dCtx) => AlertDialog(
+                              title: const Text('Delete Product?'),
+                              content: Text('Are you sure you want to delete ${item.name}?'),
+                              actions: [
+                                TextButton(onPressed: () => Navigator.pop(dCtx, false), child: const Text('Cancel')),
+                                ElevatedButton(
+                                  onPressed: () => Navigator.pop(dCtx, true),
+                                  style: ElevatedButton.styleFrom(backgroundColor: AppColors.danger),
+                                  child: const Text('Delete'),
+                                ),
+                              ],
+                            ),
+                          );
+                          if (confirm == true) {
+                            if (ctx.mounted) Navigator.pop(ctx);
+                            if (mounted) context.read<AccessoriesProvider>().deleteAccessory(item.id);
+                          }
+                        },
+                      ),
+                      const SizedBox(width: 8),
+                      Expanded(
+                        child: ElevatedButton(
+                          onPressed: () async {
+                            final name = nameCtrl.text.trim();
+                            final price = double.tryParse(priceCtrl.text.trim()) ?? item.price;
+                            final stock = int.tryParse(stockCtrl.text.trim()) ?? item.stock;
+                            if (name.isEmpty) {
+                              ScaffoldMessenger.of(ctx).showSnackBar(const SnackBar(content: Text('Please enter product name')));
+                              return;
+                            }
+
+                            final Map<String, dynamic> updatePayload = {
+                              'name': name,
+                              'category': selectedCategory,
+                              'price': price,
+                              'stock': stock,
+                              'description': descCtrl.text.trim(),
+                            };
+                            if (imageUrl != null) {
+                              updatePayload['image'] = imageUrl;
+                            }
+
+                            final success = await context.read<AccessoriesProvider>().updateAccessory(item.id, updatePayload);
+
+                            if (ctx.mounted) Navigator.pop(ctx);
+                            if (mounted && success) {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(content: Text('Product updated successfully!'), backgroundColor: AppColors.forestGreen),
+                              );
+                            }
+                          },
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: AppColors.heroDark,
+                            foregroundColor: Colors.white,
+                            padding: const EdgeInsets.symmetric(vertical: 16),
+                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+                          ),
+                          child: const Text('Save Changes', style: TextStyle(fontSize: 15, fontWeight: FontWeight.w700)),
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+          );
+        },
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final prov = context.watch<AccessoriesProvider>();
@@ -380,9 +637,12 @@ class _AccessoriesScreenState extends State<AccessoriesScreen> {
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(22)),
       elevation: 0,
       color: AppColors.white,
-      child: Padding(
-        padding: const EdgeInsets.all(14),
-        child: Row(
+      child: InkWell(
+        onTap: () => _showEditAccessoryModal(item),
+        borderRadius: BorderRadius.circular(22),
+        child: Padding(
+          padding: const EdgeInsets.all(14),
+          child: Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             // Thumbnail
@@ -452,34 +712,60 @@ class _AccessoriesScreenState extends State<AccessoriesScreen> {
                         AppFormatters.currency(item.price),
                         style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w900, color: AppColors.heroDark),
                       ),
-                      // Stock Stepper (+ / -)
-                      Container(
-                        decoration: BoxDecoration(
-                          color: AppColors.canvasLight,
-                          borderRadius: BorderRadius.circular(12),
-                          border: Border.all(color: const Color(0xFFE5E2DC)),
-                        ),
-                        child: Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            IconButton(
-                              icon: const Icon(Icons.remove_rounded, size: 16),
-                              padding: const EdgeInsets.all(4),
-                              constraints: const BoxConstraints(),
-                              onPressed: item.stock > 0 ? () => prov.updateStock(item.id, item.stock - 1) : null,
+                      Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          InkWell(
+                            onTap: () => _showEditAccessoryModal(item),
+                            borderRadius: BorderRadius.circular(10),
+                            child: Container(
+                              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
+                              margin: const EdgeInsets.only(right: 6),
+                              decoration: BoxDecoration(
+                                color: AppColors.canvasLight,
+                                borderRadius: BorderRadius.circular(10),
+                                border: Border.all(color: const Color(0xFFE5E2DC)),
+                              ),
+                              child: const Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  Icon(Icons.edit_outlined, size: 14, color: AppColors.heroDark),
+                                  SizedBox(width: 4),
+                                  Text('Edit', style: TextStyle(fontSize: 11, fontWeight: FontWeight.w700, color: AppColors.heroDark)),
+                                ],
+                              ),
                             ),
-                            Padding(
-                              padding: const EdgeInsets.symmetric(horizontal: 8),
-                              child: Text('${item.stock}', style: const TextStyle(fontWeight: FontWeight.w800, fontSize: 12)),
+                          ),
+                          // Stock Stepper (+ / -)
+                          Container(
+                            decoration: BoxDecoration(
+                              color: AppColors.canvasLight,
+                              borderRadius: BorderRadius.circular(12),
+                              border: Border.all(color: const Color(0xFFE5E2DC)),
                             ),
-                            IconButton(
-                              icon: const Icon(Icons.add_rounded, size: 16),
-                              padding: const EdgeInsets.all(4),
-                              constraints: const BoxConstraints(),
-                              onPressed: () => prov.updateStock(item.id, item.stock + 1),
+                            child: Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                IconButton(
+                                  icon: const Icon(Icons.remove_rounded, size: 16),
+                                  padding: const EdgeInsets.all(4),
+                                  constraints: const BoxConstraints(),
+                                  onPressed: item.stock > 0 ? () => prov.updateStock(item.id, item.stock - 1) : null,
+                                ),
+                                Padding(
+                                  padding: const EdgeInsets.symmetric(horizontal: 8),
+                                  child: Text('${item.stock}', style: const TextStyle(fontWeight: FontWeight.w800, fontSize: 12)),
+                                ),
+                                IconButton(
+                                  icon: const Icon(Icons.add_rounded, size: 16),
+                                  padding: const EdgeInsets.all(4),
+                                  constraints: const BoxConstraints(),
+                                  onPressed: () => prov.updateStock(item.id, item.stock + 1),
+                                ),
+                              ],
                             ),
-                          ],
-                        ),
+                          ),
+                        ],
                       ),
                     ],
                   ),
@@ -489,6 +775,7 @@ class _AccessoriesScreenState extends State<AccessoriesScreen> {
           ],
         ),
       ),
-    );
+    ),
+  );
   }
 }

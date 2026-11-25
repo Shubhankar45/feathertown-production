@@ -62,7 +62,7 @@ class _SplashScreenState extends State<SplashScreen> {
               ),
               child: ClipOval(
                 child: Image.asset(
-                  'assets/images/logo.png',
+                  'assets/images/macaw.png',
                   fit: BoxFit.contain,
                   errorBuilder: (_, _, _) => const Icon(
                     Icons.auto_awesome,

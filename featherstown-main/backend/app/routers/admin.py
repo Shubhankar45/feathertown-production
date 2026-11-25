@@ -73,14 +73,16 @@ async def admin_list_birds(
 async def admin_create_bird(body: Dict[str, Any]):
     name = body.get("name")
     category = body.get("category")
-    price = body.get("price")
+    raw_price = body.get("price")
 
     if not name or not isinstance(name, str) or not name.strip():
         raise HTTPException(status_code=400, detail={"msg": "Bird name is required"})
     if not category or not isinstance(category, str) or not category.strip():
         raise HTTPException(status_code=400, detail={"msg": "Category is required"})
-    if not price or not isinstance(price, str) or not price.strip():
+    if raw_price is None or (isinstance(raw_price, str) and not raw_price.strip()):
         raise HTTPException(status_code=400, detail={"msg": "Price is required"})
+
+    price = f"{float(raw_price):.0f}" if isinstance(raw_price, (int, float)) else str(raw_price).strip()
 
     base_slug = slugify(name)
     slug = base_slug
@@ -89,15 +91,22 @@ async def admin_create_bird(body: Dict[str, Any]):
         slug = f"{base_slug}-{suffix}"
         suffix += 1
 
+    status_val = str(body.get("status") or "available").lower().strip()
+    if status_val == "sold":
+        status_val = "sold out"
+
     now = datetime.now(timezone.utc)
     bird_doc = {
         "name": name.strip(),
         "slug": slug,
         "category": category.strip(),
+        "species": body.get("species") or category.strip(),
+        "dnaSex": body.get("dnaSex") or "Pending",
+        "ringNumber": body.get("ringNumber") or "",
         "image": body.get("image", ""),
-        "price": price.strip(),
+        "price": price,
         "minPrice": float(body.get("minPrice") or 0),
-        "status": body.get("status") or "available",
+        "status": status_val,
         "description": body.get("description", ""),
         "lifespan": body.get("lifespan") or "20-30 years",
         "origin": body.get("origin") or "South America",
@@ -183,15 +192,17 @@ async def admin_toggle_bird_status(id: str, body: Dict[str, Any]):
     if not is_valid_object_id(id):
         raise HTTPException(status_code=404, detail={"msg": "Bird not found"})
 
-    new_status = body.get("status")
-    allowed = ["available", "reserved", "sold out", "coming soon"]
-    if new_status not in allowed:
+    raw_status = str(body.get("status") or "").lower().strip()
+    if raw_status == "sold":
+        raw_status = "sold out"
+    allowed = ["available", "reserved", "sold out", "coming soon", "sold", "adopted"]
+    if raw_status not in allowed:
         raise HTTPException(status_code=400, detail={"msg": "Invalid status"})
 
     now = datetime.now(timezone.utc)
     res = await birds_col.find_one_and_update(
         {"_id": to_object_id(id)},
-        {"$set": {"status": new_status, "updatedAt": now}},
+        {"$set": {"status": raw_status, "updatedAt": now}},
         return_document=True,
     )
     if not res:
@@ -257,6 +268,8 @@ async def admin_create_accessory(body: Dict[str, Any]):
     images = body.get("images")
     if not isinstance(images, list):
         images = []
+    if not images and body.get("image"):
+        images = [str(body["image"]).strip()]
     clean_images = [img for img in images if img][:8]
 
     mrp = body.get("mrp")
@@ -316,8 +329,10 @@ async def admin_update_accessory(id: str, body: Dict[str, Any]):
     if "mrp" in body:
         mrp = body.get("mrp")
         updates["mrp"] = None if mrp in (None, "") else float(mrp)
-    if "images" in body:
+    if "images" in body or "image" in body:
         images = body.get("images")
+        if not images and body.get("image"):
+            images = [str(body["image"]).strip()]
         updates["images"] = [img for img in images if img][:8] if isinstance(images, list) else []
     if "stock" in body:
         updates["stock"] = int(body["stock"])
@@ -482,7 +497,8 @@ async def admin_update_order_status(id: str, body: Dict[str, Any]):
     if not is_valid_object_id(id):
         raise HTTPException(status_code=404, detail={"msg": "Not found"})
 
-    order_status = body.get("orderStatus")
+    raw_status = body.get("orderStatus") or body.get("status")
+    order_status = str(raw_status).lower().strip() if raw_status else ""
     allowed = ["pending", "confirmed", "shipped", "delivered", "cancelled"]
     if order_status not in allowed:
         raise HTTPException(status_code=400, detail={"msg": "Invalid status"})
@@ -663,7 +679,28 @@ async def admin_upload_image(file: UploadFile = File(...)):
 @router.get("/settings")
 async def admin_get_settings():
     doc = await get_or_create_settings()
-    return serialize_doc(doc)
+    res = serialize_doc(doc)
+    if isinstance(res, dict):
+        res["announcement"] = {
+            "text": res.get("announcementText", ""),
+            "enabled": res.get("announcementActive", True),
+        }
+        res["contact"] = {
+            "phone": res.get("phone", ""),
+            "whatsapp": res.get("whatsapp", ""),
+            "email": res.get("email", ""),
+            "address": res.get("address", ""),
+        }
+        res["hero"] = {
+            "title": res.get("heroTitle", ""),
+            "subtitle": res.get("heroSubtitle", ""),
+            "image": res.get("heroImage", ""),
+        }
+        res["shipping"] = {
+            "freeShippingThreshold": res.get("freeShippingThreshold", 999),
+            "standardShippingFee": res.get("standardShippingFee", 99),
+        }
+    return res
 
 @router.put("/settings")
 async def admin_update_settings(body: Dict[str, Any]):
@@ -726,11 +763,74 @@ async def admin_update_settings(body: Dict[str, Any]):
     ]
 
     updates = {k: body[k] for k in allowed_keys if k in body}
+
+    # Handle nested convenience structures from mobile CMS or frontend
+    if "announcement" in body and isinstance(body["announcement"], dict):
+        ann = body["announcement"]
+        if "text" in ann:
+            updates["announcementText"] = str(ann["text"]).strip()
+        if "enabled" in ann:
+            updates["announcementActive"] = bool(ann["enabled"])
+
+    if "contact" in body and isinstance(body["contact"], dict):
+        c = body["contact"]
+        if "phone" in c:
+            updates["phone"] = str(c["phone"]).strip()
+        if "whatsapp" in c:
+            updates["whatsapp"] = str(c["whatsapp"]).strip()
+        if "email" in c:
+            updates["email"] = str(c["email"]).strip()
+        if "address" in c:
+            updates["address"] = str(c["address"]).strip()
+
+    if "hero" in body and isinstance(body["hero"], dict):
+        h = body["hero"]
+        if "title" in h:
+            updates["heroTitle"] = str(h["title"]).strip()
+        if "subtitle" in h:
+            updates["heroSubtitle"] = str(h["subtitle"]).strip()
+        if "image" in h:
+            updates["heroImage"] = str(h["image"]).strip()
+
+    if "shipping" in body and isinstance(body["shipping"], dict):
+        s = body["shipping"]
+        if "freeShippingThreshold" in s:
+            try:
+                updates["freeShippingThreshold"] = float(s["freeShippingThreshold"])
+            except (ValueError, TypeError):
+                pass
+        if "standardShippingFee" in s:
+            try:
+                updates["standardShippingFee"] = float(s["standardShippingFee"])
+            except (ValueError, TypeError):
+                pass
+
     updates["updatedAt"] = datetime.now(timezone.utc)
 
     await settings_col.update_one({"key": "store_settings"}, {"$set": updates})
     updated = await settings_col.find_one({"key": "store_settings"})
-    return serialize_doc(updated)
+    res = serialize_doc(updated)
+    if isinstance(res, dict):
+        res["announcement"] = {
+            "text": res.get("announcementText", ""),
+            "enabled": res.get("announcementActive", True),
+        }
+        res["contact"] = {
+            "phone": res.get("phone", ""),
+            "whatsapp": res.get("whatsapp", ""),
+            "email": res.get("email", ""),
+            "address": res.get("address", ""),
+        }
+        res["hero"] = {
+            "title": res.get("heroTitle", ""),
+            "subtitle": res.get("heroSubtitle", ""),
+            "image": res.get("heroImage", ""),
+        }
+        res["shipping"] = {
+            "freeShippingThreshold": res.get("freeShippingThreshold", 999),
+            "standardShippingFee": res.get("standardShippingFee", 99),
+        }
+    return res
 
 # ═══════════════════════════════════════════════════════════
 # 8. AUDIT LOGGING HELPER

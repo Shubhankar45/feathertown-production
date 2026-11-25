@@ -29,7 +29,20 @@ class BirdModel {
       name: json['name']?.toString() ?? '',
       species: json['species']?.toString() ?? '',
       category: json['category']?.toString() ?? 'Birds',
-      price: (json['price'] is num) ? (json['price'] as num).toDouble() : 0.0,
+      price: () {
+        final p = json['price'];
+        if (p is num) return p.toDouble();
+        if (p is String) {
+          final clean = p.replaceAll(RegExp(r'[^0-9.]'), ' ');
+          final parts = clean.trim().split(RegExp(r'\s+'));
+          if (parts.isNotEmpty) {
+            final parsed = double.tryParse(parts.first);
+            if (parsed != null && parsed > 0) return parsed;
+          }
+        }
+        if (json['minPrice'] is num) return (json['minPrice'] as num).toDouble();
+        return 0.0;
+      }(),
       status: json['status']?.toString() ?? 'available',
       image: json['image']?.toString(),
       description: json['description']?.toString(),

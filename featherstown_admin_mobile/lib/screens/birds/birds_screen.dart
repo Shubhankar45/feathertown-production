@@ -232,7 +232,7 @@ class _BirdsScreenState extends State<BirdsScreen> {
                       final success = await context.read<BirdsProvider>().addBird({
                         'name': name,
                         'species': species,
-                        'price': price,
+                        'price': price.toStringAsFixed(0),
                         'category': 'Birds',
                         'status': selectedStatus,
                         'dnaSex': selectedDna,
@@ -266,6 +266,272 @@ class _BirdsScreenState extends State<BirdsScreen> {
     );
   }
 
+  void _showEditBirdModal(BirdModel bird) {
+    final nameCtrl = TextEditingController(text: bird.name);
+    final speciesCtrl = TextEditingController(text: bird.species);
+    final priceCtrl = TextEditingController(text: bird.price.toStringAsFixed(0));
+    final ringCtrl = TextEditingController(text: bird.ringNumber ?? '');
+    final descCtrl = TextEditingController(text: bird.description ?? '');
+    String selectedStatus = bird.status.toLowerCase();
+    if (selectedStatus != 'available' && selectedStatus != 'reserved' && selectedStatus != 'sold') {
+      selectedStatus = 'available';
+    }
+    String selectedDna = bird.dnaSex ?? 'Male';
+    String? imageUrl = bird.image;
+
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (ctx) => StatefulBuilder(
+        builder: (ctx, setModalState) {
+          final bottomInset = MediaQuery.of(ctx).viewInsets.bottom;
+
+          return Container(
+            decoration: const BoxDecoration(
+              color: AppColors.white,
+              borderRadius: BorderRadius.vertical(top: Radius.circular(28)),
+            ),
+            padding: EdgeInsets.only(left: 20, right: 20, top: 16, bottom: bottomInset + 24),
+            child: SingleChildScrollView(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  Center(
+                    child: Container(
+                      width: 44,
+                      height: 4,
+                      margin: const EdgeInsets.only(bottom: 16),
+                      decoration: BoxDecoration(color: Colors.grey.shade300, borderRadius: BorderRadius.circular(99)),
+                    ),
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        'Edit ${bird.name}',
+                        style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w800, color: AppColors.heroDark),
+                      ),
+                      IconButton(icon: const Icon(Icons.close_rounded), onPressed: () => Navigator.pop(ctx)),
+                    ],
+                  ),
+                  const SizedBox(height: 16),
+
+                  // Image Selector Banner
+                  InkWell(
+                    onTap: () async {
+                      final url = await MediaUploaderSheet.show(ctx);
+                      if (url != null) {
+                        setModalState(() => imageUrl = url);
+                      }
+                    },
+                    borderRadius: BorderRadius.circular(16),
+                    child: Container(
+                      height: 130,
+                      decoration: BoxDecoration(
+                        color: AppColors.canvasLight,
+                        borderRadius: BorderRadius.circular(16),
+                        border: Border.all(color: const Color(0xFFE5E2DC)),
+                      ),
+                      clipBehavior: Clip.antiAlias,
+                      child: imageUrl != null && imageUrl!.isNotEmpty
+                          ? Stack(
+                              fit: StackFit.expand,
+                              children: [
+                                Image.network(
+                                  imageUrl!,
+                                  fit: BoxFit.cover,
+                                  errorBuilder: (_, _, _) => Image.asset('assets/images/macaw.png', fit: BoxFit.contain),
+                                ),
+                                Positioned(
+                                  right: 8,
+                                  top: 8,
+                                  child: Container(
+                                    padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                                    decoration: BoxDecoration(color: Colors.black.withValues(alpha: 0.65), borderRadius: BorderRadius.circular(12)),
+                                    child: const Row(
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: [
+                                        Icon(Icons.camera_alt_outlined, size: 14, color: Colors.white),
+                                        SizedBox(width: 4),
+                                        Text('Change Photo', style: TextStyle(color: Colors.white, fontSize: 11, fontWeight: FontWeight.w700)),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            )
+                          : const Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Icon(Icons.add_a_photo_outlined, size: 30, color: AppColors.heroDark),
+                                SizedBox(height: 6),
+                                Text('Tap to Upload Real Bird Photo', style: TextStyle(fontSize: 12.5, fontWeight: FontWeight.w600)),
+                              ],
+                            ),
+                    ),
+                  ),
+
+                  const SizedBox(height: 16),
+                  TextField(
+                    controller: nameCtrl,
+                    decoration: InputDecoration(
+                      labelText: 'Bird Name / Ring Label',
+                      filled: true,
+                      fillColor: AppColors.canvasLight,
+                      border: OutlineInputBorder(borderRadius: BorderRadius.circular(14), borderSide: BorderSide.none),
+                    ),
+                  ),
+                  const SizedBox(height: 12),
+                  TextField(
+                    controller: speciesCtrl,
+                    decoration: InputDecoration(
+                      labelText: 'Species / Breed',
+                      filled: true,
+                      fillColor: AppColors.canvasLight,
+                      border: OutlineInputBorder(borderRadius: BorderRadius.circular(14), borderSide: BorderSide.none),
+                    ),
+                  ),
+                  const SizedBox(height: 12),
+                  Row(
+                    children: [
+                      Expanded(
+                        child: TextField(
+                          controller: priceCtrl,
+                          keyboardType: TextInputType.number,
+                          decoration: InputDecoration(
+                            labelText: 'Price (₹)',
+                            prefixText: '₹ ',
+                            filled: true,
+                            fillColor: AppColors.canvasLight,
+                            border: OutlineInputBorder(borderRadius: BorderRadius.circular(14), borderSide: BorderSide.none),
+                          ),
+                        ),
+                      ),
+                      const SizedBox(width: 12),
+                      Expanded(
+                        child: TextField(
+                          controller: ringCtrl,
+                          decoration: InputDecoration(
+                            labelText: 'Leg Ring #',
+                            filled: true,
+                            fillColor: AppColors.canvasLight,
+                            border: OutlineInputBorder(borderRadius: BorderRadius.circular(14), borderSide: BorderSide.none),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 12),
+
+                  // DNA Sexing & Status Row
+                  Row(
+                    children: [
+                      Expanded(
+                        child: DropdownButtonFormField<String>(
+                          initialValue: selectedDna,
+                          decoration: InputDecoration(
+                            labelText: 'DNA Sexing',
+                            filled: true,
+                            fillColor: AppColors.canvasLight,
+                            border: OutlineInputBorder(borderRadius: BorderRadius.circular(14), borderSide: BorderSide.none),
+                          ),
+                          items: const [
+                            DropdownMenuItem(value: 'Male', child: Text('Male ♂')),
+                            DropdownMenuItem(value: 'Female', child: Text('Female ♀')),
+                            DropdownMenuItem(value: 'Pending', child: Text('Pending DNA')),
+                          ],
+                          onChanged: (val) => setModalState(() => selectedDna = val ?? 'Male'),
+                        ),
+                      ),
+                      const SizedBox(width: 12),
+                      Expanded(
+                        child: DropdownButtonFormField<String>(
+                          initialValue: selectedStatus,
+                          decoration: InputDecoration(
+                            labelText: 'Status',
+                            filled: true,
+                            fillColor: AppColors.canvasLight,
+                            border: OutlineInputBorder(borderRadius: BorderRadius.circular(14), borderSide: BorderSide.none),
+                          ),
+                          items: const [
+                            DropdownMenuItem(value: 'available', child: Text('Available')),
+                            DropdownMenuItem(value: 'reserved', child: Text('Reserved')),
+                            DropdownMenuItem(value: 'sold', child: Text('Sold')),
+                          ],
+                          onChanged: (val) => setModalState(() => selectedStatus = val ?? 'available'),
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 12),
+                  TextField(
+                    controller: descCtrl,
+                    maxLines: 2,
+                    decoration: InputDecoration(
+                      labelText: 'Health & Temperament Notes',
+                      hintText: 'e.g. Hand-fed, very cuddly, closed rung, vaccinated',
+                      filled: true,
+                      fillColor: AppColors.canvasLight,
+                      border: OutlineInputBorder(borderRadius: BorderRadius.circular(14), borderSide: BorderSide.none),
+                    ),
+                  ),
+
+                  const SizedBox(height: 24),
+                  ElevatedButton(
+                    onPressed: () async {
+                      final name = nameCtrl.text.trim();
+                      final species = speciesCtrl.text.trim();
+                      final price = double.tryParse(priceCtrl.text.trim()) ?? bird.price;
+                      if (name.isEmpty || species.isEmpty) {
+                        ScaffoldMessenger.of(ctx).showSnackBar(const SnackBar(content: Text('Please fill name and species')));
+                        return;
+                      }
+
+                      final Map<String, dynamic> updatePayload = {
+                        'name': name,
+                        'species': species,
+                        'price': price.toStringAsFixed(0),
+                        'category': 'Birds',
+                        'status': selectedStatus,
+                        'dnaSex': selectedDna,
+                        'ringNumber': ringCtrl.text.trim(),
+                        'description': descCtrl.text.trim(),
+                      };
+                      if (imageUrl != null) {
+                        updatePayload['image'] = imageUrl;
+                        updatePayload['images'] = [imageUrl];
+                      }
+
+                      final success = await context.read<BirdsProvider>().updateBird(bird.id, updatePayload);
+
+                      if (ctx.mounted) {
+                        Navigator.pop(ctx);
+                      }
+                      if (mounted && success) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(content: Text('Bird updated successfully!'), backgroundColor: AppColors.forestGreen),
+                        );
+                      }
+                    },
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: AppColors.heroDark,
+                      foregroundColor: Colors.white,
+                      padding: const EdgeInsets.symmetric(vertical: 16),
+                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+                    ),
+                    child: const Text('Save Changes', style: TextStyle(fontSize: 15, fontWeight: FontWeight.w700)),
+                  ),
+                ],
+              ),
+            ),
+          );
+        },
+      ),
+    );
+  }
+
   void _showStatusUpdateSheet(BirdModel bird) {
     showModalBottomSheet(
       context: context,
@@ -276,11 +542,22 @@ class _BirdsScreenState extends State<BirdsScreen> {
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text('Update Status for ${bird.name}', style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w800)),
-            const SizedBox(height: 16),
+            Text('Manage ${bird.name}', style: const TextStyle(fontSize: 17, fontWeight: FontWeight.w800)),
+            const SizedBox(height: 14),
+            ListTile(
+              leading: const Icon(Icons.edit_note_rounded, color: AppColors.heroDark, size: 26),
+              title: const Text('Edit Bird Details & Photo', style: TextStyle(fontWeight: FontWeight.w700)),
+              subtitle: const Text('Change photo, price, breed, DNA, or notes'),
+              trailing: const Icon(Icons.chevron_right_rounded),
+              onTap: () {
+                Navigator.pop(ctx);
+                _showEditBirdModal(bird);
+              },
+            ),
+            const Divider(),
             ListTile(
               leading: const Icon(Icons.check_circle_outline_rounded, color: AppColors.success),
-              title: const Text('Available for Rehoming'),
+              title: const Text('Mark Available'),
               onTap: () {
                 context.read<BirdsProvider>().updateBirdStatus(bird.id, 'available');
                 Navigator.pop(ctx);
@@ -288,7 +565,7 @@ class _BirdsScreenState extends State<BirdsScreen> {
             ),
             ListTile(
               leading: const Icon(Icons.bookmark_border_rounded, color: AppColors.accent),
-              title: const Text('Reserved by Adopter'),
+              title: const Text('Mark Reserved'),
               onTap: () {
                 context.read<BirdsProvider>().updateBirdStatus(bird.id, 'reserved');
                 Navigator.pop(ctx);
@@ -296,7 +573,7 @@ class _BirdsScreenState extends State<BirdsScreen> {
             ),
             ListTile(
               leading: const Icon(Icons.done_all_rounded, color: Colors.grey),
-              title: const Text('Sold / Delivered to Home'),
+              title: const Text('Mark Sold'),
               onTap: () {
                 context.read<BirdsProvider>().updateBirdStatus(bird.id, 'sold');
                 Navigator.pop(ctx);
@@ -600,6 +877,26 @@ class _BirdsScreenState extends State<BirdsScreen> {
                                   ),
                                 ),
                               ),
+                            const SizedBox(width: 6),
+                            InkWell(
+                              onTap: () => _showEditBirdModal(bird),
+                              borderRadius: BorderRadius.circular(6),
+                              child: Container(
+                                padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                                decoration: BoxDecoration(
+                                  color: AppColors.canvasLight,
+                                  borderRadius: BorderRadius.circular(6),
+                                ),
+                                child: const Row(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    Icon(Icons.edit_outlined, size: 12, color: AppColors.heroDark),
+                                    SizedBox(width: 3),
+                                    Text('Edit', style: TextStyle(fontSize: 10.5, fontWeight: FontWeight.w700, color: AppColors.heroDark)),
+                                  ],
+                                ),
+                              ),
+                            ),
                           ],
                         ),
                       ],
