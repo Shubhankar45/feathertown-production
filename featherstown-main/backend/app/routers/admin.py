@@ -1600,6 +1600,74 @@ async def admin_list_bookings(
 
     return serialize_doc(bookings)
 
+@router.post("/bookings", status_code=status.HTTP_201_CREATED)
+async def admin_create_booking(
+    body: Dict[str, Any],
+    request: Request,
+    admin: Dict[str, Any] = Depends(get_current_admin),
+):
+    now = datetime.now(timezone.utc)
+    customer_name = body.get("customerName") or (body.get("customer") or {}).get("name") or "Customer"
+    customer_phone = body.get("customerPhone") or (body.get("customer") or {}).get("phone") or "+91 9999999999"
+    customer_email = body.get("customerEmail") or (body.get("customer") or {}).get("email") or ""
+    bird_name = body.get("birdName") or "Companion Bird"
+    total_amount = float(body.get("totalAmount") or body.get("price") or 0.0)
+    deposit_paid = float(body.get("depositPaid") or body.get("paidAmount") or 0.0)
+    balance_due = max(0.0, total_amount - deposit_paid)
+
+    inv_no = await generate_invoice_number()
+    doc = {
+        "invoiceNumber": inv_no,
+        "type": "booking",
+        "status": "active",
+        "customer": {
+            "name": customer_name,
+            "phone": customer_phone,
+            "email": customer_email,
+        },
+        "items": [{
+            "name": bird_name,
+            "quantity": 1,
+            "price": total_amount,
+            "itemType": "bird",
+        }],
+        "bookingDetails": {
+            "birdName": bird_name,
+            "ringNumber": body.get("ringNumber") or "PENDING",
+            "dnaSex": body.get("dnaSex") or "Certified (Testing)",
+            "status": body.get("bookingStatus") or body.get("status") or "reserved",
+            "weaningStage": body.get("weaningStage") or "Fully Weaned & Flight Ready",
+            "expectedDeliveryDate": body.get("expectedDeliveryDate") or "",
+            "notes": body.get("notes") or "",
+        },
+        "totalAmount": total_amount,
+        "paidAmount": deposit_paid,
+        "balanceDue": balance_due,
+        "notes": body.get("notes") or "",
+        "createdAt": now,
+        "updatedAt": now,
+    }
+    res = await invoices_col.insert_one(doc)
+    doc["_id"] = res.inserted_id
+    await log_audit("CREATE_BOOKING", "booking", str(res.inserted_id), {"invoiceNumber": inv_no}, admin.get("username", "admin"), request)
+    bd = doc["bookingDetails"]
+    return {
+        "id": str(res.inserted_id),
+        "invoiceNumber": inv_no,
+        "customer": doc["customer"],
+        "birdName": bd["birdName"],
+        "ringNumber": bd["ringNumber"],
+        "dnaSex": bd["dnaSex"],
+        "bookingStatus": bd["status"],
+        "totalAmount": total_amount,
+        "depositPaid": deposit_paid,
+        "balanceDue": balance_due,
+        "expectedDeliveryDate": bd["expectedDeliveryDate"],
+        "createdAt": now,
+        "updatedAt": now,
+        "notes": bd["notes"],
+    }
+
 @router.patch("/bookings/{id}")
 async def admin_update_booking(
     id: str,
@@ -1607,26 +1675,50 @@ async def admin_update_booking(
     request: Request,
     admin: Dict[str, Any] = Depends(get_current_admin),
 ):
-    if not is_valid_object_id(id):
-        raise HTTPException(status_code=400, detail={"msg": "Invalid booking ID"})
-
-    existing = await invoices_col.find_one({"_id": to_object_id(id)})
+    query = {"_id": to_object_id(id)} if is_valid_object_id(id) else {"_id": id}
+    existing = await invoices_col.find_one(query)
+    if not existing:
+        existing = await invoices_col.find_one({"invoiceNumber": id})
     if not existing:
         raise HTTPException(status_code=404, detail={"msg": "Booking record not found"})
 
     now = datetime.now(timezone.utc)
     current_bd = existing.get("bookingDetails") or {}
 
-    allowed_bd = ["status", "ringNumber", "dnaSex", "expectedDeliveryDate", "healthCertificateNo", "notes"]
+    allowed_bd = ["status", "ringNumber", "dnaSex", "expectedDeliveryDate", "healthCertificateNo", "notes", "birdName", "weaningStage"]
     for k in allowed_bd:
         if k in body:
             current_bd[k] = body[k]
+    if "bookingStatus" in body:
+        current_bd["status"] = body["bookingStatus"]
 
     updates = {"bookingDetails": current_bd, "updatedAt": now}
-    await invoices_col.update_one({"_id": to_object_id(id)}, {"$set": updates})
+    if "customer" in body and isinstance(body["customer"], dict):
+        updates["customer"] = body["customer"]
+    if "notes" in body:
+        updates["notes"] = body["notes"]
 
-    await log_audit("UPDATE_BOOKING", "booking", id, body, admin.get("username", "admin"), request)
+    await invoices_col.update_one({"_id": existing["_id"]}, {"$set": updates})
+
+    await log_audit("UPDATE_BOOKING", "booking", str(existing["_id"]), body, admin.get("username", "admin"), request)
     return {"msg": "Booking status updated successfully", "bookingDetails": current_bd}
+
+@router.delete("/bookings/{id}")
+async def admin_delete_booking(
+    id: str,
+    request: Request,
+    admin: Dict[str, Any] = Depends(get_current_admin),
+):
+    query = {"_id": to_object_id(id)} if is_valid_object_id(id) else {"_id": id}
+    existing = await invoices_col.find_one(query)
+    if not existing:
+        existing = await invoices_col.find_one({"invoiceNumber": id})
+    if not existing:
+        raise HTTPException(status_code=404, detail={"msg": "Booking record not found"})
+
+    await invoices_col.delete_one({"_id": existing["_id"]})
+    await log_audit("DELETE_BOOKING", "booking", str(existing["_id"]), {"invoiceNumber": existing.get("invoiceNumber")}, admin.get("username", "admin"), request)
+    return {"msg": "Booking reservation deleted successfully"}
 
 # ═══════════════════════════════════════════════════════════
 # 12. CUSTOMERS DIRECTORY
@@ -1727,18 +1819,22 @@ async def admin_update_customer(
     request: Request,
     admin: Dict[str, Any] = Depends(get_current_admin),
 ):
-    if not is_valid_object_id(id):
-        raise HTTPException(status_code=400, detail={"msg": "Invalid customer ID"})
+    query = {"_id": to_object_id(id)} if is_valid_object_id(id) else {"_id": id}
+    existing = await customers_col.find_one(query)
+    if not existing:
+        existing = await customers_col.find_one({"phone": id})
+    if not existing:
+        raise HTTPException(status_code=404, detail={"msg": "Customer not found"})
 
     now = datetime.now(timezone.utc)
-    allowed = ["name", "phone", "email", "address", "city", "state", "pincode", "gstin", "notes", "customerType"]
+    allowed = ["name", "phone", "email", "address", "city", "state", "pincode", "gstin", "notes", "customerType", "totalSpent", "totalOrders"]
     updates = {k: body[k] for k in allowed if k in body}
     updates["updatedAt"] = now
 
-    await customers_col.update_one({"_id": to_object_id(id)}, {"$set": updates})
-    updated = await customers_col.find_one({"_id": to_object_id(id)})
+    await customers_col.update_one({"_id": existing["_id"]}, {"$set": updates})
+    updated = await customers_col.find_one({"_id": existing["_id"]})
 
-    await log_audit("UPDATE_CUSTOMER", "customer", id, updates, admin.get("username", "admin"), request)
+    await log_audit("UPDATE_CUSTOMER", "customer", str(existing["_id"]), updates, admin.get("username", "admin"), request)
     return serialize_doc(updated)
 
 @router.delete("/customers/{id}")
@@ -1747,15 +1843,15 @@ async def admin_delete_customer(
     request: Request,
     admin: Dict[str, Any] = Depends(get_current_admin),
 ):
-    if not is_valid_object_id(id):
-        raise HTTPException(status_code=400, detail={"msg": "Invalid customer ID"})
-
-    existing = await customers_col.find_one({"_id": to_object_id(id)})
+    query = {"_id": to_object_id(id)} if is_valid_object_id(id) else {"_id": id}
+    existing = await customers_col.find_one(query)
+    if not existing:
+        existing = await customers_col.find_one({"phone": id})
     if not existing:
         raise HTTPException(status_code=404, detail={"msg": "Customer not found"})
 
-    await customers_col.delete_one({"_id": to_object_id(id)})
-    await log_audit("DELETE_CUSTOMER", "customer", id, {"name": existing.get("name")}, admin.get("username", "admin"), request)
+    await customers_col.delete_one({"_id": existing["_id"]})
+    await log_audit("DELETE_CUSTOMER", "customer", str(existing["_id"]), {"name": existing.get("name")}, admin.get("username", "admin"), request)
     return {"msg": "Customer removed successfully"}
 
 # ═══════════════════════════════════════════════════════════
@@ -1841,21 +1937,60 @@ async def admin_create_transaction(
 
     return serialize_doc(doc)
 
+@router.put("/transactions/{id}")
+async def admin_update_transaction(
+    id: str,
+    body: Dict[str, Any],
+    request: Request,
+    admin: Dict[str, Any] = Depends(get_current_admin),
+):
+    query = {"_id": to_object_id(id)} if is_valid_object_id(id) else {"_id": id}
+    existing = await transactions_col.find_one(query)
+    if not existing:
+        existing = await transactions_col.find_one({"transactionId": id})
+    if not existing:
+        raise HTTPException(status_code=404, detail={"msg": "Transaction not found"})
+
+    now = datetime.now(timezone.utc)
+    updates = {"updatedAt": now}
+    if "amount" in body:
+        try:
+            updates["amount"] = round(float(body["amount"]), 2)
+        except (ValueError, TypeError):
+            pass
+    if "type" in body and body["type"] in ["income", "expense", "refund"]:
+        updates["type"] = body["type"]
+    if "category" in body:
+        updates["category"] = str(body["category"]).lower()
+    if "paymentMethod" in body:
+        updates["paymentMethod"] = str(body["paymentMethod"]).lower()
+    if "reference" in body:
+        updates["reference"] = str(body["reference"])
+    if "description" in body:
+        updates["description"] = str(body["description"])
+    if "customerOrPayee" in body:
+        updates["customerOrPayee"] = str(body["customerOrPayee"])
+
+    await transactions_col.update_one({"_id": existing["_id"]}, {"$set": updates})
+    updated = await transactions_col.find_one({"_id": existing["_id"]})
+    await log_audit("UPDATE_TRANSACTION", "transaction", str(existing["_id"]), updates, admin.get("username", "admin"), request)
+    return serialize_doc(updated)
+
 @router.delete("/transactions/{id}")
 async def admin_delete_transaction(
     id: str,
     request: Request,
     admin: Dict[str, Any] = Depends(get_current_admin),
 ):
-    if not is_valid_object_id(id):
-        raise HTTPException(status_code=400, detail={"msg": "Invalid transaction ID"})
-
-    existing = await transactions_col.find_one({"_id": to_object_id(id)})
+    query = {"_id": to_object_id(id)} if is_valid_object_id(id) else {"_id": id}
+    existing = await transactions_col.find_one(query)
+    if not existing:
+        existing = await transactions_col.find_one({"transactionId": id})
     if not existing:
         raise HTTPException(status_code=404, detail={"msg": "Transaction not found"})
 
-    await transactions_col.delete_one({"_id": to_object_id(id)})
-    await log_audit("DELETE_TRANSACTION", "transaction", id, {"transactionId": existing.get("transactionId")}, admin.get("username", "admin"), request)
+    await transactions_col.delete_one({"_id": existing["_id"]})
+    await log_audit("DELETE_TRANSACTION", "transaction", str(existing["_id"]), {"transactionId": existing.get("transactionId")}, admin.get("username", "admin"), request)
     return {"msg": "Transaction record deleted"}
 
 # ═══════════════════════════════════════════════════════════

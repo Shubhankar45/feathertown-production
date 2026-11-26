@@ -10,6 +10,7 @@ import {
   MessageCircle,
   CreditCard,
   Edit,
+  Trash2,
   RefreshCw,
   X,
   Plus,
@@ -111,6 +112,22 @@ export default function AdminBookingTracker() {
       toast.error(err.message || "Failed to update booking");
     } finally {
       setSaving(false);
+    }
+  };
+
+  const handleDeleteBooking = async (b) => {
+    const id = b.id || b.invoiceId || b.invoiceNumber;
+    if (!window.confirm(`Permanently delete booking reservation for ${b.birdName || "Companion Bird"} (${b.invoiceNumber})?`)) {
+      return;
+    }
+    try {
+      await adminFetch(`/api/admin/bookings/${id}`, {
+        method: "DELETE",
+      });
+      toast.success("Booking reservation deleted");
+      loadBookings();
+    } catch (err) {
+      toast.error(err.message || "Failed to delete booking");
     }
   };
 
@@ -420,20 +437,36 @@ export default function AdminBookingTracker() {
                         {b.birdName || "Hand-Reared Companion Bird"}
                       </div>
                     </div>
-                    <button
-                      onClick={() => handleOpenEdit(b)}
-                      title="Update Booking Stage"
-                      style={{
-                        background: "#FAF8F5",
-                        border: "1px solid #D6DFD8",
-                        borderRadius: 6,
-                        padding: "5px 8px",
-                        cursor: "pointer",
-                        color: "#1B3B22",
-                      }}
-                    >
-                      <Edit size={14} />
-                    </button>
+                    <div style={{ display: "flex", gap: 6 }}>
+                      <button
+                        onClick={() => handleOpenEdit(b)}
+                        title="Update Booking Stage"
+                        style={{
+                          background: "#FAF8F5",
+                          border: "1px solid #D6DFD8",
+                          borderRadius: 6,
+                          padding: "5px 8px",
+                          cursor: "pointer",
+                          color: "#1B3B22",
+                        }}
+                      >
+                        <Edit size={14} />
+                      </button>
+                      <button
+                        onClick={() => handleDeleteBooking(b)}
+                        title="Delete Reservation"
+                        style={{
+                          background: "#FEE2E2",
+                          border: "1px solid #FCA5A5",
+                          borderRadius: 6,
+                          padding: "5px 8px",
+                          cursor: "pointer",
+                          color: "#DC2626",
+                        }}
+                      >
+                        <Trash2 size={14} />
+                      </button>
+                    </div>
                   </div>
 
                   {/* Ring & DNA Badges */}
