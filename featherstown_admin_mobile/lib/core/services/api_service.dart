@@ -65,6 +65,10 @@ class ApiService {
       return jsonBody;
     }
 
+    if (res.statusCode == 401) {
+      StorageService.clearSession();
+    }
+
     String message = 'Request failed (${res.statusCode})';
     if (jsonBody is Map) {
       final rawMsg = jsonBody['msg'] ?? jsonBody['detail'] ?? jsonBody['message'];
