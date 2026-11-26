@@ -82,7 +82,10 @@ async def admin_create_bird(body: Dict[str, Any]):
     if raw_price is None or (isinstance(raw_price, str) and not raw_price.strip()):
         raise HTTPException(status_code=400, detail={"msg": "Price is required"})
 
-    price = f"{float(raw_price):.0f}" if isinstance(raw_price, (int, float)) else str(raw_price).strip()
+    clean_digits = re.sub(r"[^\d.]", "", str(raw_price))
+    parsed_num_price = float(clean_digits) if clean_digits else 0.0
+    min_price_val = float(body.get("minPrice") or parsed_num_price)
+    price_str = f"₹{int(min_price_val):,}" if min_price_val >= 1000 else f"₹{int(min_price_val)}" if min_price_val > 0 else str(raw_price).strip()
 
     base_slug = slugify(name)
     slug = base_slug
@@ -104,8 +107,8 @@ async def admin_create_bird(body: Dict[str, Any]):
         "dnaSex": body.get("dnaSex") or "Pending",
         "ringNumber": body.get("ringNumber") or "",
         "image": body.get("image", ""),
-        "price": price,
-        "minPrice": float(body.get("minPrice") or 0),
+        "price": price_str,
+        "minPrice": min_price_val,
         "status": status_val,
         "description": body.get("description", ""),
         "lifespan": body.get("lifespan") or "20-30 years",
@@ -138,10 +141,8 @@ async def admin_create_bird(body: Dict[str, Any]):
 
 @router.put("/birds/{id}")
 async def admin_update_bird(id: str, body: Dict[str, Any]):
-    if not is_valid_object_id(id):
-        raise HTTPException(status_code=404, detail={"msg": "Bird not found"})
-
-    bird = await birds_col.find_one({"_id": to_object_id(id)})
+    query = {"_id": to_object_id(id)} if is_valid_object_id(id) else {"$or": [{"_id": id}, {"id": id}, {"slug": id}]}
+    bird = await birds_col.find_one(query)
     if not bird:
         raise HTTPException(status_code=404, detail={"msg": "Bird not found"})
 
@@ -158,9 +159,19 @@ async def admin_update_bird(id: str, body: Dict[str, Any]):
             suffix += 1
         updates["slug"] = slug
 
-    if "minPrice" in updates:
+    if "price" in updates:
+        raw_p = updates["price"]
+        clean_p = re.sub(r"[^\d.]", "", str(raw_p))
+        if clean_p:
+            p_val = float(clean_p)
+            if "minPrice" not in updates or not updates["minPrice"]:
+                updates["minPrice"] = p_val
+            updates["price"] = f"₹{int(p_val):,}" if p_val >= 1000 else f"₹{int(p_val)}"
+    elif "minPrice" in updates:
         try:
             updates["minPrice"] = float(updates["minPrice"])
+            if updates["minPrice"] > 0 and not updates.get("price"):
+                updates["price"] = f"₹{int(updates['minPrice']):,}"
         except (ValueError, TypeError):
             updates["minPrice"] = 0
 
@@ -178,10 +189,8 @@ async def admin_update_bird(id: str, body: Dict[str, Any]):
 
 @router.delete("/birds/{id}")
 async def admin_delete_bird(id: str):
-    if not is_valid_object_id(id):
-        raise HTTPException(status_code=404, detail={"msg": "Bird not found"})
-
-    res = await birds_col.delete_one({"_id": to_object_id(id)})
+    query = {"_id": to_object_id(id)} if is_valid_object_id(id) else {"$or": [{"_id": id}, {"id": id}]}
+    res = await birds_col.delete_one(query)
     if res.deleted_count == 0:
         raise HTTPException(status_code=404, detail={"msg": "Bird not found"})
 
@@ -189,7 +198,9 @@ async def admin_delete_bird(id: str):
 
 @router.patch("/birds/{id}/status")
 async def admin_toggle_bird_status(id: str, body: Dict[str, Any]):
-    if not is_valid_object_id(id):
+    query = {"_id": to_object_id(id)} if is_valid_object_id(id) else {"$or": [{"_id": id}, {"id": id}]}
+    bird = await birds_col.find_one(query)
+    if not bird:
         raise HTTPException(status_code=404, detail={"msg": "Bird not found"})
 
     raw_status = str(body.get("status") or "").lower().strip()
@@ -197,6 +208,7 @@ async def admin_toggle_bird_status(id: str, body: Dict[str, Any]):
         raw_status = "sold out"
     allowed = ["available", "reserved", "sold out", "coming soon", "sold", "adopted"]
     if raw_status not in allowed:
+        raise HTTPException(status_code=400, detail={"msg": "Invalid status"})
         raise HTTPException(status_code=400, detail={"msg": "Invalid status"})
 
     now = datetime.now(timezone.utc)
@@ -299,14 +311,12 @@ async def admin_create_accessory(body: Dict[str, Any]):
 
 @router.put("/accessories/{id}")
 async def admin_update_accessory(id: str, body: Dict[str, Any]):
-    if not is_valid_object_id(id):
-        raise HTTPException(status_code=404, detail={"msg": "Not found"})
-
     err = validate_accessory_body(body, partial=True)
     if err:
         raise HTTPException(status_code=400, detail={"msg": err})
 
-    acc = await accessories_col.find_one({"_id": to_object_id(id)})
+    query = {"_id": to_object_id(id)} if is_valid_object_id(id) else {"$or": [{"_id": id}, {"id": id}, {"slug": id}]}
+    acc = await accessories_col.find_one(query)
     if not acc:
         raise HTTPException(status_code=404, detail={"msg": "Not found"})
 
@@ -351,14 +361,12 @@ async def admin_update_accessory(id: str, body: Dict[str, Any]):
 
 @router.delete("/accessories/{id}")
 async def admin_delete_accessory(id: str):
-    if not is_valid_object_id(id):
-        raise HTTPException(status_code=404, detail={"msg": "Not found"})
-
-    res = await accessories_col.delete_one({"_id": to_object_id(id)})
+    query = {"_id": to_object_id(id)} if is_valid_object_id(id) else {"$or": [{"_id": id}, {"id": id}]}
+    res = await accessories_col.delete_one(query)
     if res.deleted_count == 0:
         raise HTTPException(status_code=404, detail={"msg": "Not found"})
 
-    return {"msg": "Deleted"}
+    return {"msg": "Deleted successfully", "id": id}
 
 # ═══════════════════════════════════════════════════════════
 # 3. CATEGORIES
@@ -492,11 +500,88 @@ async def admin_list_orders(status_param: Optional[str] = Query(None, alias="sta
     orders = await cursor.to_list(length=500)
     return serialize_doc(orders)
 
+@router.post("/orders", status_code=status.HTTP_201_CREATED)
+async def admin_create_order(body: Dict[str, Any]):
+    customer_name = body.get("customerName") or (body.get("customer") or {}).get("name") or "Direct Customer"
+    phone = body.get("customerPhone") or (body.get("customer") or {}).get("phone") or ""
+    email = body.get("customerEmail") or (body.get("customer") or {}).get("email") or ""
+    address = body.get("shippingAddress") or (body.get("customer") or {}).get("address") or "In-Store / Direct Sale"
+    city = (body.get("customer") or {}).get("city") or "Local"
+    state = (body.get("customer") or {}).get("state") or "Odisha"
+    pincode = (body.get("customer") or {}).get("pincode") or ""
+
+    items = body.get("orderItems") or body.get("items") or []
+    if not isinstance(items, list):
+        items = []
+
+    amount = float(body.get("totalAmount") or body.get("amount") or 0.0)
+    if amount <= 0 and items:
+        amount = sum(float(it.get("price", 0)) * int(it.get("quantity", 1)) for it in items if isinstance(it, dict))
+
+    now = datetime.now(timezone.utc)
+    order_doc = {
+        "orderId": f"FT-ORD-{int(time.time() * 1000) % 1000000}",
+        "customer": {
+            "name": customer_name,
+            "email": email,
+            "phone": phone,
+            "address": address,
+            "city": city,
+            "state": state,
+            "pincode": pincode,
+        },
+        "orderItems": items,
+        "amount": amount,
+        "orderStatus": str(body.get("orderStatus") or body.get("status") or "confirmed").lower(),
+        "paymentStatus": str(body.get("paymentStatus") or "paid").lower(),
+        "paymentMethod": body.get("paymentMethod") or "Cash/UPI",
+        "notes": body.get("notes", ""),
+        "createdAt": now,
+        "updatedAt": now,
+    }
+
+    result = await orders_col.insert_one(order_doc)
+    order_doc["_id"] = result.inserted_id
+    return serialize_doc(order_doc)
+
+@router.get("/orders/{id}")
+async def admin_get_order(id: str):
+    query = {"_id": to_object_id(id)} if is_valid_object_id(id) else {"$or": [{"_id": id}, {"orderId": id}]}
+    order = await orders_col.find_one(query)
+    if not order:
+        raise HTTPException(status_code=404, detail={"msg": "Order not found"})
+    return serialize_doc(order)
+
+@router.put("/orders/{id}")
+async def admin_update_order(id: str, body: Dict[str, Any]):
+    query = {"_id": to_object_id(id)} if is_valid_object_id(id) else {"$or": [{"_id": id}, {"orderId": id}]}
+    order = await orders_col.find_one(query)
+    if not order:
+        raise HTTPException(status_code=404, detail={"msg": "Order not found"})
+
+    updates = {**body}
+    updates.pop("_id", None)
+    updates.pop("createdAt", None)
+    updates["updatedAt"] = datetime.now(timezone.utc)
+
+    if "status" in updates and "orderStatus" not in updates:
+        updates["orderStatus"] = str(updates["status"]).lower().strip()
+
+    await orders_col.update_one({"_id": order["_id"]}, {"$set": updates})
+    updated = await orders_col.find_one({"_id": order["_id"]})
+    return serialize_doc(updated)
+
+@router.delete("/orders/{id}")
+async def admin_delete_order(id: str):
+    query = {"_id": to_object_id(id)} if is_valid_object_id(id) else {"$or": [{"_id": id}, {"orderId": id}]}
+    res = await orders_col.delete_one(query)
+    if res.deleted_count == 0:
+        raise HTTPException(status_code=404, detail={"msg": "Order not found"})
+    return {"msg": "Order deleted successfully", "id": id}
+
 @router.patch("/orders/{id}/status")
 async def admin_update_order_status(id: str, body: Dict[str, Any]):
-    if not is_valid_object_id(id):
-        raise HTTPException(status_code=404, detail={"msg": "Not found"})
-
+    query = {"_id": to_object_id(id)} if is_valid_object_id(id) else {"$or": [{"_id": id}, {"orderId": id}]}
     raw_status = body.get("orderStatus") or body.get("status")
     order_status = str(raw_status).lower().strip() if raw_status else ""
     allowed = ["pending", "confirmed", "shipped", "delivered", "cancelled"]
@@ -505,7 +590,7 @@ async def admin_update_order_status(id: str, body: Dict[str, Any]):
 
     now = datetime.now(timezone.utc)
     res = await orders_col.find_one_and_update(
-        {"_id": to_object_id(id)},
+        query,
         {"$set": {"orderStatus": order_status, "updatedAt": now}},
         return_document=True,
     )
@@ -607,10 +692,8 @@ async def admin_update_review(id: str, body: Dict[str, Any]):
 
 @router.delete("/reviews/{id}")
 async def admin_delete_review(id: str):
-    if not is_valid_object_id(id):
-        raise HTTPException(status_code=404, detail={"msg": "Review not found"})
-
-    res = await reviews_col.delete_one({"_id": to_object_id(id)})
+    query = {"_id": to_object_id(id)} if is_valid_object_id(id) else {"$or": [{"_id": id}, {"id": id}]}
+    res = await reviews_col.delete_one(query)
     if res.deleted_count == 0:
         raise HTTPException(status_code=404, detail={"msg": "Review not found"})
 
@@ -626,16 +709,35 @@ async def admin_list_subscribers():
     subs = await cursor.to_list(length=1000)
     return serialize_doc(subs)
 
+@router.post("/subscribers", status_code=status.HTTP_201_CREATED)
+async def admin_create_subscriber(body: Dict[str, Any]):
+    email = str(body.get("email") or "").strip().lower()
+    if not email or "@" not in email:
+        raise HTTPException(status_code=400, detail={"msg": "Valid email is required"})
+
+    existing = await subscribers_col.find_one({"email": email})
+    if existing:
+        return serialize_doc(existing)
+
+    now = datetime.now(timezone.utc)
+    sub_doc = {
+        "email": email,
+        "status": "active",
+        "createdAt": now,
+        "updatedAt": now,
+    }
+    res = await subscribers_col.insert_one(sub_doc)
+    sub_doc["_id"] = res.inserted_id
+    return serialize_doc(sub_doc)
+
 @router.delete("/subscribers/{id}")
 async def admin_delete_subscriber(id: str):
-    if not is_valid_object_id(id):
-        raise HTTPException(status_code=404, detail={"msg": "Not found"})
-
-    res = await subscribers_col.delete_one({"_id": to_object_id(id)})
+    query = {"_id": to_object_id(id)} if is_valid_object_id(id) else {"$or": [{"_id": id}, {"id": id}]}
+    res = await subscribers_col.delete_one(query)
     if res.deleted_count == 0:
         raise HTTPException(status_code=404, detail={"msg": "Not found"})
 
-    return {"msg": "Deleted"}
+    return {"msg": "Subscriber deleted successfully", "id": id}
 
 # ═══════════════════════════════════════════════════════════
 # 7. STORE SETTINGS & ASSETS

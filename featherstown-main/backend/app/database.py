@@ -2,7 +2,7 @@ import sys
 from datetime import datetime, timezone
 from urllib.parse import urlparse
 import motor.motor_asyncio
-from pymongo import ASCENDING, TEXT
+from pymongo import ASCENDING, DESCENDING, TEXT
 
 from app.config import MONGO_URI, IS_PROD
 from app.seed_data import (

@@ -73,8 +73,236 @@ class _OrdersScreenState extends State<OrdersScreen> {
                 Navigator.pop(ctx);
               },
             ),
+            const Divider(),
+            ListTile(
+              leading: const Icon(Icons.delete_outline_rounded, color: AppColors.danger),
+              title: const Text('Delete Order', style: TextStyle(color: AppColors.danger, fontWeight: FontWeight.w700)),
+              onTap: () async {
+                Navigator.pop(ctx);
+                final confirm = await showDialog<bool>(
+                  context: context,
+                  builder: (dCtx) => AlertDialog(
+                    title: const Text('Delete Order?'),
+                    content: const Text('Are you sure you want to permanently remove this order?'),
+                    actions: [
+                      TextButton(onPressed: () => Navigator.pop(dCtx, false), child: const Text('Cancel')),
+                      ElevatedButton(
+                        onPressed: () => Navigator.pop(dCtx, true),
+                        style: ElevatedButton.styleFrom(backgroundColor: AppColors.danger),
+                        child: const Text('Delete'),
+                      ),
+                    ],
+                  ),
+                );
+                if (confirm == true && mounted) {
+                  final ok = await context.read<OrdersProvider>().deleteOrder(order.id);
+                  if (mounted && ok) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(content: Text('Order deleted successfully!'), backgroundColor: AppColors.forestGreen),
+                    );
+                  }
+                }
+              },
+            ),
           ],
         ),
+      ),
+    );
+  }
+
+  void _showCreateOrderModal() {
+    final customerCtrl = TextEditingController();
+    final phoneCtrl = TextEditingController();
+    final itemCtrl = TextEditingController();
+    final amountCtrl = TextEditingController();
+    final notesCtrl = TextEditingController();
+    String selectedStatus = 'confirmed';
+    String paymentMethod = 'UPI';
+
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (ctx) => StatefulBuilder(
+        builder: (ctx, setModalState) {
+          final bottomInset = MediaQuery.of(ctx).viewInsets.bottom;
+
+          return Container(
+            decoration: const BoxDecoration(
+              color: AppColors.white,
+              borderRadius: BorderRadius.vertical(top: Radius.circular(28)),
+            ),
+            padding: EdgeInsets.only(left: 20, right: 20, top: 16, bottom: bottomInset + 24),
+            child: SingleChildScrollView(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  Center(
+                    child: Container(
+                      width: 44,
+                      height: 4,
+                      margin: const EdgeInsets.only(bottom: 16),
+                      decoration: BoxDecoration(color: Colors.grey.shade300, borderRadius: BorderRadius.circular(99)),
+                    ),
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      const Text(
+                        'Create New Order / Sale',
+                        style: TextStyle(fontSize: 18, fontWeight: FontWeight.w800, color: AppColors.heroDark),
+                      ),
+                      IconButton(icon: const Icon(Icons.close_rounded), onPressed: () => Navigator.pop(ctx)),
+                    ],
+                  ),
+                  const SizedBox(height: 16),
+
+                  TextField(
+                    controller: customerCtrl,
+                    decoration: InputDecoration(
+                      labelText: 'Customer Name',
+                      hintText: 'e.g. Rahul Sharma',
+                      filled: true,
+                      fillColor: AppColors.canvasLight,
+                      border: OutlineInputBorder(borderRadius: BorderRadius.circular(14), borderSide: BorderSide.none),
+                    ),
+                  ),
+                  const SizedBox(height: 12),
+                  TextField(
+                    controller: phoneCtrl,
+                    keyboardType: TextInputType.phone,
+                    decoration: InputDecoration(
+                      labelText: 'Phone Number',
+                      hintText: 'e.g. 9876543210',
+                      filled: true,
+                      fillColor: AppColors.canvasLight,
+                      border: OutlineInputBorder(borderRadius: BorderRadius.circular(14), borderSide: BorderSide.none),
+                    ),
+                  ),
+                  const SizedBox(height: 12),
+                  TextField(
+                    controller: itemCtrl,
+                    decoration: InputDecoration(
+                      labelText: 'Ordered Item(s)',
+                      hintText: 'e.g. 1x Sun Conure or 2x Deluxe Aviary Cage',
+                      filled: true,
+                      fillColor: AppColors.canvasLight,
+                      border: OutlineInputBorder(borderRadius: BorderRadius.circular(14), borderSide: BorderSide.none),
+                    ),
+                  ),
+                  const SizedBox(height: 12),
+                  Row(
+                    children: [
+                      Expanded(
+                        child: TextField(
+                          controller: amountCtrl,
+                          keyboardType: TextInputType.number,
+                          decoration: InputDecoration(
+                            labelText: 'Amount (₹)',
+                            prefixText: '₹ ',
+                            filled: true,
+                            fillColor: AppColors.canvasLight,
+                            border: OutlineInputBorder(borderRadius: BorderRadius.circular(14), borderSide: BorderSide.none),
+                          ),
+                        ),
+                      ),
+                      const SizedBox(width: 12),
+                      Expanded(
+                        child: DropdownButtonFormField<String>(
+                          initialValue: paymentMethod,
+                          decoration: InputDecoration(
+                            labelText: 'Payment',
+                            filled: true,
+                            fillColor: AppColors.canvasLight,
+                            border: OutlineInputBorder(borderRadius: BorderRadius.circular(14), borderSide: BorderSide.none),
+                          ),
+                          items: const [
+                            DropdownMenuItem(value: 'UPI', child: Text('UPI / GPay')),
+                            DropdownMenuItem(value: 'Cash', child: Text('Cash')),
+                            DropdownMenuItem(value: 'Card', child: Text('Card')),
+                            DropdownMenuItem(value: 'COD', child: Text('COD')),
+                          ],
+                          onChanged: (val) => setModalState(() => paymentMethod = val ?? 'UPI'),
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 12),
+                  DropdownButtonFormField<String>(
+                    initialValue: selectedStatus,
+                    decoration: InputDecoration(
+                      labelText: 'Order Status',
+                      filled: true,
+                      fillColor: AppColors.canvasLight,
+                      border: OutlineInputBorder(borderRadius: BorderRadius.circular(14), borderSide: BorderSide.none),
+                    ),
+                    items: const [
+                      DropdownMenuItem(value: 'confirmed', child: Text('Confirmed & Ready')),
+                      DropdownMenuItem(value: 'pending', child: Text('Pending Payment')),
+                      DropdownMenuItem(value: 'shipped', child: Text('Shipped')),
+                      DropdownMenuItem(value: 'delivered', child: Text('Delivered')),
+                    ],
+                    onChanged: (val) => setModalState(() => selectedStatus = val ?? 'confirmed'),
+                  ),
+                  const SizedBox(height: 12),
+                  TextField(
+                    controller: notesCtrl,
+                    decoration: InputDecoration(
+                      labelText: 'Delivery Address / Notes',
+                      hintText: 'e.g. Local pickup at aviary or delivery city',
+                      filled: true,
+                      fillColor: AppColors.canvasLight,
+                      border: OutlineInputBorder(borderRadius: BorderRadius.circular(14), borderSide: BorderSide.none),
+                    ),
+                  ),
+
+                  const SizedBox(height: 24),
+                  ElevatedButton(
+                    onPressed: () async {
+                      final cName = customerCtrl.text.trim();
+                      final item = itemCtrl.text.trim();
+                      final amt = double.tryParse(amountCtrl.text.trim()) ?? 0.0;
+                      if (cName.isEmpty || amt <= 0) {
+                        ScaffoldMessenger.of(ctx).showSnackBar(const SnackBar(content: Text('Please enter customer name and valid amount')));
+                        return;
+                      }
+
+                      final success = await context.read<OrdersProvider>().createOrder({
+                        'customerName': cName,
+                        'customerPhone': phoneCtrl.text.trim(),
+                        'shippingAddress': notesCtrl.text.trim(),
+                        'amount': amt,
+                        'totalAmount': amt,
+                        'orderItems': [
+                          {'name': item.isEmpty ? 'Custom Order' : item, 'quantity': 1, 'price': amt}
+                        ],
+                        'paymentMethod': paymentMethod,
+                        'orderStatus': selectedStatus,
+                        'status': selectedStatus,
+                        'notes': notesCtrl.text.trim(),
+                      });
+
+                      if (ctx.mounted) Navigator.pop(ctx);
+                      if (mounted && success) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(content: Text('Order created successfully!'), backgroundColor: AppColors.forestGreen),
+                        );
+                      }
+                    },
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: AppColors.heroDark,
+                      foregroundColor: Colors.white,
+                      padding: const EdgeInsets.symmetric(vertical: 16),
+                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+                    ),
+                    child: const Text('Save Order', style: TextStyle(fontSize: 15, fontWeight: FontWeight.w700)),
+                  ),
+                ],
+              ),
+            ),
+          );
+        },
       ),
     );
   }
@@ -91,10 +319,22 @@ class _OrdersScreenState extends State<OrdersScreen> {
         elevation: 0,
         actions: [
           IconButton(
+            icon: const Icon(Icons.add_rounded, size: 28),
+            tooltip: 'Add Order',
+            onPressed: _showCreateOrderModal,
+          ),
+          IconButton(
             icon: const Icon(Icons.refresh_rounded),
             onPressed: () => prov.fetchOrders(refresh: true),
           ),
         ],
+      ),
+      floatingActionButton: FloatingActionButton.extended(
+        backgroundColor: AppColors.heroDark,
+        foregroundColor: Colors.white,
+        icon: const Icon(Icons.add_rounded),
+        label: const Text('New Order', style: TextStyle(fontWeight: FontWeight.w800)),
+        onPressed: _showCreateOrderModal,
       ),
       body: Column(
         children: [

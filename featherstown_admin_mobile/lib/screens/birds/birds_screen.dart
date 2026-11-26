@@ -570,49 +570,88 @@ class _BirdsScreenState extends State<BirdsScreen> {
                   ),
 
                   const SizedBox(height: 24),
-                  ElevatedButton(
-                    onPressed: () async {
-                      final name = nameCtrl.text.trim();
-                      final species = speciesCtrl.text.trim();
-                      final price = double.tryParse(priceCtrl.text.trim()) ?? bird.price;
-                      if (name.isEmpty || species.isEmpty) {
-                        ScaffoldMessenger.of(ctx).showSnackBar(const SnackBar(content: Text('Please fill name and species')));
-                        return;
-                      }
+                  Row(
+                    children: [
+                      IconButton(
+                        tooltip: 'Delete Bird',
+                        icon: const Icon(Icons.delete_outline_rounded, color: AppColors.danger, size: 28),
+                        onPressed: () async {
+                          final confirm = await showDialog<bool>(
+                            context: ctx,
+                            builder: (dCtx) => AlertDialog(
+                              title: const Text('Delete Bird Record?'),
+                              content: Text('Are you sure you want to permanently delete ${bird.name}?'),
+                              actions: [
+                                TextButton(onPressed: () => Navigator.pop(dCtx, false), child: const Text('Cancel')),
+                                ElevatedButton(
+                                  onPressed: () => Navigator.pop(dCtx, true),
+                                  style: ElevatedButton.styleFrom(backgroundColor: AppColors.danger),
+                                  child: const Text('Delete'),
+                                ),
+                              ],
+                            ),
+                          );
+                          if (confirm == true) {
+                            if (ctx.mounted) Navigator.pop(ctx);
+                            if (mounted) {
+                              await context.read<BirdsProvider>().deleteBird(bird.id);
+                              if (mounted) {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  const SnackBar(content: Text('Bird deleted successfully')),
+                                );
+                              }
+                            }
+                          }
+                        },
+                      ),
+                      const SizedBox(width: 8),
+                      Expanded(
+                        child: ElevatedButton(
+                          onPressed: () async {
+                            final name = nameCtrl.text.trim();
+                            final species = speciesCtrl.text.trim();
+                            final price = double.tryParse(priceCtrl.text.trim()) ?? bird.price;
+                            if (name.isEmpty || species.isEmpty) {
+                              ScaffoldMessenger.of(ctx).showSnackBar(const SnackBar(content: Text('Please fill name and species')));
+                              return;
+                            }
 
-                      final Map<String, dynamic> updatePayload = {
-                        'name': name,
-                        'species': species,
-                        'price': price.toStringAsFixed(0),
-                        'category': 'Birds',
-                        'status': selectedStatus,
-                        'dnaSex': selectedDna,
-                        'ringNumber': ringCtrl.text.trim(),
-                        'description': descCtrl.text.trim(),
-                      };
-                      if (imageUrl != null) {
-                        updatePayload['image'] = imageUrl;
-                        updatePayload['images'] = [imageUrl];
-                      }
+                            final Map<String, dynamic> updatePayload = {
+                              'name': name,
+                              'species': species,
+                              'price': price.toStringAsFixed(0),
+                              'category': 'Birds',
+                              'status': selectedStatus,
+                              'dnaSex': selectedDna,
+                              'ringNumber': ringCtrl.text.trim(),
+                              'description': descCtrl.text.trim(),
+                            };
+                            if (imageUrl != null) {
+                              updatePayload['image'] = imageUrl;
+                              updatePayload['images'] = [imageUrl];
+                            }
 
-                      final success = await context.read<BirdsProvider>().updateBird(bird.id, updatePayload);
+                            final success = await context.read<BirdsProvider>().updateBird(bird.id, updatePayload);
 
-                      if (ctx.mounted) {
-                        Navigator.pop(ctx);
-                      }
-                      if (mounted && success) {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(content: Text('Bird updated successfully!'), backgroundColor: AppColors.forestGreen),
-                        );
-                      }
-                    },
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: AppColors.heroDark,
-                      foregroundColor: Colors.white,
-                      padding: const EdgeInsets.symmetric(vertical: 16),
-                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-                    ),
-                    child: const Text('Save Changes', style: TextStyle(fontSize: 15, fontWeight: FontWeight.w700)),
+                            if (ctx.mounted) {
+                              Navigator.pop(ctx);
+                            }
+                            if (mounted && success) {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(content: Text('Bird updated successfully!'), backgroundColor: AppColors.forestGreen),
+                              );
+                            }
+                          },
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: AppColors.heroDark,
+                            foregroundColor: Colors.white,
+                            padding: const EdgeInsets.symmetric(vertical: 16),
+                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+                          ),
+                          child: const Text('Save Changes', style: TextStyle(fontSize: 15, fontWeight: FontWeight.w700)),
+                        ),
+                      ),
+                    ],
                   ),
                 ],
               ),

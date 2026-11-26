@@ -43,8 +43,11 @@ def serialize_doc(doc: Any) -> Any:
             if k == "passwordHash":
                 # Never expose password hash in API responses
                 continue
-            if k == "_id" and isinstance(v, ObjectId):
-                result["_id"] = str(v)
+            if k == "_id":
+                str_id = str(v)
+                result["_id"] = str_id
+                if "id" not in doc:
+                    result["id"] = str_id
             elif isinstance(v, ObjectId):
                 result[k] = str(v)
             elif isinstance(v, datetime):

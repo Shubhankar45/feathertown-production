@@ -69,6 +69,80 @@ class _SubscribersScreenState extends State<SubscribersScreen> {
     }
   }
 
+  void _showAddSubscriberModal() {
+    final emailCtrl = TextEditingController();
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (ctx) => Padding(
+        padding: EdgeInsets.only(
+          left: 20,
+          right: 20,
+          top: 20,
+          bottom: MediaQuery.of(ctx).viewInsets.bottom + 24,
+        ),
+        child: Container(
+          decoration: const BoxDecoration(
+            color: AppColors.white,
+            borderRadius: BorderRadius.vertical(top: Radius.circular(28)),
+          ),
+          padding: const EdgeInsets.all(20),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              const Text('Add Newsletter Subscriber', style: TextStyle(fontSize: 18, fontWeight: FontWeight.w800, color: AppColors.heroDark)),
+              const SizedBox(height: 16),
+              TextField(
+                controller: emailCtrl,
+                keyboardType: TextInputType.emailAddress,
+                decoration: InputDecoration(
+                  labelText: 'Email Address',
+                  hintText: 'e.g. subscriber@example.com',
+                  filled: true,
+                  fillColor: AppColors.canvasLight,
+                  border: OutlineInputBorder(borderRadius: BorderRadius.circular(14), borderSide: BorderSide.none),
+                ),
+              ),
+              const SizedBox(height: 20),
+              ElevatedButton(
+                onPressed: () async {
+                  final email = emailCtrl.text.trim();
+                  if (!email.contains('@')) {
+                    ScaffoldMessenger.of(ctx).showSnackBar(const SnackBar(content: Text('Please enter a valid email')));
+                    return;
+                  }
+                  try {
+                    await ApiService.post(ApiEndpoints.subscribers, body: {'email': email});
+                    if (ctx.mounted) Navigator.pop(ctx);
+                    if (mounted) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(content: Text('Subscriber added successfully!'), backgroundColor: AppColors.forestGreen),
+                      );
+                    }
+                    _loadSubscribers();
+                  } catch (e) {
+                    if (ctx.mounted) {
+                      ScaffoldMessenger.of(ctx).showSnackBar(SnackBar(content: Text('Error adding subscriber: $e')));
+                    }
+                  }
+                },
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: AppColors.heroDark,
+                  foregroundColor: Colors.white,
+                  padding: const EdgeInsets.symmetric(vertical: 16),
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(18)),
+                ),
+                child: const Text('Add Subscriber', style: TextStyle(fontWeight: FontWeight.w700)),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final filtered = _subscribers.where((s) {
@@ -85,11 +159,23 @@ class _SubscribersScreenState extends State<SubscribersScreen> {
         elevation: 0,
         actions: [
           IconButton(
+            tooltip: 'Add Subscriber',
+            icon: const Icon(Icons.add_rounded, size: 28),
+            onPressed: _showAddSubscriberModal,
+          ),
+          IconButton(
             tooltip: 'Reload',
             icon: const Icon(Icons.refresh_rounded),
             onPressed: _loadSubscribers,
           ),
         ],
+      ),
+      floatingActionButton: FloatingActionButton.extended(
+        backgroundColor: AppColors.heroDark,
+        foregroundColor: Colors.white,
+        icon: const Icon(Icons.add_rounded),
+        label: const Text('Add Subscriber', style: TextStyle(fontWeight: FontWeight.w700)),
+        onPressed: _showAddSubscriberModal,
       ),
       body: _isLoading
           ? const Center(child: CircularProgressIndicator(color: AppColors.forestGreen))

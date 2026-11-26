@@ -1,5 +1,5 @@
 import { useEffect, useState, useMemo } from "react";
-import { Download, X, Package } from "lucide-react";
+import { Download, X, Package, Trash2 } from "lucide-react";
 import { adminFetch } from "../../utils/adminApi";
 import { toast } from "../../components/ui/Toast";
 import { safeFormatDate, safeFormatDateTime, safeFormatCurrency, safeLower } from "../../utils/formatters";
@@ -42,6 +42,20 @@ export default function AdminOrders() {
       toast.success(`Order marked as "${newStatus}"`);
     } catch (err) {
       toast.error(err.message || "Could not update order status");
+    }
+  };
+
+  const handleDeleteOrder = async (orderId) => {
+    if (!window.confirm("Are you sure you want to permanently delete this order?")) return;
+    try {
+      await adminFetch(`/api/admin/orders/${orderId}`, { method: "DELETE" });
+      setOrders((prev) => prev.filter((o) => (o._id || o.id) !== orderId));
+      if (selectedOrder && (selectedOrder._id === orderId || selectedOrder.id === orderId)) {
+        setSelectedOrder(null);
+      }
+      toast.success("Order deleted successfully");
+    } catch (err) {
+      toast.error(err.message || "Failed to delete order");
     }
   };
 
@@ -340,21 +354,40 @@ export default function AdminOrders() {
                     </select>
                   </td>
                   <td style={{ padding: "14px 16px", textAlign: "right" }}>
-                    <button
-                      onClick={() => setSelectedOrder(order)}
-                      style={{
-                        padding: "6px 12px",
-                        borderRadius: 6,
-                        background: "#F8FAFC",
-                        color: "#334155",
-                        border: "1px solid #E2E8F0",
-                        fontSize: 12.5,
-                        cursor: "pointer",
-                        fontWeight: 600,
-                      }}
-                    >
-                      View Invoice
-                    </button>
+                    <div style={{ display: "inline-flex", gap: 8, alignItems: "center" }}>
+                      <button
+                        onClick={() => setSelectedOrder(order)}
+                        style={{
+                          padding: "6px 12px",
+                          borderRadius: 6,
+                          background: "#F8FAFC",
+                          color: "#334155",
+                          border: "1px solid #E2E8F0",
+                          fontSize: 12.5,
+                          cursor: "pointer",
+                          fontWeight: 600,
+                        }}
+                      >
+                        View
+                      </button>
+                      <button
+                        onClick={() => handleDeleteOrder(order._id || order.id)}
+                        title="Delete order"
+                        style={{
+                          padding: "6px 8px",
+                          borderRadius: 6,
+                          background: "#FEF2F2",
+                          color: "#DC2626",
+                          border: "1px solid #FCA5A5",
+                          cursor: "pointer",
+                          display: "inline-flex",
+                          alignItems: "center",
+                          justifyContent: "center",
+                        }}
+                      >
+                        <Trash2 size={14} />
+                      </button>
+                    </div>
                   </td>
                 </tr>
               ))}
@@ -465,8 +498,28 @@ export default function AdminOrders() {
                   {selectedOrder.paymentMethod || "COD"}
                 </strong>
               </div>
-              <div style={{ fontSize: 18, fontWeight: 800, color: "#059669" }}>
-                Total: ₹{selectedOrder.amount}
+              <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+                <button
+                  onClick={() => handleDeleteOrder(selectedOrder._id || selectedOrder.id)}
+                  style={{
+                    padding: "8px 14px",
+                    borderRadius: 8,
+                    background: "#FEF2F2",
+                    color: "#DC2626",
+                    border: "1px solid #FCA5A5",
+                    fontSize: 13,
+                    fontWeight: 700,
+                    cursor: "pointer",
+                    display: "inline-flex",
+                    alignItems: "center",
+                    gap: 6,
+                  }}
+                >
+                  <Trash2 size={14} /> Delete Order
+                </button>
+                <div style={{ fontSize: 18, fontWeight: 800, color: "#059669" }}>
+                  Total: ₹{selectedOrder.amount}
+                </div>
               </div>
             </div>
           </div>

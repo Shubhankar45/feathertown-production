@@ -1,9 +1,10 @@
 import os
 import json
 import logging
+import urllib.request
+import urllib.error
 from typing import Optional, Dict, Any, List
 from fastapi import APIRouter, HTTPException, Depends, Request
-import httpx
 
 from app.auth import get_current_admin
 
@@ -25,11 +26,12 @@ async def _call_gemini(prompt: str, system_instruction: str = "") -> Optional[st
         if system_instruction:
             payload["systemInstruction"] = {"parts": [{"text": system_instruction}]}
             
-        async with httpx.AsyncClient(timeout=10.0) as client:
-            resp = await client.post(url, json=payload)
-            if resp.status_code == 200:
-                data = resp.json()
-                candidates = data.get("candidates") or []
+        data = json.dumps(payload).encode("utf-8")
+        req = urllib.request.Request(url, data=data, headers={"Content-Type": "application/json"})
+        with urllib.request.urlopen(req, timeout=10.0) as resp:
+            if resp.status == 200:
+                body = json.loads(resp.read().decode("utf-8"))
+                candidates = body.get("candidates") or []
                 if candidates:
                     parts = candidates[0].get("content", {}).get("parts", [])
                     if parts:

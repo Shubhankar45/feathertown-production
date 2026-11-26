@@ -50,6 +50,36 @@ class OrdersProvider extends ChangeNotifier {
     }
   }
 
+  Future<bool> createOrder(Map<String, dynamic> data) async {
+    try {
+      final res = await ApiService.post('/api/admin/orders', body: data);
+      if (res is Map) {
+        final newOrder = StoreOrder.fromJson(Map<String, dynamic>.from(res));
+        _orders.insert(0, newOrder);
+        notifyListeners();
+        return true;
+      }
+      return false;
+    } catch (e) {
+      _errorMessage = e.toString();
+      notifyListeners();
+      return false;
+    }
+  }
+
+  Future<bool> deleteOrder(String id) async {
+    try {
+      await ApiService.delete('/api/admin/orders/$id');
+      _orders.removeWhere((o) => o.id == id);
+      notifyListeners();
+      return true;
+    } catch (e) {
+      _errorMessage = e.toString();
+      notifyListeners();
+      return false;
+    }
+  }
+
   Future<bool> updateOrderStatus(String id, String newStatus) async {
     try {
       await ApiService.patch('/api/admin/orders/$id/status', body: {'orderStatus': newStatus, 'status': newStatus});

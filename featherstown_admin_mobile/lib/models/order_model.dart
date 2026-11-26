@@ -48,15 +48,25 @@ class StoreOrder {
       dt = DateTime.now();
     }
 
-    final rawItems = json['items'] as List? ?? [];
+    final rawItems = (json['orderItems'] as List?) ?? (json['items'] as List?) ?? [];
     final itemsList = rawItems.map((e) => OrderItem.fromJson(Map<String, dynamic>.from(e))).toList();
 
+    final customer = json['customer'] as Map? ?? json['shippingAddress'] as Map?;
+    final addressMap = customer != null ? Map<String, dynamic>.from(customer) : null;
+    final email = json['userEmail']?.toString() ?? customer?['email']?.toString();
+
+    final amt = (json['amount'] is num)
+        ? (json['amount'] as num).toDouble()
+        : (json['totalAmount'] is num)
+            ? (json['totalAmount'] as num).toDouble()
+            : 0.0;
+
     return StoreOrder(
-      id: json['_id']?.toString() ?? json['id']?.toString() ?? '',
-      userEmail: json['userEmail']?.toString(),
-      shippingAddress: json['shippingAddress'] is Map ? Map<String, dynamic>.from(json['shippingAddress']) : null,
+      id: json['_id']?.toString() ?? json['id']?.toString() ?? json['orderId']?.toString() ?? '',
+      userEmail: email,
+      shippingAddress: addressMap,
       items: itemsList,
-      amount: (json['amount'] is num) ? (json['amount'] as num).toDouble() : 0.0,
+      amount: amt,
       paymentMethod: json['paymentMethod']?.toString() ?? 'COD',
       paymentStatus: json['paymentStatus']?.toString() ?? 'pending',
       orderStatus: json['orderStatus']?.toString() ?? 'pending',
