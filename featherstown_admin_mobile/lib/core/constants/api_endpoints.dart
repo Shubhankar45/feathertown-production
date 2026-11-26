@@ -16,7 +16,9 @@ class ApiEndpoints {
   // Billing & Invoices
   static const String invoices = '/api/admin/invoices';
   static const String transactions = '/api/admin/transactions';
+  static String transactionDetail(String id) => '/api/admin/transactions/$id';
   static const String customers = '/api/admin/customers';
+  static String customerDetail(String id) => '/api/admin/customers/$id';
 
   // Birds & Bookings
   static const String birds = '/api/admin/birds';

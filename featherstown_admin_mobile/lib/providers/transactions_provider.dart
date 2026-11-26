@@ -67,4 +67,29 @@ class TransactionsProvider extends ChangeNotifier {
     }
     return false;
   }
+
+  Future<bool> updateTransaction(String id, Map<String, dynamic> data) async {
+    try {
+      await ApiService.put(ApiEndpoints.transactionDetail(id), body: data);
+      await fetchTransactions(refresh: true);
+      return true;
+    } catch (e) {
+      _errorMessage = e.toString();
+      notifyListeners();
+      return false;
+    }
+  }
+
+  Future<bool> deleteTransaction(String id) async {
+    try {
+      await ApiService.delete(ApiEndpoints.transactionDetail(id));
+      _transactions.removeWhere((t) => t.id == id || t.transactionId == id);
+      await fetchTransactions(refresh: true);
+      return true;
+    } catch (e) {
+      _errorMessage = e.toString();
+      notifyListeners();
+      return false;
+    }
+  }
 }

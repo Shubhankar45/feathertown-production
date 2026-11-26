@@ -46,9 +46,37 @@ class BookingsProvider extends ChangeNotifier {
     }
   }
 
+  Future<bool> createBooking(Map<String, dynamic> data) async {
+    try {
+      final res = await ApiService.post(ApiEndpoints.bookings, body: data);
+      if (res is Map<String, dynamic>) {
+        _bookings.insert(0, BirdBookingItem.fromJson(res));
+        await fetchBookings(refresh: true);
+        return true;
+      }
+    } catch (e) {
+      _errorMessage = e.toString();
+      notifyListeners();
+    }
+    return false;
+  }
+
   Future<bool> updateBooking(String invoiceId, Map<String, dynamic> data) async {
     try {
       await ApiService.patch(ApiEndpoints.bookingDetail(invoiceId), body: data);
+      await fetchBookings(refresh: true);
+      return true;
+    } catch (e) {
+      _errorMessage = e.toString();
+      notifyListeners();
+      return false;
+    }
+  }
+
+  Future<bool> deleteBooking(String invoiceId) async {
+    try {
+      await ApiService.delete(ApiEndpoints.bookingDetail(invoiceId));
+      _bookings.removeWhere((b) => b.id == invoiceId || b.invoiceNumber == invoiceId);
       await fetchBookings(refresh: true);
       return true;
     } catch (e) {

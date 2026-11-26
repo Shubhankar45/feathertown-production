@@ -32,7 +32,7 @@ class _TransactionsScreenState extends State<TransactionsScreen> {
       context: context,
       isScrollControlled: true,
       shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+        borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
       ),
       builder: (ctx) => StatefulBuilder(
         builder: (ctx, setModalState) => Padding(
@@ -42,77 +42,228 @@ class _TransactionsScreenState extends State<TransactionsScreen> {
             top: 24,
             bottom: MediaQuery.of(ctx).viewInsets.bottom + 24,
           ),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              Text('Record Ledger Entry', style: Theme.of(ctx).textTheme.titleLarge),
-              const SizedBox(height: 16),
-              SegmentedButton<String>(
-                segments: const [
-                  ButtonSegment(value: 'expense', label: Text('Expense')),
-                  ButtonSegment(value: 'income', label: Text('Income')),
-                ],
-                selected: {type},
-                onSelectionChanged: (set) {
-                  setModalState(() {
-                    type = set.first;
-                    if (type == 'expense') {
-                      category = 'Feed & Nutrition';
-                    } else {
-                      category = 'Sales';
+          child: SingleChildScrollView(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    const Text('Record Ledger Entry', style: TextStyle(fontSize: 18, fontWeight: FontWeight.w800)),
+                    IconButton(icon: const Icon(Icons.close_rounded), onPressed: () => Navigator.pop(ctx)),
+                  ],
+                ),
+                const SizedBox(height: 16),
+                SegmentedButton<String>(
+                  segments: const [
+                    ButtonSegment(value: 'expense', label: Text('Expense (-Out)')),
+                    ButtonSegment(value: 'income', label: Text('Income (+In)')),
+                  ],
+                  selected: {type},
+                  onSelectionChanged: (set) {
+                    setModalState(() {
+                      type = set.first;
+                      if (type == 'expense') {
+                        category = 'Feed & Nutrition';
+                      } else {
+                        category = 'Sales';
+                      }
+                    });
+                  },
+                ),
+                const SizedBox(height: 14),
+                TextField(
+                  controller: amtCtrl,
+                  keyboardType: TextInputType.number,
+                  decoration: const InputDecoration(labelText: 'Amount (₹) *', prefixIcon: Icon(Icons.currency_rupee_rounded)),
+                ),
+                const SizedBox(height: 12),
+                TextField(
+                  controller: descCtrl,
+                  decoration: const InputDecoration(labelText: 'Description *', prefixIcon: Icon(Icons.description_outlined)),
+                ),
+                const SizedBox(height: 12),
+                TextField(
+                  controller: refCtrl,
+                  decoration: const InputDecoration(labelText: 'Reference / UTR (Optional)', prefixIcon: Icon(Icons.tag_rounded)),
+                ),
+                const SizedBox(height: 20),
+                ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: AppColors.heroDark,
+                    foregroundColor: Colors.white,
+                    padding: const EdgeInsets.symmetric(vertical: 14),
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
+                  ),
+                  onPressed: () async {
+                    final amt = double.tryParse(amtCtrl.text.trim());
+                    if (amt == null || amt <= 0 || descCtrl.text.trim().isEmpty) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(content: Text('Please enter valid amount and description')),
+                      );
+                      return;
                     }
-                  });
-                },
-              ),
-              const SizedBox(height: 14),
-              TextField(
-                controller: amtCtrl,
-                keyboardType: TextInputType.number,
-                decoration: const InputDecoration(labelText: 'Amount (₹) *'),
-              ),
-              const SizedBox(height: 12),
-              TextField(
-                controller: descCtrl,
-                decoration: const InputDecoration(labelText: 'Description *'),
-              ),
-              const SizedBox(height: 12),
-              TextField(
-                controller: refCtrl,
-                decoration: const InputDecoration(labelText: 'Reference / UTR (Optional)'),
-              ),
-              const SizedBox(height: 20),
-              ElevatedButton(
-                onPressed: () async {
-                  final amt = double.tryParse(amtCtrl.text.trim());
-                  if (amt == null || amt <= 0 || descCtrl.text.trim().isEmpty) {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(content: Text('Please enter valid amount and description')),
-                    );
-                    return;
-                  }
-                  final prov = context.read<TransactionsProvider>();
-                  final ok = await prov.createTransaction({
-                    'type': type,
-                    'category': category,
-                    'amount': amt,
-                    'description': descCtrl.text.trim(),
-                    'reference': refCtrl.text.trim(),
-                    'paymentMethod': 'UPI',
-                    'date': DateTime.now().toIso8601String(),
-                  });
-                  if (ctx.mounted) Navigator.pop(ctx);
-                  if (mounted && ok) {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(content: Text('Financial entry recorded in ledger!')),
-                    );
-                  }
-                },
-                child: const Text('Record Transaction'),
-              ),
-            ],
+                    final prov = context.read<TransactionsProvider>();
+                    final ok = await prov.createTransaction({
+                      'type': type,
+                      'category': category,
+                      'amount': amt,
+                      'description': descCtrl.text.trim(),
+                      'reference': refCtrl.text.trim(),
+                      'paymentMethod': 'UPI',
+                      'date': DateTime.now().toIso8601String(),
+                    });
+                    if (ctx.mounted) Navigator.pop(ctx);
+                    if (mounted && ok) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(content: Text('Financial entry recorded in ledger!'), backgroundColor: AppColors.forestGreen),
+                      );
+                    }
+                  },
+                  child: const Text('Record Transaction', style: TextStyle(fontWeight: FontWeight.w700, fontSize: 15)),
+                ),
+              ],
+            ),
           ),
         ),
+      ),
+    );
+  }
+
+  void _showEditTransactionModal(LedgerTransaction t) {
+    String type = t.type;
+    final amtCtrl = TextEditingController(text: t.amount.toString());
+    final descCtrl = TextEditingController(text: t.description);
+    final refCtrl = TextEditingController(text: t.reference);
+
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
+      ),
+      builder: (ctx) => StatefulBuilder(
+        builder: (ctx, setModalState) => Padding(
+          padding: EdgeInsets.only(
+            left: 20,
+            right: 20,
+            top: 24,
+            bottom: MediaQuery.of(ctx).viewInsets.bottom + 24,
+          ),
+          child: SingleChildScrollView(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    const Text('Edit Ledger Entry', style: TextStyle(fontSize: 18, fontWeight: FontWeight.w800)),
+                    IconButton(icon: const Icon(Icons.close_rounded), onPressed: () => Navigator.pop(ctx)),
+                  ],
+                ),
+                const SizedBox(height: 16),
+                SegmentedButton<String>(
+                  segments: const [
+                    ButtonSegment(value: 'expense', label: Text('Expense (-Out)')),
+                    ButtonSegment(value: 'income', label: Text('Income (+In)')),
+                  ],
+                  selected: {type},
+                  onSelectionChanged: (set) => setModalState(() => type = set.first),
+                ),
+                const SizedBox(height: 14),
+                TextField(
+                  controller: amtCtrl,
+                  keyboardType: TextInputType.number,
+                  decoration: const InputDecoration(labelText: 'Amount (₹) *', prefixIcon: Icon(Icons.currency_rupee_rounded)),
+                ),
+                const SizedBox(height: 12),
+                TextField(
+                  controller: descCtrl,
+                  decoration: const InputDecoration(labelText: 'Description *', prefixIcon: Icon(Icons.description_outlined)),
+                ),
+                const SizedBox(height: 12),
+                TextField(
+                  controller: refCtrl,
+                  decoration: const InputDecoration(labelText: 'Reference / UTR', prefixIcon: Icon(Icons.tag_rounded)),
+                ),
+                const SizedBox(height: 20),
+                ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: AppColors.heroDark,
+                    foregroundColor: Colors.white,
+                    padding: const EdgeInsets.symmetric(vertical: 14),
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
+                  ),
+                  onPressed: () async {
+                    final amt = double.tryParse(amtCtrl.text.trim());
+                    if (amt == null || amt <= 0 || descCtrl.text.trim().isEmpty) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(content: Text('Please enter valid amount and description')),
+                      );
+                      return;
+                    }
+                    final ok = await context.read<TransactionsProvider>().updateTransaction(t.id, {
+                      'type': type,
+                      'amount': amt,
+                      'description': descCtrl.text.trim(),
+                      'reference': refCtrl.text.trim(),
+                    });
+                    if (ctx.mounted) Navigator.pop(ctx);
+                    if (mounted && ok) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(content: Text('Transaction updated!'), backgroundColor: AppColors.forestGreen),
+                      );
+                    }
+                  },
+                  child: const Text('Update Entry', style: TextStyle(fontWeight: FontWeight.w700, fontSize: 15)),
+                ),
+                const SizedBox(height: 10),
+                OutlinedButton.icon(
+                  style: OutlinedButton.styleFrom(
+                    foregroundColor: AppColors.danger,
+                    side: const BorderSide(color: AppColors.danger),
+                    padding: const EdgeInsets.symmetric(vertical: 12),
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
+                  ),
+                  icon: const Icon(Icons.delete_outline_rounded, size: 18),
+                  label: const Text('Delete Entry'),
+                  onPressed: () {
+                    Navigator.pop(ctx);
+                    _showDeleteTransactionConfirmation(t);
+                  },
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  void _showDeleteTransactionConfirmation(LedgerTransaction t) {
+    showDialog(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: const Text('Delete Ledger Entry?'),
+        content: Text('Are you sure you want to delete ${t.description} (${AppFormatters.currency(t.amount)}) from the ledger?'),
+        actions: [
+          TextButton(onPressed: () => Navigator.pop(ctx), child: const Text('Cancel')),
+          TextButton(
+            style: TextButton.styleFrom(foregroundColor: AppColors.danger),
+            onPressed: () async {
+              Navigator.pop(ctx);
+              final ok = await context.read<TransactionsProvider>().deleteTransaction(t.id);
+              if (mounted && ok) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(content: Text('Transaction deleted')),
+                );
+              }
+            },
+            child: const Text('Delete'),
+          ),
+        ],
       ),
     );
   }
@@ -125,59 +276,70 @@ class _TransactionsScreenState extends State<TransactionsScreen> {
     return Scaffold(
       floatingActionButton: FloatingActionButton.extended(
         onPressed: _showAddTransactionModal,
-        backgroundColor: AppColors.primary,
-        foregroundColor: AppColors.white,
+        backgroundColor: AppColors.heroDark,
+        foregroundColor: Colors.white,
         icon: const Icon(Icons.add_rounded),
-        label: const Text('Record Entry'),
+        label: const Text('Record Entry', style: TextStyle(fontWeight: FontWeight.w700)),
       ),
       body: Column(
         children: [
           // Cash flow summary card
           Padding(
             padding: const EdgeInsets.all(16),
-            child: Card(
-              color: AppColors.primary,
-              child: Padding(
-                padding: const EdgeInsets.all(16),
-                child: Column(
-                  children: [
-                    const Text('Net Cash Flow', style: TextStyle(color: Colors.white70, fontSize: 12)),
-                    const SizedBox(height: 4),
-                    Text(
-                      AppFormatters.currency(prov.netBalance),
-                      style: const TextStyle(
-                        color: Colors.white,
-                        fontSize: 24,
-                        fontWeight: FontWeight.w900,
+            child: Container(
+              padding: const EdgeInsets.all(20),
+              decoration: BoxDecoration(
+                color: AppColors.heroDark,
+                borderRadius: BorderRadius.circular(22),
+                boxShadow: [
+                  BoxShadow(
+                    color: AppColors.heroDark.withValues(alpha: 0.25),
+                    blurRadius: 16,
+                    offset: const Offset(0, 6),
+                  ),
+                ],
+              ),
+              child: Column(
+                children: [
+                  const Text('Total Net Balance', style: TextStyle(color: Color(0xFFBACEC0), fontSize: 12.5, fontWeight: FontWeight.w600)),
+                  const SizedBox(height: 6),
+                  Text(
+                    AppFormatters.currency(prov.netBalance),
+                    style: const TextStyle(
+                      color: Colors.white,
+                      fontSize: 28,
+                      fontWeight: FontWeight.w900,
+                      letterSpacing: -0.5,
+                    ),
+                  ),
+                  const SizedBox(height: 16),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceAround,
+                    children: [
+                      Column(
+                        children: [
+                          const Text('Total Income', style: TextStyle(color: Color(0xFFBACEC0), fontSize: 11)),
+                          const SizedBox(height: 3),
+                          Text(
+                            AppFormatters.currency(prov.totalInflow),
+                            style: const TextStyle(color: Color(0xFF4ADE80), fontWeight: FontWeight.w800, fontSize: 15),
+                          ),
+                        ],
                       ),
-                    ),
-                    const SizedBox(height: 12),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceAround,
-                      children: [
-                        Column(
-                          children: [
-                            const Text('Total Inflow', style: TextStyle(color: Colors.white70, fontSize: 11)),
-                            Text(
-                              AppFormatters.currency(prov.totalInflow),
-                              style: const TextStyle(color: Colors.white, fontWeight: FontWeight.w800, fontSize: 14),
-                            ),
-                          ],
-                        ),
-                        Container(width: 1, height: 24, color: Colors.white24),
-                        Column(
-                          children: [
-                            const Text('Total Outflow', style: TextStyle(color: Colors.white70, fontSize: 11)),
-                            Text(
-                              AppFormatters.currency(prov.totalOutflow),
-                              style: const TextStyle(color: Colors.white, fontWeight: FontWeight.w800, fontSize: 14),
-                            ),
-                          ],
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
+                      Container(width: 1, height: 26, color: Colors.white.withValues(alpha: 0.15)),
+                      Column(
+                        children: [
+                          const Text('Total Expenses', style: TextStyle(color: Color(0xFFBACEC0), fontSize: 11)),
+                          const SizedBox(height: 3),
+                          Text(
+                            AppFormatters.currency(prov.totalOutflow),
+                            style: const TextStyle(color: Color(0xFFF87171), fontWeight: FontWeight.w800, fontSize: 15),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                ],
               ),
             ),
           ),
@@ -212,7 +374,11 @@ class _TransactionsScreenState extends State<TransactionsScreen> {
                           separatorBuilder: (context, index) => const SizedBox(height: 10),
                           itemBuilder: (ctx, idx) {
                             final t = txns[idx];
-                            return _TransactionTile(transaction: t);
+                            return _TransactionTile(
+                              transaction: t,
+                              onTap: () => _showEditTransactionModal(t),
+                              onDelete: () => _showDeleteTransactionConfirmation(t),
+                            );
                           },
                         ),
             ),
@@ -224,53 +390,110 @@ class _TransactionsScreenState extends State<TransactionsScreen> {
 
   Widget _buildTypeChip(TransactionsProvider prov, String id, String label) {
     final isSelected = prov.typeFilter == id;
-    return ChoiceChip(
-      label: Text(label),
-      selected: isSelected,
-      selectedColor: AppColors.primary,
-      labelStyle: TextStyle(
-        color: isSelected ? Colors.white : AppColors.textPrimary,
-        fontWeight: FontWeight.w600,
-        fontSize: 12,
+    return GestureDetector(
+      onTap: () => prov.setTypeFilter(id),
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 7),
+        decoration: BoxDecoration(
+          color: isSelected ? AppColors.heroDark : AppColors.white,
+          borderRadius: BorderRadius.circular(20),
+          border: Border.all(
+            color: isSelected ? AppColors.heroDark : AppColors.cardBorder,
+          ),
+        ),
+        child: Text(
+          label,
+          style: TextStyle(
+            color: isSelected ? Colors.white : AppColors.textSecondary,
+            fontWeight: isSelected ? FontWeight.w800 : FontWeight.w600,
+            fontSize: 12,
+          ),
+        ),
       ),
-      onSelected: (_) => prov.setTypeFilter(id),
     );
   }
 }
 
 class _TransactionTile extends StatelessWidget {
   final LedgerTransaction transaction;
+  final VoidCallback onTap;
+  final VoidCallback onDelete;
 
-  const _TransactionTile({required this.transaction});
+  const _TransactionTile({
+    required this.transaction,
+    required this.onTap,
+    required this.onDelete,
+  });
 
   @override
   Widget build(BuildContext context) {
     final isIncome = transaction.type == 'income';
 
     return Card(
-      child: ListTile(
-        leading: CircleAvatar(
-          backgroundColor: isIncome ? AppColors.successWash : AppColors.dangerWash,
-          child: Icon(
-            isIncome ? Icons.arrow_downward_rounded : Icons.arrow_upward_rounded,
-            color: isIncome ? AppColors.success : AppColors.danger,
-            size: 20,
-          ),
-        ),
-        title: Text(
-          transaction.description,
-          style: const TextStyle(fontWeight: FontWeight.w700, fontSize: 13.5),
-        ),
-        subtitle: Text(
-          '${transaction.category} • ${AppFormatters.date(transaction.date)}',
-          style: const TextStyle(fontSize: 11.5, color: AppColors.textMuted),
-        ),
-        trailing: Text(
-          '${isIncome ? '+' : '-'}${AppFormatters.currency(transaction.amount)}',
-          style: TextStyle(
-            color: isIncome ? AppColors.success : AppColors.danger,
-            fontWeight: FontWeight.w800,
-            fontSize: 14.5,
+      elevation: 0.5,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(16),
+        side: const BorderSide(color: AppColors.cardBorder, width: 0.8),
+      ),
+      child: InkWell(
+        onTap: onTap,
+        borderRadius: BorderRadius.circular(16),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+          child: Row(
+            children: [
+              CircleAvatar(
+                backgroundColor: isIncome ? AppColors.successWash : AppColors.dangerWash,
+                child: Icon(
+                  isIncome ? Icons.arrow_downward_rounded : Icons.arrow_upward_rounded,
+                  color: isIncome ? AppColors.success : AppColors.danger,
+                  size: 20,
+                ),
+              ),
+              const SizedBox(width: 14),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      transaction.description,
+                      style: const TextStyle(fontWeight: FontWeight.w700, fontSize: 13.5),
+                    ),
+                    const SizedBox(height: 2),
+                    Text(
+                      '${transaction.category} • ${AppFormatters.date(transaction.date)}',
+                      style: const TextStyle(fontSize: 11.5, color: AppColors.textMuted),
+                    ),
+                  ],
+                ),
+              ),
+              const SizedBox(width: 8),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.end,
+                children: [
+                  Text(
+                    '${isIncome ? '+' : '-'}${AppFormatters.currency(transaction.amount)}',
+                    style: TextStyle(
+                      color: isIncome ? AppColors.success : AppColors.danger,
+                      fontWeight: FontWeight.w800,
+                      fontSize: 14.5,
+                    ),
+                  ),
+                  const SizedBox(height: 2),
+                  Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      const Icon(Icons.edit_outlined, size: 14, color: AppColors.textMuted),
+                      const SizedBox(width: 8),
+                      InkWell(
+                        onTap: onDelete,
+                        child: const Icon(Icons.delete_outline_rounded, size: 15, color: AppColors.danger),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ],
           ),
         ),
       ),

@@ -65,4 +65,35 @@ class CustomersProvider extends ChangeNotifier {
     }
     return false;
   }
+
+  Future<bool> updateCustomer(String id, Map<String, dynamic> data) async {
+    try {
+      final res = await ApiService.put(ApiEndpoints.customerDetail(id), body: data);
+      if (res is Map<String, dynamic>) {
+        final idx = _customers.indexWhere((c) => c.id == id);
+        if (idx != -1) {
+          _customers[idx] = Customer.fromJson(res);
+        }
+        await fetchCustomers(refresh: true);
+        return true;
+      }
+    } catch (e) {
+      _errorMessage = e.toString();
+      notifyListeners();
+    }
+    return false;
+  }
+
+  Future<bool> deleteCustomer(String id) async {
+    try {
+      await ApiService.delete(ApiEndpoints.customerDetail(id));
+      _customers.removeWhere((c) => c.id == id);
+      notifyListeners();
+      return true;
+    } catch (e) {
+      _errorMessage = e.toString();
+      notifyListeners();
+      return false;
+    }
+  }
 }

@@ -51,6 +51,8 @@ class BirdBookingItem {
   final double balanceDue;
   final DateTime createdAt;
 
+  String get id => invoiceId;
+
   BirdBookingItem({
     required this.invoiceId,
     required this.invoiceNumber,
@@ -75,7 +77,7 @@ class BirdBookingItem {
     }
 
     return BirdBookingItem(
-      invoiceId: json['invoiceId']?.toString() ?? json['_id']?.toString() ?? '',
+      invoiceId: json['invoiceId']?.toString() ?? json['_id']?.toString() ?? json['id']?.toString() ?? '',
       invoiceNumber: json['invoiceNumber']?.toString() ?? '',
       birdId: json['birdId']?.toString(),
       birdName: json['birdName']?.toString() ?? 'Companion Bird',
