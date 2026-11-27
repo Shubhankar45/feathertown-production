@@ -27,6 +27,7 @@ const NAV_LINKS = [
   { label: "Home", path: "/" },
   { label: "Shop All", path: "/accessories" },
   { label: "Companion Birds", path: "/birds" },
+  { label: "Track Order", path: "/track-order" },
   { label: "Food & Nutrition", path: "/accessories?category=food" },
   { label: "Cages & Aviaries", path: "/accessories?category=cages" },
   { label: "Toys & Play", path: "/accessories?category=toys" },

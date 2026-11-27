@@ -110,17 +110,22 @@ class _MainNavScreenState extends State<MainNavScreen> {
           children: [
             UserAccountsDrawerHeader(
               decoration: const BoxDecoration(color: AppColors.heroDark),
-              currentAccountPicture: CircleAvatar(
-                backgroundColor: AppColors.white,
-                child: Text(
-                  (auth.user?.username.isNotEmpty ?? false)
-                      ? auth.user!.username[0].toUpperCase()
-                      : 'A',
-                  style: const TextStyle(
-                    fontSize: 22,
-                    fontWeight: FontWeight.w800,
-                    color: AppColors.heroDark,
-                  ),
+              currentAccountPicture: Container(
+                decoration: BoxDecoration(
+                  color: AppColors.white,
+                  shape: BoxShape.circle,
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withValues(alpha: 0.15),
+                      blurRadius: 8,
+                      offset: const Offset(0, 3),
+                    ),
+                  ],
+                ),
+                padding: const EdgeInsets.all(8),
+                child: Image.asset(
+                  'assets/images/app_logo.png',
+                  fit: BoxFit.contain,
                 ),
               ),
               accountName: Text(

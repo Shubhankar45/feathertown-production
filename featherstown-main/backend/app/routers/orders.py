@@ -12,7 +12,7 @@ from app.config import (
     RAZORPAY_KEY_SECRET,
     PAYMENTS_ENABLED,
 )
-from app.database import accessories_col, orders_col, notifications_col
+from app.database import accessories_col, orders_col, notifications_col, customers_col
 from app.auth import get_optional_user, get_current_user, get_current_verified_user
 from app.rate_limiter import checkout_limiter
 from app.utils import is_valid_object_id, to_object_id, serialize_doc
@@ -30,6 +30,59 @@ EMAIL_PATTERN = re.compile(r"^[^\s@]+@[^\s@]+\.[^\s@]+$")
 
 def is_non_empty_str(v: Any, max_len: int = 500) -> bool:
     return isinstance(v, str) and 0 < len(v.strip()) <= max_len
+
+async def generate_order_number() -> str:
+    now = datetime.now(timezone.utc)
+    year = now.strftime("%Y")
+    count = await orders_col.count_documents({}) + 1
+    candidate = f"FT-ORD-{year}-{count:04d}"
+    while await orders_col.find_one({"orderNumber": candidate}):
+        count += 1
+        candidate = f"FT-ORD-{year}-{count:04d}"
+    return candidate
+
+async def sync_customer_profile(customer: Dict[str, Any], order_amount: float) -> None:
+    phone = str(customer.get("phone") or "").strip()
+    email = str(customer.get("email") or "").strip().lower()
+    if not phone and not email:
+        return
+    now = datetime.now(timezone.utc)
+    query = []
+    if phone:
+        query.append({"phone": phone})
+    if email:
+        query.append({"email": email})
+    existing = await customers_col.find_one({"$or": query}) if query else None
+    if existing:
+        await customers_col.update_one(
+            {"_id": existing["_id"]},
+            {
+                "$inc": {"totalOrders": 1, "totalSpent": float(order_amount)},
+                "$set": {
+                    "name": customer.get("name") or existing.get("name"),
+                    "address": customer.get("address") or existing.get("address"),
+                    "city": customer.get("city") or existing.get("city"),
+                    "state": customer.get("state") or existing.get("state"),
+                    "pincode": customer.get("pincode") or existing.get("pincode"),
+                    "updatedAt": now,
+                },
+            },
+        )
+    else:
+        await customers_col.insert_one({
+            "name": customer.get("name", "Customer"),
+            "phone": phone,
+            "email": email,
+            "address": customer.get("address", ""),
+            "city": customer.get("city", ""),
+            "state": customer.get("state", ""),
+            "pincode": customer.get("pincode", ""),
+            "totalOrders": 1,
+            "totalSpent": float(order_amount),
+            "customerType": "regular",
+            "createdAt": now,
+            "updatedAt": now,
+        })
 
 async def validate_and_price_cart(body: Dict[str, Any]) -> Dict[str, Any]:
     items = body.get("items")
@@ -108,21 +161,6 @@ async def create_razorpay_order(
     body: Dict[str, Any],
     user: Optional[Dict[str, Any]] = Depends(get_optional_user),
 ):
-    if not user:
-        raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED,
-            detail={"msg": "Please sign in or create an account to complete your purchase."},
-        )
-    if not user.get("emailVerified"):
-        raise HTTPException(
-            status_code=status.HTTP_403_FORBIDDEN,
-            detail={
-                "msg": "Please verify your email address before placing an order.",
-                "needsVerification": True,
-                "email": user.get("email", ""),
-            },
-        )
-
     if not razorpay_client:
         raise HTTPException(
             status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
@@ -143,7 +181,9 @@ async def create_razorpay_order(
         })
 
         now = datetime.now(timezone.utc)
+        order_num = await generate_order_number()
         order_doc = {
+            "orderNumber": order_num,
             "items": order_items,
             "amount": amount,
             "customer": customer,
@@ -151,6 +191,21 @@ async def create_razorpay_order(
             "razorpayOrderId": razorpay_order["id"],
             "paymentStatus": "created",
             "orderStatus": "pending",
+            "tracking": {
+                "courier": "Pending Allocation",
+                "trackingNumber": "",
+                "trackingUrl": "",
+                "estimatedDelivery": "",
+                "currentStatus": "Order Placed",
+                "history": [
+                    {
+                        "status": "Order Placed",
+                        "description": "Order received and initialized via FeatherTown Store",
+                        "timestamp": now.isoformat(),
+                        "location": "Sundargarh, Odisha",
+                    }
+                ],
+            },
             "createdAt": now,
             "updatedAt": now,
         }
@@ -161,6 +216,7 @@ async def create_razorpay_order(
 
         return {
             "orderId": str(result.inserted_id),
+            "orderNumber": order_num,
             "razorpayOrderId": razorpay_order["id"],
             "amount": razorpay_order["amount"],
             "currency": razorpay_order["currency"],
@@ -203,6 +259,24 @@ async def verify_razorpay_payment(body: Dict[str, Any]):
 
     if order.get("paymentStatus") != "paid":
         now = datetime.now(timezone.utc)
+        tracking = order.get("tracking") or {
+            "courier": "Pending Allocation",
+            "trackingNumber": "",
+            "trackingUrl": "",
+            "estimatedDelivery": "",
+            "currentStatus": "Confirmed",
+            "history": [],
+        }
+        hist = tracking.get("history") or []
+        hist.append({
+            "status": "Payment Confirmed",
+            "description": f"Online payment verified via Razorpay ({razorpay_payment_id})",
+            "timestamp": now.isoformat(),
+            "location": "Sundargarh, Odisha",
+        })
+        tracking["history"] = hist
+        tracking["currentStatus"] = "Confirmed"
+
         await orders_col.update_one(
             {"_id": order["_id"]},
             {
@@ -211,6 +285,7 @@ async def verify_razorpay_payment(body: Dict[str, Any]):
                     "orderStatus": "confirmed",
                     "razorpayPaymentId": razorpay_payment_id,
                     "razorpaySignature": razorpay_signature,
+                    "tracking": tracking,
                     "updatedAt": now,
                 }
             },
@@ -226,10 +301,14 @@ async def verify_razorpay_payment(body: Dict[str, Any]):
                     {"$inc": {"stock": -qty}},
                 )
 
+        # Auto sync customer
+        cust = order.get("customer") or {}
+        await sync_customer_profile(cust, float(order.get("amount") or 0))
+
         # Notify mobile admin
         await notifications_col.insert_one({
-            "title": f"Payment Verified #{(str(order['_id']))[-6:].upper()}",
-            "body": f"₹{float(order.get('amount') or 0):,.0f} paid via Razorpay by {order.get('customer', {}).get('name', 'Customer')}",
+            "title": f"Payment Verified #{order.get('orderNumber', str(order['_id'])[-6:].upper())}",
+            "body": f"₹{float(order.get('amount') or 0):,.0f} paid via Razorpay by {cust.get('name', 'Customer')}",
             "category": "billing",
             "priority": "high",
             "data": {"orderId": str(order["_id"]), "type": "payment"},
@@ -238,28 +317,13 @@ async def verify_razorpay_payment(body: Dict[str, Any]):
             "updatedAt": now,
         })
 
-    return {"msg": "Payment verified", "orderId": str(order["_id"])}
+    return {"msg": "Payment verified", "orderId": str(order["_id"]), "orderNumber": order.get("orderNumber")}
 
 @router.post("/cod", status_code=status.HTTP_201_CREATED, dependencies=[Depends(checkout_limiter)])
 async def create_cod_order(
     body: Dict[str, Any],
     user: Optional[Dict[str, Any]] = Depends(get_optional_user),
 ):
-    if not user:
-        raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED,
-            detail={"msg": "Please sign in or create an account to complete your purchase."},
-        )
-    if not user.get("emailVerified"):
-        raise HTTPException(
-            status_code=status.HTTP_403_FORBIDDEN,
-            detail={
-                "msg": "Please verify your email address before placing an order.",
-                "needsVerification": True,
-                "email": user.get("email", ""),
-            },
-        )
-
     try:
         cart = await validate_and_price_cart(body)
         order_items = cart["orderItems"]
@@ -267,13 +331,30 @@ async def create_cod_order(
         customer = cart["customer"]
 
         now = datetime.now(timezone.utc)
+        order_num = await generate_order_number()
         order_doc = {
+            "orderNumber": order_num,
             "items": order_items,
             "amount": amount,
             "customer": customer,
             "paymentMethod": "cod",
             "paymentStatus": "cod",
             "orderStatus": "confirmed",
+            "tracking": {
+                "courier": "Pending Dispatch",
+                "trackingNumber": "",
+                "trackingUrl": "",
+                "estimatedDelivery": "",
+                "currentStatus": "Confirmed",
+                "history": [
+                    {
+                        "status": "Order Placed",
+                        "description": "Cash on Delivery order received and confirmed via FeatherTown Store",
+                        "timestamp": now.isoformat(),
+                        "location": "Sundargarh, Odisha",
+                    }
+                ],
+            },
             "createdAt": now,
             "updatedAt": now,
         }
@@ -292,9 +373,12 @@ async def create_cod_order(
                     {"$inc": {"stock": -qty}},
                 )
 
+        # Auto sync customer
+        await sync_customer_profile(customer, amount)
+
         # Notify mobile admin
         await notifications_col.insert_one({
-            "title": f"New COD Order #{(str(result.inserted_id))[-6:].upper()}",
+            "title": f"New COD Order #{order_num}",
             "body": f"{customer.get('name', 'Customer')} placed a Cash on Delivery order for ₹{float(amount):,.0f} ({len(order_items)} items)",
             "category": "orders",
             "priority": "high",
@@ -304,7 +388,7 @@ async def create_cod_order(
             "updatedAt": now,
         })
 
-        return {"orderId": str(result.inserted_id)}
+        return {"orderId": str(result.inserted_id), "orderNumber": order_num}
     except HTTPException:
         raise
     except Exception as e:
@@ -313,6 +397,72 @@ async def create_cod_order(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail={"msg": "Failed to place order"},
         )
+
+@router.get("/track/{query}")
+async def public_track_order(query: str):
+    clean = query.strip()
+    if not clean:
+        raise HTTPException(status_code=400, detail={"msg": "Please provide an Order ID or Phone number"})
+
+    filter_q = []
+    if is_valid_object_id(clean):
+        filter_q.append({"_id": to_object_id(clean)})
+    filter_q.append({"orderNumber": clean.upper()})
+    filter_q.append({"orderNumber": clean})
+    filter_q.append({"orderId": clean})
+    filter_q.append({"customer.phone": clean})
+    filter_q.append({"customer.email": clean.lower()})
+
+    orders = await orders_col.find({"$or": filter_q}).sort("createdAt", -1).limit(5).to_list(length=5)
+    if not orders:
+        raise HTTPException(
+            status_code=404,
+            detail={"msg": f"No orders found matching '{clean}'. Please check your Order ID or 10-digit Phone number."},
+        )
+
+    results = []
+    for o in orders:
+        tracking = o.get("tracking") or {
+            "courier": "Pending Allocation",
+            "trackingNumber": "",
+            "trackingUrl": "",
+            "estimatedDelivery": "",
+            "currentStatus": "Order Confirmed" if o.get("orderStatus") == "confirmed" else "Processing",
+            "history": [
+                {
+                    "status": "Order Placed",
+                    "description": "Order received and confirmed",
+                    "timestamp": str(o.get("createdAt")),
+                    "location": "Sundargarh, Odisha",
+                }
+            ],
+        }
+        results.append({
+            "id": str(o["_id"]),
+            "orderNumber": o.get("orderNumber") or o.get("orderId") or f"FT-ORD-{(str(o['_id']))[-6:].upper()}",
+            "orderStatus": o.get("orderStatus", "pending"),
+            "paymentStatus": o.get("paymentStatus", "pending"),
+            "paymentMethod": o.get("paymentMethod", "cod"),
+            "amount": o.get("amount", 0),
+            "createdAt": o.get("createdAt"),
+            "customer": {
+                "name": (o.get("customer") or {}).get("name", "Customer"),
+                "city": (o.get("customer") or {}).get("city", ""),
+                "state": (o.get("customer") or {}).get("state", ""),
+            },
+            "items": [
+                {
+                    "name": it.get("name", "Product"),
+                    "quantity": it.get("quantity", 1),
+                    "price": it.get("price", 0),
+                    "image": it.get("image", ""),
+                }
+                for it in (o.get("items") or o.get("orderItems") or [])
+            ],
+            "tracking": tracking,
+        })
+
+    return serialize_doc(results)
 
 @router.get("/mine")
 async def my_orders(user: Dict[str, Any] = Depends(get_current_verified_user)):

@@ -132,7 +132,7 @@ export default function Checkout() {
     // If Cash On Delivery selected
     if (paymentMethod === "cod" || !paymentsEnabled) {
       try {
-        const res = await fetch("/api/orders/create", {
+        const res = await fetch("/api/orders/cod", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           credentials: "include",
@@ -147,7 +147,7 @@ export default function Checkout() {
 
         clearCart();
         trackEvent("purchase", { orderId: data.orderId, value: subtotal, currency: "INR", method: "cod" });
-        navigate(`/order-success?orderId=${data.orderId}&cod=1`);
+        navigate(`/order-success?orderId=${data.orderId}&orderNumber=${data.orderNumber || ""}&cod=1`);
       } catch (err) {
         toast.error(err.message || "Could not place order");
       } finally {

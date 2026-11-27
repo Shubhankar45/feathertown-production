@@ -31,8 +31,23 @@ class _OrdersScreenState extends State<OrdersScreen> {
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text('Update Order #${order.id.substring(order.id.length > 6 ? order.id.length - 6 : 0)}', style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w800)),
-            const SizedBox(height: 16),
+            Text('Update Order #${order.displayOrderNumber}', style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w800)),
+            const SizedBox(height: 12),
+            ListTile(
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+              tileColor: const Color(0xFFF0FDF4),
+              leading: const Icon(Icons.local_shipping_rounded, color: Color(0xFF166534)),
+              title: const Text('Live Logistics & Courier Tracking', style: TextStyle(fontWeight: FontWeight.w800, color: Color(0xFF166534))),
+              subtitle: Text(
+                order.courierCarrier != null ? '${order.courierCarrier} • ${order.trackingNumber ?? "No AWB"}' : 'Assign carrier & AWB tracking number',
+                style: const TextStyle(fontSize: 12, color: Color(0xFF166534)),
+              ),
+              onTap: () {
+                Navigator.pop(ctx);
+                _showTrackingModal(order);
+              },
+            ),
+            const Divider(height: 20),
             ListTile(
               leading: const Icon(Icons.hourglass_empty_rounded, color: AppColors.accent),
               title: const Text('Pending Payment / Review'),
@@ -105,6 +120,170 @@ class _OrdersScreenState extends State<OrdersScreen> {
               },
             ),
           ],
+        ),
+      ),
+    );
+  }
+
+  void _showTrackingModal(StoreOrder order) {
+    final courierCtrl = TextEditingController(text: order.courierCarrier ?? 'Delhivery');
+    final awbCtrl = TextEditingController(text: order.trackingNumber ?? '');
+    final urlCtrl = TextEditingController(text: order.trackingUrl ?? '');
+    final estCtrl = TextEditingController(text: order.estimatedDelivery ?? '3 - 5 Days');
+    final notesCtrl = TextEditingController();
+    String selectedStatus = order.trackingStatus.toLowerCase();
+    if (!['confirmed', 'shipped', 'out_for_delivery', 'delivered', 'cancelled'].contains(selectedStatus)) {
+      selectedStatus = 'shipped';
+    }
+
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      shape: const RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(24))),
+      builder: (ctx) => StatefulBuilder(
+        builder: (ctx, setModalState) => Padding(
+          padding: EdgeInsets.only(
+            left: 20,
+            right: 20,
+            top: 24,
+            bottom: MediaQuery.of(ctx).viewInsets.bottom + 24,
+          ),
+          child: SingleChildScrollView(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text('Logistics • Order #${order.displayOrderNumber}', style: const TextStyle(fontSize: 17, fontWeight: FontWeight.w800)),
+                    IconButton(icon: const Icon(Icons.close_rounded), onPressed: () => Navigator.pop(ctx)),
+                  ],
+                ),
+                const SizedBox(height: 16),
+                TextField(
+                  controller: courierCtrl,
+                  decoration: InputDecoration(
+                    labelText: 'Courier Partner',
+                    hintText: 'Delhivery, BlueDart, DTDC, India Post',
+                    prefixIcon: const Icon(Icons.local_shipping_outlined),
+                    filled: true,
+                    fillColor: AppColors.canvasLight,
+                    border: OutlineInputBorder(borderRadius: BorderRadius.circular(14), borderSide: BorderSide.none),
+                  ),
+                ),
+                const SizedBox(height: 12),
+                TextField(
+                  controller: awbCtrl,
+                  decoration: InputDecoration(
+                    labelText: 'AWB / Tracking Number',
+                    hintText: 'e.g. DELH192837465',
+                    prefixIcon: const Icon(Icons.tag_rounded),
+                    filled: true,
+                    fillColor: AppColors.canvasLight,
+                    border: OutlineInputBorder(borderRadius: BorderRadius.circular(14), borderSide: BorderSide.none),
+                  ),
+                ),
+                const SizedBox(height: 12),
+                TextField(
+                  controller: urlCtrl,
+                  keyboardType: TextInputType.url,
+                  decoration: InputDecoration(
+                    labelText: 'Courier Tracking Link (Optional)',
+                    hintText: 'https://track.delhivery.com/...',
+                    prefixIcon: const Icon(Icons.link_rounded),
+                    filled: true,
+                    fillColor: AppColors.canvasLight,
+                    border: OutlineInputBorder(borderRadius: BorderRadius.circular(14), borderSide: BorderSide.none),
+                  ),
+                ),
+                const SizedBox(height: 12),
+                Row(
+                  children: [
+                    Expanded(
+                      child: TextField(
+                        controller: estCtrl,
+                        decoration: InputDecoration(
+                          labelText: 'Estimated Delivery',
+                          hintText: '3 - 5 Days',
+                          prefixIcon: const Icon(Icons.calendar_today_outlined),
+                          filled: true,
+                          fillColor: AppColors.canvasLight,
+                          border: OutlineInputBorder(borderRadius: BorderRadius.circular(14), borderSide: BorderSide.none),
+                        ),
+                      ),
+                    ),
+                    const SizedBox(width: 12),
+                    Expanded(
+                      child: DropdownButtonFormField<String>(
+                        initialValue: selectedStatus,
+                        decoration: InputDecoration(
+                          labelText: 'Live Status',
+                          filled: true,
+                          fillColor: AppColors.canvasLight,
+                          border: OutlineInputBorder(borderRadius: BorderRadius.circular(14), borderSide: BorderSide.none),
+                        ),
+                        items: const [
+                          DropdownMenuItem(value: 'confirmed', child: Text('Confirmed')),
+                          DropdownMenuItem(value: 'shipped', child: Text('Dispatched')),
+                          DropdownMenuItem(value: 'out_for_delivery', child: Text('Out for Del.')),
+                          DropdownMenuItem(value: 'delivered', child: Text('Delivered')),
+                        ],
+                        onChanged: (val) {
+                          if (val != null) setModalState(() => selectedStatus = val);
+                        },
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 12),
+                TextField(
+                  controller: notesCtrl,
+                  decoration: InputDecoration(
+                    labelText: 'Transit Location / Update Note',
+                    hintText: 'e.g. Out of regional sorting facility',
+                    prefixIcon: const Icon(Icons.edit_note_rounded),
+                    filled: true,
+                    fillColor: AppColors.canvasLight,
+                    border: OutlineInputBorder(borderRadius: BorderRadius.circular(14), borderSide: BorderSide.none),
+                  ),
+                ),
+                const SizedBox(height: 20),
+                ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: const Color(0xFF166534),
+                    foregroundColor: Colors.white,
+                    padding: const EdgeInsets.symmetric(vertical: 14),
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
+                  ),
+                  onPressed: () async {
+                    final courier = courierCtrl.text.trim();
+                    final awb = awbCtrl.text.trim();
+                    if (courier.isEmpty) {
+                      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Please enter courier name')));
+                      return;
+                    }
+                    final ok = await context.read<OrdersProvider>().updateOrderTracking(
+                      order.id,
+                      courier: courier,
+                      trackingNumber: awb,
+                      trackingUrl: urlCtrl.text.trim(),
+                      estimatedDelivery: estCtrl.text.trim(),
+                      status: selectedStatus,
+                      notes: notesCtrl.text.trim(),
+                    );
+                    if (ctx.mounted) Navigator.pop(ctx);
+                    if (mounted && ok) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(content: Text('Tracking & carrier details updated!'), backgroundColor: AppColors.forestGreen),
+                      );
+                    }
+                  },
+                  child: const Text('Update Live Tracking', style: TextStyle(fontWeight: FontWeight.w700, fontSize: 15)),
+                ),
+              ],
+            ),
+          ),
         ),
       ),
     );
@@ -468,7 +647,7 @@ class _OrdersScreenState extends State<OrdersScreen> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text(
-                    'Order #${order.id.substring(order.id.length > 6 ? order.id.length - 6 : 0).toUpperCase()}',
+                    'Order #${order.displayOrderNumber}',
                     style: const TextStyle(fontWeight: FontWeight.w900, fontSize: 14, color: AppColors.heroDark),
                   ),
                   Container(
@@ -483,8 +662,11 @@ class _OrdersScreenState extends State<OrdersScreen> {
               ),
               const SizedBox(height: 6),
               Text(
-                order.userEmail ?? 'Guest Customer',
-                style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w600, color: AppColors.textPrimary),
+                order.shippingAddress?['name']?.toString() ??
+                    order.shippingAddress?['fullName']?.toString() ??
+                    order.userEmail ??
+                    'Guest Customer',
+                style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w700, color: AppColors.textPrimary),
               ),
               const SizedBox(height: 4),
               Text(
@@ -493,6 +675,28 @@ class _OrdersScreenState extends State<OrdersScreen> {
                 overflow: TextOverflow.ellipsis,
                 style: const TextStyle(fontSize: 12, color: AppColors.textSecondary),
               ),
+              if (order.courierCarrier != null && order.courierCarrier!.isNotEmpty) ...[
+                const SizedBox(height: 8),
+                Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                  decoration: BoxDecoration(
+                    color: const Color(0xFFF0FDF4),
+                    borderRadius: BorderRadius.circular(8),
+                    border: Border.all(color: const Color(0xFFBBF7D0)),
+                  ),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      const Icon(Icons.local_shipping_outlined, size: 14, color: Color(0xFF166534)),
+                      const SizedBox(width: 6),
+                      Text(
+                        '${order.courierCarrier}${order.trackingNumber != null && order.trackingNumber!.isNotEmpty ? " • ${order.trackingNumber}" : ""}',
+                        style: const TextStyle(fontSize: 11, fontWeight: FontWeight.w700, color: Color(0xFF166534)),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
               const SizedBox(height: 12),
               const Divider(height: 1, color: AppColors.cardBorder),
               const SizedBox(height: 10),

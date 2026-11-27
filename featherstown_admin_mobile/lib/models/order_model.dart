@@ -18,6 +18,7 @@ class OrderItem {
 
 class StoreOrder {
   final String id;
+  final String? orderNumber;
   final String? userEmail;
   final Map<String, dynamic>? shippingAddress;
   final List<OrderItem> items;
@@ -25,10 +26,12 @@ class StoreOrder {
   final String paymentMethod;
   final String paymentStatus;
   final String orderStatus; // 'pending' | 'confirmed' | 'shipped' | 'delivered' | 'cancelled'
+  final Map<String, dynamic>? tracking;
   final DateTime createdAt;
 
   StoreOrder({
     required this.id,
+    this.orderNumber,
     this.userEmail,
     this.shippingAddress,
     required this.items,
@@ -36,8 +39,16 @@ class StoreOrder {
     required this.paymentMethod,
     required this.paymentStatus,
     required this.orderStatus,
+    this.tracking,
     required this.createdAt,
   });
+
+  String get displayOrderNumber => orderNumber ?? (id.length > 8 ? id.substring(id.length - 8).toUpperCase() : id);
+  String get trackingStatus => tracking?['currentStatus']?.toString() ?? tracking?['status']?.toString() ?? orderStatus;
+  String? get courierCarrier => tracking?['courier']?.toString() ?? tracking?['carrier']?.toString();
+  String? get trackingNumber => tracking?['trackingNumber']?.toString() ?? tracking?['awb']?.toString();
+  String? get trackingUrl => tracking?['trackingUrl']?.toString();
+  String? get estimatedDelivery => tracking?['estimatedDelivery']?.toString();
 
   factory StoreOrder.fromJson(Map<String, dynamic> json) {
     DateTime dt;
@@ -61,8 +72,11 @@ class StoreOrder {
             ? (json['totalAmount'] as num).toDouble()
             : 0.0;
 
+    final trackingData = json['tracking'] is Map ? Map<String, dynamic>.from(json['tracking'] as Map) : null;
+
     return StoreOrder(
       id: json['_id']?.toString() ?? json['id']?.toString() ?? json['orderId']?.toString() ?? '',
+      orderNumber: json['orderNumber']?.toString(),
       userEmail: email,
       shippingAddress: addressMap,
       items: itemsList,
@@ -70,6 +84,7 @@ class StoreOrder {
       paymentMethod: json['paymentMethod']?.toString() ?? 'COD',
       paymentStatus: json['paymentStatus']?.toString() ?? 'pending',
       orderStatus: json['orderStatus']?.toString() ?? 'pending',
+      tracking: trackingData,
       createdAt: dt,
     );
   }

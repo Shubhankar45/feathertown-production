@@ -1,5 +1,5 @@
 import { useEffect, useState, useMemo } from "react";
-import { Download, X, Package, Trash2 } from "lucide-react";
+import { Download, X, Package, Trash2, Truck, ExternalLink, CheckCircle } from "lucide-react";
 import { adminFetch } from "../../utils/adminApi";
 import { toast } from "../../components/ui/Toast";
 import { safeFormatDate, safeFormatDateTime, safeFormatCurrency, safeLower } from "../../utils/formatters";
@@ -12,6 +12,26 @@ export default function AdminOrders() {
   const [selectedStatus, setSelectedStatus] = useState("all");
   const [search, setSearch] = useState("");
   const [selectedOrder, setSelectedOrder] = useState(null);
+
+  // Tracking form states
+  const [courierInput, setCourierInput] = useState("");
+  const [awbInput, setAwbInput] = useState("");
+  const [trackUrlInput, setTrackUrlInput] = useState("");
+  const [estDeliveryInput, setEstDeliveryInput] = useState("");
+  const [statusInput, setStatusInput] = useState("shipped");
+  const [noteInput, setNoteInput] = useState("");
+  const [updatingTracking, setUpdatingTracking] = useState(false);
+
+  useEffect(() => {
+    if (selectedOrder) {
+      setCourierInput(selectedOrder.tracking?.courier || "Delhivery Express");
+      setAwbInput(selectedOrder.tracking?.trackingNumber || "");
+      setTrackUrlInput(selectedOrder.tracking?.trackingUrl || "");
+      setEstDeliveryInput(selectedOrder.tracking?.estimatedDelivery || "3 - 5 Days");
+      setStatusInput(selectedOrder.tracking?.currentStatus || selectedOrder.orderStatus || "shipped");
+      setNoteInput("");
+    }
+  }, [selectedOrder]);
 
   const loadOrders = async () => {
     setLoading(true);
@@ -56,6 +76,33 @@ export default function AdminOrders() {
       toast.success("Order deleted successfully");
     } catch (err) {
       toast.error(err.message || "Failed to delete order");
+    }
+  };
+
+  const handleUpdateTracking = async (e) => {
+    e.preventDefault();
+    if (!selectedOrder) return;
+    setUpdatingTracking(true);
+    try {
+      const res = await adminFetch(`/api/admin/orders/${selectedOrder._id || selectedOrder.id}/tracking`, {
+        method: "PUT",
+        body: JSON.stringify({
+          courier: courierInput,
+          trackingNumber: awbInput,
+          trackingUrl: trackUrlInput,
+          estimatedDelivery: estDeliveryInput,
+          currentStatus: statusInput,
+          status: statusInput,
+          notes: noteInput,
+        }),
+      });
+      setSelectedOrder(res);
+      setOrders((prev) => prev.map((o) => ((o._id || o.id) === (res._id || res.id) ? res : o)));
+      toast.success("Logistics & tracking details updated!");
+    } catch (err) {
+      toast.error(err.message || "Failed to update tracking");
+    } finally {
+      setUpdatingTracking(false);
     }
   };
 
@@ -445,18 +492,143 @@ export default function AdminOrders() {
                 Shipping Destination
               </div>
               <div style={{ fontSize: 14, fontWeight: 700, color: "#0F172A" }}>
-                {selectedOrder.shippingAddress?.fullName}
+                {selectedOrder.shippingAddress?.fullName || selectedOrder.customer?.name}
               </div>
               <div style={{ fontSize: 13, color: "#475569", marginTop: 4 }}>
-                {selectedOrder.shippingAddress?.addressLine1}
+                {selectedOrder.shippingAddress?.addressLine1 || selectedOrder.customer?.address}
                 {selectedOrder.shippingAddress?.addressLine2 ? `, ${selectedOrder.shippingAddress?.addressLine2}` : ""}
               </div>
               <div style={{ fontSize: 13, color: "#475569" }}>
-                {selectedOrder.shippingAddress?.city}, {selectedOrder.shippingAddress?.state} - {selectedOrder.shippingAddress?.pincode}
+                {selectedOrder.shippingAddress?.city || selectedOrder.customer?.city}, {selectedOrder.shippingAddress?.state || selectedOrder.customer?.state} - {selectedOrder.shippingAddress?.pincode || selectedOrder.customer?.pincode}
               </div>
               <div style={{ fontSize: 13, color: "#0284C7", marginTop: 6, fontWeight: 600 }}>
-                Phone: {selectedOrder.shippingAddress?.phone}
+                Phone: {selectedOrder.shippingAddress?.phone || selectedOrder.customer?.phone}
               </div>
+            </div>
+
+            {/* Live Logistics & Tracking Manager */}
+            <div style={{ background: "#F0FDF4", borderRadius: 14, border: "1.5px solid #BBF7D0", padding: 16, marginBottom: 20 }}>
+              <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 12 }}>
+                <div style={{ display: "flex", alignItems: "center", gap: 8, fontSize: 13, fontWeight: 800, color: "#166534" }}>
+                  <Truck size={18} /> Logistics & Courier Tracking
+                </div>
+                {selectedOrder.tracking?.trackingUrl && (
+                  <a
+                    href={selectedOrder.tracking.trackingUrl}
+                    target="_blank"
+                    rel="noreferrer"
+                    style={{ fontSize: 12, fontWeight: 700, color: "#0284C7", textDecoration: "none", display: "inline-flex", alignItems: "center", gap: 4 }}
+                  >
+                    Track Link <ExternalLink size={12} />
+                  </a>
+                )}
+              </div>
+
+              <form onSubmit={handleUpdateTracking} style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10 }}>
+                <div>
+                  <label style={{ fontSize: 11, fontWeight: 700, color: "#374151", display: "block", marginBottom: 3 }}>
+                    Courier Carrier
+                  </label>
+                  <input
+                    type="text"
+                    value={courierInput}
+                    onChange={(e) => setCourierInput(e.target.value)}
+                    placeholder="e.g. Delhivery, BlueDart, DTDC, India Post"
+                    style={{ width: "100%", padding: "7px 10px", borderRadius: 8, border: "1px solid #CBD5E1", fontSize: 12.5, outline: "none", background: "#FFFFFF", boxSizing: "border-box" }}
+                  />
+                </div>
+
+                <div>
+                  <label style={{ fontSize: 11, fontWeight: 700, color: "#374151", display: "block", marginBottom: 3 }}>
+                    AWB / Tracking Number
+                  </label>
+                  <input
+                    type="text"
+                    value={awbInput}
+                    onChange={(e) => setAwbInput(e.target.value)}
+                    placeholder="e.g. DELH192837465"
+                    style={{ width: "100%", padding: "7px 10px", borderRadius: 8, border: "1px solid #CBD5E1", fontSize: 12.5, outline: "none", background: "#FFFFFF", boxSizing: "border-box" }}
+                  />
+                </div>
+
+                <div>
+                  <label style={{ fontSize: 11, fontWeight: 700, color: "#374151", display: "block", marginBottom: 3 }}>
+                    Tracking Portal Link (Optional)
+                  </label>
+                  <input
+                    type="url"
+                    value={trackUrlInput}
+                    onChange={(e) => setTrackUrlInput(e.target.value)}
+                    placeholder="https://track.delhivery.com/..."
+                    style={{ width: "100%", padding: "7px 10px", borderRadius: 8, border: "1px solid #CBD5E1", fontSize: 12.5, outline: "none", background: "#FFFFFF", boxSizing: "border-box" }}
+                  />
+                </div>
+
+                <div>
+                  <label style={{ fontSize: 11, fontWeight: 700, color: "#374151", display: "block", marginBottom: 3 }}>
+                    Estimated Delivery
+                  </label>
+                  <input
+                    type="text"
+                    value={estDeliveryInput}
+                    onChange={(e) => setEstDeliveryInput(e.target.value)}
+                    placeholder="e.g. 3-5 Days / 12 Dec 2026"
+                    style={{ width: "100%", padding: "7px 10px", borderRadius: 8, border: "1px solid #CBD5E1", fontSize: 12.5, outline: "none", background: "#FFFFFF", boxSizing: "border-box" }}
+                  />
+                </div>
+
+                <div>
+                  <label style={{ fontSize: 11, fontWeight: 700, color: "#374151", display: "block", marginBottom: 3 }}>
+                    Live Status
+                  </label>
+                  <select
+                    value={statusInput}
+                    onChange={(e) => setStatusInput(e.target.value)}
+                    style={{ width: "100%", padding: "7px 10px", borderRadius: 8, border: "1px solid #CBD5E1", fontSize: 12.5, outline: "none", background: "#FFFFFF", boxSizing: "border-box" }}
+                  >
+                    <option value="confirmed">Confirmed & Packing</option>
+                    <option value="shipped">Dispatched / In Transit</option>
+                    <option value="out_for_delivery">Out for Delivery</option>
+                    <option value="delivered">Delivered Safely</option>
+                    <option value="cancelled">Cancelled</option>
+                  </select>
+                </div>
+
+                <div>
+                  <label style={{ fontSize: 11, fontWeight: 700, color: "#374151", display: "block", marginBottom: 3 }}>
+                    Tracking Note / Location
+                  </label>
+                  <input
+                    type="text"
+                    value={noteInput}
+                    onChange={(e) => setNoteInput(e.target.value)}
+                    placeholder="e.g. Scanned at Bhubaneswar sorting facility"
+                    style={{ width: "100%", padding: "7px 10px", borderRadius: 8, border: "1px solid #CBD5E1", fontSize: 12.5, outline: "none", background: "#FFFFFF", boxSizing: "border-box" }}
+                  />
+                </div>
+
+                <div style={{ gridColumn: "span 2", marginTop: 4, display: "flex", justifyContent: "flex-end" }}>
+                  <button
+                    type="submit"
+                    disabled={updatingTracking}
+                    style={{
+                      padding: "7px 16px",
+                      borderRadius: 8,
+                      background: "#166534",
+                      color: "#FFFFFF",
+                      fontSize: 12.5,
+                      fontWeight: 700,
+                      border: "none",
+                      cursor: updatingTracking ? "wait" : "pointer",
+                      display: "inline-flex",
+                      alignItems: "center",
+                      gap: 6,
+                    }}
+                  >
+                    <CheckCircle size={14} /> {updatingTracking ? "Updating..." : "Update Live Tracking"}
+                  </button>
+                </div>
+              </form>
             </div>
 
             {/* Items Breakdown */}

@@ -88,6 +88,7 @@ class OrdersProvider extends ChangeNotifier {
         final old = _orders[idx];
         _orders[idx] = StoreOrder(
           id: old.id,
+          orderNumber: old.orderNumber,
           userEmail: old.userEmail,
           shippingAddress: old.shippingAddress,
           items: old.items,
@@ -95,10 +96,50 @@ class OrdersProvider extends ChangeNotifier {
           paymentMethod: old.paymentMethod,
           paymentStatus: old.paymentStatus,
           orderStatus: newStatus,
+          tracking: old.tracking,
           createdAt: old.createdAt,
         );
         notifyListeners();
       }
+      return true;
+    } catch (e) {
+      _errorMessage = e.toString();
+      notifyListeners();
+      return false;
+    }
+  }
+
+  Future<bool> updateOrderTracking(
+    String id, {
+    required String courier,
+    required String trackingNumber,
+    String? trackingUrl,
+    String? estimatedDelivery,
+    String? status,
+    String? notes,
+  }) async {
+    try {
+      final res = await ApiService.put('/api/admin/orders/$id/tracking', body: {
+        'courier': courier,
+        'trackingNumber': trackingNumber,
+        'trackingUrl': trackingUrl ?? '',
+        'estimatedDelivery': estimatedDelivery ?? '',
+        'currentStatus': status ?? 'shipped',
+        'status': status ?? 'shipped',
+        'notes': notes ?? 'Tracking update from admin mobile',
+      });
+      if (res is Map) {
+        final updated = StoreOrder.fromJson(Map<String, dynamic>.from(res));
+        final idx = _orders.indexWhere((o) => o.id == id);
+        if (idx != -1) {
+          _orders[idx] = updated;
+        } else {
+          _orders.insert(0, updated);
+        }
+        notifyListeners();
+        return true;
+      }
+      await fetchOrders(refresh: true);
       return true;
     } catch (e) {
       _errorMessage = e.toString();

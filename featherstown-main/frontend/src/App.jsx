@@ -23,6 +23,7 @@ import AccessoryDetails from "./pages/AccessoryDetails";
 import Cart from "./pages/Cart";
 import Checkout from "./pages/Checkout";
 import OrderSuccess from "./pages/OrderSuccess";
+import TrackOrder from "./pages/TrackOrder";
 import MyOrders from "./pages/MyOrders";
 import Login from "./pages/Login";
 import Signup from "./pages/Signup";
@@ -185,15 +186,9 @@ function App() {
                           <Route path="/accessories" element={<Accessories />} />
                           <Route path="/accessories/:idOrSlug" element={<AccessoryDetails />} />
                           <Route path="/cart" element={<Cart />} />
-                          <Route
-                            path="/checkout"
-                            element={
-                              <ProtectedUserRoute requiredAction="complete checkout and track your delivery">
-                                <Checkout />
-                              </ProtectedUserRoute>
-                            }
-                          />
+                          <Route path="/checkout" element={<Checkout />} />
                           <Route path="/order-success" element={<OrderSuccess />} />
+                          <Route path="/track-order" element={<TrackOrder />} />
                           <Route
                             path="/my-orders"
                             element={

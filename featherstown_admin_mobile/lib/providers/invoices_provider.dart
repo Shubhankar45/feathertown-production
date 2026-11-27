@@ -75,4 +75,17 @@ class InvoicesProvider extends ChangeNotifier {
     }
     return null;
   }
+
+  Future<bool> deleteInvoice(String id) async {
+    try {
+      await ApiService.delete('/api/admin/invoices/$id');
+      _invoices.removeWhere((i) => i.id == id);
+      notifyListeners();
+      return true;
+    } catch (e) {
+      _errorMessage = e.toString();
+      notifyListeners();
+      return false;
+    }
+  }
 }

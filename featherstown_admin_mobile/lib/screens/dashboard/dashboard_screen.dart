@@ -907,8 +907,8 @@ class _AiAdvisorSheetState extends State<_AiAdvisorSheet> {
 }
 
 class GestureCardAvatar extends StatelessWidget {
-  final String username;
-  const GestureCardAvatar({super.key, required this.username});
+  final String? username;
+  const GestureCardAvatar({super.key, this.username});
 
   @override
   Widget build(BuildContext context) {
@@ -916,11 +916,12 @@ class GestureCardAvatar extends StatelessWidget {
       alignment: Alignment.topRight,
       children: [
         Container(
-          width: 42,
-          height: 42,
+          width: 44,
+          height: 44,
           decoration: BoxDecoration(
             color: AppColors.white,
             shape: BoxShape.circle,
+            border: Border.all(color: AppColors.cardBorder, width: 1.2),
             boxShadow: [
               BoxShadow(
                 color: Colors.black.withValues(alpha: 0.08),
@@ -929,13 +930,10 @@ class GestureCardAvatar extends StatelessWidget {
               ),
             ],
           ),
-          padding: const EdgeInsets.all(3),
-          child: CircleAvatar(
-            backgroundColor: AppColors.heroDark,
-            child: Text(
-              username.isNotEmpty ? username[0].toUpperCase() : 'A',
-              style: const TextStyle(color: Colors.white, fontWeight: FontWeight.w800, fontSize: 15),
-            ),
+          padding: const EdgeInsets.all(4),
+          child: Image.asset(
+            'assets/images/app_logo.png',
+            fit: BoxFit.contain,
           ),
         ),
         Container(

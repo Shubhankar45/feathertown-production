@@ -28,8 +28,8 @@ class _CategoriesInsightsScreenState extends State<CategoriesInsightsScreen> {
   Widget build(BuildContext context) {
     final prov = context.watch<DashboardProvider>();
     final analytics = prov.analytics;
-    final gross = analytics?.summary.grossRevenue ?? 185000.0;
-    final expenses = analytics?.summary.totalExpenses ?? 42000.0;
+    final gross = analytics?.summary.grossRevenue ?? 0.0;
+    final expenses = analytics?.summary.totalExpenses ?? 0.0;
 
     final categories = [
       {

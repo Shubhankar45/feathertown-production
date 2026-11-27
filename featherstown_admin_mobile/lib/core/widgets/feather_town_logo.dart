@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import '../constants/app_colors.dart';
+import 'package:google_fonts/google_fonts.dart';
 
-/// Pure typographic FeatherTown brand wordmark - No images, zero raster stamps.
+/// Pure typographic FeatherTown brand wordmark matching the website exactly in Outfit font.
 class FeatherTownLogo extends StatelessWidget {
   final double fontSize;
   final bool showDot;
@@ -16,28 +16,30 @@ class FeatherTownLogo extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final baseStyle = GoogleFonts.outfit(
+      fontSize: fontSize,
+      fontWeight: FontWeight.w900,
+      letterSpacing: -0.025 * fontSize,
+      height: 1.0,
+    );
+
     return RichText(
       textAlign: textAlign,
       text: TextSpan(
-        style: TextStyle(
-          fontSize: fontSize,
-          fontWeight: FontWeight.w900,
-          letterSpacing: -0.6,
-          height: 1.1,
-        ),
+        style: baseStyle,
         children: [
-          const TextSpan(
+          TextSpan(
             text: 'Feather',
-            style: TextStyle(color: AppColors.heroDark),
+            style: baseStyle.copyWith(color: const Color(0xFF1B3B22)),
           ),
-          const TextSpan(
+          TextSpan(
             text: 'Town',
-            style: TextStyle(color: AppColors.accent),
+            style: baseStyle.copyWith(color: const Color(0xFFD9381E)),
           ),
           if (showDot)
-            const TextSpan(
+            TextSpan(
               text: '.',
-              style: TextStyle(color: AppColors.accent, fontWeight: FontWeight.w900),
+              style: baseStyle.copyWith(color: const Color(0xFFD9381E)),
             ),
         ],
       ),

@@ -797,6 +797,39 @@ class _AccessoriesScreenState extends State<AccessoriesScreen> {
                               ),
                             ),
                           ),
+                          InkWell(
+                            onTap: () async {
+                              final confirm = await showDialog<bool>(
+                                context: context,
+                                builder: (dCtx) => AlertDialog(
+                                  title: const Text('Delete Product?'),
+                                  content: Text('Are you sure you want to permanently delete ${item.name}?'),
+                                  actions: [
+                                    TextButton(onPressed: () => Navigator.pop(dCtx, false), child: const Text('Cancel')),
+                                    ElevatedButton(
+                                      onPressed: () => Navigator.pop(dCtx, true),
+                                      style: ElevatedButton.styleFrom(backgroundColor: AppColors.danger),
+                                      child: const Text('Delete'),
+                                    ),
+                                  ],
+                                ),
+                              );
+                              if (confirm == true) {
+                                prov.deleteAccessory(item.id);
+                              }
+                            },
+                            borderRadius: BorderRadius.circular(10),
+                            child: Container(
+                              padding: const EdgeInsets.all(6),
+                              margin: const EdgeInsets.only(right: 6),
+                              decoration: BoxDecoration(
+                                color: AppColors.dangerWash,
+                                borderRadius: BorderRadius.circular(10),
+                                border: Border.all(color: AppColors.danger.withValues(alpha: 0.3)),
+                              ),
+                              child: const Icon(Icons.delete_outline_rounded, size: 14, color: AppColors.danger),
+                            ),
+                          ),
                           // Stock Stepper (+ / -)
                           Container(
                             decoration: BoxDecoration(

@@ -34,12 +34,269 @@ class _InvoicesScreenState extends State<InvoicesScreen> {
     }
   }
 
+  void _showCreateInvoiceModal() {
+    final nameCtrl = TextEditingController();
+    final phoneCtrl = TextEditingController();
+    final itemCtrl = TextEditingController();
+    final priceCtrl = TextEditingController();
+    final qtyCtrl = TextEditingController(text: '1');
+    final paidCtrl = TextEditingController();
+    String paymentStatus = 'paid';
+    String paymentMethod = 'UPI';
+
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      shape: const RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(24))),
+      builder: (ctx) => StatefulBuilder(
+        builder: (ctx, setModalState) => Padding(
+          padding: EdgeInsets.only(
+            left: 20,
+            right: 20,
+            top: 24,
+            bottom: MediaQuery.of(ctx).viewInsets.bottom + 24,
+          ),
+          child: SingleChildScrollView(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    const Text('New POS Tax Invoice', style: TextStyle(fontSize: 18, fontWeight: FontWeight.w800, color: AppColors.heroDark)),
+                    IconButton(icon: const Icon(Icons.close_rounded), onPressed: () => Navigator.pop(ctx)),
+                  ],
+                ),
+                const SizedBox(height: 16),
+                TextField(
+                  controller: nameCtrl,
+                  decoration: InputDecoration(
+                    labelText: 'Customer / Patron Name *',
+                    hintText: 'e.g. Ramesh Patel',
+                    prefixIcon: const Icon(Icons.person_outline),
+                    filled: true,
+                    fillColor: AppColors.canvasLight,
+                    border: OutlineInputBorder(borderRadius: BorderRadius.circular(14), borderSide: BorderSide.none),
+                  ),
+                ),
+                const SizedBox(height: 12),
+                TextField(
+                  controller: phoneCtrl,
+                  keyboardType: TextInputType.phone,
+                  decoration: InputDecoration(
+                    labelText: 'Phone Number *',
+                    hintText: 'e.g. 9876543210',
+                    prefixIcon: const Icon(Icons.phone_outlined),
+                    filled: true,
+                    fillColor: AppColors.canvasLight,
+                    border: OutlineInputBorder(borderRadius: BorderRadius.circular(14), borderSide: BorderSide.none),
+                  ),
+                ),
+                const SizedBox(height: 12),
+                TextField(
+                  controller: itemCtrl,
+                  decoration: InputDecoration(
+                    labelText: 'Item Description *',
+                    hintText: 'e.g. Hand-fed Sun Conure or Aviary Cage',
+                    prefixIcon: const Icon(Icons.inventory_2_outlined),
+                    filled: true,
+                    fillColor: AppColors.canvasLight,
+                    border: OutlineInputBorder(borderRadius: BorderRadius.circular(14), borderSide: BorderSide.none),
+                  ),
+                ),
+                const SizedBox(height: 12),
+                Row(
+                  children: [
+                    Expanded(
+                      flex: 2,
+                      child: TextField(
+                        controller: priceCtrl,
+                        keyboardType: TextInputType.number,
+                        decoration: InputDecoration(
+                          labelText: 'Unit Price (₹) *',
+                          prefixIcon: const Icon(Icons.currency_rupee_rounded),
+                          filled: true,
+                          fillColor: AppColors.canvasLight,
+                          border: OutlineInputBorder(borderRadius: BorderRadius.circular(14), borderSide: BorderSide.none),
+                        ),
+                      ),
+                    ),
+                    const SizedBox(width: 12),
+                    Expanded(
+                      flex: 1,
+                      child: TextField(
+                        controller: qtyCtrl,
+                        keyboardType: TextInputType.number,
+                        decoration: InputDecoration(
+                          labelText: 'Qty',
+                          filled: true,
+                          fillColor: AppColors.canvasLight,
+                          border: OutlineInputBorder(borderRadius: BorderRadius.circular(14), borderSide: BorderSide.none),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 12),
+                Row(
+                  children: [
+                    Expanded(
+                      child: DropdownButtonFormField<String>(
+                        initialValue: paymentStatus,
+                        decoration: InputDecoration(
+                          labelText: 'Payment Status',
+                          filled: true,
+                          fillColor: AppColors.canvasLight,
+                          border: OutlineInputBorder(borderRadius: BorderRadius.circular(14), borderSide: BorderSide.none),
+                        ),
+                        items: const [
+                          DropdownMenuItem(value: 'paid', child: Text('Fully Paid')),
+                          DropdownMenuItem(value: 'partial', child: Text('Partial Advance')),
+                          DropdownMenuItem(value: 'unpaid', child: Text('Unpaid Credit')),
+                        ],
+                        onChanged: (val) {
+                          if (val != null) setModalState(() => paymentStatus = val);
+                        },
+                      ),
+                    ),
+                    const SizedBox(width: 12),
+                    Expanded(
+                      child: DropdownButtonFormField<String>(
+                        initialValue: paymentMethod,
+                        decoration: InputDecoration(
+                          labelText: 'Method',
+                          filled: true,
+                          fillColor: AppColors.canvasLight,
+                          border: OutlineInputBorder(borderRadius: BorderRadius.circular(14), borderSide: BorderSide.none),
+                        ),
+                        items: const [
+                          DropdownMenuItem(value: 'UPI', child: Text('UPI / QR')),
+                          DropdownMenuItem(value: 'Cash', child: Text('Cash')),
+                          DropdownMenuItem(value: 'Card', child: Text('Card')),
+                          DropdownMenuItem(value: 'Bank Transfer', child: Text('Bank')),
+                        ],
+                        onChanged: (val) {
+                          if (val != null) setModalState(() => paymentMethod = val);
+                        },
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 12),
+                TextField(
+                  controller: paidCtrl,
+                  keyboardType: TextInputType.number,
+                  decoration: InputDecoration(
+                    labelText: 'Advance / Paid Amount (₹)',
+                    hintText: 'Leave empty for full price',
+                    prefixIcon: const Icon(Icons.payment_rounded),
+                    filled: true,
+                    fillColor: AppColors.canvasLight,
+                    border: OutlineInputBorder(borderRadius: BorderRadius.circular(14), borderSide: BorderSide.none),
+                  ),
+                ),
+                const SizedBox(height: 20),
+                ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: AppColors.heroDark,
+                    foregroundColor: Colors.white,
+                    padding: const EdgeInsets.symmetric(vertical: 14),
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
+                  ),
+                  onPressed: () async {
+                    final name = nameCtrl.text.trim();
+                    final phone = phoneCtrl.text.trim();
+                    final item = itemCtrl.text.trim();
+                    final price = double.tryParse(priceCtrl.text.trim()) ?? 0.0;
+                    final qty = int.tryParse(qtyCtrl.text.trim()) ?? 1;
+                    final total = price * qty;
+                    final paid = double.tryParse(paidCtrl.text.trim()) ?? (paymentStatus == 'paid' ? total : 0.0);
+
+                    if (name.isEmpty || item.isEmpty || price <= 0) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(content: Text('Please enter customer name, item and valid price')),
+                      );
+                      return;
+                    }
+
+                    final newInv = await context.read<InvoicesProvider>().createInvoice({
+                      'customer': {
+                        'name': name,
+                        'phone': phone,
+                      },
+                      'items': [
+                        {
+                          'name': item,
+                          'price': price,
+                          'quantity': qty,
+                        }
+                      ],
+                      'paymentStatus': paymentStatus,
+                      'paymentMethod': paymentMethod,
+                      'paidAmount': paid,
+                    });
+
+                    if (ctx.mounted) Navigator.pop(ctx);
+                    if (mounted && newInv != null) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          content: Text('Invoice #${newInv.invoiceNumber} created and synced!'),
+                          backgroundColor: AppColors.forestGreen,
+                        ),
+                      );
+                    }
+                  },
+                  child: const Text('Generate & Record Invoice', style: TextStyle(fontWeight: FontWeight.w700, fontSize: 15)),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  void _confirmDeleteInvoice(Invoice inv) async {
+    final confirm = await showDialog<bool>(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: const Text('Delete Invoice?'),
+        content: Text('Are you sure you want to delete invoice #${inv.invoiceNumber}? This will also reverse any associated ledger entry.'),
+        actions: [
+          TextButton(onPressed: () => Navigator.pop(ctx, false), child: const Text('Cancel')),
+          ElevatedButton(
+            style: ElevatedButton.styleFrom(backgroundColor: AppColors.danger),
+            onPressed: () => Navigator.pop(ctx, true),
+            child: const Text('Delete'),
+          ),
+        ],
+      ),
+    );
+
+    if (confirm == true && mounted) {
+      final ok = await context.read<InvoicesProvider>().deleteInvoice(inv.id);
+      if (mounted && ok) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Invoice deleted successfully'), backgroundColor: AppColors.forestGreen),
+        );
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final prov = context.watch<InvoicesProvider>();
     final invoices = prov.filteredInvoices;
 
     return Scaffold(
+      floatingActionButton: FloatingActionButton.extended(
+        backgroundColor: AppColors.heroDark,
+        foregroundColor: Colors.white,
+        icon: const Icon(Icons.add_rounded),
+        label: const Text('New Invoice', style: TextStyle(fontWeight: FontWeight.w800)),
+        onPressed: _showCreateInvoiceModal,
+      ),
       body: Column(
         children: [
           // Search & Filter Header
@@ -97,6 +354,7 @@ class _InvoicesScreenState extends State<InvoicesScreen> {
                             return _InvoiceCard(
                               invoice: inv,
                               onWhatsApp: () => _shareWhatsApp(inv),
+                              onDelete: () => _confirmDeleteInvoice(inv),
                             );
                           },
                         ),
@@ -136,8 +394,9 @@ class _InvoicesScreenState extends State<InvoicesScreen> {
 class _InvoiceCard extends StatelessWidget {
   final Invoice invoice;
   final VoidCallback onWhatsApp;
+  final VoidCallback onDelete;
 
-  const _InvoiceCard({required this.invoice, required this.onWhatsApp});
+  const _InvoiceCard({required this.invoice, required this.onWhatsApp, required this.onDelete});
 
   Color _getStatusColor() {
     switch (invoice.paymentStatus) {
@@ -234,26 +493,43 @@ class _InvoiceCard extends StatelessWidget {
                   ),
                 ],
                 const SizedBox(height: 4),
-                GestureDetector(
-                  onTap: onWhatsApp,
-                  child: Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                    decoration: BoxDecoration(
-                      color: AppColors.pastelMint,
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                    child: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: const [
-                        Icon(Icons.share_rounded, size: 12, color: AppColors.mintText),
-                        SizedBox(width: 4),
-                        Text(
-                          'Share',
-                          style: TextStyle(fontSize: 10.5, fontWeight: FontWeight.w700, color: AppColors.mintText),
+                Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    GestureDetector(
+                      onTap: onWhatsApp,
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                        decoration: BoxDecoration(
+                          color: AppColors.pastelMint,
+                          borderRadius: BorderRadius.circular(8),
                         ),
-                      ],
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: const [
+                            Icon(Icons.share_rounded, size: 12, color: AppColors.mintText),
+                            SizedBox(width: 4),
+                            Text(
+                              'Share',
+                              style: TextStyle(fontSize: 10.5, fontWeight: FontWeight.w700, color: AppColors.mintText),
+                            ),
+                          ],
+                        ),
+                      ),
                     ),
-                  ),
+                    const SizedBox(width: 6),
+                    GestureDetector(
+                      onTap: onDelete,
+                      child: Container(
+                        padding: const EdgeInsets.all(5),
+                        decoration: BoxDecoration(
+                          color: const Color(0xFFFEE2E2),
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                        child: const Icon(Icons.delete_outline_rounded, size: 14, color: AppColors.danger),
+                      ),
+                    ),
+                  ],
                 ),
               ],
             ),

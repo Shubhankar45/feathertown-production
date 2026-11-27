@@ -93,6 +93,26 @@ export default function OrderSuccess() {
 
           <div style={{ display: "flex", gap: 12, justifyContent: "center", flexWrap: "wrap" }}>
             <Link
+              to={`/track-order?q=${encodeURIComponent(orderId || "")}`}
+              className="ft-btn-hover t-btn-press"
+              style={{
+                background: "#1B3B22",
+                color: "#FFFFFF",
+                padding: "12px 24px",
+                borderRadius: 999,
+                fontWeight: 800,
+                fontSize: 14,
+                textDecoration: "none",
+                display: "inline-flex",
+                alignItems: "center",
+                gap: 8,
+                boxShadow: "0 4px 14px rgba(27, 59, 34, 0.3)",
+              }}
+            >
+              <Truck size={16} /> Track Order Live
+            </Link>
+
+            <Link
               to="/my-orders"
               className="ft-btn-hover t-btn-press"
               style={{

@@ -599,6 +599,67 @@ async def admin_update_order_status(id: str, body: Dict[str, Any]):
 
     return serialize_doc(res)
 
+@router.put("/orders/{id}/tracking")
+async def admin_update_order_tracking(
+    id: str,
+    body: Dict[str, Any],
+    request: Request,
+    admin: Dict[str, Any] = Depends(get_current_admin),
+):
+    query = {"_id": to_object_id(id)} if is_valid_object_id(id) else {"$or": [{"_id": id}, {"orderId": id}, {"orderNumber": id}]}
+    order = await orders_col.find_one(query)
+    if not order:
+        raise HTTPException(status_code=404, detail={"msg": "Order not found"})
+
+    now = datetime.now(timezone.utc)
+    current_tracking = order.get("tracking") or {
+        "courier": "",
+        "trackingNumber": "",
+        "trackingUrl": "",
+        "estimatedDelivery": "",
+        "currentStatus": "Processing",
+        "history": [],
+    }
+
+    courier = str(body.get("courier") or current_tracking.get("courier", "")).strip()
+    tracking_number = str(body.get("trackingNumber") or current_tracking.get("trackingNumber", "")).strip()
+    tracking_url = str(body.get("trackingUrl") or current_tracking.get("trackingUrl", "")).strip()
+    estimated_delivery = str(body.get("estimatedDelivery") or current_tracking.get("estimatedDelivery", "")).strip()
+    current_status = str(body.get("currentStatus") or body.get("status") or current_tracking.get("currentStatus", "In Transit")).strip()
+    location = str(body.get("location") or "Sundargarh Hub, Odisha").strip()
+    notes = str(body.get("notes") or "").strip()
+
+    history = current_tracking.get("history") or []
+    desc = notes or (f"Package {current_status}" + (f" with {courier}" if courier else ""))
+    history.append({
+        "status": current_status,
+        "description": desc,
+        "timestamp": now.isoformat(),
+        "location": location,
+    })
+
+    updated_tracking = {
+        "courier": courier,
+        "trackingNumber": tracking_number,
+        "trackingUrl": tracking_url,
+        "estimatedDelivery": estimated_delivery,
+        "currentStatus": current_status,
+        "history": history,
+    }
+
+    updates = {
+        "tracking": updated_tracking,
+        "updatedAt": now,
+    }
+    if current_status.lower() in ["pending", "confirmed", "shipped", "delivered", "cancelled"]:
+        updates["orderStatus"] = current_status.lower()
+
+    await orders_col.update_one({"_id": order["_id"]}, {"$set": updates})
+    updated_order = await orders_col.find_one({"_id": order["_id"]})
+
+    await log_audit("UPDATE_TRACKING", "order", str(order["_id"]), updated_tracking, admin.get("username", "admin"), request)
+    return serialize_doc(updated_order)
+
 # ═══════════════════════════════════════════════════════════
 # 5. REVIEWS
 # ═══════════════════════════════════════════════════════════
