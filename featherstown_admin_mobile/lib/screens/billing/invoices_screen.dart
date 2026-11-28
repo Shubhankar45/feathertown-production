@@ -344,7 +344,13 @@ class _InvoicesScreenState extends State<InvoicesScreen> {
               child: prov.isLoading && invoices.isEmpty
                   ? const Center(child: CircularProgressIndicator(color: AppColors.primary))
                   : invoices.isEmpty
-                      ? const Center(child: Text('No matching invoices found.'))
+                      ? ListView(
+                          physics: const AlwaysScrollableScrollPhysics(),
+                          children: const [
+                            SizedBox(height: 120),
+                            Center(child: Text('No matching invoices found.')),
+                          ],
+                        )
                       : ListView.separated(
                           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
                           itemCount: invoices.length,

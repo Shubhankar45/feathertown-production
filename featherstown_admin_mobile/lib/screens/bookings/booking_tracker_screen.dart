@@ -324,7 +324,13 @@ class _BookingTrackerScreenState extends State<BookingTrackerScreen> {
               child: prov.isLoading && bookings.isEmpty
                   ? const Center(child: CircularProgressIndicator(color: AppColors.primary))
                   : bookings.isEmpty
-                      ? const Center(child: Text('No bird bookings found in this status.'))
+                      ? ListView(
+                          physics: const AlwaysScrollableScrollPhysics(),
+                          children: const [
+                            SizedBox(height: 120),
+                            Center(child: Text('No bird bookings found in this status.')),
+                          ],
+                        )
                       : ListView.separated(
                           padding: const EdgeInsets.fromLTRB(16, 16, 16, 80),
                           itemCount: bookings.length,

@@ -4,6 +4,10 @@ import '../core/constants/app_colors.dart';
 import '../core/widgets/feather_town_logo.dart';
 import '../providers/auth_provider.dart';
 import '../providers/notifications_provider.dart';
+import '../providers/dashboard_provider.dart';
+import '../providers/invoices_provider.dart';
+import '../providers/bookings_provider.dart';
+import '../providers/customers_provider.dart';
 import 'dashboard/dashboard_screen.dart';
 import 'billing/invoices_screen.dart';
 import 'bookings/booking_tracker_screen.dart';
@@ -50,6 +54,16 @@ class _MainNavScreenState extends State<MainNavScreen> {
 
   void _onSelectTab(int index) {
     setState(() => _currentIndex = index);
+    if (!mounted) return;
+    if (index == 0 || index == 3) {
+      context.read<DashboardProvider>().fetchAnalytics(refresh: true);
+    } else if (index == 1) {
+      context.read<InvoicesProvider>().fetchInvoices(refresh: true);
+    } else if (index == 2) {
+      context.read<BookingsProvider>().fetchBookings(refresh: true);
+    } else if (index == 4) {
+      context.read<CustomersProvider>().fetchCustomers(refresh: true);
+    }
   }
 
   @override

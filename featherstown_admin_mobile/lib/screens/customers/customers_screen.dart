@@ -302,7 +302,13 @@ class _CustomersScreenState extends State<CustomersScreen> {
               child: prov.isLoading && customers.isEmpty
                   ? const Center(child: CircularProgressIndicator(color: AppColors.primary))
                   : customers.isEmpty
-                      ? const Center(child: Text('No customers found in directory.'))
+                      ? ListView(
+                          physics: const AlwaysScrollableScrollPhysics(),
+                          children: const [
+                            SizedBox(height: 120),
+                            Center(child: Text('No customers found in directory.')),
+                          ],
+                        )
                       : ListView.separated(
                           padding: const EdgeInsets.fromLTRB(16, 16, 16, 80),
                           itemCount: customers.length,

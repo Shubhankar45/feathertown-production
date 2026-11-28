@@ -57,6 +57,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
     final expenses = analytics?.summary.totalExpenses ?? 0.0;
     final netProfit = analytics?.summary.netProfit ?? (gross - expenses);
     final birdsCount = analytics?.summary.availableBirds ?? 6;
+    final target = 100000.0; // ₹1.0L budgeted target
+    final targetPct = (gross / target).clamp(0.0, 1.0);
 
     return Scaffold(
       backgroundColor: AppColors.canvasLight,
@@ -64,11 +66,18 @@ class _DashboardScreenState extends State<DashboardScreen> {
         child: RefreshIndicator(
           onRefresh: () => prov.fetchAnalytics(refresh: true),
           color: AppColors.primary,
-          child: SingleChildScrollView(
-            physics: const AlwaysScrollableScrollPhysics(),
-            padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 12),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
+          child: prov.isLoading && analytics == null
+              ? const Center(
+                  child: Padding(
+                    padding: EdgeInsets.only(top: 160),
+                    child: CircularProgressIndicator(color: AppColors.heroDark),
+                  ),
+                )
+              : SingleChildScrollView(
+                  physics: const AlwaysScrollableScrollPhysics(),
+                  padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 12),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
                 // Top Greeting Header
                 Row(
@@ -130,7 +139,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           const Text(
-                            'Total Balance',
+                            'Net Aviary Inflow this month',
                             style: TextStyle(
                               fontSize: 13,
                               fontWeight: FontWeight.w600,
@@ -173,33 +182,57 @@ class _DashboardScreenState extends State<DashboardScreen> {
                       ),
                       const SizedBox(height: 4),
                       Text(
-                        (gross > 0 || expenses > 0)
-                            ? 'Sales: ${AppFormatters.compactCurrency(gross)} • Expenses: ${AppFormatters.compactCurrency(expenses)}'
-                            : 'This month • Ready to record sales and expenses',
+                        'of ${AppFormatters.compactCurrency(target)} budgeted target',
                         style: const TextStyle(
                           fontSize: 12,
                           color: Color(0xFFBACEC0),
                           fontWeight: FontWeight.w500,
                         ),
                       ),
+                      const SizedBox(height: 12),
+                      // Target Progress Bar
+                      Container(
+                        height: 6,
+                        decoration: BoxDecoration(
+                          color: Colors.white.withValues(alpha: 0.15),
+                          borderRadius: BorderRadius.circular(3),
+                        ),
+                        child: LayoutBuilder(
+                          builder: (ctx, constraints) {
+                            return Align(
+                              alignment: Alignment.centerLeft,
+                              child: Container(
+                                width: (constraints.maxWidth * (targetPct > 0 ? targetPct : 0.02)).clamp(6.0, constraints.maxWidth),
+                                height: 6,
+                                decoration: BoxDecoration(
+                                  color: const Color(0xFF4ADE80),
+                                  borderRadius: BorderRadius.circular(3),
+                                ),
+                              ),
+                            );
+                          },
+                        ),
+                      ),
                       const SizedBox(height: 16),
-                      // Micro stats row (Basic & Plain Names)
+                      Container(height: 1, color: Colors.white.withValues(alpha: 0.12)),
+                      const SizedBox(height: 14),
+                      // Micro stats row (Gross Receipts, Aviary Outflow, Avian Flock)
                       Row(
                         children: [
                           _buildDarkSubStat(
-                            'Income',
-                            AppFormatters.compactCurrency(gross),
+                            'Gross Receipts',
+                            AppFormatters.currency(gross),
                             const Color(0xFF4ADE80),
                           ),
-                          Container(width: 1, height: 20, color: Colors.white.withValues(alpha: 0.15)),
+                          Container(width: 1, height: 26, color: Colors.white.withValues(alpha: 0.15)),
                           _buildDarkSubStat(
-                            'Expenses',
-                            AppFormatters.compactCurrency(expenses),
+                            'Aviary Outflow',
+                            AppFormatters.currency(expenses),
                             const Color(0xFFF87171),
                           ),
-                          Container(width: 1, height: 20, color: Colors.white.withValues(alpha: 0.15)),
+                          Container(width: 1, height: 26, color: Colors.white.withValues(alpha: 0.15)),
                           _buildDarkSubStat(
-                            'Birds',
+                            'Avian Flock',
                             '$birdsCount Birds',
                             AppColors.white,
                           ),

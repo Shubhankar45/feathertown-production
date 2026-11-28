@@ -1112,8 +1112,11 @@ async def admin_get_analytics():
         if inv.get("status") == "cancelled":
             continue
         if not inv.get("orderId"):
-            paid_amt = float(inv.get("paidAmount") or inv.get("totalAmount") or 0)
-            if inv.get("paymentStatus") in ["paid", "partial"]:
+            paid_amt = float(inv.get("paidAmount") or 0.0)
+            p_stat = str(inv.get("paymentStatus") or "").lower()
+            if p_stat in ["paid", "partial"] or paid_amt > 0:
+                if paid_amt <= 0 and p_stat in ["paid", "partial"]:
+                    paid_amt = float(inv.get("totalAmount") or inv.get("grandTotal") or 0.0)
                 invoice_revenue += paid_amt
 
         if inv.get("bookingDetails") and inv.get("status") != "cancelled":
@@ -1237,9 +1240,14 @@ async def admin_get_analytics():
         if inv.get("status") == "cancelled":
             continue
         if not inv.get("orderId"):
-            for item in inv.get("items", []):
-                cat = item.get("category") or (item.get("itemType", "general").capitalize())
-                amt = float(item.get("total") or (float(item.get("price") or 0) * int(item.get("quantity") or 1)))
+            paid_inv = float(inv.get("paidAmount") or inv.get("totalAmount") or 0.0)
+            items = inv.get("items", [])
+            for item in items:
+                cat = item.get("category") or ("Exotic Birds" if item.get("itemType") == "bird" else item.get("itemType", "general").capitalize())
+                if inv.get("type") == "booking" and paid_inv > 0:
+                    amt = paid_inv / max(1, len(items))
+                else:
+                    amt = float(item.get("total") or (float(item.get("price") or 0) * int(item.get("quantity") or 1)))
                 cat_revenue[cat] = cat_revenue.get(cat, 0.0) + amt
 
     total_cat_rev = sum(cat_revenue.values())
@@ -1855,12 +1863,55 @@ async def admin_create_booking(
         "totalDiscount": 0.0,
         "paidAmount": deposit_paid,
         "balanceDue": balance_due,
+        "paymentStatus": "paid" if balance_due <= 0 else ("partial" if deposit_paid > 0 else "unpaid"),
+        "paymentMethod": str(body.get("paymentMethod") or "UPI").upper(),
         "notes": body.get("notes") or "",
         "createdAt": now,
         "updatedAt": now,
     }
     res = await invoices_col.insert_one(doc)
     doc["_id"] = res.inserted_id
+
+    # Sync Customer Record in directory
+    cust_phone = str(customer_phone).strip()
+    cust_email = str(customer_email).strip().lower()
+    if cust_phone or cust_email:
+        cust_filters = []
+        if cust_phone:
+            cust_filters.append({"phone": cust_phone})
+        if cust_email:
+            cust_filters.append({"email": cust_email})
+        await customers_col.update_one(
+            {"$or": cust_filters},
+            {
+                "$set": {
+                    "name": customer_name,
+                    "phone": cust_phone,
+                    "email": cust_email,
+                    "lastOrderAt": now,
+                    "updatedAt": now,
+                },
+                "$inc": {
+                    "totalOrders": 1,
+                    "totalSpent": deposit_paid,
+                },
+                "$setOnInsert": {
+                    "address": "",
+                    "city": "",
+                    "state": "",
+                    "pincode": "",
+                    "customerType": "regular",
+                    "createdAt": now,
+                },
+            },
+            upsert=True,
+        )
+
+    # If bird exists with matching name, mark as reserved
+    await birds_col.update_one(
+        {"name": bird_name, "status": "available"},
+        {"$set": {"status": "reserved", "updatedAt": now}},
+    )
 
     # If advance deposit was collected, record transaction automatically into ledger
     if deposit_paid > 0:
@@ -1950,7 +2001,18 @@ async def admin_delete_booking(
     if not existing:
         raise HTTPException(status_code=404, detail={"msg": "Booking record not found"})
 
+    now = datetime.now(timezone.utc)
     await invoices_col.delete_one({"_id": existing["_id"]})
+    await transactions_col.update_many({"invoiceId": str(existing["_id"])}, {"$set": {"status": "cancelled", "updatedAt": now}})
+    if existing.get("invoiceNumber"):
+        await transactions_col.update_many({"reference": existing.get("invoiceNumber")}, {"$set": {"status": "cancelled", "updatedAt": now}})
+
+    # Restore bird status if reserved
+    bd = existing.get("bookingDetails") or {}
+    bird_name = bd.get("birdName")
+    if bird_name:
+        await birds_col.update_one({"name": bird_name, "status": "reserved"}, {"$set": {"status": "available", "updatedAt": now}})
+
     await log_audit("DELETE_BOOKING", "booking", str(existing["_id"]), {"invoiceNumber": existing.get("invoiceNumber")}, admin.get("username", "admin"), request)
     return {"msg": "Booking reservation deleted successfully"}
 
@@ -2029,8 +2091,12 @@ async def admin_get_customer_details(id: str):
     invoices = []
 
     order_query = []
-    if phone: order_query.append({"phone": phone})
-    if email: order_query.append({"email": email})
+    if phone:
+        order_query.append({"phone": phone})
+        order_query.append({"customer.phone": phone})
+    if email:
+        order_query.append({"email": email})
+        order_query.append({"customer.email": email})
     if order_query:
         orders = await orders_col.find({"$or": order_query}).sort("createdAt", DESCENDING).to_list(length=50)
 
