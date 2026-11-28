@@ -5,6 +5,8 @@ import {
   Search,
   Printer,
   Download,
+  Send,
+  Share2,
   Plus,
   RefreshCw,
   CheckCircle2,
@@ -128,6 +130,80 @@ export default function AdminInvoices() {
       loadInvoices();
     } catch (err) {
       toast.error(err.message || "Could not void invoice");
+    }
+  };
+
+  // Direct Send to Customer WhatsApp
+  const handleSendWhatsApp = (inv) => {
+    const phone = (inv?.customer?.phone || "").replace(/\D/g, "");
+    const custName = inv?.customer?.name || "Customer";
+    const grandTotal = safeFormatCurrency(inv?.grandTotal || inv?.totalAmount);
+    const balanceDue = safeFormatCurrency(inv?.balanceDue);
+    const status = (inv?.paymentStatus || "paid").toUpperCase();
+
+    const itemsSummary = Array.isArray(inv?.items) && inv.items.length > 0
+      ? inv.items.map((it) => `• ${it?.name || "Item"} (x${it?.quantity || 1}) - ${safeFormatCurrency(it?.total || (it?.rate * it?.quantity))}`).join("\n")
+      : `• Aviary bird supplies / services - ${grandTotal}`;
+
+    const message = encodeURIComponent(
+      `🦜 *FEATHERTOWN AVIARY — OFFICIAL TAX INVOICE*\n` +
+      `----------------------------------------\n` +
+      `📋 *Invoice #:* #${inv?.invoiceNumber}\n` +
+      `👤 *Customer:* ${custName}\n` +
+      `📅 *Date:* ${safeFormatDate(inv?.createdAt)}\n` +
+      `----------------------------------------\n` +
+      `*ITEMS:*\n${itemsSummary}\n` +
+      `----------------------------------------\n` +
+      `💵 *Grand Total:* ${grandTotal}\n` +
+      `✅ *Amount Paid:* ${safeFormatCurrency(inv?.paidAmount)}\n` +
+      `⚠️ *Balance Due:* ${balanceDue}\n` +
+      `🔖 *Status:* ${status}\n` +
+      `----------------------------------------\n` +
+      `Thank you for choosing FeatherTown Aviary! 🦜\n` +
+      `https://feathertown.online`
+    );
+
+    if (phone) {
+      window.open(`https://wa.me/${phone}?text=${message}`, "_blank");
+    } else {
+      window.open(`https://wa.me/?text=${message}`, "_blank");
+    }
+  };
+
+  // System / Clipboard Share
+  const handleShareInvoice = async (inv) => {
+    const custName = inv?.customer?.name || "Customer";
+    const grandTotal = safeFormatCurrency(inv?.grandTotal || inv?.totalAmount);
+    const balanceDue = safeFormatCurrency(inv?.balanceDue);
+    const status = (inv?.paymentStatus || "paid").toUpperCase();
+
+    const summary = 
+      `🦜 *FEATHERTOWN AVIARY TAX INVOICE*\n` +
+      `Invoice #: ${inv?.invoiceNumber}\n` +
+      `Customer: ${custName}\n` +
+      `Grand Total: ${grandTotal}\n` +
+      `Balance Due: ${balanceDue}\n` +
+      `Status: ${status}\n\n` +
+      `FeatherTown Aviary\nhttps://feathertown.online`;
+
+    if (navigator.share) {
+      try {
+        await navigator.share({
+          title: `FeatherTown Invoice #${inv?.invoiceNumber}`,
+          text: summary,
+          url: window.location.origin,
+        });
+        return;
+      } catch (e) {
+        // user dismissed or share aborted
+      }
+    }
+
+    try {
+      await navigator.clipboard.writeText(summary);
+      toast.success(`Invoice #${inv?.invoiceNumber} summary copied to clipboard!`);
+    } catch {
+      toast.info(`Invoice #${inv?.invoiceNumber}`);
     }
   };
 
@@ -430,27 +506,96 @@ export default function AdminInvoices() {
                       </span>
                     </td>
                     <td style={{ padding: "14px 16px", textAlign: "center" }}>
-                      <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 8 }}>
-                        {/* View & Print */}
+                      <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 6, flexWrap: "nowrap" }}>
+                        {/* 1. Download PDF */}
                         <button
                           type="button"
                           onClick={() => setActiveInvoice(inv)}
-                          title="Print / View Official Tax Invoice"
+                          title="Download & View Official PDF Invoice"
                           style={{
                             display: "inline-flex",
                             alignItems: "center",
-                            gap: 4,
-                            padding: "5px 10px",
+                            gap: 3,
+                            padding: "5px 8px",
                             borderRadius: 6,
-                            background: "#EAF2EC",
-                            color: "#1B3B22",
-                            border: "1px solid #CCE0D0",
-                            fontSize: 11.5,
+                            background: "#EFF6FF",
+                            color: "#1D4ED8",
+                            border: "1px solid #BFDBFE",
+                            fontSize: 11,
+                            fontWeight: 700,
+                            cursor: "pointer",
+                          }}
+                        >
+                          <Download size={12} />
+                          Download
+                        </button>
+
+                        {/* 2. Send (WhatsApp / Customer) */}
+                        <button
+                          type="button"
+                          onClick={() => handleSendWhatsApp(inv)}
+                          title="Send Invoice to Customer WhatsApp"
+                          style={{
+                            display: "inline-flex",
+                            alignItems: "center",
+                            gap: 3,
+                            padding: "5px 8px",
+                            borderRadius: 6,
+                            background: "#DCFCE7",
+                            color: "#15803D",
+                            border: "1px solid #86EFAC",
+                            fontSize: 11,
+                            fontWeight: 700,
+                            cursor: "pointer",
+                          }}
+                        >
+                          <Send size={12} />
+                          Send
+                        </button>
+
+                        {/* 3. Share */}
+                        <button
+                          type="button"
+                          onClick={() => handleShareInvoice(inv)}
+                          title="Share Invoice summary"
+                          style={{
+                            display: "inline-flex",
+                            alignItems: "center",
+                            gap: 3,
+                            padding: "5px 8px",
+                            borderRadius: 6,
+                            background: "#F1F5F9",
+                            color: "#334155",
+                            border: "1px solid #CBD5E1",
+                            fontSize: 11,
                             fontWeight: 600,
                             cursor: "pointer",
                           }}
                         >
-                          <Printer size={13} />
+                          <Share2 size={12} />
+                          Share
+                        </button>
+
+                        {/* 4. Print */}
+                        <button
+                          type="button"
+                          onClick={() => setActiveInvoice(inv)}
+                          title="Print Official Tax Invoice"
+                          style={{
+                            display: "inline-flex",
+                            alignItems: "center",
+                            gap: 3,
+                            padding: "5px 7px",
+                            borderRadius: 6,
+                            background: "#FAF8F5",
+                            color: "#1B3B22",
+                            border: "1px solid #E2DDD3",
+                            fontSize: 11,
+                            fontWeight: 600,
+                            cursor: "pointer",
+                          }}
+                        >
+                          <Printer size={12} />
                           Print
                         </button>
 
@@ -463,18 +608,18 @@ export default function AdminInvoices() {
                             style={{
                               display: "inline-flex",
                               alignItems: "center",
-                              gap: 4,
-                              padding: "5px 10px",
+                              gap: 3,
+                              padding: "5px 8px",
                               borderRadius: 6,
                               background: "#FEF3C7",
                               color: "#92400E",
                               border: "1px solid #FDE68A",
-                              fontSize: 11.5,
-                              fontWeight: 600,
+                              fontSize: 11,
+                              fontWeight: 700,
                               cursor: "pointer",
                             }}
                           >
-                            <CreditCard size={13} />
+                            <CreditCard size={12} />
                             Collect
                           </button>
                         )}
@@ -493,7 +638,7 @@ export default function AdminInvoices() {
                               padding: 4,
                             }}
                           >
-                            <Ban size={15} />
+                            <Ban size={14} />
                           </button>
                         )}
                       </div>

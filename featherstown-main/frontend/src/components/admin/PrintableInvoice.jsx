@@ -9,7 +9,7 @@
    - 100% Lucide React icons, zero emojis
 ═══════════════════════════════════════════════════════════════ */
 import { useRef } from "react";
-import { Printer, Download, Share2, X, CheckCircle2, AlertCircle, Feather } from "lucide-react";
+import { Printer, Download, Share2, Send, X, CheckCircle2, AlertCircle, Feather } from "lucide-react";
 import { toast } from "../ui/Toast";
 import { safeFormatCurrency, safeFormatDate } from "../../utils/formatters";
 
@@ -25,13 +25,37 @@ export default function PrintableInvoice({ invoice, settings, onClose }) {
   const handleShareWhatsApp = () => {
     const phone = (invoice.customer?.phone || "").replace(/\D/g, "");
     if (!phone) {
-      toast.warn("Customer phone number not available for WhatsApp sharing.");
+      toast.warn("Customer phone number not available for WhatsApp sending.");
       return;
     }
     const message = encodeURIComponent(
-      `Hello ${invoice.customer?.name || "Customer"},\n\nYour official FeatherTown Tax Invoice (#${invoice.invoiceNumber}) has been generated.\n\nTotal Amount: ${safeFormatCurrency(invoice.totalAmount)}\nAmount Paid: ${safeFormatCurrency(invoice.paidAmount)}\nBalance Due: ${safeFormatCurrency(invoice.balanceDue)}\n\nThank you for choosing FeatherTown Aviary!`
+      `Hello ${invoice.customer?.name || "Customer"},\n\nYour official FeatherTown Tax Invoice (#${invoice.invoiceNumber}) has been generated.\n\nTotal Amount: ${safeFormatCurrency(invoice.grandTotal || invoice.totalAmount)}\nAmount Paid: ${safeFormatCurrency(invoice.paidAmount)}\nBalance Due: ${safeFormatCurrency(invoice.balanceDue)}\n\nThank you for choosing FeatherTown Aviary!\nhttps://feathertown.online`
     );
     window.open(`https://wa.me/${phone}?text=${message}`, "_blank");
+  };
+
+  const handleShare = async () => {
+    const summary = `🦜 *FEATHERTOWN AVIARY TAX INVOICE*\nInvoice: #${invoice.invoiceNumber}\nCustomer: ${invoice.customer?.name || "Patron"}\nTotal: ${safeFormatCurrency(invoice.grandTotal || invoice.totalAmount)}\nBalance Due: ${safeFormatCurrency(invoice.balanceDue)}\nStatus: ${(invoice.paymentStatus || "paid").toUpperCase()}\n\nFeatherTown Aviary\nhttps://feathertown.online`;
+
+    if (navigator.share) {
+      try {
+        await navigator.share({
+          title: `FeatherTown Invoice #${invoice.invoiceNumber}`,
+          text: summary,
+          url: window.location.origin,
+        });
+        return;
+      } catch (e) {
+        // user cancelled or unsupported
+      }
+    }
+
+    try {
+      await navigator.clipboard.writeText(summary);
+      toast.success("Invoice summary copied to clipboard!");
+    } catch {
+      toast.info("Invoice #" + invoice.invoiceNumber);
+    }
   };
 
   const statusColor = {
@@ -114,44 +138,92 @@ export default function PrintableInvoice({ invoice, settings, onClose }) {
           </div>
 
           <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+            {/* Download PDF */}
             <button
               onClick={handlePrint}
-              style={{
-                display: "inline-flex",
-                alignItems: "center",
-                gap: 6,
-                padding: "8px 16px",
-                borderRadius: 10,
-                background: "#1B3B22",
-                color: "#FFFFFF",
-                fontSize: 13,
-                fontWeight: 700,
-                border: "none",
-                cursor: "pointer",
-              }}
-            >
-              <Printer size={15} />
-              <span>Print / Save PDF</span>
-            </button>
-
-            <button
-              onClick={handleShareWhatsApp}
+              title="Download or Save PDF"
               style={{
                 display: "inline-flex",
                 alignItems: "center",
                 gap: 6,
                 padding: "8px 14px",
                 borderRadius: 10,
-                background: "#25D366",
+                background: "#1B3B22",
                 color: "#FFFFFF",
-                fontSize: 13,
+                fontSize: 12.5,
                 fontWeight: 700,
                 border: "none",
                 cursor: "pointer",
               }}
             >
-              <Share2 size={15} />
-              <span>WhatsApp</span>
+              <Download size={14} />
+              <span>Download PDF</span>
+            </button>
+
+            {/* Send to Customer via WhatsApp */}
+            <button
+              onClick={handleShareWhatsApp}
+              title="Direct Send to Customer WhatsApp"
+              style={{
+                display: "inline-flex",
+                alignItems: "center",
+                gap: 6,
+                padding: "8px 14px",
+                borderRadius: 10,
+                background: "#15803D",
+                color: "#FFFFFF",
+                fontSize: 12.5,
+                fontWeight: 700,
+                border: "none",
+                cursor: "pointer",
+              }}
+            >
+              <Send size={14} />
+              <span>Send</span>
+            </button>
+
+            {/* Share */}
+            <button
+              onClick={handleShare}
+              title="Share Invoice summary"
+              style={{
+                display: "inline-flex",
+                alignItems: "center",
+                gap: 6,
+                padding: "8px 14px",
+                borderRadius: 10,
+                background: "#F1F5F9",
+                color: "#334155",
+                fontSize: 12.5,
+                fontWeight: 700,
+                border: "1px solid #CBD5E1",
+                cursor: "pointer",
+              }}
+            >
+              <Share2 size={14} />
+              <span>Share</span>
+            </button>
+
+            {/* Print */}
+            <button
+              onClick={handlePrint}
+              title="Print Tax Invoice"
+              style={{
+                display: "inline-flex",
+                alignItems: "center",
+                gap: 6,
+                padding: "8px 12px",
+                borderRadius: 10,
+                background: "#FAF8F5",
+                color: "#1B3B22",
+                fontSize: 12.5,
+                fontWeight: 700,
+                border: "1px solid #E2DDD3",
+                cursor: "pointer",
+              }}
+            >
+              <Printer size={14} />
+              <span>Print</span>
             </button>
 
             <button
