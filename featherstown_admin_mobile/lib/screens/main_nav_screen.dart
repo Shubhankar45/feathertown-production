@@ -390,7 +390,7 @@ class _MainNavScreenState extends State<MainNavScreen> {
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: [
                 _buildNavItem(0, Icons.home_filled, Icons.home_outlined, 'Home'),
-                _buildNavItem(1, Icons.receipt_long, Icons.receipt_long_outlined, 'Expenses'),
+                _buildNavItem(1, Icons.receipt_long, Icons.receipt_long_outlined, 'Invoices'),
                 // Center Elevated '+' Action Button (Matching Reference Screenshot)
                 GestureDetector(
                   onTap: () => QuickRecordModal.show(context),

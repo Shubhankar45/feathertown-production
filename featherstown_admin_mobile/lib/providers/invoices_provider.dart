@@ -76,6 +76,18 @@ class InvoicesProvider extends ChangeNotifier {
     return null;
   }
 
+  Future<bool> markInvoicePaid(String id) async {
+    try {
+      await ApiService.patch('/api/admin/invoices/$id', body: {'paymentStatus': 'paid'});
+      await fetchInvoices(refresh: true);
+      return true;
+    } catch (e) {
+      _errorMessage = e.toString();
+      notifyListeners();
+      return false;
+    }
+  }
+
   Future<bool> deleteInvoice(String id) async {
     try {
       await ApiService.delete('/api/admin/invoices/$id');

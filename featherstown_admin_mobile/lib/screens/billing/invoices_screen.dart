@@ -354,6 +354,17 @@ class _InvoicesScreenState extends State<InvoicesScreen> {
                             return _InvoiceCard(
                               invoice: inv,
                               onWhatsApp: () => _shareWhatsApp(inv),
+                              onMarkPaid: () async {
+                                final ok = await context.read<InvoicesProvider>().markInvoicePaid(inv.id);
+                                if (ctx.mounted && ok) {
+                                  ScaffoldMessenger.of(ctx).showSnackBar(
+                                    SnackBar(
+                                      content: Text('Invoice #${inv.invoiceNumber} marked as PAID!'),
+                                      backgroundColor: AppColors.forestGreen,
+                                    ),
+                                  );
+                                }
+                              },
                               onDelete: () => _confirmDeleteInvoice(inv),
                             );
                           },
@@ -394,11 +405,18 @@ class _InvoicesScreenState extends State<InvoicesScreen> {
 class _InvoiceCard extends StatelessWidget {
   final Invoice invoice;
   final VoidCallback onWhatsApp;
+  final VoidCallback onMarkPaid;
   final VoidCallback onDelete;
 
-  const _InvoiceCard({required this.invoice, required this.onWhatsApp, required this.onDelete});
+  const _InvoiceCard({
+    required this.invoice,
+    required this.onWhatsApp,
+    required this.onMarkPaid,
+    required this.onDelete,
+  });
 
   Color _getStatusColor() {
+    if (invoice.status == 'cancelled') return AppColors.textMuted;
     switch (invoice.paymentStatus) {
       case 'paid':
         return AppColors.success;
@@ -453,7 +471,7 @@ class _InvoiceCard extends StatelessWidget {
                           borderRadius: BorderRadius.circular(6),
                         ),
                         child: Text(
-                          invoice.paymentStatus.toUpperCase(),
+                          invoice.status == 'cancelled' ? 'CANCELLED' : invoice.paymentStatus.toUpperCase(),
                           style: TextStyle(
                             color: _getStatusColor(),
                             fontWeight: FontWeight.w800,
@@ -496,6 +514,30 @@ class _InvoiceCard extends StatelessWidget {
                 Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [
+                    if (invoice.paymentStatus != 'paid' && invoice.status != 'cancelled') ...[
+                      GestureDetector(
+                        onTap: onMarkPaid,
+                        child: Container(
+                          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                          decoration: BoxDecoration(
+                            color: AppColors.heroDark,
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                          child: const Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Icon(Icons.check_circle_outline_rounded, size: 12, color: Colors.white),
+                              SizedBox(width: 3),
+                              Text(
+                                'Mark Paid',
+                                style: TextStyle(fontSize: 10, fontWeight: FontWeight.w700, color: Colors.white),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                      const SizedBox(width: 6),
+                    ],
                     GestureDetector(
                       onTap: onWhatsApp,
                       child: Container(

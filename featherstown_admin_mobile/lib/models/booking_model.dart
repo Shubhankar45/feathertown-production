@@ -20,9 +20,9 @@ class BirdBookingDetails {
       ringNumber: json['ringNumber']?.toString(),
       dnaSex: json['dnaSex']?.toString() ?? 'Pending',
       weaningStage: json['weaningStage']?.toString() ?? 'Fully Weaned & Flight Ready',
-      handoverDate: json['handoverDate']?.toString(),
+      handoverDate: json['handoverDate']?.toString() ?? json['expectedDeliveryDate']?.toString(),
       healthCertified: json['healthCertified'] == true,
-      specialInstructions: json['specialInstructions']?.toString(),
+      specialInstructions: json['specialInstructions']?.toString() ?? json['notes']?.toString(),
     );
   }
 
@@ -76,17 +76,42 @@ class BirdBookingItem {
       dt = DateTime.now();
     }
 
+    final amt = (json['amount'] is num && (json['amount'] as num) > 0)
+        ? (json['amount'] as num).toDouble()
+        : ((json['totalAmount'] is num) ? (json['totalAmount'] as num).toDouble() : 0.0);
+
+    final bal = (json['balanceDue'] is num)
+        ? (json['balanceDue'] as num).toDouble()
+        : 0.0;
+
+    final st = json['status']?.toString() ?? json['bookingStatus']?.toString() ?? 'reserved';
+
+    BirdBookingDetails? details;
+    if (json['birdBooking'] is Map) {
+      details = BirdBookingDetails.fromJson(Map<String, dynamic>.from(json['birdBooking']));
+    } else if (json['bookingDetails'] is Map) {
+      details = BirdBookingDetails.fromJson(Map<String, dynamic>.from(json['bookingDetails']));
+    } else {
+      details = BirdBookingDetails(
+        ringNumber: json['ringNumber']?.toString(),
+        dnaSex: json['dnaSex']?.toString() ?? 'Pending',
+        weaningStage: json['weaningStage']?.toString() ?? 'Fully Weaned & Flight Ready',
+        handoverDate: json['handoverDate']?.toString() ?? json['expectedDeliveryDate']?.toString(),
+        specialInstructions: json['notes']?.toString(),
+      );
+    }
+
     return BirdBookingItem(
       invoiceId: json['invoiceId']?.toString() ?? json['_id']?.toString() ?? json['id']?.toString() ?? '',
       invoiceNumber: json['invoiceNumber']?.toString() ?? '',
       birdId: json['birdId']?.toString(),
       birdName: json['birdName']?.toString() ?? 'Companion Bird',
       birdImage: json['birdImage']?.toString(),
-      status: json['status']?.toString() ?? 'reserved',
+      status: st,
       customer: json['customer'] is Map ? Map<String, dynamic>.from(json['customer']) : null,
-      birdBooking: json['birdBooking'] is Map ? BirdBookingDetails.fromJson(Map<String, dynamic>.from(json['birdBooking'])) : null,
-      amount: (json['amount'] is num) ? (json['amount'] as num).toDouble() : 0.0,
-      balanceDue: (json['balanceDue'] is num) ? (json['balanceDue'] as num).toDouble() : 0.0,
+      birdBooking: details,
+      amount: amt,
+      balanceDue: bal,
       createdAt: dt,
     );
   }

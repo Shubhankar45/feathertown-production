@@ -103,7 +103,7 @@ async def sync_order_to_finance(
     is_paid = p_status in ["paid", "delivered"] or p_method != "COD"
 
     # Check Invoice
-    existing_inv = await invoices_col.find_one({"$or": [{"orderId": order_id}, {"orderNumber": order_num}]})
+    existing_inv = await invoices_col.find_one({"orderId": order_id})
     if not existing_inv:
         inv_items = []
         for it in items:
@@ -126,6 +126,8 @@ async def sync_order_to_finance(
             "taxAmount": 0.0,
             "discount": 0.0,
             "totalAmount": amt,
+            "grandTotal": amt,
+            "totalDiscount": 0.0,
             "paidAmount": amt if is_paid else 0.0,
             "balanceDue": 0.0 if is_paid else amt,
             "paymentStatus": "paid" if is_paid else ("pending" if p_method == "COD" else "paid"),
@@ -139,7 +141,7 @@ async def sync_order_to_finance(
         await invoices_col.insert_one(inv_doc)
 
     # Check Transaction
-    existing_txn = await transactions_col.find_one({"$or": [{"orderId": order_id}, {"reference": order_num}]})
+    existing_txn = await transactions_col.find_one({"orderId": order_id})
     if not existing_txn:
         txn_doc = {
             "transactionId": f"TXN-{order_num}",

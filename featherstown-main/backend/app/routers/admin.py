@@ -1093,6 +1093,8 @@ async def admin_get_analytics():
     pending_bookings_count = 0
 
     for o in orders:
+        if str(o.get("orderStatus") or "").lower() in ["cancelled", "refunded"]:
+            continue
         amt = float(o.get("amount") or 0)
         p_status = str(o.get("paymentStatus") or "").lower()
         o_status = str(o.get("orderStatus") or "").lower()
@@ -1104,9 +1106,11 @@ async def admin_get_analytics():
         if o_status in ["pending", "confirmed"]:
             pending_bookings_count += 1
 
-    # Revenue from direct POS / Invoices (exclude invoices tied to orders to prevent double-counting)
+    # Revenue from direct POS / Invoices (exclude invoices tied to orders to prevent double-counting, exclude cancelled)
     invoice_revenue = 0.0
     for inv in invoices:
+        if inv.get("status") == "cancelled":
+            continue
         if not inv.get("orderId"):
             paid_amt = float(inv.get("paidAmount") or inv.get("totalAmount") or 0)
             if inv.get("paymentStatus") in ["paid", "partial"]:
@@ -1121,6 +1125,8 @@ async def admin_get_analytics():
     ledger_income = 0.0
     direct_income_txns = 0
     for t in transactions:
+        if t.get("status") == "cancelled":
+            continue
         if t.get("type") == "income":
             if not t.get("invoiceId") and not t.get("orderId"):
                 ledger_income += float(t.get("amount") or 0)
@@ -1131,6 +1137,8 @@ async def admin_get_analytics():
     # Expenses calculation from ledger
     total_expenses = 0.0
     for t in transactions:
+        if t.get("status") == "cancelled":
+            continue
         if t.get("type") == "expense":
             total_expenses += float(t.get("amount") or 0)
 
@@ -1167,6 +1175,8 @@ async def admin_get_analytics():
 
     # Aggregate direct invoices into 30-day buckets
     for inv in invoices:
+        if inv.get("status") == "cancelled":
+            continue
         if not inv.get("orderId"):
             dt = _parse_ts(inv.get("createdAt"))
             if dt:
@@ -1178,6 +1188,8 @@ async def admin_get_analytics():
 
     # Aggregate direct income transactions into 30-day buckets
     for t in transactions:
+        if t.get("status") == "cancelled":
+            continue
         if t.get("type") == "income" and not t.get("invoiceId") and not t.get("orderId"):
             dt = _parse_ts(t.get("date") or t.get("createdAt"))
             if dt:
@@ -1188,6 +1200,8 @@ async def admin_get_analytics():
 
     # Aggregate expenses into 30-day buckets
     for t in transactions:
+        if t.get("status") == "cancelled":
+            continue
         if t.get("type") == "expense":
             dt = _parse_ts(t.get("date") or t.get("createdAt"))
             if dt:
@@ -1212,12 +1226,16 @@ async def admin_get_analytics():
     # Category Breakdown (dynamic real-time calculation from actual orders and invoices)
     cat_revenue: Dict[str, float] = {}
     for o in orders:
+        if str(o.get("orderStatus") or "").lower() in ["cancelled", "refunded"]:
+            continue
         for item in (o.get("items") or o.get("orderItems") or []):
             cat = item.get("category") or "Accessories"
             amt = float(item.get("price") or 0) * int(item.get("quantity") or 1)
             cat_revenue[cat] = cat_revenue.get(cat, 0.0) + amt
 
     for inv in invoices:
+        if inv.get("status") == "cancelled":
+            continue
         if not inv.get("orderId"):
             for item in inv.get("items", []):
                 cat = item.get("category") or (item.get("itemType", "general").capitalize())
@@ -1237,6 +1255,8 @@ async def admin_get_analytics():
     # Payment Methods Breakdown
     pm_counts: Dict[str, Dict[str, Any]] = {}
     for o in orders:
+        if str(o.get("orderStatus") or "").lower() in ["cancelled", "refunded"]:
+            continue
         method = str(o.get("paymentMethod") or "cod").lower()
         if method not in pm_counts:
             pm_counts[method] = {"count": 0, "amount": 0.0}
@@ -1244,6 +1264,8 @@ async def admin_get_analytics():
         pm_counts[method]["amount"] += float(o.get("amount") or 0)
 
     for inv in invoices:
+        if inv.get("status") == "cancelled":
+            continue
         if not inv.get("orderId"):
             method = str(inv.get("paymentMethod") or "upi").lower()
             if method not in pm_counts:
@@ -1406,6 +1428,12 @@ async def admin_list_invoices(
     total = await invoices_col.count_documents(query)
     cursor = invoices_col.find(query).sort("createdAt", DESCENDING).skip(skip).limit(limit)
     invoices = await cursor.to_list(length=limit)
+    for inv in invoices:
+        tot = float(inv.get("totalAmount") or inv.get("grandTotal") or inv.get("subtotal") or 0.0)
+        inv["grandTotal"] = tot
+        inv["totalAmount"] = tot
+        inv["discount"] = float(inv.get("discount") or inv.get("totalDiscount") or 0.0)
+        inv["totalDiscount"] = float(inv.get("totalDiscount") or inv.get("discount") or 0.0)
     return {
         "invoices": serialize_doc(invoices),
         "total": total,
@@ -1543,9 +1571,11 @@ async def admin_create_invoice(
         "items": processed_items,
         "subtotal": round(subtotal, 2),
         "discount": round(discount, 2),
+        "totalDiscount": round(discount, 2),
         "taxRate": tax_rate,
         "taxAmount": tax_amount,
         "totalAmount": total_amount,
+        "grandTotal": total_amount,
         "paidAmount": paid_amount,
         "balanceDue": balance_due,
         "paymentStatus": payment_status,
@@ -1586,6 +1616,8 @@ async def admin_create_invoice(
     await log_audit("CREATE_INVOICE", "invoice", str(res.inserted_id), {
         "invoiceNumber": invoice_number,
         "totalAmount": total_amount,
+        "grandTotal": total_amount,
+        "totalDiscount": 0.0,
         "paidAmount": paid_amount,
         "customer": customer.get("name")
     }, admin.get("username", "admin"), request)
@@ -1646,6 +1678,31 @@ async def admin_update_invoice(
             "createdAt": now,
             "updatedAt": now,
         })
+    elif body.get("paymentStatus") == "paid":
+        total = float(existing.get("totalAmount") or existing.get("grandTotal") or 0.0)
+        curr_paid = float(existing.get("paidAmount") or 0.0)
+        rem = round(max(0.0, total - curr_paid), 2)
+        updates["paidAmount"] = total
+        updates["balanceDue"] = 0.0
+        updates["paymentStatus"] = "paid"
+        if rem > 0:
+            txn_id = await generate_transaction_id("INC")
+            pay_method = str(body.get("paymentMethod") or existing.get("paymentMethod") or "cash").lower()
+            await transactions_col.insert_one({
+                "transactionId": txn_id,
+                "type": "income",
+                "category": "sales",
+                "amount": rem,
+                "paymentMethod": pay_method,
+                "reference": existing.get("invoiceNumber", ""),
+                "description": f"Full payment settled for #{existing.get('invoiceNumber')} ({existing.get('customer', {}).get('name')})",
+                "customerOrPayee": existing.get("customer", {}).get("name"),
+                "invoiceId": str(id),
+                "date": now,
+                "createdBy": admin.get("username", "admin"),
+                "createdAt": now,
+                "updatedAt": now,
+            })
 
     # Direct field updates
     for field in ["paymentStatus", "notes", "terms", "status", "paymentMethod", "paymentReference"]:
@@ -1678,6 +1735,9 @@ async def admin_delete_invoice(
     # Void/cancel invoice
     now = datetime.now(timezone.utc)
     await invoices_col.update_one({"_id": to_object_id(id)}, {"$set": {"status": "cancelled", "updatedAt": now}})
+    await transactions_col.update_many({"invoiceId": id}, {"$set": {"status": "cancelled", "updatedAt": now}})
+    if existing.get("invoiceNumber"):
+        await transactions_col.update_many({"reference": existing.get("invoiceNumber")}, {"$set": {"status": "cancelled", "updatedAt": now}})
 
     # Restore inventory
     for it in existing.get("items", []):
@@ -1729,16 +1789,20 @@ async def admin_list_bookings(
         bd = inv.get("bookingDetails") or {}
         bookings.append({
             "id": str(inv["_id"]),
+            "invoiceId": str(inv["_id"]),
             "invoiceNumber": inv.get("invoiceNumber"),
             "customer": inv.get("customer", {}),
             "birdName": bd.get("birdName") or "Companion Bird",
             "ringNumber": bd.get("ringNumber") or "PENDING",
             "dnaSex": bd.get("dnaSex") or "Certified (Testing)",
             "bookingStatus": bd.get("status") or "reserved",
+            "status": bd.get("status") or "reserved",
             "totalAmount": inv.get("totalAmount", 0),
+            "amount": inv.get("totalAmount", 0),
             "depositPaid": inv.get("paidAmount", 0),
             "balanceDue": inv.get("balanceDue", 0),
             "expectedDeliveryDate": bd.get("expectedDeliveryDate") or "",
+            "birdBooking": bd,
             "createdAt": inv.get("createdAt"),
             "updatedAt": inv.get("updatedAt"),
             "notes": bd.get("notes") or inv.get("notes", ""),
@@ -1787,6 +1851,8 @@ async def admin_create_booking(
             "notes": body.get("notes") or "",
         },
         "totalAmount": total_amount,
+        "grandTotal": total_amount,
+        "totalDiscount": 0.0,
         "paidAmount": deposit_paid,
         "balanceDue": balance_due,
         "notes": body.get("notes") or "",
@@ -1826,6 +1892,8 @@ async def admin_create_booking(
         "dnaSex": bd["dnaSex"],
         "bookingStatus": bd["status"],
         "totalAmount": total_amount,
+        "grandTotal": total_amount,
+        "totalDiscount": 0.0,
         "depositPaid": deposit_paid,
         "balanceDue": balance_due,
         "expectedDeliveryDate": bd["expectedDeliveryDate"],
