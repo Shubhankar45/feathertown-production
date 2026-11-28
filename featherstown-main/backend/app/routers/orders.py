@@ -12,7 +12,7 @@ from app.config import (
     RAZORPAY_KEY_SECRET,
     PAYMENTS_ENABLED,
 )
-from app.database import accessories_col, orders_col, notifications_col, customers_col
+from app.database import accessories_col, orders_col, notifications_col, customers_col, invoices_col, transactions_col
 from app.auth import get_optional_user, get_current_user, get_current_verified_user
 from app.rate_limiter import checkout_limiter
 from app.utils import is_valid_object_id, to_object_id, serialize_doc
@@ -84,6 +84,79 @@ async def sync_customer_profile(customer: Dict[str, Any], order_amount: float) -
             "updatedAt": now,
         })
 
+async def sync_order_to_finance(
+    order_id,
+    order_num: str,
+    customer: Dict[str, Any],
+    items: List[Dict[str, Any]],
+    amount: float,
+    payment_method: str,
+    payment_status: str,
+    now: Optional[datetime] = None,
+):
+    """Auto creates Tax Invoice and Income Transaction for every store order."""
+    if not now:
+        now = datetime.now(timezone.utc)
+    amt = float(amount or 0.0)
+    p_status = str(payment_status or "").lower()
+    p_method = str(payment_method or "COD").upper()
+    is_paid = p_status in ["paid", "delivered"] or p_method != "COD"
+
+    # Check Invoice
+    existing_inv = await invoices_col.find_one({"$or": [{"orderId": order_id}, {"orderNumber": order_num}]})
+    if not existing_inv:
+        inv_items = []
+        for it in items:
+            inv_items.append({
+                "name": it.get("name", "Store Item"),
+                "category": it.get("category", "Accessories"),
+                "price": float(it.get("price") or 0.0),
+                "quantity": int(it.get("quantity") or 1),
+                "total": float(it.get("price") or 0.0) * int(it.get("quantity") or 1),
+                "itemType": "accessory",
+            })
+        inv_doc = {
+            "invoiceNumber": f"FT-INV-{order_num}",
+            "orderId": order_id,
+            "orderNumber": order_num,
+            "customer": customer,
+            "items": inv_items,
+            "subtotal": amt,
+            "taxRate": 0.0,
+            "taxAmount": 0.0,
+            "discount": 0.0,
+            "totalAmount": amt,
+            "paidAmount": amt if is_paid else 0.0,
+            "balanceDue": 0.0 if is_paid else amt,
+            "paymentStatus": "paid" if is_paid else ("pending" if p_method == "COD" else "paid"),
+            "paymentMethod": p_method,
+            "status": "issued",
+            "notes": f"Tax Invoice for website order #{order_num} via {p_method}",
+            "terms": "Official FeatherTown Store Tax Invoice. All items verified.",
+            "createdAt": now,
+            "updatedAt": now,
+        }
+        await invoices_col.insert_one(inv_doc)
+
+    # Check Transaction
+    existing_txn = await transactions_col.find_one({"$or": [{"orderId": order_id}, {"reference": order_num}]})
+    if not existing_txn:
+        txn_doc = {
+            "transactionId": f"TXN-{order_num}",
+            "orderId": order_id,
+            "type": "income",
+            "category": "Store Sales",
+            "amount": amt,
+            "description": f"Website Order #{order_num} - {customer.get('name', 'Customer')}",
+            "reference": order_num,
+            "paymentMethod": p_method,
+            "customerOrPayee": customer.get("name", "Customer"),
+            "date": now,
+            "createdAt": now,
+            "updatedAt": now,
+        }
+        await transactions_col.insert_one(txn_doc)
+
 async def validate_and_price_cart(body: Dict[str, Any]) -> Dict[str, Any]:
     items = body.get("items")
     customer = body.get("customer")
@@ -133,6 +206,7 @@ async def validate_and_price_cart(body: Dict[str, Any]) -> Dict[str, Any]:
         order_items.append({
             "accessory": accessory["_id"],
             "name": accessory.get("name", ""),
+            "category": accessory.get("category", "Accessories"),
             "price": price,
             "quantity": qty,
             "image": image_url,
@@ -305,6 +379,18 @@ async def verify_razorpay_payment(body: Dict[str, Any]):
         cust = order.get("customer") or {}
         await sync_customer_profile(cust, float(order.get("amount") or 0))
 
+        # Auto sync to finance (Tax Invoice + Ledger Income Transaction)
+        await sync_order_to_finance(
+            order_id=order["_id"],
+            order_num=order.get("orderNumber", str(order["_id"])),
+            customer=cust,
+            items=order.get("items", []),
+            amount=float(order.get("amount") or 0),
+            payment_method=order.get("paymentMethod") or "online",
+            payment_status="paid",
+            now=now,
+        )
+
         # Notify mobile admin
         await notifications_col.insert_one({
             "title": f"Payment Verified #{order.get('orderNumber', str(order['_id'])[-6:].upper())}",
@@ -375,6 +461,18 @@ async def create_cod_order(
 
         # Auto sync customer
         await sync_customer_profile(customer, amount)
+
+        # Auto sync to finance (Tax Invoice + Ledger Income Transaction)
+        await sync_order_to_finance(
+            order_id=result.inserted_id,
+            order_num=order_num,
+            customer=customer,
+            items=order_items,
+            amount=amount,
+            payment_method="cod",
+            payment_status="cod",
+            now=now,
+        )
 
         # Notify mobile admin
         await notifications_col.insert_one({

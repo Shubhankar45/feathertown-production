@@ -9,9 +9,9 @@ import '../../providers/dashboard_provider.dart';
 import '../../providers/ai_provider.dart';
 import '../transactions/quick_record_modal.dart';
 import '../transactions/transactions_screen.dart';
-import '../bookings/booking_tracker_screen.dart';
 import '../analytics/categories_insights_screen.dart';
 import '../birds/birds_screen.dart';
+import '../orders/orders_screen.dart';
 
 class DashboardScreen extends StatefulWidget {
   const DashboardScreen({super.key});
@@ -387,65 +387,106 @@ class _DashboardScreenState extends State<DashboardScreen> {
                           ],
                         ),
                         const SizedBox(height: 20),
-                        Row(
-                          children: [
-                            SizedBox(
-                              width: 120,
-                              height: 120,
-                              child: Stack(
-                                alignment: Alignment.center,
-                                children: [
-                                  PieChart(
-                                    PieChartData(
-                                      sectionsSpace: 3,
-                                      centerSpaceRadius: 42,
-                                      sections: [
-                                        PieChartSectionData(color: AppColors.catCockatiel, value: 55, showTitle: false, radius: 14),
-                                        PieChartSectionData(color: AppColors.catBudgie, value: 25, showTitle: false, radius: 14),
-                                        PieChartSectionData(color: AppColors.catConure, value: 12, showTitle: false, radius: 14),
-                                        PieChartSectionData(color: AppColors.lavenderText, value: 8, showTitle: false, radius: 14),
-                                      ],
-                                    ),
-                                  ),
-                                  Column(
-                                    mainAxisSize: MainAxisSize.min,
+                        Builder(
+                          builder: (context) {
+                            final categories = analytics?.categoryBreakdown ?? [];
+                            final categoryColors = [
+                              AppColors.catCockatiel,
+                              AppColors.catBudgie,
+                              AppColors.catConure,
+                              AppColors.lavenderText,
+                              AppColors.accent,
+                              AppColors.forestGreen,
+                            ];
+
+                            return Row(
+                              children: [
+                                SizedBox(
+                                  width: 120,
+                                  height: 120,
+                                  child: Stack(
+                                    alignment: Alignment.center,
                                     children: [
-                                      Text(
-                                        AppFormatters.compactCurrency(gross),
-                                        style: const TextStyle(
-                                          fontWeight: FontWeight.w900,
-                                          fontSize: 14,
-                                          color: AppColors.textPrimary,
+                                      PieChart(
+                                        PieChartData(
+                                          sectionsSpace: categories.length > 1 ? 3 : 0,
+                                          centerSpaceRadius: 42,
+                                          sections: categories.isNotEmpty
+                                              ? List.generate(categories.length, (idx) {
+                                                  final c = categories[idx];
+                                                  final col = categoryColors[idx % categoryColors.length];
+                                                  return PieChartSectionData(
+                                                    color: col,
+                                                    value: c.percentage > 0 ? c.percentage : 1.0,
+                                                    showTitle: false,
+                                                    radius: 14,
+                                                  );
+                                                })
+                                              : [
+                                                  PieChartSectionData(
+                                                    color: const Color(0xFFE2E8F0),
+                                                    value: 100,
+                                                    showTitle: false,
+                                                    radius: 14,
+                                                  ),
+                                                ],
                                         ),
                                       ),
-                                      const Text(
-                                        'Sales',
-                                        style: TextStyle(
-                                          fontSize: 10,
-                                          color: AppColors.textSecondary,
-                                          fontWeight: FontWeight.w600,
-                                        ),
+                                      Column(
+                                        mainAxisSize: MainAxisSize.min,
+                                        children: [
+                                          Text(
+                                            AppFormatters.compactCurrency(gross),
+                                            style: const TextStyle(
+                                              fontWeight: FontWeight.w900,
+                                              fontSize: 14,
+                                              color: AppColors.textPrimary,
+                                            ),
+                                          ),
+                                          const Text(
+                                            'Sales',
+                                            style: TextStyle(
+                                              fontSize: 10,
+                                              color: AppColors.textSecondary,
+                                              fontWeight: FontWeight.w600,
+                                            ),
+                                          ),
+                                        ],
                                       ),
                                     ],
                                   ),
-                                ],
-                              ),
-                            ),
-                            const SizedBox(width: 20),
-                            Expanded(
-                              child: Column(
-                                children: [
-                                  _buildStreamLegend('Birds', '55%', AppColors.catCockatiel),
-                                  const SizedBox(height: 8),
-                                  _buildStreamLegend('Cages', '25%', AppColors.catBudgie),
-                                  const SizedBox(height: 8),
-                                  _buildStreamLegend('Feed', '12%', AppColors.catConure),
-                                  const SizedBox(height: 8),
-                                  _buildStreamLegend('Accessories', '8%', AppColors.lavenderText),
-                                ],
-                              ),
-                            ),
-                          ],
+                                ),
+                                const SizedBox(width: 20),
+                                Expanded(
+                                  child: categories.isNotEmpty
+                                      ? Column(
+                                          children: List.generate(categories.take(4).length, (idx) {
+                                            final c = categories[idx];
+                                            final col = categoryColors[idx % categoryColors.length];
+                                            return Padding(
+                                              padding: EdgeInsets.only(bottom: idx < categories.take(4).length - 1 ? 8 : 0),
+                                              child: _buildStreamLegend(
+                                                c.name,
+                                                '${c.percentage.toStringAsFixed(0)}%',
+                                                col,
+                                              ),
+                                            );
+                                          }),
+                                        )
+                                      : const Center(
+                                          child: Text(
+                                            'Ready for sales • Live categories populate automatically',
+                                            style: TextStyle(
+                                              fontSize: 11.5,
+                                              color: AppColors.textSecondary,
+                                              fontWeight: FontWeight.w500,
+                                            ),
+                                          ),
+                                        ),
+                                ),
+                              ],
+                            );
+                          },
                         ),
                       ],
                     ),
@@ -476,7 +517,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                               onTap: () {
                                 Navigator.push(
                                   context,
-                                  MaterialPageRoute(builder: (_) => const BookingTrackerScreen()),
+                                  MaterialPageRoute(builder: (_) => const OrdersScreen()),
                                 );
                               },
                               child: const Text(
@@ -491,40 +532,68 @@ class _DashboardScreenState extends State<DashboardScreen> {
                           ],
                         ),
                         const SizedBox(height: 16),
-                        _buildActionRow(
-                          icon: Icons.flutter_dash_rounded,
-                          iconBg: AppColors.pastelMint,
-                          iconColor: AppColors.catCockatiel,
-                          title: 'Sun Conure • Hand-Tamed',
-                          subtitle: 'Live in Avian Stock • Ready',
-                          amount: '₹18,000',
-                          statusTag: 'Available',
-                          statusColor: AppColors.success,
-                          statusBg: AppColors.pastelMint,
-                        ),
-                        const Divider(height: 20, color: AppColors.cardBorder),
-                        _buildActionRow(
-                          icon: Icons.home_work_rounded,
-                          iconBg: AppColors.pastelBlue,
-                          iconColor: AppColors.catBudgie,
-                          title: 'Wrought Iron Flight Cage',
-                          subtitle: 'Store Inventory • In Stock',
-                          amount: '₹6,500',
-                          statusTag: 'Active',
-                          statusColor: AppColors.blueText,
-                          statusBg: AppColors.pastelBlue,
-                        ),
-                        const Divider(height: 20, color: AppColors.cardBorder),
-                        _buildActionRow(
-                          icon: Icons.flutter_dash_rounded,
-                          iconBg: AppColors.pastelPeach,
-                          iconColor: AppColors.catMacaw,
-                          title: 'African Grey Parrot',
-                          subtitle: 'DNA Certified • Ring Verified',
-                          amount: '₹55,000',
-                          statusTag: 'Live',
-                          statusColor: AppColors.forestGreen,
-                          statusBg: AppColors.pastelMint,
+                        Builder(
+                          builder: (context) {
+                            final recentOrders = analytics?.recentOrders ?? [];
+                            if (recentOrders.isEmpty) {
+                              return const Padding(
+                                padding: EdgeInsets.symmetric(vertical: 14),
+                                child: Center(
+                                  child: Text(
+                                    'No orders recorded yet • Website sales sync here in real-time',
+                                    textAlign: TextAlign.center,
+                                    style: TextStyle(
+                                      fontSize: 12,
+                                      color: AppColors.textSecondary,
+                                      fontWeight: FontWeight.w500,
+                                    ),
+                                  ),
+                                ),
+                              );
+                            }
+
+                            return Column(
+                              children: List.generate(recentOrders.length, (idx) {
+                                final ord = recentOrders[idx];
+                                final isLast = idx == recentOrders.length - 1;
+                                final st = ord.status.toLowerCase();
+                                final isDelivered = st == 'delivered';
+                                final isShipped = st == 'shipped';
+                                final statusColor = isDelivered
+                                    ? AppColors.forestGreen
+                                    : (isShipped ? AppColors.blueText : AppColors.accent);
+                                final statusBg = isDelivered
+                                    ? AppColors.pastelMint
+                                    : (isShipped ? AppColors.pastelBlue : AppColors.pastelPeach);
+
+                                return Column(
+                                  children: [
+                                    InkWell(
+                                      onTap: () {
+                                        Navigator.push(
+                                          context,
+                                          MaterialPageRoute(builder: (_) => const OrdersScreen()),
+                                        );
+                                      },
+                                      borderRadius: BorderRadius.circular(12),
+                                      child: _buildActionRow(
+                                        icon: Icons.shopping_bag_rounded,
+                                        iconBg: statusBg,
+                                        iconColor: statusColor,
+                                        title: 'Order #${ord.orderNumber}',
+                                        subtitle: '${ord.customerName} • ${ord.paymentMethod.toUpperCase()}',
+                                        amount: AppFormatters.currency(ord.amount),
+                                        statusTag: ord.status.toUpperCase(),
+                                        statusColor: statusColor,
+                                        statusBg: statusBg,
+                                      ),
+                                    ),
+                                    if (!isLast) const Divider(height: 20, color: AppColors.cardBorder),
+                                  ],
+                                );
+                              }),
+                            );
+                          },
                         ),
                       ],
                     ),

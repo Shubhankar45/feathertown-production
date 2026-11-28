@@ -61,9 +61,73 @@ class DashboardSummary {
   }
 }
 
+class CategorySales {
+  final String name;
+  final double revenue;
+  final double percentage;
+
+  CategorySales({
+    required this.name,
+    required this.revenue,
+    required this.percentage,
+  });
+
+  factory CategorySales.fromJson(Map<String, dynamic> json) {
+    return CategorySales(
+      name: json['name']?.toString() ?? 'Other',
+      revenue: (json['revenue'] is num) ? (json['revenue'] as num).toDouble() : 0.0,
+      percentage: (json['percentage'] is num) ? (json['percentage'] as num).toDouble() : 0.0,
+    );
+  }
+}
+
+class RecentDashboardOrder {
+  final String id;
+  final String orderNumber;
+  final String customerName;
+  final String customerPhone;
+  final double amount;
+  final String status;
+  final String paymentStatus;
+  final String paymentMethod;
+  final String createdAt;
+  final int itemsCount;
+
+  RecentDashboardOrder({
+    required this.id,
+    required this.orderNumber,
+    required this.customerName,
+    required this.customerPhone,
+    required this.amount,
+    required this.status,
+    required this.paymentStatus,
+    required this.paymentMethod,
+    required this.createdAt,
+    required this.itemsCount,
+  });
+
+  factory RecentDashboardOrder.fromJson(Map<String, dynamic> json) {
+    final cust = json['customer'] is Map ? json['customer'] : {};
+    return RecentDashboardOrder(
+      id: json['id']?.toString() ?? json['_id']?.toString() ?? '',
+      orderNumber: json['orderNumber']?.toString() ?? 'Order',
+      customerName: cust['name']?.toString() ?? json['customerName']?.toString() ?? 'Customer',
+      customerPhone: cust['phone']?.toString() ?? json['customerPhone']?.toString() ?? '',
+      amount: (json['amount'] is num) ? (json['amount'] as num).toDouble() : 0.0,
+      status: json['orderStatus']?.toString() ?? json['status']?.toString() ?? 'confirmed',
+      paymentStatus: json['paymentStatus']?.toString() ?? 'cod',
+      paymentMethod: json['paymentMethod']?.toString() ?? 'COD',
+      createdAt: json['createdAt']?.toString() ?? '',
+      itemsCount: (json['itemsCount'] is num) ? (json['itemsCount'] as num).toInt() : 1,
+    );
+  }
+}
+
 class DashboardAnalytics {
   final DashboardSummary summary;
   final List<DayTrend> trend30Days;
+  final List<CategorySales> categoryBreakdown;
+  final List<RecentDashboardOrder> recentOrders;
   final Map<String, dynamic> orderStatusFunnel;
   final List<dynamic> lowStockAlerts;
   final List<dynamic> recentTransactions;
@@ -72,6 +136,8 @@ class DashboardAnalytics {
   DashboardAnalytics({
     required this.summary,
     required this.trend30Days,
+    required this.categoryBreakdown,
+    required this.recentOrders,
     required this.orderStatusFunnel,
     required this.lowStockAlerts,
     required this.recentTransactions,
@@ -85,9 +151,17 @@ class DashboardAnalytics {
     final rawTrends = json['trend30Days'] as List? ?? [];
     final trendsList = rawTrends.map((e) => DayTrend.fromJson(Map<String, dynamic>.from(e))).toList();
 
+    final rawCategories = json['categoryBreakdown'] as List? ?? [];
+    final categoriesList = rawCategories.map((e) => CategorySales.fromJson(Map<String, dynamic>.from(e))).toList();
+
+    final rawOrders = json['recentOrders'] as List? ?? [];
+    final ordersList = rawOrders.map((e) => RecentDashboardOrder.fromJson(Map<String, dynamic>.from(e))).toList();
+
     return DashboardAnalytics(
       summary: summaryObj,
       trend30Days: trendsList,
+      categoryBreakdown: categoriesList,
+      recentOrders: ordersList,
       orderStatusFunnel: json['orderStatusFunnel'] is Map ? Map<String, dynamic>.from(json['orderStatusFunnel']) : {},
       lowStockAlerts: json['lowStockAlerts'] as List? ?? [],
       recentTransactions: json['recentTransactions'] as List? ?? [],

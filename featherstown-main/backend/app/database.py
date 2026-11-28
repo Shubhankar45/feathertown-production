@@ -161,5 +161,137 @@ async def init_db():
                 missing_fields["updatedAt"] = now
                 await settings_col.update_one({"key": "store_settings"}, {"$set": missing_fields})
 
+        # Auto-sync real orders to invoices, transactions & customers
+        await auto_sync_orders_finance()
+
     except Exception as e:
         print(f"❌ MongoDB initialization error: {e}", file=sys.stderr)
+
+async def auto_sync_orders_finance():
+    """
+    Ensures all orders from the website or store have corresponding invoices,
+    transactions, and customer records so all Finance & Billing sections are 100% in sync in real-time.
+    """
+    try:
+        orders = await orders_col.find({}).to_list(length=10000)
+        for o in orders:
+            order_id = o["_id"]
+            order_num = o.get("orderNumber") or str(order_id)
+            amt = float(o.get("amount") or 0)
+            customer = o.get("customer") or {}
+            p_status = str(o.get("paymentStatus") or "").lower()
+            p_method = str(o.get("paymentMethod") or "COD").upper()
+            o_status = str(o.get("orderStatus") or "confirmed").lower()
+            created_at = o.get("createdAt") or datetime.now(timezone.utc)
+            updated_at = o.get("updatedAt") or created_at
+
+            # 1. Backfill category on items if missing
+            items = o.get("items") or o.get("orderItems") or []
+            updated_items = []
+            items_changed = False
+            for it in items:
+                cat = it.get("category")
+                if not cat:
+                    acc_id = it.get("accessory") or it.get("id") or it.get("_id")
+                    if acc_id:
+                        acc = await accessories_col.find_one({"_id": acc_id})
+                        if acc and acc.get("category"):
+                            cat = acc.get("category")
+                    if not cat:
+                        cat = "Accessories"
+                    it["category"] = cat
+                    items_changed = True
+                updated_items.append(it)
+
+            if items_changed:
+                await orders_col.update_one({"_id": order_id}, {"$set": {"items": updated_items}})
+
+            # 2. Check / Create Invoice
+            inv = await invoices_col.find_one({"$or": [{"orderId": order_id}, {"orderNumber": order_num}]})
+            is_paid = p_status in ["paid", "delivered"] or o_status == "delivered" or p_method != "COD"
+            if not inv:
+                inv_items = []
+                for it in updated_items:
+                    inv_items.append({
+                        "name": it.get("name", "Store Item"),
+                        "category": it.get("category", "Accessories"),
+                        "price": float(it.get("price") or 0),
+                        "quantity": int(it.get("quantity") or 1),
+                        "total": float(it.get("price") or 0) * int(it.get("quantity") or 1),
+                        "itemType": "accessory",
+                    })
+                inv_doc = {
+                    "invoiceNumber": f"FT-INV-{order_num}",
+                    "orderId": order_id,
+                    "orderNumber": order_num,
+                    "customer": customer,
+                    "items": inv_items,
+                    "subtotal": amt,
+                    "taxRate": 0.0,
+                    "taxAmount": 0.0,
+                    "discount": 0.0,
+                    "totalAmount": amt,
+                    "paidAmount": amt if is_paid else 0.0,
+                    "balanceDue": 0.0 if is_paid else amt,
+                    "paymentStatus": "paid" if is_paid else ("pending" if p_method == "COD" else "paid"),
+                    "paymentMethod": p_method,
+                    "status": "issued",
+                    "notes": f"Tax Invoice for website order #{order_num} via {p_method}",
+                    "terms": "Official FeatherTown Store Tax Invoice. All items verified.",
+                    "createdAt": created_at,
+                    "updatedAt": updated_at,
+                }
+                await invoices_col.insert_one(inv_doc)
+
+            # 3. Check / Create Transaction in Ledger
+            txn = await transactions_col.find_one({"$or": [{"orderId": order_id}, {"reference": order_num}]})
+            if not txn:
+                txn_doc = {
+                    "transactionId": f"TXN-{order_num}",
+                    "orderId": order_id,
+                    "type": "income",
+                    "category": "Store Sales",
+                    "amount": amt,
+                    "description": f"Website Order #{order_num} - {customer.get('name', 'Customer')}",
+                    "reference": order_num,
+                    "paymentMethod": p_method,
+                    "customerOrPayee": customer.get("name", "Customer"),
+                    "date": created_at,
+                    "createdAt": created_at,
+                    "updatedAt": updated_at,
+                }
+                await transactions_col.insert_one(txn_doc)
+
+            # 4. Sync Customer
+            phone = str(customer.get("phone") or "").strip()
+            email = str(customer.get("email") or "").strip().lower()
+            if phone or email:
+                cq = {}
+                if phone:
+                    cq["phone"] = phone
+                elif email:
+                    cq["email"] = email
+                await customers_col.update_one(
+                    cq,
+                    {
+                        "$set": {
+                            "name": customer.get("name", "Customer"),
+                            "phone": phone,
+                            "email": email,
+                            "address": customer.get("address", ""),
+                            "city": customer.get("city", ""),
+                            "state": customer.get("state", ""),
+                            "pincode": customer.get("pincode", ""),
+                            "lastOrderAt": created_at,
+                            "updatedAt": updated_at,
+                        },
+                        "$setOnInsert": {
+                            "totalOrders": 1,
+                            "totalSpent": amt,
+                            "createdAt": created_at,
+                        },
+                    },
+                    upsert=True
+                )
+    except Exception as e:
+        print(f"Auto-sync finance error: {e}", file=sys.stderr)

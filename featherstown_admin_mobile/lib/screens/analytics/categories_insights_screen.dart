@@ -31,58 +31,64 @@ class _CategoriesInsightsScreenState extends State<CategoriesInsightsScreen> {
     final gross = analytics?.summary.grossRevenue ?? 0.0;
     final expenses = analytics?.summary.totalExpenses ?? 0.0;
 
-    final categories = [
-      {
-        'title': 'Exotic Companion Birds',
-        'subtitle': 'Conures, Macaws, Greys',
-        'spent': gross * 0.58,
-        'target': gross * 0.70,
-        'icon': Icons.flutter_dash_rounded,
+    final catBreakdown = analytics?.categoryBreakdown ?? [];
+    final categoryColors = [
+      AppColors.catCockatiel,
+      AppColors.catBudgie,
+      AppColors.catConure,
+      AppColors.lavenderText,
+      AppColors.accent,
+      AppColors.forestGreen,
+    ];
+    final categoryBgs = [
+      AppColors.pastelMint,
+      AppColors.pastelBlue,
+      AppColors.pastelYellow,
+      AppColors.pastelLavender,
+      AppColors.pastelPeach,
+      AppColors.pastelMint,
+    ];
+
+    final List<Map<String, dynamic>> categories = [];
+    if (catBreakdown.isNotEmpty) {
+      for (int i = 0; i < catBreakdown.length; i++) {
+        final c = catBreakdown[i];
+        categories.add({
+          'title': c.name,
+          'subtitle': '${c.percentage.toStringAsFixed(1)}% of total store sales',
+          'spent': c.revenue,
+          'target': c.revenue > 0 ? c.revenue * 1.25 : 5000.0,
+          'icon': Icons.inventory_2_rounded,
+          'color': categoryColors[i % categoryColors.length],
+          'bg': categoryBgs[i % categoryBgs.length],
+          'section': 'Sales Revenue',
+        });
+      }
+    } else {
+      categories.add({
+        'title': 'Store Products & Accessories',
+        'subtitle': 'Live orders populate here automatically',
+        'spent': gross,
+        'target': 10000.0,
+        'icon': Icons.shopping_bag_rounded,
         'color': AppColors.catCockatiel,
         'bg': AppColors.pastelMint,
-        'section': 'Livestock',
-      },
-      {
-        'title': 'Aviary Cages & Flight Aviaries',
-        'subtitle': 'Galvanized & Powder Coated',
-        'spent': gross * 0.22,
-        'target': gross * 0.25,
-        'icon': Icons.home_work_rounded,
-        'color': AppColors.catBudgie,
-        'bg': AppColors.pastelBlue,
-        'section': 'Housing',
-      },
-      {
-        'title': 'Bird Nutrition & Seed Blends',
-        'subtitle': 'Organic pellets & millets',
-        'spent': expenses * 0.45,
-        'target': expenses * 0.50,
-        'icon': Icons.grain_rounded,
-        'color': AppColors.catConure,
-        'bg': AppColors.pastelYellow,
-        'section': 'Operating',
-      },
-      {
-        'title': 'Veterinary & DNA Testing',
-        'subtitle': 'Certificates, vaccines & labs',
-        'spent': expenses * 0.25,
-        'target': expenses * 0.35,
-        'icon': Icons.medical_services_rounded,
+        'section': 'Sales Revenue',
+      });
+    }
+
+    if (expenses > 0) {
+      categories.add({
+        'title': 'Aviary Feed & Operations',
+        'subtitle': 'Active expenses from ledger',
+        'spent': expenses,
+        'target': expenses * 1.2,
+        'icon': Icons.account_balance_wallet_rounded,
         'color': AppColors.lavenderText,
         'bg': AppColors.pastelLavender,
         'section': 'Operating',
-      },
-      {
-        'title': 'Aviary Maintenance & Climate',
-        'subtitle': 'Misting, heating, lighting',
-        'spent': expenses * 0.20,
-        'target': expenses * 0.25,
-        'icon': Icons.thermostat_rounded,
-        'color': AppColors.peachText,
-        'bg': AppColors.pastelPeach,
-        'section': 'Operating',
-      },
-    ];
+      });
+    }
 
     final filtered = _selectedCategory == 'All'
         ? categories

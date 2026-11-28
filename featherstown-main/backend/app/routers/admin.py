@@ -589,13 +589,42 @@ async def admin_update_order_status(id: str, body: Dict[str, Any]):
         raise HTTPException(status_code=400, detail={"msg": "Invalid status"})
 
     now = datetime.now(timezone.utc)
+    set_fields: Dict[str, Any] = {"orderStatus": order_status, "updatedAt": now}
+    if order_status == "delivered":
+        set_fields["paymentStatus"] = "paid"
+    elif order_status == "cancelled":
+        set_fields["paymentStatus"] = "cancelled"
+
     res = await orders_col.find_one_and_update(
         query,
-        {"$set": {"orderStatus": order_status, "updatedAt": now}},
+        {"$set": set_fields},
         return_document=True,
     )
     if not res:
         raise HTTPException(status_code=404, detail={"msg": "Not found"})
+
+    # Auto sync corresponding invoice in invoices_col
+    order_num = res.get("orderNumber") or str(res["_id"])
+    if order_status == "delivered":
+        await invoices_col.update_many(
+            {"$or": [{"orderId": res["_id"]}, {"orderNumber": order_num}]},
+            {"$set": {
+                "paymentStatus": "paid",
+                "paidAmount": float(res.get("amount") or 0.0),
+                "balanceDue": 0.0,
+                "status": "delivered",
+                "updatedAt": now,
+            }}
+        )
+    elif order_status == "cancelled":
+        await invoices_col.update_many(
+            {"$or": [{"orderId": res["_id"]}, {"orderNumber": order_num}]},
+            {"$set": {
+                "paymentStatus": "cancelled",
+                "status": "cancelled",
+                "updatedAt": now,
+            }}
+        )
 
     return serialize_doc(res)
 
@@ -1180,31 +1209,30 @@ async def admin_get_analytics():
             b["label"] = d_str
         trend_30_days.append(b)
 
-    # Category Breakdown
+    # Category Breakdown (dynamic real-time calculation from actual orders and invoices)
     cat_revenue: Dict[str, float] = {}
     for o in orders:
-        for item in o.get("items", []):
+        for item in (o.get("items") or o.get("orderItems") or []):
             cat = item.get("category") or "Accessories"
             amt = float(item.get("price") or 0) * int(item.get("quantity") or 1)
             cat_revenue[cat] = cat_revenue.get(cat, 0.0) + amt
 
     for inv in invoices:
-        for item in inv.get("items", []):
-            cat = item.get("category") or (item.get("itemType", "general").capitalize())
-            amt = float(item.get("total") or (float(item.get("price") or 0) * int(item.get("quantity") or 1)))
-            cat_revenue[cat] = cat_revenue.get(cat, 0.0) + amt
+        if not inv.get("orderId"):
+            for item in inv.get("items", []):
+                cat = item.get("category") or (item.get("itemType", "general").capitalize())
+                amt = float(item.get("total") or (float(item.get("price") or 0) * int(item.get("quantity") or 1)))
+                cat_revenue[cat] = cat_revenue.get(cat, 0.0) + amt
 
+    total_cat_rev = sum(cat_revenue.values())
     category_breakdown = [
-        {"name": k, "revenue": round(v, 2)}
+        {
+            "name": k,
+            "revenue": round(v, 2),
+            "percentage": round((v / total_cat_rev * 100), 1) if total_cat_rev > 0 else 0.0,
+        }
         for k, v in sorted(cat_revenue.items(), key=lambda x: x[1], reverse=True)
     ]
-    if not category_breakdown:
-        category_breakdown = [
-            {"name": "Companion Birds", "revenue": round(gross_revenue * 0.55, 2)},
-            {"name": "Cages & Aviaries", "revenue": round(gross_revenue * 0.25, 2)},
-            {"name": "Organic Food & Nutrition", "revenue": round(gross_revenue * 0.15, 2)},
-            {"name": "Toys & Accessories", "revenue": round(gross_revenue * 0.05, 2)},
-        ]
 
     # Payment Methods Breakdown
     pm_counts: Dict[str, Dict[str, Any]] = {}
@@ -1216,11 +1244,12 @@ async def admin_get_analytics():
         pm_counts[method]["amount"] += float(o.get("amount") or 0)
 
     for inv in invoices:
-        method = str(inv.get("paymentMethod") or "upi").lower()
-        if method not in pm_counts:
-            pm_counts[method] = {"count": 0, "amount": 0.0}
-        pm_counts[method]["count"] += 1
-        pm_counts[method]["amount"] += float(inv.get("paidAmount") or inv.get("totalAmount") or 0)
+        if not inv.get("orderId"):
+            method = str(inv.get("paymentMethod") or "upi").lower()
+            if method not in pm_counts:
+                pm_counts[method] = {"count": 0, "amount": 0.0}
+            pm_counts[method]["count"] += 1
+            pm_counts[method]["amount"] += float(inv.get("paidAmount") or inv.get("totalAmount") or 0)
 
     payment_method_breakdown = [
         {"method": k.upper(), "count": v["count"], "amount": round(v["amount"], 2)}
@@ -1241,7 +1270,7 @@ async def admin_get_analytics():
     # Top selling items
     item_sales_counts: Dict[str, Dict[str, Any]] = {}
     for o in orders:
-        for it in o.get("items", []):
+        for it in (o.get("items") or o.get("orderItems") or []):
             name = it.get("name") or "Product"
             if name not in item_sales_counts:
                 item_sales_counts[name] = {"name": name, "quantity": 0, "revenue": 0.0}
@@ -1250,15 +1279,68 @@ async def admin_get_analytics():
             item_sales_counts[name]["revenue"] += float(it.get("price") or 0) * qty
 
     for inv in invoices:
-        for it in inv.get("items", []):
-            name = it.get("name") or "Product"
-            if name not in item_sales_counts:
-                item_sales_counts[name] = {"name": name, "quantity": 0, "revenue": 0.0}
-            qty = int(it.get("quantity") or 1)
-            item_sales_counts[name]["quantity"] += qty
-            item_sales_counts[name]["revenue"] += float(it.get("total") or (float(it.get("price") or 0) * qty))
+        if not inv.get("orderId"):
+            for it in inv.get("items", []):
+                name = it.get("name") or "Product"
+                if name not in item_sales_counts:
+                    item_sales_counts[name] = {"name": name, "quantity": 0, "revenue": 0.0}
+                qty = int(it.get("quantity") or 1)
+                item_sales_counts[name]["quantity"] += qty
+                item_sales_counts[name]["revenue"] += float(it.get("total") or (float(it.get("price") or 0) * qty))
 
     top_products = sorted(item_sales_counts.values(), key=lambda x: x["revenue"], reverse=True)[:5]
+
+    # Top Recent Live Orders
+    recent_orders = []
+    for o in sorted(orders, key=lambda x: str(x.get("createdAt") or ""), reverse=True)[:5]:
+        cust = o.get("customer") or {}
+        recent_orders.append({
+            "id": str(o["_id"]),
+            "orderNumber": o.get("orderNumber") or str(o["_id"]),
+            "customerName": cust.get("name") or o.get("customerName") or "Customer",
+            "customerPhone": cust.get("phone") or "",
+            "amount": float(o.get("amount") or 0.0),
+            "status": o.get("orderStatus") or "confirmed",
+            "paymentStatus": o.get("paymentStatus") or "cod",
+            "paymentMethod": o.get("paymentMethod") or "COD",
+            "createdAt": str(o.get("createdAt") or ""),
+            "itemsCount": len(o.get("items") or o.get("orderItems") or []),
+        })
+
+    # Top Recent Live Bookings
+    booking_invs = [i for i in invoices if i.get("bookingDetails") and i.get("status") != "cancelled"]
+    recent_bookings = []
+    for b in sorted(booking_invs, key=lambda x: str(x.get("createdAt") or ""), reverse=True)[:5]:
+        bd = b.get("bookingDetails") or {}
+        cust = b.get("customer") or {}
+        recent_bookings.append({
+            "id": str(b["_id"]),
+            "invoiceNumber": b.get("invoiceNumber", ""),
+            "birdName": bd.get("birdName") or "Companion Bird",
+            "customerName": cust.get("name") or "Customer",
+            "customerPhone": cust.get("phone") or "",
+            "totalAmount": float(b.get("totalAmount") or 0.0),
+            "depositPaid": float(b.get("paidAmount") or 0.0),
+            "balanceDue": float(b.get("balanceDue") or 0.0),
+            "status": bd.get("status") or "reserved",
+            "expectedDeliveryDate": bd.get("expectedDeliveryDate") or "",
+            "createdAt": str(b.get("createdAt") or ""),
+        })
+
+    # Top Recent Live Invoices
+    recent_invoices = []
+    for inv in sorted(invoices, key=lambda x: str(x.get("createdAt") or ""), reverse=True)[:5]:
+        cust = inv.get("customer") or {}
+        recent_invoices.append({
+            "id": str(inv["_id"]),
+            "invoiceNumber": inv.get("invoiceNumber", ""),
+            "customerName": cust.get("name") or "Customer",
+            "totalAmount": float(inv.get("totalAmount") or 0.0),
+            "paidAmount": float(inv.get("paidAmount") or 0.0),
+            "paymentStatus": inv.get("paymentStatus") or "paid",
+            "paymentMethod": inv.get("paymentMethod") or "UPI",
+            "createdAt": str(inv.get("createdAt") or ""),
+        })
 
     return {
         "summary": {
@@ -1280,6 +1362,9 @@ async def admin_get_analytics():
         "paymentMethodBreakdown": payment_method_breakdown,
         "orderStatusFunnel": status_funnel,
         "topProducts": top_products,
+        "recentOrders": recent_orders,
+        "recentBookings": recent_bookings,
+        "recentInvoices": recent_invoices,
         "lowStockAlerts": serialize_doc(low_stock_accessories[:6]),
         "recentTransactions": serialize_doc(
             sorted(
@@ -1710,6 +1795,26 @@ async def admin_create_booking(
     }
     res = await invoices_col.insert_one(doc)
     doc["_id"] = res.inserted_id
+
+    # If advance deposit was collected, record transaction automatically into ledger
+    if deposit_paid > 0:
+        txn_id = await generate_transaction_id("INC")
+        await transactions_col.insert_one({
+            "transactionId": txn_id,
+            "type": "income",
+            "category": "Bird Reservation Deposit",
+            "amount": deposit_paid,
+            "paymentMethod": body.get("paymentMethod") or "UPI",
+            "reference": inv_no,
+            "description": f"Reservation Advance for {bird_name} (#{inv_no} - {customer_name})",
+            "customerOrPayee": customer_name,
+            "invoiceId": str(res.inserted_id),
+            "date": now,
+            "createdBy": admin.get("username", "admin"),
+            "createdAt": now,
+            "updatedAt": now,
+        })
+
     await log_audit("CREATE_BOOKING", "booking", str(res.inserted_id), {"invoiceNumber": inv_no}, admin.get("username", "admin"), request)
     bd = doc["bookingDetails"]
     return {
